@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>臭吉吉的瞎记空间</title>
+  <subtitle>技术的，瞎说的，啥都有吧。。。希望。。。</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://yoursite.com/"/>
+  <updated>2017-06-05T06:38:33.000Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>臭吉吉</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>你好这个世界~</title>
+    <link href="http://yoursite.com/2017/06/05/hello-world/"/>
+    <id>http://yoursite.com/2017/06/05/hello-world/</id>
+    <published>2017-06-05T03:06:46.000Z</published>
+    <updated>2017-06-05T06:38:33.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>哇哈哇哈，谁都有博客，谁都会有这一天，老纸来啦哈哈哈哈~</p>
+<h2 id="这个是大标题吗？？？"><a href="#这个是大标题吗？？？" class="headerlink" title="这个是大标题吗？？？"></a>这个是大标题吗？？？</h2><h3 id="创建一个新页面"><a href="#创建一个新页面" class="headerlink" title="创建一个新页面"></a>创建一个新页面</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
+<h3 id="运行服务器（本地滴）"><a href="#运行服务器（本地滴）" class="headerlink" title="运行服务器（本地滴）"></a>运行服务器（本地滴）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
+<h3 id="生成静态文件（这样就可以把新生成的文章制造出来啦-）"><a href="#生成静态文件（这样就可以把新生成的文章制造出来啦-）" class="headerlink" title="生成静态文件（这样就可以把新生成的文章制造出来啦~）"></a>生成静态文件（这样就可以把新生成的文章制造出来啦~）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
+<h3 id="部署到远端网站上（可以装XX咯-撒花-）"><a href="#部署到远端网站上（可以装XX咯-撒花-）" class="headerlink" title="部署到远端网站上（可以装XX咯~撒花~）"></a>部署到远端网站上（可以装XX咯~撒花~）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;哇哈哇哈，谁都有博客，谁都会有这一天，老纸来啦哈哈哈哈~&lt;/p&gt;
+&lt;h2 id=&quot;这个是大标题吗？？？&quot;&gt;&lt;a href=&quot;#这个是大标题吗？？？&quot; class=&quot;headerlink&quot; title=&quot;这个是大标题吗？？？&quot;&gt;&lt;/a&gt;这个是大标题吗？？？&lt;/h2&gt;&lt;h3 i
+    
+    </summary>
+    
+    
+  </entry>
+  
+</feed>
