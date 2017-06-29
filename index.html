@@ -156,19 +156,85 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-ARKit文档自己瞎翻译" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-ARKit_doc_2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/29/ARKit文档自己瞎翻译/">ARKit文档自己瞎翻译(1)</a>
+      <a class="article-title" href="/2017/06/29/ARKit_doc_2/">ARKit文档瞎翻译（2）</a>
     </h1>
   
 
         
-        <a href="/2017/06/29/ARKit文档自己瞎翻译/" class="archive-article-date">
+        <a href="/2017/06/29/ARKit_doc_2/" class="archive-article-date">
+  	<time datetime="2017-06-29T08:19:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="ARKit文档瞎翻译（2）"><a href="#ARKit文档瞎翻译（2）" class="headerlink" title="ARKit文档瞎翻译（2）"></a>ARKit文档瞎翻译（2）</h1><p><a href="https://developer.apple.com/documentation/arkit" target="_blank" rel="external">原文请戳</a></p>
+<h2 id="ARKit"><a href="#ARKit" class="headerlink" title="ARKit"></a>ARKit</h2><h6 id="在你的app或游戏中结合iOS的设备相机和运动感应器来产生增强现实的体验。"><a href="#在你的app或游戏中结合iOS的设备相机和运动感应器来产生增强现实的体验。" class="headerlink" title="在你的app或游戏中结合iOS的设备相机和运动感应器来产生增强现实的体验。"></a>在你的app或游戏中结合iOS的设备相机和运动感应器来产生增强现实的体验。</h6><hr>
+<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>增强现实（AR）描述了以一种在相机提供的现实视图中添加2D或3D元素并且使这些元素展现在现实世界中的用户体验。ARKit结合了设备的运动追踪、相机场景捕捉、高级场景处理和便捷地显示来简化创建AR任务的体验。</p>
+<blockquote>
+<p>注意：</p>
+<p>ARKit需要搭载A9或更高型号处理器的iOS设备。</p>
+<p>如果你的app只被允许在支持ARKit的设备上运行，请在Info.plist中的<a href="https://developer.apple.com/library/content/documentation/General/Reference/InfoPlistKeyReference/Articles/iPhoneOSKeys.html#//apple_ref/doc/uid/TP40009252-SW3" target="_blank" rel="external">UIRequiredDeviceCapabilities</a>组中添加arkit键值。如果AR是你app的第二特性，使用<a href="https://developer.apple.com/documentation/arkit/arsessionconfiguration/2867255-issupported" target="_blank" rel="external">isSupported</a>属性来决定当前设备是否支持你用的会话配置。</p>
+</blockquote>
+<h3 id="话题"><a href="#话题" class="headerlink" title="话题"></a>话题</h3><h4 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h4><h6 id="理解AR"><a href="#理解AR" class="headerlink" title="理解AR"></a><a href="https://developer.apple.com/documentation/arkit/understanding_augmented_reality" target="_blank" rel="external"><em>理解AR</em></a></h6><h6 id="探索概念、特性和最棒的实践来创建伟大的AR体验。"><a href="#探索概念、特性和最棒的实践来创建伟大的AR体验。" class="headerlink" title="探索概念、特性和最棒的实践来创建伟大的AR体验。"></a>探索概念、特性和最棒的实践来创建伟大的AR体验。</h6><h6 id="class-ARSession"><a href="#class-ARSession" class="headerlink" title="class ARSession"></a>class <a href="https://developer.apple.com/documentation/arkit/arsession" target="_blank" rel="external">ARSession</a></h6><h6 id="一个共享对象，负责管理AR中的设备相机和运动处理的需求。"><a href="#一个共享对象，负责管理AR中的设备相机和运动处理的需求。" class="headerlink" title="一个共享对象，负责管理AR中的设备相机和运动处理的需求。"></a>一个共享对象，负责管理AR中的设备相机和运动处理的需求。</h6><h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><h6 id="class-ARSessionConfiguation"><a href="#class-ARSessionConfiguation" class="headerlink" title="class ARSessionConfiguation"></a>class <a href="https://developer.apple.com/documentation/arkit/arsessionconfiguration" target="_blank" rel="external">ARSessionConfiguation</a></h6><h6 id="一个只追踪设备方向的基本配置"><a href="#一个只追踪设备方向的基本配置" class="headerlink" title="一个只追踪设备方向的基本配置"></a>一个只追踪设备方向的基本配置</h6><h6 id="class-ARWordTrackingSessionConfiguration"><a href="#class-ARWordTrackingSessionConfiguration" class="headerlink" title="class ARWordTrackingSessionConfiguration"></a>class <a href="https://developer.apple.com/documentation/arkit/arworldtrackingsessionconfiguration" target="_blank" rel="external">ARWordTrackingSessionConfiguration</a></h6><h6 id="一个追踪设备方向和位置，并且通过设备相机检测真实世界朝向的配置"><a href="#一个追踪设备方向和位置，并且通过设备相机检测真实世界朝向的配置" class="headerlink" title="一个追踪设备方向和位置，并且通过设备相机检测真实世界朝向的配置"></a>一个追踪设备方向和位置，并且通过设备相机检测真实世界朝向的配置</h6><h4 id="基本视图"><a href="#基本视图" class="headerlink" title="基本视图"></a>基本视图</h4><h6 id="创建基本的AR体验"><a href="#创建基本的AR体验" class="headerlink" title="创建基本的AR体验"></a><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience" target="_blank" rel="external"><em>创建基本的AR体验</em></a></h6><h6 id="配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容"><a href="#配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容" class="headerlink" title="配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容"></a>配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容</h6><h6 id="class-ARSCNView"><a href="#class-ARSCNView" class="headerlink" title="class ARSCNView"></a>class <a href="https://developer.apple.com/documentation/arkit/arscnview" target="_blank" rel="external">ARSCNView</a></h6><h6 id="一个负责显示包含3DSceneKit内容的相机界面的AR视图"><a href="#一个负责显示包含3DSceneKit内容的相机界面的AR视图" class="headerlink" title="一个负责显示包含3DSceneKit内容的相机界面的AR视图"></a>一个负责显示包含3DSceneKit内容的相机界面的AR视图</h6><h6 id="class-ARSKView"><a href="#class-ARSKView" class="headerlink" title="class ARSKView"></a>class <a href="https://developer.apple.com/documentation/arkit/arskview" target="_blank" rel="external">ARSKView</a></h6><h6 id="一个负责显示包含了2DSpriteKit内容的相机界面的AR视图"><a href="#一个负责显示包含了2DSpriteKit内容的相机界面的AR视图" class="headerlink" title="一个负责显示包含了2DSpriteKit内容的相机界面的AR视图"></a>一个负责显示包含了2DSpriteKit内容的相机界面的AR视图</h6><h4 id="自定义视图"><a href="#自定义视图" class="headerlink" title="自定义视图"></a>自定义视图</h4><h6 id="使用Metal显示一个AR体验"><a href="#使用Metal显示一个AR体验" class="headerlink" title="使用Metal显示一个AR体验"></a><a href="https://developer.apple.com/documentation/arkit/displaying_an_ar_experience_with_metal" target="_blank" rel="external">使用Metal显示一个AR体验</a></h6><h6 id="通过渲染相机图片并使用位置追踪信息创建一个自定义的AR视图来显示覆盖内容"><a href="#通过渲染相机图片并使用位置追踪信息创建一个自定义的AR视图来显示覆盖内容" class="headerlink" title="通过渲染相机图片并使用位置追踪信息创建一个自定义的AR视图来显示覆盖内容"></a>通过渲染相机图片并使用位置追踪信息创建一个自定义的AR视图来显示覆盖内容</h6><h4 id="真实世界的对象和位置"><a href="#真实世界的对象和位置" class="headerlink" title="真实世界的对象和位置"></a>真实世界的对象和位置</h4><h6 id="class-ARAnchor"><a href="#class-ARAnchor" class="headerlink" title="class ARAnchor"></a>class <a href="https://developer.apple.com/documentation/arkit/aranchor" target="_blank" rel="external">ARAnchor</a></h6><h6 id="在AR场景中可用于放置物体的一个真实世界的位置和朝向"><a href="#在AR场景中可用于放置物体的一个真实世界的位置和朝向" class="headerlink" title="在AR场景中可用于放置物体的一个真实世界的位置和朝向"></a>在AR场景中可用于放置物体的一个真实世界的位置和朝向</h6><h6 id="class-ARPlaneAnchor"><a href="#class-ARPlaneAnchor" class="headerlink" title="class ARPlaneAnchor"></a>class <a href="https://developer.apple.com/documentation/arkit/arplaneanchor" target="_blank" rel="external">ARPlaneAnchor</a></h6><h6 id="在AR会话中真实世界水平面检测的位置和方向信息"><a href="#在AR会话中真实世界水平面检测的位置和方向信息" class="headerlink" title="在AR会话中真实世界水平面检测的位置和方向信息"></a>在AR会话中真实世界水平面检测的位置和方向信息</h6><h6 id="class-ARHitTestResult"><a href="#class-ARHitTestResult" class="headerlink" title="class ARHitTestResult"></a>class <a href="https://developer.apple.com/documentation/arkit/arhittestresult" target="_blank" rel="external">ARHitTestResult</a></h6><h6 id="AR会话中通过在设备相机视图中检查一个点在现实世界的表面信息"><a href="#AR会话中通过在设备相机视图中检查一个点在现实世界的表面信息" class="headerlink" title="AR会话中通过在设备相机视图中检查一个点在现实世界的表面信息"></a>AR会话中通过在设备相机视图中检查一个点在现实世界的表面信息</h6><h4 id="相机和场景细节"><a href="#相机和场景细节" class="headerlink" title="相机和场景细节"></a>相机和场景细节</h4><h6 id="class-ARFrame"><a href="#class-ARFrame" class="headerlink" title="class ARFrame"></a>class <a href="https://developer.apple.com/documentation/arkit/arframe" target="_blank" rel="external">ARFrame</a></h6><h6 id="AR会话中截取的一帧视频截图和位置追踪信息"><a href="#AR会话中截取的一帧视频截图和位置追踪信息" class="headerlink" title="AR会话中截取的一帧视频截图和位置追踪信息"></a>AR会话中截取的一帧视频截图和位置追踪信息</h6><h6 id="class-ARCamera"><a href="#class-ARCamera" class="headerlink" title="class ARCamera"></a>class <a href="https://developer.apple.com/documentation/arkit/arcamera" target="_blank" rel="external">ARCamera</a></h6><h6 id="AR会话中从一个截取的视频帧中得到的相机位置和图像特征信息"><a href="#AR会话中从一个截取的视频帧中得到的相机位置和图像特征信息" class="headerlink" title="AR会话中从一个截取的视频帧中得到的相机位置和图像特征信息"></a>AR会话中从一个截取的视频帧中得到的相机位置和图像特征信息</h6><h6 id="class-ARLightEstimate"><a href="#class-ARLightEstimate" class="headerlink" title="class ARLightEstimate"></a>class <a href="https://developer.apple.com/documentation/arkit/arlightestimate" target="_blank" rel="external">ARLightEstimate</a></h6><h6 id="AR会话中从一个截取的视频帧中预测场景中的光照信息"><a href="#AR会话中从一个截取的视频帧中预测场景中的光照信息" class="headerlink" title="AR会话中从一个截取的视频帧中预测场景中的光照信息"></a>AR会话中从一个截取的视频帧中预测场景中的光照信息</h6>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习笔记/" class="article-tag-list-link color5">学习笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/06/29/ARKit_doc_2/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article id="post-ARKit_doc_1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/29/ARKit_doc_1/">ARKit文档瞎翻译(1)</a>
+    </h1>
+  
+
+        
+        <a href="/2017/06/29/ARKit_doc_1/" class="archive-article-date">
   	<time datetime="2017-06-29T07:37:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-29</time>
 </a>
         
@@ -176,7 +242,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="ARKit文档自己瞎翻译（1）"><a href="#ARKit文档自己瞎翻译（1）" class="headerlink" title="ARKit文档自己瞎翻译（1）"></a>ARKit文档自己瞎翻译（1）</h1><p><a href="https://developer.apple.com/arkit/" target="_blank" rel="external">看不下去就戳真相地址</a></p>
+        <h1 id="ARKit文档瞎翻译（1）"><a href="#ARKit文档瞎翻译（1）" class="headerlink" title="ARKit文档瞎翻译（1）"></a>ARKit文档瞎翻译（1）</h1><p><a href="https://developer.apple.com/arkit/" target="_blank" rel="external">看不下去就戳真相地址</a></p>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="虚拟内部测量（VIO）"><a href="#虚拟内部测量（VIO）" class="headerlink" title="虚拟内部测量（VIO）"></a>虚拟内部测量（VIO）</h3><p>ARKit使用VIO系统来精确测量整个世界。VIO把相机传感器的数据和CoreMotion数据引入到一起。这两方面输入允许设备来感知如何高精度地在空间中移动，且不需要任何额外校准。</p>
 <h3 id="场景理解和光照预估"><a href="#场景理解和光照预估" class="headerlink" title="场景理解和光照预估"></a>场景理解和光照预估</h3><p>有了ARKit，iPhone和iPad可以识别相机视图提供的场景并识别出空间中的水平面。ARKit可以检测出诸如桌面、地面等水平面，并且可以在特定的小位置追踪并放置物体。ARKit还可以使用相机传感器来预估场景中整体的光照总量并把合适的光照投射到虚拟物体上。</p>
 <h3 id="高性能的硬件和渲染优化"><a href="#高性能的硬件和渲染优化" class="headerlink" title="高性能的硬件和渲染优化"></a>高性能的硬件和渲染优化</h3><p>ARKit运行在苹果的A9和A10处理器上。这些处理器有出色的性能表现可以实现快速的场景理解并可以让你在真实的场景中搭建详尽真实的虚拟内容。你可以在诸如Metal、SceneKit或第三方平台工具如Unity和Unreal Engine等地方使用这些为ARKit带来的优化。</p>
@@ -203,7 +269,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/29/ARKit文档自己瞎翻译/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/06/29/ARKit_doc_1/">展开全文 >></a>
         </p>
       
 
