@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-06-29T08:06:35.000Z</updated>
+  <updated>2017-06-29T08:07:42.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,20 +20,17 @@
     <link href="http://yoursite.com/2017/06/29/ARKit%E6%96%87%E6%A1%A3%E8%87%AA%E5%B7%B1%E7%9E%8E%E7%BF%BB%E8%AF%91/"/>
     <id>http://yoursite.com/2017/06/29/ARKit文档自己瞎翻译/</id>
     <published>2017-06-29T07:37:05.000Z</published>
-    <updated>2017-06-29T08:06:35.000Z</updated>
+    <updated>2017-06-29T08:07:42.000Z</updated>
     
-    <content type="html"><![CDATA[<p>#ARKit文档自己瞎翻译（1）<br><a href="https://developer.apple.com/arkit/" target="_blank" rel="external">看不下去就戳真相地址</a></p>
-<p>##概述</p>
-<p>###虚拟内部测量（VIO）<br>ARKit使用VIO系统来精确测量整个世界。VIO把相机传感器的数据和CoreMotion数据引入到一起。这两方面输入允许设备来感知如何高精度地在空间中移动，且不需要任何额外校准。</p>
-<p>###场景理解和光照预估<br>有了ARKit，iPhone和iPad可以识别相机视图提供的场景并识别出空间中的水平面。ARKit可以检测出诸如桌面、地面等水平面，并且可以在特定的小位置追踪并放置物体。ARKit还可以使用相机传感器来预估场景中整体的光照总量并把合适的光照投射到虚拟物体上。</p>
-<p>###高性能的硬件和渲染优化<br>ARKit运行在苹果的A9和A10处理器上。这些处理器有出色的性能表现可以实现快速的场景理解并可以让你在真实的场景中搭建详尽真实的虚拟内容。你可以在诸如Metal、SceneKit或第三方平台工具如Unity和Unreal Engine等地方使用这些为ARKit带来的优化。</p>
+    <content type="html"><![CDATA[<h1 id="ARKit文档自己瞎翻译（1）"><a href="#ARKit文档自己瞎翻译（1）" class="headerlink" title="ARKit文档自己瞎翻译（1）"></a>ARKit文档自己瞎翻译（1）</h1><p><a href="https://developer.apple.com/arkit/" target="_blank" rel="external">看不下去就戳真相地址</a></p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="虚拟内部测量（VIO）"><a href="#虚拟内部测量（VIO）" class="headerlink" title="虚拟内部测量（VIO）"></a>虚拟内部测量（VIO）</h3><p>ARKit使用VIO系统来精确测量整个世界。VIO把相机传感器的数据和CoreMotion数据引入到一起。这两方面输入允许设备来感知如何高精度地在空间中移动，且不需要任何额外校准。</p>
+<h3 id="场景理解和光照预估"><a href="#场景理解和光照预估" class="headerlink" title="场景理解和光照预估"></a>场景理解和光照预估</h3><p>有了ARKit，iPhone和iPad可以识别相机视图提供的场景并识别出空间中的水平面。ARKit可以检测出诸如桌面、地面等水平面，并且可以在特定的小位置追踪并放置物体。ARKit还可以使用相机传感器来预估场景中整体的光照总量并把合适的光照投射到虚拟物体上。</p>
+<h3 id="高性能的硬件和渲染优化"><a href="#高性能的硬件和渲染优化" class="headerlink" title="高性能的硬件和渲染优化"></a>高性能的硬件和渲染优化</h3><p>ARKit运行在苹果的A9和A10处理器上。这些处理器有出色的性能表现可以实现快速的场景理解并可以让你在真实的场景中搭建详尽真实的虚拟内容。你可以在诸如Metal、SceneKit或第三方平台工具如Unity和Unreal Engine等地方使用这些为ARKit带来的优化。</p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;#ARKit文档自己瞎翻译（1）&lt;br&gt;&lt;a href=&quot;https://developer.apple.com/arkit/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;看不下去就戳真相地址&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;##概述&lt;/p&gt;
-&lt;p&gt;###虚拟内部
+      &lt;h1 id=&quot;ARKit文档自己瞎翻译（1）&quot;&gt;&lt;a href=&quot;#ARKit文档自己瞎翻译（1）&quot; class=&quot;headerlink&quot; title=&quot;ARKit文档自己瞎翻译（1）&quot;&gt;&lt;/a&gt;ARKit文档自己瞎翻译（1）&lt;/h1&gt;&lt;p&gt;&lt;a href=&quot;https://d
     
     </summary>
     
