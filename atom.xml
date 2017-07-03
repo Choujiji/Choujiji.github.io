@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-06-29T09:41:59.000Z</updated>
+  <updated>2017-07-03T04:49:47.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,11 +16,40 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>ARKit文档瞎翻译（3）</title>
+    <link href="http://yoursite.com/2017/07/03/ARKit_doc_3/"/>
+    <id>http://yoursite.com/2017/07/03/ARKit_doc_3/</id>
+    <published>2017-07-03T03:41:38.000Z</published>
+    <updated>2017-07-03T04:49:47.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="ARKit文档瞎翻译（3）"><a href="#ARKit文档瞎翻译（3）" class="headerlink" title="ARKit文档瞎翻译（3）"></a>ARKit文档瞎翻译（3）</h1><p><a href="https://developer.apple.com/documentation/arkit/understanding_augmented_reality" target="_blank" rel="external">原文请戳</a></p>
+<h2 id="理解AR"><a href="#理解AR" class="headerlink" title="理解AR"></a>理解AR</h2><h6 id="探索概念、特性和最棒的实践来创建伟大的AR体验。"><a href="#探索概念、特性和最棒的实践来创建伟大的AR体验。" class="headerlink" title="探索概念、特性和最棒的实践来创建伟大的AR体验。"></a>探索概念、特性和最棒的实践来创建伟大的AR体验。</h6><hr>
+<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p><img src="https://docs-assets.developer.apple.com/published/b99f86dcfb/75ae3206-121a-47ed-9464-af0f322443cc.png" alt="demo图片1"></p>
+<p>对于AR来说，最基本的需求，即ARKit定义的特征，就是在用户生活的真实世界和放置虚拟物体的虚拟空间之间创建并保持一致的能力。当你的app把实时相机图像和虚拟物体结合在一起展示出来的时候，用户就会体验到了增强现实的魅力：幻想你的虚拟内容是真实世界的一部分。</p>
+<h3 id="世界追踪是如何工作的"><a href="#世界追踪是如何工作的" class="headerlink" title="世界追踪是如何工作的"></a>世界追踪是如何工作的</h3><p>为了在真实和虚拟空间中创建一个高度一致的世界，ARKit使用了一项叫做<em>visual-inertial odometry</em>的技术。这项技术可以将iOS的设备感应器和相机拍摄的场景进行的电脑视觉识别结合到一起。ARKit识别出场景图像中的显著特征，通过视频帧的这些特征追踪出位置上的不同点，并把这些信息同运动感应数据进行比较。最终就生成了一个带有设备位置和运动信息的高精度模型。</p>
+<h3 id="最好的实践和限制"><a href="#最好的实践和限制" class="headerlink" title="最好的实践和限制"></a>最好的实践和限制</h3><p>世界追踪是一项不太准确的技术。这项技术经常可以制作出令人惊叹的精准度，进而产生出AR体验。可是，它（即AR体验）的产生依赖设备物理环境的细致程度（物理环境并不总是很稳定或者一些很难估测到的不确定错误）。为了能够建立高质量的AR体验，注意以下警告和建议。</p>
+<p><strong>利用可预测的光照条件来设计AR。</strong>世界追踪需要图像识别，即需要清晰地图像。当相机不能看清细节，比如当相机对着一扇白墙或场景较暗时，追踪的质量会降低。</p>
+<p><strong>使用有效的追踪信息来提供给用户反馈。</strong>世界追踪把图像识别和设备运动结合到了一起。ARKit开发出了对场景更好的理解能力，如当设备正在移动，甚至是很微小的偏移。过重的运动（如过远、过快或者剧烈的摇动）会导致在视频帧间产生模糊的图像或过大的追踪距离，从而降低了追踪质量。<a href="https://developer.apple.com/documentation/arkit/arcamera" target="_blank" rel="external">ARCamera</a>类提供了追踪状态原因信息，使用它你可以开发出告知用户如何处理低质量追踪环境的UI界面。</p>
+<p><strong>为产生清晰的结果允许花费一些时间来进行物体检测，并且当你得到需要的结果后关闭检测。</strong>物体检测的结果会多次改变–当物体第一次被探测到时，它的位置和大小可能是不准确的。只要该物体还持续地呆在场景之中，ARKit就会抽象出估测的位置和大小。一旦在场景中有一个大的水平面存在时，在你已经使用该物体并放置内容后，ARKit就会持续改变该物体的锚点位置、大小和变化。</p>
+<h2 id="仍需查看"><a href="#仍需查看" class="headerlink" title="仍需查看"></a>仍需查看</h2><h4 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h4><h6 id="class-ARSession"><a href="#class-ARSession" class="headerlink" title="class ARSession"></a>class <a href="https://developer.apple.com/documentation/arkit/arsession" target="_blank" rel="external">ARSession</a></h6><h6 id="一个共享对象，负责管理AR中的设备相机和运动处理的需求。"><a href="#一个共享对象，负责管理AR中的设备相机和运动处理的需求。" class="headerlink" title="一个共享对象，负责管理AR中的设备相机和运动处理的需求。"></a>一个共享对象，负责管理AR中的设备相机和运动处理的需求。</h6><h4 id="相关文档"><a href="#相关文档" class="headerlink" title="相关文档"></a>相关文档</h4><h6 id="创建基本的AR体验"><a href="#创建基本的AR体验" class="headerlink" title="创建基本的AR体验"></a><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience" target="_blank" rel="external"><em>创建基本的AR体验</em></a></h6><h6 id="配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容"><a href="#配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容" class="headerlink" title="配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容"></a>配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容</h6>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;ARKit文档瞎翻译（3）&quot;&gt;&lt;a href=&quot;#ARKit文档瞎翻译（3）&quot; class=&quot;headerlink&quot; title=&quot;ARKit文档瞎翻译（3）&quot;&gt;&lt;/a&gt;ARKit文档瞎翻译（3）&lt;/h1&gt;&lt;p&gt;&lt;a href=&quot;https://developer
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yoursite.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+  </entry>
+  
+  <entry>
     <title>ARKit文档瞎翻译（2）</title>
     <link href="http://yoursite.com/2017/06/29/ARKit_doc_2/"/>
     <id>http://yoursite.com/2017/06/29/ARKit_doc_2/</id>
     <published>2017-06-29T08:19:03.000Z</published>
-    <updated>2017-06-29T09:41:59.000Z</updated>
+    <updated>2017-06-29T09:48:20.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="ARKit文档瞎翻译（2）"><a href="#ARKit文档瞎翻译（2）" class="headerlink" title="ARKit文档瞎翻译（2）"></a>ARKit文档瞎翻译（2）</h1><p><a href="https://developer.apple.com/documentation/arkit" target="_blank" rel="external">原文请戳</a></p>
 <h2 id="ARKit"><a href="#ARKit" class="headerlink" title="ARKit"></a>ARKit</h2><h6 id="在你的app或游戏中结合iOS的设备相机和运动感应器来产生增强现实的体验。"><a href="#在你的app或游戏中结合iOS的设备相机和运动感应器来产生增强现实的体验。" class="headerlink" title="在你的app或游戏中结合iOS的设备相机和运动感应器来产生增强现实的体验。"></a>在你的app或游戏中结合iOS的设备相机和运动感应器来产生增强现实的体验。</h6><hr>
