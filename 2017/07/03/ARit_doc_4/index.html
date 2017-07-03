@@ -15,7 +15,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/07/03/ARit_doc_4/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
 <meta property="og:description" content="ARKit文档瞎翻译（4）原文请戳 ARSession一个处理AR中设备相机和运动过程的共享对象。  概述一个ARSession对象整合了在ARKit中以你自己的方式创建AR的主要过程。这个过程包括从设备运动传感器读取数据、控制设备相机和在截取的相机图片中进行图像识别。这个会话整合了所有这些结果来创建一个在设备所在的真实世界和你模拟AR内容的虚拟空间所组成的镜像世界。 使用ARKit创建的每一个A">
-<meta property="og:updated_time" content="2017-07-03T07:57:21.000Z">
+<meta property="og:updated_time" content="2017-07-03T08:20:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ARKit文档瞎翻译（4）">
 <meta name="twitter:description" content="ARKit文档瞎翻译（4）原文请戳 ARSession一个处理AR中设备相机和运动过程的共享对象。  概述一个ARSession对象整合了在ARKit中以你自己的方式创建AR的主要过程。这个过程包括从设备运动传感器读取数据、控制设备相机和在截取的相机图片中进行图像识别。这个会话整合了所有这些结果来创建一个在设备所在的真实世界和你模拟AR内容的虚拟空间所组成的镜像世界。 使用ARKit创建的每一个A">
@@ -193,7 +193,10 @@
 </code></pre><h6 id="ARSessionDelegate"><a href="#ARSessionDelegate" class="headerlink" title="ARSessionDelegate"></a><a href="https://developer.apple.com/documentation/arkit/arsessiondelegate?language=objc" target="_blank" rel="external">ARSessionDelegate</a></h6><pre><code>在AR会话中你可以实现的一些方法来接收捕获的视频帧图像和处理追踪状态。
 </code></pre><h6 id="ARSessionObserver"><a href="#ARSessionObserver" class="headerlink" title="ARSessionObserver"></a><a href="https://developer.apple.com/documentation/arkit/arsessionobserver?language=objc" target="_blank" rel="external">ARSessionObserver</a></h6><pre><code>在AR会话中你可以实现的一些方法来对状态的改变进行回应。
 </code></pre><h3 id="显示并与AR内容进行交互"><a href="#显示并与AR内容进行交互" class="headerlink" title="显示并与AR内容进行交互"></a>显示并与AR内容进行交互</h3><h6 id="currentFrame"><a href="#currentFrame" class="headerlink" title="currentFrame"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865621-currentframe?language=objc" target="_blank" rel="external">currentFrame</a></h6><pre><code>视频帧图像，带有相关的AR场景信息，是会话对象最近捕获的
-</code></pre>
+</code></pre><h6 id="addAnchor"><a href="#addAnchor" class="headerlink" title="- addAnchor:"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865612-addanchor?language=objc" target="_blank" rel="external">- addAnchor:</a></h6><pre><code>添加可以被会话对象追踪的指定锚点
+</code></pre><h6 id="removeAnchor"><a href="#removeAnchor" class="headerlink" title="- removeAnchor:"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865607-removeanchor?language=objc" target="_blank" rel="external">- removeAnchor:</a></h6><pre><code>移除可以被会话对象追踪的指定锚点
+</code></pre><h3 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h3><h6 id="runWithConfiguration"><a href="#runWithConfiguration" class="headerlink" title="- runWithConfiguration:"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865608-runwithconfiguration?language=objc" target="_blank" rel="external">- runWithConfiguration:</a></h6><h2 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h2><h6 id="继承自"><a href="#继承自" class="headerlink" title="继承自"></a>继承自</h6><p><a href="https://developer.apple.com/documentation/objectivec/nsobject?language=objc" target="_blank" rel="external">NSObject</a></p>
+
       
 
       
