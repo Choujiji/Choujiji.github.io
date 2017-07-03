@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-07-03T07:54:55.000Z</updated>
+  <updated>2017-07-03T07:57:21.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/07/03/ARit_doc_4/"/>
     <id>http://yoursite.com/2017/07/03/ARit_doc_4/</id>
     <published>2017-07-03T06:49:35.000Z</published>
-    <updated>2017-07-03T07:54:55.000Z</updated>
+    <updated>2017-07-03T07:57:21.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="ARKit文档瞎翻译（4）"><a href="#ARKit文档瞎翻译（4）" class="headerlink" title="ARKit文档瞎翻译（4）"></a>ARKit文档瞎翻译（4）</h1><p><a href="https://developer.apple.com/documentation/arkit/arsession?language=objc" target="_blank" rel="external">原文请戳</a></p>
 <h2 id="ARSession"><a href="#ARSession" class="headerlink" title="ARSession"></a>ARSession</h2><p>一个处理AR中设备相机和运动过程的共享对象。</p>
@@ -33,7 +33,8 @@
 <p><a href="https://developer.apple.com/documentation/arkit/arsessionrunoptions?language=objc" target="_blank" rel="external">ARSessionRunOptions</a><br>当你改变配置时，此选项影响了如何改变一个ARSession当前状态。</p>
 <p><a href="https://developer.apple.com/documentation/arkit/arsession/2865609-configuration?language=objc" target="_blank" rel="external">configuration</a><br>会话中一个定义了运动和场景追踪行为的对象。</p>
 </blockquote>
-<h6 id="pause"><a href="#pause" class="headerlink" title="- pause"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865619-pause?language=objc" target="_blank" rel="external">- pause</a></h6><h6 id="暂停处理会话"><a href="#暂停处理会话" class="headerlink" title="暂停处理会话"></a>暂停处理会话</h6><h4 id="负责AR更新"><a href="#负责AR更新" class="headerlink" title="负责AR更新"></a>负责AR更新</h4><h6 id="delegate"><a href="#delegate" class="headerlink" title="delegate"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865614-delegate?language=objc" target="_blank" rel="external">delegate</a></h6><pre><code>一个你提供的对象来接收捕获的视频图像和追踪信息，或者为会话中的状态改变进行回应处理。
+<h6 id="pause"><a href="#pause" class="headerlink" title="- pause"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865619-pause?language=objc" target="_blank" rel="external">- pause</a></h6><pre><code>暂停处理会话
+</code></pre><h4 id="负责AR更新"><a href="#负责AR更新" class="headerlink" title="负责AR更新"></a>负责AR更新</h4><h6 id="delegate"><a href="#delegate" class="headerlink" title="delegate"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865614-delegate?language=objc" target="_blank" rel="external">delegate</a></h6><pre><code>一个你提供的对象来接收捕获的视频图像和追踪信息，或者为会话中的状态改变进行回应处理。
 </code></pre><h6 id="delegateQueue"><a href="#delegateQueue" class="headerlink" title="delegateQueue"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2875726-delegatequeue?language=objc" target="_blank" rel="external">delegateQueue</a></h6><pre><code>会话调用你的一系列代理方法的派发队列
 </code></pre><h6 id="ARSessionDelegate"><a href="#ARSessionDelegate" class="headerlink" title="ARSessionDelegate"></a><a href="https://developer.apple.com/documentation/arkit/arsessiondelegate?language=objc" target="_blank" rel="external">ARSessionDelegate</a></h6><pre><code>在AR会话中你可以实现的一些方法来接收捕获的视频帧图像和处理追踪状态。
 </code></pre><h6 id="ARSessionObserver"><a href="#ARSessionObserver" class="headerlink" title="ARSessionObserver"></a><a href="https://developer.apple.com/documentation/arkit/arsessionobserver?language=objc" target="_blank" rel="external">ARSessionObserver</a></h6><pre><code>在AR会话中你可以实现的一些方法来对状态的改变进行回应。
