@@ -62,7 +62,7 @@ func view(_ view: ARSKView, nodeFor anchor: ARAnchor) -&gt; SKNode? {
     <link href="http://yoursite.com/2017/07/03/ARKit_doc_5/"/>
     <id>http://yoursite.com/2017/07/03/ARKit_doc_5/</id>
     <published>2017-07-03T08:27:40.000Z</published>
-    <updated>2017-07-03T14:52:16.000Z</updated>
+    <updated>2017-07-03T14:58:22.000Z</updated>
     
     <content type="html"><![CDATA[<p><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">原文请戳</a></p>
 <h1 id="创建一个基本的AR体验"><a href="#创建一个基本的AR体验" class="headerlink" title="创建一个基本的AR体验"></a>创建一个基本的AR体验</h1><p>配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容</p>
@@ -75,17 +75,18 @@ func view(_ view: ARSKView, nodeFor anchor: ARAnchor) -&gt; SKNode? {
 <h2 id="配置并运行AR会话"><a href="#配置并运行AR会话" class="headerlink" title="配置并运行AR会话"></a>配置并运行AR会话</h2><p><a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a>和<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>类都包含了一个在创建AR体验中负责运动追踪和图像处理的<a href="https://developer.apple.com/documentation/arkit/arsession?language=objc" target="_blank" rel="external">ARSession</a>对象。可是，为了能够运行这个会话，你必须要提供一个会话配置。</p>
 <p><img src="https://docs-assets.developer.apple.com/published/ffb3831f78/50bedfc6-93ce-400c-a41d-35728e32d653.png" alt="关系图"></p>
 <p><a href="https://developer.apple.com/documentation/arkit/arworldtrackingsessionconfiguration?language=objc" target="_blank" rel="external">ARWorldTrackingSessionConfiguration</a>类提供了更高精度的运动追踪并且开放了一些特性来帮助你放置虚拟内容到真实世界的平面上。在世界追踪不可用的情况下，基本类<a href="https://developer.apple.com/documentation/arkit/arsessionconfiguration?language=objc" target="_blank" rel="external">ARSessionConfiguration</a>提供了简单的运动追踪来许可较少的AR体验。为了允许一个AR会话，使用一个你指定的选项来创建一个会话配置对象，之后在你的<a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a>或<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>实例的<a href="https://developer.apple.com/documentation/arkit/arscnview/2865796-session?language=objc" target="_blank" rel="external">session</a>对象上调用<a href="https://developer.apple.com/documentation/arkit/arsession/2875735-runwithconfiguration?language=objc" target="_blank" rel="external">runWithConfiguration:options:</a>方法。</p>
-<pre><code>override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
+<pre><code class="swift"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewWillAppear</span><span class="params">(<span class="number">_</span> animated: Bool)</span></span> {
+    <span class="keyword">super</span>.viewWillAppear(animated)
 
-    // Create a session configuration
-    let configuration = ARWorldTrackingConfiguation()
+    <span class="comment">// Create a session configuration</span>
+    <span class="keyword">let</span> configuration = <span class="type">ARWorldTrackingConfiguation</span>()
     configuration.planeDetection = .horizontal
 
-    // Run the view&apos;s session
+    <span class="comment">// Run the view's session</span>
     sceneView.session.run(configuration)
 }
-</code></pre><blockquote>
+</code></pre>
+<blockquote>
 <p>注意</p>
 <p>只有视图将要显示在屏幕上时再运行你的会话。</p>
 </blockquote>
