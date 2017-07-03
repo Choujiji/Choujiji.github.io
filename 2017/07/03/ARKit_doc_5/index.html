@@ -8,17 +8,19 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>ARKit文档瞎翻译（5） | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="原文请戳 创建一个基本的AR体验配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容  概述当你使用ARSSNView或ARSKView类，ARKit会自动">
+  <meta name="description" content="原文请戳 创建一个基本的AR体验配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容  概述当你使用ARSSNView或ARSKView类，ARKit会自动处理创建AR体验中的基本需求：每个视图都显示了一个以实时相机视图作为背景并且渲染了一个你提供的2D或3D覆盖层来创建那个真实世界中的幻想内容。使用其中一个类，你需要配置你想要创建的AR体验的种类，并且为你的覆盖层内容选择">
 <meta name="keywords" content="学习笔记">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ARKit文档瞎翻译（5）">
 <meta property="og:url" content="http://yoursite.com/2017/07/03/ARKit_doc_5/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="原文请戳 创建一个基本的AR体验配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容  概述当你使用ARSSNView或ARSKView类，ARKit会自动">
-<meta property="og:updated_time" content="2017-07-03T08:31:31.000Z">
+<meta property="og:description" content="原文请戳 创建一个基本的AR体验配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容  概述当你使用ARSSNView或ARSKView类，ARKit会自动处理创建AR体验中的基本需求：每个视图都显示了一个以实时相机视图作为背景并且渲染了一个你提供的2D或3D覆盖层来创建那个真实世界中的幻想内容。使用其中一个类，你需要配置你想要创建的AR体验的种类，并且为你的覆盖层内容选择">
+<meta property="og:image" content="https://docs-assets.developer.apple.com/published/ffb3831f78/50bedfc6-93ce-400c-a41d-35728e32d653.png">
+<meta property="og:updated_time" content="2017-07-03T09:19:47.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ARKit文档瞎翻译（5）">
-<meta name="twitter:description" content="原文请戳 创建一个基本的AR体验配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容  概述当你使用ARSSNView或ARSKView类，ARKit会自动">
+<meta name="twitter:description" content="原文请戳 创建一个基本的AR体验配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容  概述当你使用ARSSNView或ARSKView类，ARKit会自动处理创建AR体验中的基本需求：每个视图都显示了一个以实时相机视图作为背景并且渲染了一个你提供的2D或3D覆盖层来创建那个真实世界中的幻想内容。使用其中一个类，你需要配置你想要创建的AR体验的种类，并且为你的覆盖层内容选择">
+<meta name="twitter:image" content="https://docs-assets.developer.apple.com/published/ffb3831f78/50bedfc6-93ce-400c-a41d-35728e32d653.png">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -179,8 +181,35 @@
         <p><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">原文请戳</a></p>
 <h1 id="创建一个基本的AR体验"><a href="#创建一个基本的AR体验" class="headerlink" title="创建一个基本的AR体验"></a>创建一个基本的AR体验</h1><p>配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容</p>
 <hr>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>当你使用<a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSSNView</a>或<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>类，ARKit会自动</p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>当你使用<a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSSNView</a>或<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>类，ARKit会自动处理创建AR体验中的基本需求：每个视图都显示了一个以实时相机视图作为背景并且渲染了一个你提供的2D或3D覆盖层来创建那个真实世界中的幻想内容。使用其中一个类，你需要配置你想要创建的AR体验的种类，并且为你的覆盖层内容选择位置和代表。</p>
+<p>若使用自己的视图来创建AR体验，请看<a href="https://developer.apple.com/documentation/arkit/displaying_an_ar_experience_with_metal?language=objc" target="_blank" rel="external">使用Metal来展示AR体验</a>。</p>
+<blockquote>
+<p>备注：<br>这篇文章覆盖了在XCode工程模板中的代码。想要查看完整示例代码，使用AR模板创建一个新的iOS工程，并且在内容技术弹出菜单中选择SceneKit或SpriteKit。</p>
+</blockquote>
+<h2 id="配置并运行AR会话"><a href="#配置并运行AR会话" class="headerlink" title="配置并运行AR会话"></a>配置并运行AR会话</h2><p><a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a>和<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>类都包含了一个在创建AR体验中负责运动追踪和图像处理的<a href="https://developer.apple.com/documentation/arkit/arsession?language=objc" target="_blank" rel="external">ARSession</a>对象。可是，为了能够运行这个会话，你必须要提供一个会话配置。</p>
+<p><img src="https://docs-assets.developer.apple.com/published/ffb3831f78/50bedfc6-93ce-400c-a41d-35728e32d653.png" alt="关系图"></p>
+<p><a href="https://developer.apple.com/documentation/arkit/arworldtrackingsessionconfiguration?language=objc" target="_blank" rel="external">ARWorldTrackingSessionConfiguration</a>类提供了更高精度的运动追踪并且开放了一些特性来帮助你放置虚拟内容到真实世界的平面上。在世界追踪不可用的情况下，基本类<a href="https://developer.apple.com/documentation/arkit/arsessionconfiguration?language=objc" target="_blank" rel="external">ARSessionConfiguration</a>提供了简单的运动追踪来许可较少的AR体验。为了允许一个AR会话，使用一个你指定的选项来创建一个会话配置对象，之后在你的<a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a>或<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>实例的<a href="https://developer.apple.com/documentation/arkit/arscnview/2865796-session?language=objc" target="_blank" rel="external">session</a>对象上调用<a href="https://developer.apple.com/documentation/arkit/arsession/2875735-runwithconfiguration?language=objc" target="_blank" rel="external">runWithConfiguration:options:</a>方法。</p>
+<pre><code>override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
 
+    // Create a session configuration
+    let configuration = ARWorldTrackingConfiguation()
+    configuration.planeDetection = .horizontal
+
+    // Run the view&apos;s session
+    sceneView.session.run(configuration)
+}
+</code></pre><blockquote>
+<p>注意</p>
+<p>只有视图将要显示在屏幕上时再运行你的会话。</p>
+</blockquote>
+<p>在你已经设置好你的会话对象后，在视图中使用SceneKit或SpriteKit来放置虚拟内容。</p>
+<hr>
+<h2 id="话题"><a href="#话题" class="headerlink" title="话题"></a>话题</h2><h3 id="下一步"><a href="#下一步" class="headerlink" title="下一步"></a>下一步</h3><h6 id="使用SceneKit提供3D虚拟内容"><a href="#使用SceneKit提供3D虚拟内容" class="headerlink" title="使用SceneKit提供3D虚拟内容"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/providing_3d_virtual_content_with_scenekit?language=objc" target="_blank" rel="external">使用SceneKit提供3D虚拟内容</a></h6><pre><code>在AR体验中，使用SceneKit添加逼真的3D对象
+</code></pre><h6 id="使用SpriteKit提供2D虚拟内容"><a href="#使用SpriteKit提供2D虚拟内容" class="headerlink" title="使用SpriteKit提供2D虚拟内容"></a><a href="https://developer.apple.com/documentation/arkit/arskview/providing_2d_virtual_content_with_spritekit?language=objc" target="_blank" rel="external">使用SpriteKit提供2D虚拟内容</a></h6><pre><code>在AR体验中，使用SpriteKit在3D空间中放置2D图片
+</code></pre><h2 id="仍需查看"><a href="#仍需查看" class="headerlink" title="仍需查看"></a>仍需查看</h2><h3 id="基本视图"><a href="#基本视图" class="headerlink" title="基本视图"></a>基本视图</h3><h6 id="ARSCNView"><a href="#ARSCNView" class="headerlink" title="ARSCNView"></a><a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a></h6><pre><code>在AR体验中，使用3D的SceneKit内容来增强相机视图的一种视图。
+</code></pre><h6 id="ARSKView"><a href="#ARSKView" class="headerlink" title="ARSKView"></a><a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a></h6><pre><code>在AR体验中，使用2D的SpriteKit内容来增强相机视图的一种视图。
+</code></pre>
       
 
       
