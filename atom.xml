@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-07-03T04:49:47.000Z</updated>
+  <updated>2017-07-03T04:53:46.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/07/03/ARKit_doc_3/"/>
     <id>http://yoursite.com/2017/07/03/ARKit_doc_3/</id>
     <published>2017-07-03T03:41:38.000Z</published>
-    <updated>2017-07-03T04:49:47.000Z</updated>
+    <updated>2017-07-03T04:53:46.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="ARKit文档瞎翻译（3）"><a href="#ARKit文档瞎翻译（3）" class="headerlink" title="ARKit文档瞎翻译（3）"></a>ARKit文档瞎翻译（3）</h1><p><a href="https://developer.apple.com/documentation/arkit/understanding_augmented_reality" target="_blank" rel="external">原文请戳</a></p>
 <h2 id="理解AR"><a href="#理解AR" class="headerlink" title="理解AR"></a>理解AR</h2><h6 id="探索概念、特性和最棒的实践来创建伟大的AR体验。"><a href="#探索概念、特性和最棒的实践来创建伟大的AR体验。" class="headerlink" title="探索概念、特性和最棒的实践来创建伟大的AR体验。"></a>探索概念、特性和最棒的实践来创建伟大的AR体验。</h6><hr>
@@ -39,8 +39,8 @@
     
     </summary>
     
-      <category term="学习笔记" scheme="http://yoursite.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
+      <category term="学习笔记" scheme="http://yoursite.com/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
@@ -49,7 +49,7 @@
     <link href="http://yoursite.com/2017/06/29/ARKit_doc_2/"/>
     <id>http://yoursite.com/2017/06/29/ARKit_doc_2/</id>
     <published>2017-06-29T08:19:03.000Z</published>
-    <updated>2017-06-29T09:48:20.000Z</updated>
+    <updated>2017-07-03T04:53:41.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="ARKit文档瞎翻译（2）"><a href="#ARKit文档瞎翻译（2）" class="headerlink" title="ARKit文档瞎翻译（2）"></a>ARKit文档瞎翻译（2）</h1><p><a href="https://developer.apple.com/documentation/arkit" target="_blank" rel="external">原文请戳</a></p>
 <h2 id="ARKit"><a href="#ARKit" class="headerlink" title="ARKit"></a>ARKit</h2><h6 id="在你的app或游戏中结合iOS的设备相机和运动感应器来产生增强现实的体验。"><a href="#在你的app或游戏中结合iOS的设备相机和运动感应器来产生增强现实的体验。" class="headerlink" title="在你的app或游戏中结合iOS的设备相机和运动感应器来产生增强现实的体验。"></a>在你的app或游戏中结合iOS的设备相机和运动感应器来产生增强现实的体验。</h6><hr>
@@ -67,8 +67,8 @@
     
     </summary>
     
-      <category term="学习笔记" scheme="http://yoursite.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
+      <category term="学习笔记" scheme="http://yoursite.com/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
@@ -77,7 +77,7 @@
     <link href="http://yoursite.com/2017/06/29/ARKit_doc_1/"/>
     <id>http://yoursite.com/2017/06/29/ARKit_doc_1/</id>
     <published>2017-06-29T07:37:05.000Z</published>
-    <updated>2017-06-29T08:17:27.000Z</updated>
+    <updated>2017-07-03T04:53:57.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="ARKit文档瞎翻译（1）"><a href="#ARKit文档瞎翻译（1）" class="headerlink" title="ARKit文档瞎翻译（1）"></a>ARKit文档瞎翻译（1）</h1><p><a href="https://developer.apple.com/arkit/" target="_blank" rel="external">看不下去就戳真相地址</a></p>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="虚拟内部测量（VIO）"><a href="#虚拟内部测量（VIO）" class="headerlink" title="虚拟内部测量（VIO）"></a>虚拟内部测量（VIO）</h3><p>ARKit使用VIO系统来精确测量整个世界。VIO把相机传感器的数据和CoreMotion数据引入到一起。这两方面输入允许设备来感知如何高精度地在空间中移动，且不需要任何额外校准。</p>
@@ -91,8 +91,8 @@
     
     </summary>
     
-      <category term="学习笔记" scheme="http://yoursite.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
+      <category term="学习笔记" scheme="http://yoursite.com/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
