@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-07-03T08:20:33.000Z</updated>
+  <updated>2017-07-03T08:31:31.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,11 +16,35 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>ARKit文档瞎翻译（5）</title>
+    <link href="http://yoursite.com/2017/07/03/ARKit_doc_5/"/>
+    <id>http://yoursite.com/2017/07/03/ARKit_doc_5/</id>
+    <published>2017-07-03T08:27:40.000Z</published>
+    <updated>2017-07-03T08:31:31.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">原文请戳</a></p>
+<h1 id="创建一个基本的AR体验"><a href="#创建一个基本的AR体验" class="headerlink" title="创建一个基本的AR体验"></a>创建一个基本的AR体验</h1><p>配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容</p>
+<hr>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>当你使用<a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSSNView</a>或<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>类，ARKit会自动</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;a href=&quot;https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;原文请
+    
+    </summary>
+    
+    
+      <category term="学习笔记" scheme="http://yoursite.com/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
     <title>ARKit文档瞎翻译（4）</title>
-    <link href="http://yoursite.com/2017/07/03/ARit_doc_4/"/>
-    <id>http://yoursite.com/2017/07/03/ARit_doc_4/</id>
+    <link href="http://yoursite.com/2017/07/03/ARKit_doc_4/"/>
+    <id>http://yoursite.com/2017/07/03/ARKit_doc_4/</id>
     <published>2017-07-03T06:49:35.000Z</published>
-    <updated>2017-07-03T08:20:33.000Z</updated>
+    <updated>2017-07-03T08:25:20.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="ARKit文档瞎翻译（4）"><a href="#ARKit文档瞎翻译（4）" class="headerlink" title="ARKit文档瞎翻译（4）"></a>ARKit文档瞎翻译（4）</h1><p><a href="https://developer.apple.com/documentation/arkit/arsession?language=objc" target="_blank" rel="external">原文请戳</a></p>
 <h2 id="ARSession"><a href="#ARSession" class="headerlink" title="ARSession"></a>ARSession</h2><p>一个处理AR中设备相机和运动过程的共享对象。</p>
@@ -41,8 +65,7 @@
 </code></pre><h3 id="显示并与AR内容进行交互"><a href="#显示并与AR内容进行交互" class="headerlink" title="显示并与AR内容进行交互"></a>显示并与AR内容进行交互</h3><h6 id="currentFrame"><a href="#currentFrame" class="headerlink" title="currentFrame"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865621-currentframe?language=objc" target="_blank" rel="external">currentFrame</a></h6><pre><code>视频帧图像，带有相关的AR场景信息，是会话对象最近捕获的
 </code></pre><h6 id="addAnchor"><a href="#addAnchor" class="headerlink" title="- addAnchor:"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865612-addanchor?language=objc" target="_blank" rel="external">- addAnchor:</a></h6><pre><code>添加可以被会话对象追踪的指定锚点
 </code></pre><h6 id="removeAnchor"><a href="#removeAnchor" class="headerlink" title="- removeAnchor:"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865607-removeanchor?language=objc" target="_blank" rel="external">- removeAnchor:</a></h6><pre><code>移除可以被会话对象追踪的指定锚点
-</code></pre><h3 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h3><h6 id="runWithConfiguration"><a href="#runWithConfiguration" class="headerlink" title="- runWithConfiguration:"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865608-runwithconfiguration?language=objc" target="_blank" rel="external">- runWithConfiguration:</a></h6><h2 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h2><h6 id="继承自"><a href="#继承自" class="headerlink" title="继承自"></a>继承自</h6><p><a href="https://developer.apple.com/documentation/objectivec/nsobject?language=objc" target="_blank" rel="external">NSObject</a></p>
-]]></content>
+</code></pre><h3 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h3><h6 id="runWithConfiguration"><a href="#runWithConfiguration" class="headerlink" title="- runWithConfiguration:"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865608-runwithconfiguration?language=objc" target="_blank" rel="external">- runWithConfiguration:</a></h6><h2 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h2><h6 id="继承自-NSObject"><a href="#继承自-NSObject" class="headerlink" title="继承自        NSObject"></a>继承自        <a href="https://developer.apple.com/documentation/objectivec/nsobject?language=objc" target="_blank" rel="external">NSObject</a></h6>]]></content>
     
     <summary type="html">
     
