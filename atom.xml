@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-07-03T09:19:47.000Z</updated>
+  <updated>2017-07-03T14:51:39.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,11 +16,53 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>ARKit文档瞎翻译（6）</title>
+    <link href="http://yoursite.com/2017/07/03/ARKit_doc_6/"/>
+    <id>http://yoursite.com/2017/07/03/ARKit_doc_6/</id>
+    <published>2017-07-03T14:06:55.000Z</published>
+    <updated>2017-07-03T14:51:39.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://developer.apple.com/documentation/arkit/arskview/providing_2d_virtual_content_with_spritekit?language=objc" target="_blank" rel="external">原文请戳</a></p>
+<h1 id="使用SpriteKit提供2D内容"><a href="#使用SpriteKit提供2D内容" class="headerlink" title="使用SpriteKit提供2D内容"></a>使用SpriteKit提供2D内容</h1><p>在AR体验中，使用SpriteKit在3D空间中放置2D图片</p>
+<hr>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在AR中放置SpriteKit内容，你首先需要一个运行中的AR会话对象（参考<a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">创建一个基本的AR体验</a>）。</p>
+<p>SpriteKit是内置的2D虚拟内容，但是AR需要的是真实世界的3D空间。使用<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>类通过提供2D精灵（<a href="https://developer.apple.com/documentation/spritekit/sknode?language=objc" target="_blank" rel="external">SKNode</a>对象）相当于真实世界的3D位置（<a href="https://developer.apple.com/documentation/arkit/aranchor?language=objc" target="_blank" rel="external">ARAnchor</a>对象）来创建AR体验。当使用者移动设备，与锚点相似，视图会自动旋转并且缩放SpriteKit节点，以至于他们在相机中看起来就像是在真实世界中一样可以追踪。</p>
+<p>举例来说，你可以放置2D图片就像是漂浮在3D空间中：</p>
+<pre><code>// 创建一个在相机前面0.2米的平移变换
+var translation = matrix_identity_float4x4
+translation.column.3.z = -0.2
+let transform = simd_mul(view.session.currentFrame.camera.transform, translation)
+
+//在会话对象上添加一个新锚点
+let anchor = ARAnchor(transform: transform)
+view.session.add(anchor: anchor)
+
+//（其他的什么...）提供一个标签结点来代表锚点
+func view(_ view: ARSKView, nodeFor anchor: ARAnchor) -&gt; SKNode? {
+    return SKLabelNode(text: &quot;👾&quot;)
+}
+</code></pre><p>上面中<a href="https://developer.apple.com/documentation/arkit/arskviewdelegate/2865596-view?language=objc" target="_blank" rel="external">view:nodeForAnchor:</a>方法返回一个<a href="https://developer.apple.com/documentation/spritekit/sklabelnode?language=objc" target="_blank" rel="external">SKLabelNode</a>对象，它可以显示一个文字标签。像大多数的SpriteKit节点一样，这个类创建了一个2D的虚拟替代物，所以<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>类展现节点用一种广告牌的方式：精灵缩放并且旋转（沿着它的z轴）以至于它看起来就像是跟随着3D位置中的锚点一样，但是总是朝向着相机。</p>
+<hr>
+<h2 id="另请参阅"><a href="#另请参阅" class="headerlink" title="另请参阅"></a>另请参阅</h2><h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><h6 id="session"><a href="#session" class="headerlink" title="session"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2865589-session?language=objc" target="_blank" rel="external">session</a></h6><pre><code>在视图内容中管理着运动追踪和相机图像处理的AR会话对象
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;a href=&quot;https://developer.apple.com/documentation/arkit/arskview/providing_2d_virtual_content_with_spritekit?language=objc&quot; target=&quot;_bla
+    
+    </summary>
+    
+    
+      <category term="学习笔记" scheme="http://yoursite.com/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
     <title>ARKit文档瞎翻译（5）</title>
     <link href="http://yoursite.com/2017/07/03/ARKit_doc_5/"/>
     <id>http://yoursite.com/2017/07/03/ARKit_doc_5/</id>
     <published>2017-07-03T08:27:40.000Z</published>
-    <updated>2017-07-03T09:19:47.000Z</updated>
+    <updated>2017-07-03T14:52:16.000Z</updated>
     
     <content type="html"><![CDATA[<p><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">原文请戳</a></p>
 <h1 id="创建一个基本的AR体验"><a href="#创建一个基本的AR体验" class="headerlink" title="创建一个基本的AR体验"></a>创建一个基本的AR体验</h1><p>配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容</p>
@@ -51,7 +93,7 @@
 <hr>
 <h2 id="话题"><a href="#话题" class="headerlink" title="话题"></a>话题</h2><h3 id="下一步"><a href="#下一步" class="headerlink" title="下一步"></a>下一步</h3><h6 id="使用SceneKit提供3D虚拟内容"><a href="#使用SceneKit提供3D虚拟内容" class="headerlink" title="使用SceneKit提供3D虚拟内容"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/providing_3d_virtual_content_with_scenekit?language=objc" target="_blank" rel="external">使用SceneKit提供3D虚拟内容</a></h6><pre><code>在AR体验中，使用SceneKit添加逼真的3D对象
 </code></pre><h6 id="使用SpriteKit提供2D虚拟内容"><a href="#使用SpriteKit提供2D虚拟内容" class="headerlink" title="使用SpriteKit提供2D虚拟内容"></a><a href="https://developer.apple.com/documentation/arkit/arskview/providing_2d_virtual_content_with_spritekit?language=objc" target="_blank" rel="external">使用SpriteKit提供2D虚拟内容</a></h6><pre><code>在AR体验中，使用SpriteKit在3D空间中放置2D图片
-</code></pre><h2 id="仍需查看"><a href="#仍需查看" class="headerlink" title="仍需查看"></a>仍需查看</h2><h3 id="基本视图"><a href="#基本视图" class="headerlink" title="基本视图"></a>基本视图</h3><h6 id="ARSCNView"><a href="#ARSCNView" class="headerlink" title="ARSCNView"></a><a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a></h6><pre><code>在AR体验中，使用3D的SceneKit内容来增强相机视图的一种视图。
+</code></pre><h2 id="另请参阅"><a href="#另请参阅" class="headerlink" title="另请参阅"></a>另请参阅</h2><h3 id="基本视图"><a href="#基本视图" class="headerlink" title="基本视图"></a>基本视图</h3><h6 id="ARSCNView"><a href="#ARSCNView" class="headerlink" title="ARSCNView"></a><a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a></h6><pre><code>在AR体验中，使用3D的SceneKit内容来增强相机视图的一种视图。
 </code></pre><h6 id="ARSKView"><a href="#ARSKView" class="headerlink" title="ARSKView"></a><a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a></h6><pre><code>在AR体验中，使用2D的SpriteKit内容来增强相机视图的一种视图。
 </code></pre>]]></content>
     
@@ -110,7 +152,7 @@
     <link href="http://yoursite.com/2017/07/03/ARKit_doc_3/"/>
     <id>http://yoursite.com/2017/07/03/ARKit_doc_3/</id>
     <published>2017-07-03T03:41:38.000Z</published>
-    <updated>2017-07-03T04:53:46.000Z</updated>
+    <updated>2017-07-03T14:52:44.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="ARKit文档瞎翻译（3）"><a href="#ARKit文档瞎翻译（3）" class="headerlink" title="ARKit文档瞎翻译（3）"></a>ARKit文档瞎翻译（3）</h1><p><a href="https://developer.apple.com/documentation/arkit/understanding_augmented_reality" target="_blank" rel="external">原文请戳</a></p>
 <h2 id="理解AR"><a href="#理解AR" class="headerlink" title="理解AR"></a>理解AR</h2><h6 id="探索概念、特性和最棒的实践来创建伟大的AR体验。"><a href="#探索概念、特性和最棒的实践来创建伟大的AR体验。" class="headerlink" title="探索概念、特性和最棒的实践来创建伟大的AR体验。"></a>探索概念、特性和最棒的实践来创建伟大的AR体验。</h6><hr>
@@ -121,7 +163,7 @@
 <p><strong>利用可预测的光照条件来设计AR。</strong>世界追踪需要图像识别，即需要清晰地图像。当相机不能看清细节，比如当相机对着一扇白墙或场景较暗时，追踪的质量会降低。</p>
 <p><strong>使用有效的追踪信息来提供给用户反馈。</strong>世界追踪把图像识别和设备运动结合到了一起。ARKit开发出了对场景更好的理解能力，如当设备正在移动，甚至是很微小的偏移。过重的运动（如过远、过快或者剧烈的摇动）会导致在视频帧间产生模糊的图像或过大的追踪距离，从而降低了追踪质量。<a href="https://developer.apple.com/documentation/arkit/arcamera" target="_blank" rel="external">ARCamera</a>类提供了追踪状态原因信息，使用它你可以开发出告知用户如何处理低质量追踪环境的UI界面。</p>
 <p><strong>为产生清晰的结果允许花费一些时间来进行物体检测，并且当你得到需要的结果后关闭检测。</strong>物体检测的结果会多次改变–当物体第一次被探测到时，它的位置和大小可能是不准确的。只要该物体还持续地呆在场景之中，ARKit就会抽象出估测的位置和大小。一旦在场景中有一个大的水平面存在时，在你已经使用该物体并放置内容后，ARKit就会持续改变该物体的锚点位置、大小和变化。</p>
-<h2 id="仍需查看"><a href="#仍需查看" class="headerlink" title="仍需查看"></a>仍需查看</h2><h4 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h4><h6 id="class-ARSession"><a href="#class-ARSession" class="headerlink" title="class ARSession"></a>class <a href="https://developer.apple.com/documentation/arkit/arsession" target="_blank" rel="external">ARSession</a></h6><h6 id="一个共享对象，负责管理AR中的设备相机和运动处理的需求。"><a href="#一个共享对象，负责管理AR中的设备相机和运动处理的需求。" class="headerlink" title="一个共享对象，负责管理AR中的设备相机和运动处理的需求。"></a>一个共享对象，负责管理AR中的设备相机和运动处理的需求。</h6><h4 id="相关文档"><a href="#相关文档" class="headerlink" title="相关文档"></a>相关文档</h4><h6 id="创建基本的AR体验"><a href="#创建基本的AR体验" class="headerlink" title="创建基本的AR体验"></a><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience" target="_blank" rel="external"><em>创建基本的AR体验</em></a></h6><h6 id="配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容"><a href="#配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容" class="headerlink" title="配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容"></a>配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容</h6>]]></content>
+<h2 id="另请参阅"><a href="#另请参阅" class="headerlink" title="另请参阅"></a>另请参阅</h2><h4 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h4><h6 id="class-ARSession"><a href="#class-ARSession" class="headerlink" title="class ARSession"></a>class <a href="https://developer.apple.com/documentation/arkit/arsession" target="_blank" rel="external">ARSession</a></h6><h6 id="一个共享对象，负责管理AR中的设备相机和运动处理的需求。"><a href="#一个共享对象，负责管理AR中的设备相机和运动处理的需求。" class="headerlink" title="一个共享对象，负责管理AR中的设备相机和运动处理的需求。"></a>一个共享对象，负责管理AR中的设备相机和运动处理的需求。</h6><h4 id="相关文档"><a href="#相关文档" class="headerlink" title="相关文档"></a>相关文档</h4><h6 id="创建基本的AR体验"><a href="#创建基本的AR体验" class="headerlink" title="创建基本的AR体验"></a><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience" target="_blank" rel="external"><em>创建基本的AR体验</em></a></h6><h6 id="配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容"><a href="#配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容" class="headerlink" title="配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容"></a>配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容</h6>]]></content>
     
     <summary type="html">
     

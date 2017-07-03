@@ -6,17 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>臭吉吉的瞎记空间</title>
+  <title>ARKit文档瞎翻译（6） | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="督促自己好好学习哦~">
-<meta property="og:type" content="website">
-<meta property="og:title" content="臭吉吉的瞎记空间">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="原文请戳 使用SpriteKit提供2D内容在AR体验中，使用SpriteKit在3D空间中放置2D图片  概述在AR中放置SpriteKit内容，你首先需要一个运行中的AR会话对象（参考创建一个基本的AR体验）。 SpriteKit是内置的2D虚拟内容，但是AR需要的是真实世界的3D空间。使用ARSKView类通过提供2D精灵（SKNode对象）相当于真实世界的3D位置（ARAnchor对象）来">
+<meta name="keywords" content="学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ARKit文档瞎翻译（6）">
+<meta property="og:url" content="http://yoursite.com/2017/07/03/ARKit_doc_6/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="督促自己好好学习哦~">
+<meta property="og:description" content="原文请戳 使用SpriteKit提供2D内容在AR体验中，使用SpriteKit在3D空间中放置2D图片  概述在AR中放置SpriteKit内容，你首先需要一个运行中的AR会话对象（参考创建一个基本的AR体验）。 SpriteKit是内置的2D虚拟内容，但是AR需要的是真实世界的3D空间。使用ARSKView类通过提供2D精灵（SKNode对象）相当于真实世界的3D位置（ARAnchor对象）来">
+<meta property="og:updated_time" content="2017-07-03T14:51:39.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="臭吉吉的瞎记空间">
-<meta name="twitter:description" content="督促自己好好学习哦~">
+<meta name="twitter:title" content="ARKit文档瞎翻译（6）">
+<meta name="twitter:description" content="原文请戳 使用SpriteKit提供2D内容在AR体验中，使用SpriteKit在3D空间中放置2D图片  概述在AR中放置SpriteKit内容，你首先需要一个运行中的AR会话对象（参考创建一个基本的AR体验）。 SpriteKit是内置的2D虚拟内容，但是AR需要的是真实世界的3D空间。使用ARSKView类通过提供2D精灵（SKNode对象）相当于真实世界的3D位置（ARAnchor对象）来">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -154,16 +156,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-ARKit_doc_6" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-ARKit_doc_6" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/03/ARKit_doc_6/">ARKit文档瞎翻译（6）</a>
+    <h1 class="article-title" itemprop="name">
+      ARKit文档瞎翻译（6）
     </h1>
   
 
@@ -220,504 +220,85 @@ func view(_ view: ARSKView, nodeFor anchor: ARAnchor) -&gt; SKNode? {
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/03/ARKit_doc_6/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/07/03/ARKit_doc_6/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
 
-
-
-
-
   
-    <article id="post-ARKit_doc_5" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/03/ARKit_doc_5/">ARKit文档瞎翻译（5）</a>
-    </h1>
   
-
-        
-        <a href="/2017/07/03/ARKit_doc_5/" class="archive-article-date">
-  	<time datetime="2017-07-03T08:27:40.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">原文请戳</a></p>
-<h1 id="创建一个基本的AR体验"><a href="#创建一个基本的AR体验" class="headerlink" title="创建一个基本的AR体验"></a>创建一个基本的AR体验</h1><p>配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容</p>
-<hr>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>当你使用<a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSSNView</a>或<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>类，ARKit会自动处理创建AR体验中的基本需求：每个视图都显示了一个以实时相机视图作为背景并且渲染了一个你提供的2D或3D覆盖层来创建那个真实世界中的幻想内容。使用其中一个类，你需要配置你想要创建的AR体验的种类，并且为你的覆盖层内容选择位置和代表。</p>
-<p>若使用自己的视图来创建AR体验，请看<a href="https://developer.apple.com/documentation/arkit/displaying_an_ar_experience_with_metal?language=objc" target="_blank" rel="external">使用Metal来展示AR体验</a>。</p>
-<blockquote>
-<p>备注：<br>这篇文章覆盖了在XCode工程模板中的代码。想要查看完整示例代码，使用AR模板创建一个新的iOS工程，并且在内容技术弹出菜单中选择SceneKit或SpriteKit。</p>
-</blockquote>
-<h2 id="配置并运行AR会话"><a href="#配置并运行AR会话" class="headerlink" title="配置并运行AR会话"></a>配置并运行AR会话</h2><p><a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a>和<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>类都包含了一个在创建AR体验中负责运动追踪和图像处理的<a href="https://developer.apple.com/documentation/arkit/arsession?language=objc" target="_blank" rel="external">ARSession</a>对象。可是，为了能够运行这个会话，你必须要提供一个会话配置。</p>
-<p><img src="https://docs-assets.developer.apple.com/published/ffb3831f78/50bedfc6-93ce-400c-a41d-35728e32d653.png" alt="关系图"></p>
-<p><a href="https://developer.apple.com/documentation/arkit/arworldtrackingsessionconfiguration?language=objc" target="_blank" rel="external">ARWorldTrackingSessionConfiguration</a>类提供了更高精度的运动追踪并且开放了一些特性来帮助你放置虚拟内容到真实世界的平面上。在世界追踪不可用的情况下，基本类<a href="https://developer.apple.com/documentation/arkit/arsessionconfiguration?language=objc" target="_blank" rel="external">ARSessionConfiguration</a>提供了简单的运动追踪来许可较少的AR体验。为了允许一个AR会话，使用一个你指定的选项来创建一个会话配置对象，之后在你的<a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a>或<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>实例的<a href="https://developer.apple.com/documentation/arkit/arscnview/2865796-session?language=objc" target="_blank" rel="external">session</a>对象上调用<a href="https://developer.apple.com/documentation/arkit/arsession/2875735-runwithconfiguration?language=objc" target="_blank" rel="external">runWithConfiguration:options:</a>方法。</p>
-<pre><code>override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-
-    // Create a session configuration
-    let configuration = ARWorldTrackingConfiguation()
-    configuration.planeDetection = .horizontal
-
-    // Run the view&apos;s session
-    sceneView.session.run(configuration)
-}
-</code></pre><blockquote>
-<p>注意</p>
-<p>只有视图将要显示在屏幕上时再运行你的会话。</p>
-</blockquote>
-<p>在你已经设置好你的会话对象后，在视图中使用SceneKit或SpriteKit来放置虚拟内容。</p>
-<hr>
-<h2 id="话题"><a href="#话题" class="headerlink" title="话题"></a>话题</h2><h3 id="下一步"><a href="#下一步" class="headerlink" title="下一步"></a>下一步</h3><h6 id="使用SceneKit提供3D虚拟内容"><a href="#使用SceneKit提供3D虚拟内容" class="headerlink" title="使用SceneKit提供3D虚拟内容"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/providing_3d_virtual_content_with_scenekit?language=objc" target="_blank" rel="external">使用SceneKit提供3D虚拟内容</a></h6><pre><code>在AR体验中，使用SceneKit添加逼真的3D对象
-</code></pre><h6 id="使用SpriteKit提供2D虚拟内容"><a href="#使用SpriteKit提供2D虚拟内容" class="headerlink" title="使用SpriteKit提供2D虚拟内容"></a><a href="https://developer.apple.com/documentation/arkit/arskview/providing_2d_virtual_content_with_spritekit?language=objc" target="_blank" rel="external">使用SpriteKit提供2D虚拟内容</a></h6><pre><code>在AR体验中，使用SpriteKit在3D空间中放置2D图片
-</code></pre><h2 id="另请参阅"><a href="#另请参阅" class="headerlink" title="另请参阅"></a>另请参阅</h2><h3 id="基本视图"><a href="#基本视图" class="headerlink" title="基本视图"></a>基本视图</h3><h6 id="ARSCNView"><a href="#ARSCNView" class="headerlink" title="ARSCNView"></a><a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a></h6><pre><code>在AR体验中，使用3D的SceneKit内容来增强相机视图的一种视图。
-</code></pre><h6 id="ARSKView"><a href="#ARSKView" class="headerlink" title="ARSKView"></a><a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a></h6><pre><code>在AR体验中，使用2D的SpriteKit内容来增强相机视图的一种视图。
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/03/ARKit_doc_5/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
+    <a href="/2017/07/03/ARKit_doc_5/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">ARKit文档瞎翻译（5）</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
 
 
 
 
 
   
-    <article id="post-ARKit_doc_4" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/03/ARKit_doc_4/">ARKit文档瞎翻译（4）</a>
-    </h1>
   
 
-        
-        <a href="/2017/07/03/ARKit_doc_4/" class="archive-article-date">
-  	<time datetime="2017-07-03T06:49:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="ARKit文档瞎翻译（4）"><a href="#ARKit文档瞎翻译（4）" class="headerlink" title="ARKit文档瞎翻译（4）"></a>ARKit文档瞎翻译（4）</h1><p><a href="https://developer.apple.com/documentation/arkit/arsession?language=objc" target="_blank" rel="external">原文请戳</a></p>
-<h2 id="ARSession"><a href="#ARSession" class="headerlink" title="ARSession"></a>ARSession</h2><p>一个处理AR中设备相机和运动过程的共享对象。</p>
-<hr>
-<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>一个ARSession对象整合了在ARKit中以你自己的方式创建AR的主要过程。这个过程包括从设备运动传感器读取数据、控制设备相机和在截取的相机图片中进行图像识别。这个会话整合了所有这些结果来创建一个在设备所在的真实世界和你模拟AR内容的虚拟空间所组成的镜像世界。</p>
-<p>使用ARKit创建的每一个AR体验都需要一个单独的ARSession对象。如果你使用一个<a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a>或<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>对象来简易地创建AR中的视觉部分，那么视图对象便已经包含了一个ARSession实例。如果你用自己的渲染器来创建AR内容，你就需要自己实例化并维护一个ARSession对象了。</p>
-<p>运行一个会话需要一个会话配置：<a href="https://developer.apple.com/documentation/arkit/arsessionconfiguration?language=objc" target="_blank" rel="external">ARSessionConfiguration</a>类或其子类<a href="https://developer.apple.com/documentation/arkit/arworldtrackingsessionconfiguration?language=objc" target="_blank" rel="external">ARWorldTrackingSessionConfiguration</a>类的实例。这些类决定了ARKit如何追踪一个设备相对真实世界的位置和运动，并且影响了你能创建的AR体验的种类。</p>
-<h3 id="话题"><a href="#话题" class="headerlink" title="话题"></a>话题</h3><h4 id="配置并运行一个会话"><a href="#配置并运行一个会话" class="headerlink" title="配置并运行一个会话"></a>配置并运行一个会话</h4><h6 id="runWithConfiguration-options"><a href="#runWithConfiguration-options" class="headerlink" title="- runWithConfiguration:options:"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2875735-runwithconfiguration?language=objc" target="_blank" rel="external">- runWithConfiguration:options:</a></h6><pre><code>为会话使用指定配置和设置来启动一个AR过程
-</code></pre><blockquote>
-<p><a href="https://developer.apple.com/documentation/arkit/arsessionrunoptions?language=objc" target="_blank" rel="external">ARSessionRunOptions</a><br>当你改变配置时，此选项影响了如何改变一个ARSession当前状态。</p>
-<p><a href="https://developer.apple.com/documentation/arkit/arsession/2865609-configuration?language=objc" target="_blank" rel="external">configuration</a><br>会话中一个定义了运动和场景追踪行为的对象。</p>
-</blockquote>
-<h6 id="pause"><a href="#pause" class="headerlink" title="- pause"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865619-pause?language=objc" target="_blank" rel="external">- pause</a></h6><pre><code>暂停处理会话
-</code></pre><h4 id="负责AR更新"><a href="#负责AR更新" class="headerlink" title="负责AR更新"></a>负责AR更新</h4><h6 id="delegate"><a href="#delegate" class="headerlink" title="delegate"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865614-delegate?language=objc" target="_blank" rel="external">delegate</a></h6><pre><code>一个你提供的对象来接收捕获的视频图像和追踪信息，或者为会话中的状态改变进行回应处理。
-</code></pre><h6 id="delegateQueue"><a href="#delegateQueue" class="headerlink" title="delegateQueue"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2875726-delegatequeue?language=objc" target="_blank" rel="external">delegateQueue</a></h6><pre><code>会话调用你的一系列代理方法的派发队列
-</code></pre><h6 id="ARSessionDelegate"><a href="#ARSessionDelegate" class="headerlink" title="ARSessionDelegate"></a><a href="https://developer.apple.com/documentation/arkit/arsessiondelegate?language=objc" target="_blank" rel="external">ARSessionDelegate</a></h6><pre><code>在AR会话中你可以实现的一些方法来接收捕获的视频帧图像和处理追踪状态。
-</code></pre><h6 id="ARSessionObserver"><a href="#ARSessionObserver" class="headerlink" title="ARSessionObserver"></a><a href="https://developer.apple.com/documentation/arkit/arsessionobserver?language=objc" target="_blank" rel="external">ARSessionObserver</a></h6><pre><code>在AR会话中你可以实现的一些方法来对状态的改变进行回应。
-</code></pre><h3 id="显示并与AR内容进行交互"><a href="#显示并与AR内容进行交互" class="headerlink" title="显示并与AR内容进行交互"></a>显示并与AR内容进行交互</h3><h6 id="currentFrame"><a href="#currentFrame" class="headerlink" title="currentFrame"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865621-currentframe?language=objc" target="_blank" rel="external">currentFrame</a></h6><pre><code>视频帧图像，带有相关的AR场景信息，是会话对象最近捕获的
-</code></pre><h6 id="addAnchor"><a href="#addAnchor" class="headerlink" title="- addAnchor:"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865612-addanchor?language=objc" target="_blank" rel="external">- addAnchor:</a></h6><pre><code>添加可以被会话对象追踪的指定锚点
-</code></pre><h6 id="removeAnchor"><a href="#removeAnchor" class="headerlink" title="- removeAnchor:"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865607-removeanchor?language=objc" target="_blank" rel="external">- removeAnchor:</a></h6><pre><code>移除可以被会话对象追踪的指定锚点
-</code></pre><h3 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h3><h6 id="runWithConfiguration"><a href="#runWithConfiguration" class="headerlink" title="- runWithConfiguration:"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865608-runwithconfiguration?language=objc" target="_blank" rel="external">- runWithConfiguration:</a></h6><h2 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h2><h6 id="继承自-NSObject"><a href="#继承自-NSObject" class="headerlink" title="继承自        NSObject"></a>继承自        <a href="https://developer.apple.com/documentation/objectivec/nsobject?language=objc" target="_blank" rel="external">NSObject</a></h6>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/03/ARKit_doc_4/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-ARKit_doc_3" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/03/ARKit_doc_3/">ARKit文档瞎翻译（3）</a>
-    </h1>
   
 
-        
-        <a href="/2017/07/03/ARKit_doc_3/" class="archive-article-date">
-  	<time datetime="2017-07-03T03:41:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="ARKit文档瞎翻译（3）"><a href="#ARKit文档瞎翻译（3）" class="headerlink" title="ARKit文档瞎翻译（3）"></a>ARKit文档瞎翻译（3）</h1><p><a href="https://developer.apple.com/documentation/arkit/understanding_augmented_reality" target="_blank" rel="external">原文请戳</a></p>
-<h2 id="理解AR"><a href="#理解AR" class="headerlink" title="理解AR"></a>理解AR</h2><h6 id="探索概念、特性和最棒的实践来创建伟大的AR体验。"><a href="#探索概念、特性和最棒的实践来创建伟大的AR体验。" class="headerlink" title="探索概念、特性和最棒的实践来创建伟大的AR体验。"></a>探索概念、特性和最棒的实践来创建伟大的AR体验。</h6><hr>
-<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p><img src="https://docs-assets.developer.apple.com/published/b99f86dcfb/75ae3206-121a-47ed-9464-af0f322443cc.png" alt="demo图片1"></p>
-<p>对于AR来说，最基本的需求，即ARKit定义的特征，就是在用户生活的真实世界和放置虚拟物体的虚拟空间之间创建并保持一致的能力。当你的app把实时相机图像和虚拟物体结合在一起展示出来的时候，用户就会体验到了增强现实的魅力：幻想你的虚拟内容是真实世界的一部分。</p>
-<h3 id="世界追踪是如何工作的"><a href="#世界追踪是如何工作的" class="headerlink" title="世界追踪是如何工作的"></a>世界追踪是如何工作的</h3><p>为了在真实和虚拟空间中创建一个高度一致的世界，ARKit使用了一项叫做<em>visual-inertial odometry</em>的技术。这项技术可以将iOS的设备感应器和相机拍摄的场景进行的电脑视觉识别结合到一起。ARKit识别出场景图像中的显著特征，通过视频帧的这些特征追踪出位置上的不同点，并把这些信息同运动感应数据进行比较。最终就生成了一个带有设备位置和运动信息的高精度模型。</p>
-<h3 id="最好的实践和限制"><a href="#最好的实践和限制" class="headerlink" title="最好的实践和限制"></a>最好的实践和限制</h3><p>世界追踪是一项不太准确的技术。这项技术经常可以制作出令人惊叹的精准度，进而产生出AR体验。可是，它（即AR体验）的产生依赖设备物理环境的细致程度（物理环境并不总是很稳定或者一些很难估测到的不确定错误）。为了能够建立高质量的AR体验，注意以下警告和建议。</p>
-<p><strong>利用可预测的光照条件来设计AR。</strong>世界追踪需要图像识别，即需要清晰地图像。当相机不能看清细节，比如当相机对着一扇白墙或场景较暗时，追踪的质量会降低。</p>
-<p><strong>使用有效的追踪信息来提供给用户反馈。</strong>世界追踪把图像识别和设备运动结合到了一起。ARKit开发出了对场景更好的理解能力，如当设备正在移动，甚至是很微小的偏移。过重的运动（如过远、过快或者剧烈的摇动）会导致在视频帧间产生模糊的图像或过大的追踪距离，从而降低了追踪质量。<a href="https://developer.apple.com/documentation/arkit/arcamera" target="_blank" rel="external">ARCamera</a>类提供了追踪状态原因信息，使用它你可以开发出告知用户如何处理低质量追踪环境的UI界面。</p>
-<p><strong>为产生清晰的结果允许花费一些时间来进行物体检测，并且当你得到需要的结果后关闭检测。</strong>物体检测的结果会多次改变–当物体第一次被探测到时，它的位置和大小可能是不准确的。只要该物体还持续地呆在场景之中，ARKit就会抽象出估测的位置和大小。一旦在场景中有一个大的水平面存在时，在你已经使用该物体并放置内容后，ARKit就会持续改变该物体的锚点位置、大小和变化。</p>
-<h2 id="另请参阅"><a href="#另请参阅" class="headerlink" title="另请参阅"></a>另请参阅</h2><h4 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h4><h6 id="class-ARSession"><a href="#class-ARSession" class="headerlink" title="class ARSession"></a>class <a href="https://developer.apple.com/documentation/arkit/arsession" target="_blank" rel="external">ARSession</a></h6><h6 id="一个共享对象，负责管理AR中的设备相机和运动处理的需求。"><a href="#一个共享对象，负责管理AR中的设备相机和运动处理的需求。" class="headerlink" title="一个共享对象，负责管理AR中的设备相机和运动处理的需求。"></a>一个共享对象，负责管理AR中的设备相机和运动处理的需求。</h6><h4 id="相关文档"><a href="#相关文档" class="headerlink" title="相关文档"></a>相关文档</h4><h6 id="创建基本的AR体验"><a href="#创建基本的AR体验" class="headerlink" title="创建基本的AR体验"></a><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience" target="_blank" rel="external"><em>创建基本的AR体验</em></a></h6><h6 id="配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容"><a href="#配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容" class="headerlink" title="配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容"></a>配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容</h6>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/03/ARKit_doc_3/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-ARKit_doc_2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/29/ARKit_doc_2/">ARKit文档瞎翻译（2）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/29/ARKit_doc_2/" class="archive-article-date">
-  	<time datetime="2017-06-29T08:19:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="ARKit文档瞎翻译（2）"><a href="#ARKit文档瞎翻译（2）" class="headerlink" title="ARKit文档瞎翻译（2）"></a>ARKit文档瞎翻译（2）</h1><p><a href="https://developer.apple.com/documentation/arkit" target="_blank" rel="external">原文请戳</a></p>
-<h2 id="ARKit"><a href="#ARKit" class="headerlink" title="ARKit"></a>ARKit</h2><h6 id="在你的app或游戏中结合iOS的设备相机和运动感应器来产生增强现实的体验。"><a href="#在你的app或游戏中结合iOS的设备相机和运动感应器来产生增强现实的体验。" class="headerlink" title="在你的app或游戏中结合iOS的设备相机和运动感应器来产生增强现实的体验。"></a>在你的app或游戏中结合iOS的设备相机和运动感应器来产生增强现实的体验。</h6><hr>
-<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>增强现实（AR）描述了以一种在相机提供的现实视图中添加2D或3D元素并且使这些元素展现在现实世界中的用户体验。ARKit结合了设备的运动追踪、相机场景捕捉、高级场景处理和便捷地显示来简化创建AR任务的体验。</p>
-<blockquote>
-<p>注意：</p>
-<p>ARKit需要搭载A9或更高型号处理器的iOS设备。</p>
-<p>如果你的app只被允许在支持ARKit的设备上运行，请在Info.plist中的<a href="https://developer.apple.com/library/content/documentation/General/Reference/InfoPlistKeyReference/Articles/iPhoneOSKeys.html#//apple_ref/doc/uid/TP40009252-SW3" target="_blank" rel="external">UIRequiredDeviceCapabilities</a>组中添加arkit键值。如果AR是你app的第二特性，使用<a href="https://developer.apple.com/documentation/arkit/arsessionconfiguration/2867255-issupported" target="_blank" rel="external">isSupported</a>属性来决定当前设备是否支持你用的会话配置。</p>
-</blockquote>
-<h3 id="话题"><a href="#话题" class="headerlink" title="话题"></a>话题</h3><h4 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h4><h6 id="理解AR"><a href="#理解AR" class="headerlink" title="理解AR"></a><a href="https://developer.apple.com/documentation/arkit/understanding_augmented_reality" target="_blank" rel="external"><em>理解AR</em></a></h6><h6 id="探索概念、特性和最棒的实践来创建伟大的AR体验。"><a href="#探索概念、特性和最棒的实践来创建伟大的AR体验。" class="headerlink" title="探索概念、特性和最棒的实践来创建伟大的AR体验。"></a>探索概念、特性和最棒的实践来创建伟大的AR体验。</h6><h6 id="class-ARSession"><a href="#class-ARSession" class="headerlink" title="class ARSession"></a>class <a href="https://developer.apple.com/documentation/arkit/arsession" target="_blank" rel="external">ARSession</a></h6><h6 id="一个共享对象，负责管理AR中的设备相机和运动处理的需求。"><a href="#一个共享对象，负责管理AR中的设备相机和运动处理的需求。" class="headerlink" title="一个共享对象，负责管理AR中的设备相机和运动处理的需求。"></a>一个共享对象，负责管理AR中的设备相机和运动处理的需求。</h6><h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><h6 id="class-ARSessionConfiguation"><a href="#class-ARSessionConfiguation" class="headerlink" title="class ARSessionConfiguation"></a>class <a href="https://developer.apple.com/documentation/arkit/arsessionconfiguration" target="_blank" rel="external">ARSessionConfiguation</a></h6><h6 id="一个只追踪设备方向的基本配置"><a href="#一个只追踪设备方向的基本配置" class="headerlink" title="一个只追踪设备方向的基本配置"></a>一个只追踪设备方向的基本配置</h6><h6 id="class-ARWordTrackingSessionConfiguration"><a href="#class-ARWordTrackingSessionConfiguration" class="headerlink" title="class ARWordTrackingSessionConfiguration"></a>class <a href="https://developer.apple.com/documentation/arkit/arworldtrackingsessionconfiguration" target="_blank" rel="external">ARWordTrackingSessionConfiguration</a></h6><h6 id="一个追踪设备方向和位置，并且通过设备相机检测真实世界朝向的配置"><a href="#一个追踪设备方向和位置，并且通过设备相机检测真实世界朝向的配置" class="headerlink" title="一个追踪设备方向和位置，并且通过设备相机检测真实世界朝向的配置"></a>一个追踪设备方向和位置，并且通过设备相机检测真实世界朝向的配置</h6><h4 id="基本视图"><a href="#基本视图" class="headerlink" title="基本视图"></a>基本视图</h4><h6 id="创建基本的AR体验"><a href="#创建基本的AR体验" class="headerlink" title="创建基本的AR体验"></a><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience" target="_blank" rel="external"><em>创建基本的AR体验</em></a></h6><h6 id="配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容"><a href="#配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容" class="headerlink" title="配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容"></a>配置一个AR会话并使用SceneKit或SpriteKit来显示AR内容</h6><h6 id="class-ARSCNView"><a href="#class-ARSCNView" class="headerlink" title="class ARSCNView"></a>class <a href="https://developer.apple.com/documentation/arkit/arscnview" target="_blank" rel="external">ARSCNView</a></h6><h6 id="一个负责显示包含3DSceneKit内容的相机界面的AR视图"><a href="#一个负责显示包含3DSceneKit内容的相机界面的AR视图" class="headerlink" title="一个负责显示包含3DSceneKit内容的相机界面的AR视图"></a>一个负责显示包含3DSceneKit内容的相机界面的AR视图</h6><h6 id="class-ARSKView"><a href="#class-ARSKView" class="headerlink" title="class ARSKView"></a>class <a href="https://developer.apple.com/documentation/arkit/arskview" target="_blank" rel="external">ARSKView</a></h6><h6 id="一个负责显示包含了2DSpriteKit内容的相机界面的AR视图"><a href="#一个负责显示包含了2DSpriteKit内容的相机界面的AR视图" class="headerlink" title="一个负责显示包含了2DSpriteKit内容的相机界面的AR视图"></a>一个负责显示包含了2DSpriteKit内容的相机界面的AR视图</h6><h4 id="自定义视图"><a href="#自定义视图" class="headerlink" title="自定义视图"></a>自定义视图</h4><h6 id="使用Metal显示一个AR体验"><a href="#使用Metal显示一个AR体验" class="headerlink" title="使用Metal显示一个AR体验"></a><a href="https://developer.apple.com/documentation/arkit/displaying_an_ar_experience_with_metal" target="_blank" rel="external">使用Metal显示一个AR体验</a></h6><h6 id="通过渲染相机图片并使用位置追踪信息创建一个自定义的AR视图来显示覆盖内容"><a href="#通过渲染相机图片并使用位置追踪信息创建一个自定义的AR视图来显示覆盖内容" class="headerlink" title="通过渲染相机图片并使用位置追踪信息创建一个自定义的AR视图来显示覆盖内容"></a>通过渲染相机图片并使用位置追踪信息创建一个自定义的AR视图来显示覆盖内容</h6><h4 id="真实世界的对象和位置"><a href="#真实世界的对象和位置" class="headerlink" title="真实世界的对象和位置"></a>真实世界的对象和位置</h4><h6 id="class-ARAnchor"><a href="#class-ARAnchor" class="headerlink" title="class ARAnchor"></a>class <a href="https://developer.apple.com/documentation/arkit/aranchor" target="_blank" rel="external">ARAnchor</a></h6><h6 id="在AR场景中可用于放置物体的一个真实世界的位置和朝向"><a href="#在AR场景中可用于放置物体的一个真实世界的位置和朝向" class="headerlink" title="在AR场景中可用于放置物体的一个真实世界的位置和朝向"></a>在AR场景中可用于放置物体的一个真实世界的位置和朝向</h6><h6 id="class-ARPlaneAnchor"><a href="#class-ARPlaneAnchor" class="headerlink" title="class ARPlaneAnchor"></a>class <a href="https://developer.apple.com/documentation/arkit/arplaneanchor" target="_blank" rel="external">ARPlaneAnchor</a></h6><h6 id="在AR会话中真实世界水平面检测的位置和方向信息"><a href="#在AR会话中真实世界水平面检测的位置和方向信息" class="headerlink" title="在AR会话中真实世界水平面检测的位置和方向信息"></a>在AR会话中真实世界水平面检测的位置和方向信息</h6><h6 id="class-ARHitTestResult"><a href="#class-ARHitTestResult" class="headerlink" title="class ARHitTestResult"></a>class <a href="https://developer.apple.com/documentation/arkit/arhittestresult" target="_blank" rel="external">ARHitTestResult</a></h6><h6 id="AR会话中通过在设备相机视图中检查一个点在现实世界的表面信息"><a href="#AR会话中通过在设备相机视图中检查一个点在现实世界的表面信息" class="headerlink" title="AR会话中通过在设备相机视图中检查一个点在现实世界的表面信息"></a>AR会话中通过在设备相机视图中检查一个点在现实世界的表面信息</h6><h4 id="相机和场景细节"><a href="#相机和场景细节" class="headerlink" title="相机和场景细节"></a>相机和场景细节</h4><h6 id="class-ARFrame"><a href="#class-ARFrame" class="headerlink" title="class ARFrame"></a>class <a href="https://developer.apple.com/documentation/arkit/arframe" target="_blank" rel="external">ARFrame</a></h6><h6 id="AR会话中截取的一帧视频截图和位置追踪信息"><a href="#AR会话中截取的一帧视频截图和位置追踪信息" class="headerlink" title="AR会话中截取的一帧视频截图和位置追踪信息"></a>AR会话中截取的一帧视频截图和位置追踪信息</h6><h6 id="class-ARCamera"><a href="#class-ARCamera" class="headerlink" title="class ARCamera"></a>class <a href="https://developer.apple.com/documentation/arkit/arcamera" target="_blank" rel="external">ARCamera</a></h6><h6 id="AR会话中从一个截取的视频帧中得到的相机位置和图像特征信息"><a href="#AR会话中从一个截取的视频帧中得到的相机位置和图像特征信息" class="headerlink" title="AR会话中从一个截取的视频帧中得到的相机位置和图像特征信息"></a>AR会话中从一个截取的视频帧中得到的相机位置和图像特征信息</h6><h6 id="class-ARLightEstimate"><a href="#class-ARLightEstimate" class="headerlink" title="class ARLightEstimate"></a>class <a href="https://developer.apple.com/documentation/arkit/arlightestimate" target="_blank" rel="external">ARLightEstimate</a></h6><h6 id="AR会话中从一个截取的视频帧中预测场景中的光照信息"><a href="#AR会话中从一个截取的视频帧中预测场景中的光照信息" class="headerlink" title="AR会话中从一个截取的视频帧中预测场景中的光照信息"></a>AR会话中从一个截取的视频帧中预测场景中的光照信息</h6>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/29/ARKit_doc_2/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-ARKit_doc_1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/29/ARKit_doc_1/">ARKit文档瞎翻译（1）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/29/ARKit_doc_1/" class="archive-article-date">
-  	<time datetime="2017-06-29T07:37:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="ARKit文档瞎翻译（1）"><a href="#ARKit文档瞎翻译（1）" class="headerlink" title="ARKit文档瞎翻译（1）"></a>ARKit文档瞎翻译（1）</h1><p><a href="https://developer.apple.com/arkit/" target="_blank" rel="external">看不下去就戳真相地址</a></p>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="虚拟内部测量（VIO）"><a href="#虚拟内部测量（VIO）" class="headerlink" title="虚拟内部测量（VIO）"></a>虚拟内部测量（VIO）</h3><p>ARKit使用VIO系统来精确测量整个世界。VIO把相机传感器的数据和CoreMotion数据引入到一起。这两方面输入允许设备来感知如何高精度地在空间中移动，且不需要任何额外校准。</p>
-<h3 id="场景理解和光照预估"><a href="#场景理解和光照预估" class="headerlink" title="场景理解和光照预估"></a>场景理解和光照预估</h3><p>有了ARKit，iPhone和iPad可以识别相机视图提供的场景并识别出空间中的水平面。ARKit可以检测出诸如桌面、地面等水平面，并且可以在特定的小位置追踪并放置物体。ARKit还可以使用相机传感器来预估场景中整体的光照总量并把合适的光照投射到虚拟物体上。</p>
-<h3 id="高性能的硬件和渲染优化"><a href="#高性能的硬件和渲染优化" class="headerlink" title="高性能的硬件和渲染优化"></a>高性能的硬件和渲染优化</h3><p>ARKit运行在苹果的A9和A10处理器上。这些处理器有出色的性能表现可以实现快速的场景理解并可以让你在真实的场景中搭建详尽真实的虚拟内容。你可以在诸如Metal、SceneKit或第三方平台工具如Unity和Unreal Engine等地方使用这些为ARKit带来的优化。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/29/ARKit_doc_1/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-测试一下" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/05/测试一下/">第一篇博文</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/05/测试一下/" class="archive-article-date">
-  	<time datetime="2017-06-05T14:48:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="第一篇博文"><a href="#第一篇博文" class="headerlink" title="第一篇博文"></a>第一篇博文</h1><ul>
-<li>太不容易了</li>
-<li>太不容易了</li>
-<li>太不容易了</li>
-</ul>
-<p>但是，我成功啦，撒花<del>~</del>~</p>
-<p>以后要加油~💪</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/05/测试一下/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-hello-world" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/05/hello-world/">你好这个世界~</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/05/hello-world/" class="archive-article-date">
-  	<time datetime="2017-06-05T03:06:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>哇哈哇哈，谁都有博客，谁都会有这一天，老纸来啦哈哈哈哈~</p>
-<h2 id="这个是大标题吗？？？"><a href="#这个是大标题吗？？？" class="headerlink" title="这个是大标题吗？？？"></a>这个是大标题吗？？？</h2><h3 id="创建一个新页面"><a href="#创建一个新页面" class="headerlink" title="创建一个新页面"></a>创建一个新页面</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="运行服务器（本地滴）"><a href="#运行服务器（本地滴）" class="headerlink" title="运行服务器（本地滴）"></a>运行服务器（本地滴）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="生成静态文件（这样就可以把新生成的文章制造出来啦-）"><a href="#生成静态文件（这样就可以把新生成的文章制造出来啦-）" class="headerlink" title="生成静态文件（这样就可以把新生成的文章制造出来啦~）"></a>生成静态文件（这样就可以把新生成的文章制造出来啦~）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="部署到远端网站上（可以装XX咯-撒花-）"><a href="#部署到远端网站上（可以装XX咯-撒花-）" class="headerlink" title="部署到远端网站上（可以装XX咯~撒花~）"></a>部署到远端网站上（可以装XX咯~撒花~）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/05/hello-world/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
   
 
 
@@ -740,8 +321,8 @@ func view(_ view: ARSKView, nodeFor anchor: ARAnchor) -&gt; SKNode? {
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
