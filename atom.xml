@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-07-04T08:23:34.000Z</updated>
+  <updated>2017-07-18T05:58:55.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,120 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>SceneKit学习记录1_物理身体</title>
+    <link href="http://yoursite.com/2017/07/18/SceneKit%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%951/"/>
+    <id>http://yoursite.com/2017/07/18/SceneKit学习记录1/</id>
+    <published>2017-07-18T05:34:31.000Z</published>
+    <updated>2017-07-18T05:58:55.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://developer.apple.com/documentation/scenekit/scnphysicsbody?language=objc" target="_blank" rel="external">原文档</a></p>
+<h1 id="物理身体类型（SCNPhysicsBodyType）"><a href="#物理身体类型（SCNPhysicsBodyType）" class="headerlink" title="物理身体类型（SCNPhysicsBodyType）"></a>物理身体类型（SCNPhysicsBodyType）</h1><blockquote>
+<p>分为三类：</p>
+<ul>
+<li>静态身体：SCNPhysicsBodyTypeStatic</li>
+<li>动态身体：SCNPhysicsBodyTypeDynamic</li>
+<li>运动身体：SCNPhysicsBodyTypeKinematic</li>
+</ul>
+</blockquote>
+<p><strong>作用</strong>：</p>
+<ul>
+<li>静态身体：不会被力或碰撞影响，不能移动</li>
+<li>动态身体：可以被其他类型的身体碰撞或施加力</li>
+<li>运动身体：不会被力或碰撞影响，但是可以直接移动他们去碰撞动态身体</li>
+</ul>
+<h4 id="Static（静态身体）"><a href="#Static（静态身体）" class="headerlink" title="Static（静态身体）"></a>Static（静态身体）</h4><table>
+<thead>
+<tr>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">影响</th>
+<th style="text-align:center">被影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Static</td>
+<td style="text-align:center">×</td>
+<td style="text-align:center">×</td>
+</tr>
+<tr>
+<td style="text-align:center">Dynamic</td>
+<td style="text-align:center">×</td>
+<td style="text-align:center">×</td>
+</tr>
+<tr>
+<td style="text-align:center">Kinematic</td>
+<td style="text-align:center">×</td>
+<td style="text-align:center">×</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Dynamic（动态身体）"><a href="#Dynamic（动态身体）" class="headerlink" title="Dynamic（动态身体）"></a>Dynamic（动态身体）</h4><table>
+<thead>
+<tr>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">影响</th>
+<th style="text-align:center">被影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Static</td>
+<td style="text-align:center">×</td>
+<td style="text-align:center">×</td>
+</tr>
+<tr>
+<td style="text-align:center">Dynamic</td>
+<td style="text-align:center">√</td>
+<td style="text-align:center">√</td>
+</tr>
+<tr>
+<td style="text-align:center">Kinematic</td>
+<td style="text-align:center">×</td>
+<td style="text-align:center">√</td>
+</tr>
+</tbody>
+</table>
+<h4 id="KineMatic（运动身体）"><a href="#KineMatic（运动身体）" class="headerlink" title="KineMatic（运动身体）"></a>KineMatic（运动身体）</h4><table>
+<thead>
+<tr>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">影响</th>
+<th style="text-align:center">被影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Static</td>
+<td style="text-align:center">×</td>
+<td style="text-align:center">×</td>
+</tr>
+<tr>
+<td style="text-align:center">Dynamic</td>
+<td style="text-align:center">√</td>
+<td style="text-align:center">×</td>
+</tr>
+<tr>
+<td style="text-align:center">Kinematic</td>
+<td style="text-align:center">×</td>
+<td style="text-align:center">×</td>
+</tr>
+</tbody>
+</table>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;a href=&quot;https://developer.apple.com/documentation/scenekit/scnphysicsbody?language=objc&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;原文档&lt;/a&gt;&lt;/p&gt;
+&lt;h1 
+    
+    </summary>
+    
+    
+      <category term="学习笔记" scheme="http://yoursite.com/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>ARKit文档瞎翻译（9）</title>
