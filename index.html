@@ -156,6 +156,73 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-四维矩阵学习记录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/07/四维矩阵学习记录/">四维矩阵？？？</a>
+    </h1>
+  
+
+        
+        <a href="/2017/08/07/四维矩阵学习记录/" class="archive-article-date">
+  	<time datetime="2017-08-07T08:29:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-07</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>看了个好东西，<a href="http://www.cnblogs.com/graphics/archive/2012/08/02/2616017.html" target="_blank" rel="external">矩阵-DirectX与OpenGL的不同</a>，原帖讲的很清楚</p>
+<blockquote>
+<p>一直不明白iOS为啥用四维矩阵来表示三维的东西（其他平台可能也如此吧~）</p>
+<p>iOS平台上，使用OpenGL的四维矩阵表示空间</p>
+</blockquote>
+<p><img src="http://pic002.cnblogs.com/images/2012/64257/2012073120462521.gif" alt=""></p>
+<p>上面这个是标准的四维矩阵（这个是DirectX的，与OpenGL的互为转置矩阵，即ios的为竖着的“m11, m12, m13, m14”）</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/64257/2012073121020368.gif" alt=""></p>
+<p>其中，(Tx，Ty，Tz)为平移分量（对应iOS的“m41, m42, m43”）</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/08/07/四维矩阵学习记录/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-SceneKit学习记录1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -893,68 +960,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/06/29/ARKit_doc_2/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-ARKit_doc_1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/29/ARKit_doc_1/">ARKit文档瞎翻译（1）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/29/ARKit_doc_1/" class="archive-article-date">
-  	<time datetime="2017-06-29T07:37:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="ARKit文档瞎翻译（1）"><a href="#ARKit文档瞎翻译（1）" class="headerlink" title="ARKit文档瞎翻译（1）"></a>ARKit文档瞎翻译（1）</h1><p><a href="https://developer.apple.com/arkit/" target="_blank" rel="external">看不下去就戳真相地址</a></p>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="虚拟内部测量（VIO）"><a href="#虚拟内部测量（VIO）" class="headerlink" title="虚拟内部测量（VIO）"></a>虚拟内部测量（VIO）</h3><p>ARKit使用VIO系统来精确测量整个世界。VIO把相机传感器的数据和CoreMotion数据引入到一起。这两方面输入允许设备来感知如何高精度地在空间中移动，且不需要任何额外校准。</p>
-<h3 id="场景理解和光照预估"><a href="#场景理解和光照预估" class="headerlink" title="场景理解和光照预估"></a>场景理解和光照预估</h3><p>有了ARKit，iPhone和iPad可以识别相机视图提供的场景并识别出空间中的水平面。ARKit可以检测出诸如桌面、地面等水平面，并且可以在特定的小位置追踪并放置物体。ARKit还可以使用相机传感器来预估场景中整体的光照总量并把合适的光照投射到虚拟物体上。</p>
-<h3 id="高性能的硬件和渲染优化"><a href="#高性能的硬件和渲染优化" class="headerlink" title="高性能的硬件和渲染优化"></a>高性能的硬件和渲染优化</h3><p>ARKit运行在苹果的A9和A10处理器上。这些处理器有出色的性能表现可以实现快速的场景理解并可以让你在真实的场景中搭建详尽真实的虚拟内容。你可以在诸如Metal、SceneKit或第三方平台工具如Unity和Unreal Engine等地方使用这些为ARKit带来的优化。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/29/ARKit_doc_1/">展开全文 >></a>
         </p>
       
 
