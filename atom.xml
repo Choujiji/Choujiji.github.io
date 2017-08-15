@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-08-07T08:57:35.000Z</updated>
+  <updated>2017-08-15T15:57:05.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Swift 3.0语法学习记录</title>
+    <link href="http://yoursite.com/2017/08/15/Swift%203.0%E8%AF%AD%E6%B3%95%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"/>
+    <id>http://yoursite.com/2017/08/15/Swift 3.0语法学习记录/</id>
+    <published>2017-08-15T15:51:51.000Z</published>
+    <updated>2017-08-15T15:57:05.000Z</updated>
+    
+    <content type="html"><![CDATA[<ul>
+<li><p>重载运算符时，前置运算符需要在“func”关键字前添加<strong>“<em>prefix</em>”</strong>关键字：</p>
+  <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Vector2D</span> </span>&#123;</div><div class="line">    <span class="keyword">var</span> x = <span class="number">0.0</span></div><div class="line">    <span class="keyword">var</span> y = <span class="number">0.0</span></div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">func</span> +<span class="params">(<span class="keyword">left</span>: Vector2D, <span class="keyword">right</span>: Vector2D)</span></span> -&gt; <span class="type">Vector2D</span> &#123;</div><div class="line">    <span class="keyword">return</span> <span class="type">Vector2D</span>(x: <span class="keyword">left</span>.x + <span class="keyword">right</span>.x, y: <span class="keyword">left</span>.y + <span class="keyword">right</span>.y)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 这里是前置运算符重载，需要添加“prefix”标识</span></div><div class="line"><span class="keyword">prefix</span> <span class="function"><span class="keyword">func</span> -<span class="params">(origin: Vector2D)</span></span> -&gt; <span class="type">Vector2D</span> &#123;</div><div class="line">    <span class="keyword">return</span> <span class="type">Vector2D</span>(x: -origin.x, y: -origin.y)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">let</span> vec1 = <span class="type">Vector2D</span>(x: <span class="number">2</span>, y: <span class="number">3</span>)</div><div class="line"><span class="keyword">let</span> vec2 = <span class="type">Vector2D</span>(x: <span class="number">1</span>, y: <span class="number">4</span>)</div><div class="line"><span class="keyword">let</span> vec3 = vec1 + vec2</div><div class="line"><span class="keyword">let</span> vec4 = -vec1</div></pre></td></tr></table></figure>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;ul&gt;
+&lt;li&gt;&lt;p&gt;重载运算符时，前置运算符需要在“func”关键字前添加&lt;strong&gt;“&lt;em&gt;prefix&lt;/em&gt;”&lt;/strong&gt;关键字：&lt;/p&gt;
+  &lt;figure class=&quot;highlight swift&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gu
+    
+    </summary>
+    
+    
+      <category term="学习笔记" scheme="http://yoursite.com/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>四维矩阵？？？</title>
