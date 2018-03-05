@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-03-05T14:39:18.000Z</updated>
+  <updated>2018-03-05T15:35:06.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2018/03/05/ios_GCD_learning/"/>
     <id>http://yoursite.com/2018/03/05/ios_GCD_learning/</id>
     <published>2018-03-05T03:20:48.000Z</published>
-    <updated>2018-03-05T14:39:18.000Z</updated>
+    <updated>2018-03-05T15:35:06.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）"><a href="#GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）" class="headerlink" title="GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）"></a>GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）</h2><h3 id="主要组成："><a href="#主要组成：" class="headerlink" title="主要组成："></a>主要组成：</h3><ul>
 <li>队列：主要分为<strong>串行队列</strong>和<strong>并发队列</strong>两种。在iOS系统中，系统预先提供了两个现成可以直接使用的队列，分别是<strong>主队列</strong>和<strong>全局队列</strong>，其中<strong>主队列</strong>即我们常说的APP主线程。</li>
@@ -174,7 +174,46 @@
 <blockquote>
 <p>2018-03-05 22:25:57.183194+0800 Thread_Test2[11842:630278] start block2———<nsthread: 0x60400027f800="">{number = 5, name = (null)}<br>2018-03-05 22:25:57.183195+0800 Thread_Test2[11842:630275] start block1———<nsthread: 0x6000004765c0="">{number = 4, name = (null)}<br>2018-03-05 22:25:59.184596+0800 Thread_Test2[11842:630275] finished block1!!!!!!!!<br>2018-03-05 22:25:59.184662+0800 Thread_Test2[11842:630278] finished block2!!!!!!!!<br>2018-03-05 22:25:59.185201+0800 Thread_Test2[11842:630278] start block3———<nsthread: 0x60400027f800="">{number = 5, name = (null)}<br>2018-03-05 22:26:01.189667+0800 Thread_Test2[11842:630278] finished block3!!!!!!!!<br>2018-03-05 22:26:01.189929+0800 Thread_Test2[11842:630025] finished all!!!</nsthread:></nsthread:></nsthread:></p>
 </blockquote>
-<h4 id="信号量："><a href="#信号量：" class="headerlink" title="信号量："></a>信号量：</h4>]]></content>
+<h4 id="信号量："><a href="#信号量：" class="headerlink" title="信号量："></a>信号量：</h4><p><strong>信号量是一种基于计数器的多线程同步机制，用来管理对资源的并发访问。</strong></p>
+<p>计数器为原子性的值，可以保证多线程安全，使用时，分为两种情况：</p>
+<ol>
+<li>初始值为0时，可以把两个线程的异步任务变为同步任务（控制先后执行顺序，线程同步）；</li>
+<li>初始值大于0时，可以限制队列中的并发任务数（是几则同时可以有几个任务并发执行）；</li>
+</ol>
+<p>相关函数：</p>
+<ul>
+<li>dispatch_semaphore_create(value)：创建信号量（参数为并发数）</li>
+<li>dispatch_semaphore_wait(semaphore)：抢占资源，信号量值-1</li>
+<li>dispatch_semaphore_signal(semaphore)：释放资源，信号量值+1</li>
+</ul>
+<p>相关实例：</p>
+<ul>
+<li>“异步”变“同步”：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);</div><div class="line"></div><div class="line">__block int number = 0;</div><div class="line"></div><div class="line">dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">dispatch_async(globalQueue, ^&#123;</div><div class="line">    number = 100;</div><div class="line">    // 信号值+1，恢复派发线程继续执行</div><div class="line">    dispatch_semaphore_signal(semaphore);</div><div class="line">&#125;);</div><div class="line">// 初值是0，即为阻塞当前线程，一直等待</div><div class="line">dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</div><div class="line">NSLog(@&quot;number = %d&quot;, number);</div></pre></td></tr></table></figure>
+<p>执行结果：</p>
+<blockquote>
+<p>2018-03-05 23:02:29.855585+0800 Thread_Test2[12363:659768] number = 100</p>
+</blockquote>
+<ul>
+<li>控制并发线程数：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">// 同时只允许一个线程执行任务</div><div class="line">dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);</div><div class="line">for (int i = 0; i &lt; 10; i++) &#123;</div><div class="line">    dispatch_async(globalQueue, ^&#123;</div><div class="line">        // 抢占资源（-1）</div><div class="line">        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</div><div class="line">        NSLog(@&quot;index = %d, semaphore = %@&quot;, i, semaphore);</div><div class="line">        // 释放资源（+1）</div><div class="line">        dispatch_semaphore_signal(semaphore);</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>执行结果：</p>
+<blockquote>
+<p>2018-03-05 23:20:34.300704+0800 Thread_Test2[12777:682814] index = 0, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.300918+0800 Thread_Test2[12777:682816] index = 1, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.301175+0800 Thread_Test2[12777:682815] index = 2, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.302360+0800 Thread_Test2[12777:682813] index = 3, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.303131+0800 Thread_Test2[12777:682814] index = 5, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.304928+0800 Thread_Test2[12777:682826] index = 4, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.305489+0800 Thread_Test2[12777:682816] index = 6, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.306229+0800 Thread_Test2[12777:682827] index = 7, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.306518+0800 Thread_Test2[12777:682829] index = 8, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.306642+0800 Thread_Test2[12777:682828] index = 9, semaphore = <os_dispatch_semaphore: 0x604000291b70=""></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></p>
+</blockquote>
+<p><strong>信号量初值为1时，即为线程加锁</strong>（前一个任务抢占资源后，下一个异步任务执行时，由于信号量值为0，线程进入等待状态，知道前一任务释放资源后继续执行）。</p>
+<ul>
+<li>保证数据的线程安全：</li>
+</ul>
+<p>实例：两个窗口的卖票问题（多线程间的数据共享与一致性）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line">@interface ViewController ()</div><div class="line">&#123;</div><div class="line">    /** 同步卖票系统的信号量 */</div><div class="line">    dispatch_semaphore_t _ticketSemaphore;</div><div class="line">    /** 余票总数 */</div><div class="line">    int _surplusTicketsCount;</div><div class="line">&#125;</div><div class="line">@end</div><div class="line"></div><div class="line">@implementation ViewController</div><div class="line">- (void)viewDidLoad &#123;</div><div class="line">	[self initTicketStatus];</div><div class="line">&#125;</div><div class="line">/** 初始化票及窗口信息 */</div><div class="line">- (void)initTicketStatus &#123;</div><div class="line">    // 每个售票口都是按顺序卖票，所以是串行队列</div><div class="line">    dispatch_queue_t queue1 = dispatch_queue_create(&quot;com.my_queue1&quot;, DISPATCH_QUEUE_SERIAL);</div><div class="line">    dispatch_queue_t queue2 = dispatch_queue_create(&quot;com.my_queue2&quot;, DISPATCH_QUEUE_SERIAL);</div><div class="line">    </div><div class="line">    // 共50张票</div><div class="line">    _surplusTicketsCount = 50;</div><div class="line">    </div><div class="line">    // 信号量同步两个窗口（同时只能一个窗口操作）</div><div class="line">    _ticketSemaphore = dispatch_semaphore_create(1);</div><div class="line">    </div><div class="line">    // 两个窗口同时开卖（每个队列异步执行卖票任务）</div><div class="line">    __weak typeof(self) weakSelf = self;</div><div class="line">    dispatch_async(queue1, ^&#123;</div><div class="line">        [weakSelf saleTicket];</div><div class="line">    &#125;);</div><div class="line">    dispatch_async(queue2, ^&#123;</div><div class="line">        [weakSelf saleTicket];</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)saleTicket &#123;</div><div class="line">    while (1) &#123;</div><div class="line">        // 获取资源（-1），此时信号量值为0，加锁</div><div class="line">        dispatch_semaphore_wait(_ticketSemaphore, DISPATCH_TIME_FOREVER);</div><div class="line">        </div><div class="line">        if (_surplusTicketsCount &gt; 0) &#123;</div><div class="line">            _surplusTicketsCount -= 1;</div><div class="line">            NSLog(@&quot;剩余票数：%d，窗口为：%@&quot;,</div><div class="line">                  _surplusTicketsCount,</div><div class="line">                  [NSThread currentThread]</div><div class="line">            );</div><div class="line">//            [NSThread sleepForTimeInterval:0.2];  // 不加延时时，多线程访问的顺序和值都有问题</div><div class="line">            </div><div class="line">            // 解锁(+1)，恢复资源</div><div class="line">            dispatch_semaphore_signal(_ticketSemaphore);</div><div class="line">        &#125; else &#123;</div><div class="line">            NSLog(@&quot;票已卖完，剩余票数：%d&quot;, _surplusTicketsCount);</div><div class="line">            </div><div class="line">            // 解锁(+1)，恢复资源</div><div class="line">            dispatch_semaphore_signal(_ticketSemaphore);</div><div class="line">            break;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure></p>
+<p>执行结果：两个队列任务依次执行，且执行时，余票信息正常输出。</p>
+<h3 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h3><ul>
+<li><a href="https://www.jianshu.com/p/2d57c72016c6" target="_blank" rel="external">iOS多线程：『GCD』详尽总结</a></li>
+<li><a href="http://blog.csdn.net/liuyang11908/article/details/70757534" target="_blank" rel="external"> iOS GCD之dispatch_semaphore（信号量）</a></li>
+</ul>
+]]></content>
     
     <summary type="html">
     
