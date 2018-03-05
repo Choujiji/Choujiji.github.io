@@ -15,7 +15,7 @@
 <meta property="og:url" content="http://yoursite.com/2018/03/05/ios_GCD_learning/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
 <meta property="og:description" content="GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）主要组成： 队列：主要分为串行队列和并发队列两种。在iOS系统中">
-<meta property="og:updated_time" content="2018-03-05T07:21:58.000Z">
+<meta property="og:updated_time" content="2018-03-05T08:01:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS GCD学习总结">
 <meta name="twitter:description" content="GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）主要组成： 队列：主要分为串行队列和并发队列两种。在iOS系统中">
@@ -201,7 +201,7 @@
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div></pre></td></tr></table></figure>
 <p>其中，全局队列的第一参数为优先级，这里默认为default，第二个参数为预留参数。我们一般可以在这个队列中处理一些耗时任务，如网络请求、IO等。</p>
-<h4 id="任务创建和使用："><a href="#任务创建和使用：" class="headerlink" title="任务创建和使用："></a>任务创建和使用：</h4><p>创建同步或异步任务时，都需要指定派发到的队列。</p>
+<h4 id="向队列中派发任务并执行任务："><a href="#向队列中派发任务并执行任务：" class="headerlink" title="向队列中派发任务并执行任务："></a>向队列中派发任务并执行任务：</h4><p>创建同步或异步任务时，都需要指定派发到的队列。</p>
 <ul>
 <li>串行队列 + 同步任务：</li>
 </ul>
@@ -252,9 +252,23 @@
 <p><em>“同步”</em>与<em>“异步”</em>的关键是<strong>是否开启新线程</strong>；</p>
 <p><em>“串行”</em>与<em>“并发”</em>的关键是<strong>是否可以同时执行任务</strong>。</p>
 </blockquote>
+<p><em>特别情况–“主队列”</em>：</p>
 <ul>
-<li>特别情况：向“主队列”中派发任务（同步、异步）</li>
+<li>主队列 + 同步任务：</li>
 </ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t mainQueue = dispatch_get_main_queue();</div><div class="line">dispatch_sync(mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block1---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block1!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_sync(mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block2---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block2!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_sync(mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block3---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block3!!!!!!!!&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>执行结果：直接死锁。</p>
+<p>死锁原因：由于同步任务的执行顺序是“派发任务1-&gt;执行任务1-&gt;派发任务2-&gt;执行任务2…”，即下一个任务的派发要在上一个任务完成之后才能继续。然而，在主队列中，被派发的任务（block对象）会添加到主队列的末端。此时，<strong>派发任务函数没有返回（没有执行完成），会给主队列的线程加锁；新添加的任务由于在末端，前面的任务没有完成，就没有机会执行，也就不能返回；派发任务函数就不可能再继续往下执行（互相依赖），从而造成死锁</strong>。</p>
+<p>解决方案：在其他队列（非主线程）中向主队列派发同步任务，或在主队列中派发异步任务。</p>
+<ul>
+<li>主队列 + 异步任务：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t mainQueue = dispatch_get_main_queue();</div><div class="line">dispatch_async(mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block1---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block1!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_async(mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block2---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block2!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_async(mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block3---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block3!!!!!!!!&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>执行结果：</p>
+<blockquote>
+<p>2018-03-05 15:57:48.249706+0800 Thread_Test2[7880:347161] start block1———<nsthread: 0x604000065d00="">{number = 1, name = main}<br>2018-03-05 15:57:50.250190+0800 Thread_Test2[7880:347161] finished block1!!!!!!!!<br>2018-03-05 15:57:50.250654+0800 Thread_Test2[7880:347161] start block2———<nsthread: 0x604000065d00="">{number = 1, name = main}<br>2018-03-05 15:57:52.251663+0800 Thread_Test2[7880:347161] finished block2!!!!!!!!<br>2018-03-05 15:57:52.252088+0800 Thread_Test2[7880:347161] start block3———<nsthread: 0x604000065d00="">{number = 1, name = main}<br>2018-03-05 15:57:54.253489+0800 Thread_Test2[7880:347161] finished block3!!!!!!!!</nsthread:></nsthread:></nsthread:></p>
+</blockquote>
+<p>可见，在主队列派发异步任务，是在主线程同步执行（<strong>主队列中执行异步任务不会开启新线程</strong>）。</p>
 
       
 
