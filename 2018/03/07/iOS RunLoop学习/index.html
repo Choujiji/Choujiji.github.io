@@ -6,17 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>臭吉吉的瞎记空间</title>
+  <title>iOS RunLoop学习 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="督促自己好好学习哦~">
-<meta property="og:type" content="website">
-<meta property="og:title" content="臭吉吉的瞎记空间">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="还在学习中，只是看了两篇博文，有点醍醐灌顶，待更加了解后更新。。。参考资料： 深入理解RunLoop iOS刨根问底-深入理解RunLoop">
+<meta name="keywords" content="学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS RunLoop学习">
+<meta property="og:url" content="http://yoursite.com/2018/03/07/iOS RunLoop学习/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="督促自己好好学习哦~">
+<meta property="og:description" content="还在学习中，只是看了两篇博文，有点醍醐灌顶，待更加了解后更新。。。参考资料： 深入理解RunLoop iOS刨根问底-深入理解RunLoop">
+<meta property="og:updated_time" content="2018-03-07T06:21:53.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="臭吉吉的瞎记空间">
-<meta name="twitter:description" content="督促自己好好学习哦~">
+<meta name="twitter:title" content="iOS RunLoop学习">
+<meta name="twitter:description" content="还在学习中，只是看了两篇博文，有点醍醐灌顶，待更加了解后更新。。。参考资料： 深入理解RunLoop iOS刨根问底-深入理解RunLoop">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -154,16 +156,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-iOS RunLoop学习" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-iOS RunLoop学习" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/07/iOS RunLoop学习/">iOS RunLoop学习</a>
+    <h1 class="article-title" itemprop="name">
+      iOS RunLoop学习
     </h1>
   
 
@@ -202,940 +202,74 @@
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/07/iOS RunLoop学习/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2018/03/07/iOS RunLoop学习/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
 
-
-
-
-
   
-    <article id="post-ios_GCD_learning" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/05/ios_GCD_learning/">iOS GCD学习总结</a>
-    </h1>
   
-
-        
-        <a href="/2018/03/05/ios_GCD_learning/" class="archive-article-date">
-  	<time datetime="2018-03-05T03:20:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）"><a href="#GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）" class="headerlink" title="GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）"></a>GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）</h2><h3 id="主要组成："><a href="#主要组成：" class="headerlink" title="主要组成："></a>主要组成：</h3><ul>
-<li>队列：主要分为<strong>串行队列</strong>和<strong>并发队列</strong>两种。在iOS系统中，系统预先提供了两个现成可以直接使用的队列，分别是<strong>主队列</strong>和<strong>全局队列</strong>，其中<strong>主队列</strong>即我们常说的APP主线程。</li>
-<li>任务：在OC中以<strong>block</strong>作为单位，分为<strong>“同步任务”</strong>和<strong>“异步任务”</strong>。</li>
-</ul>
-<p>其中，队列和任务可以根据需要随意组合使用。</p>
-<h3 id="主要功能："><a href="#主要功能：" class="headerlink" title="主要功能："></a>主要功能：</h3><h4 id="创建和获取队列："><a href="#创建和获取队列：" class="headerlink" title="创建和获取队列："></a>创建和获取队列：</h4><ul>
-<li>创建串行队列：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t myQueue = dispatch_queue)create(&quot;com.jiji.my_queue&quot;, DISPATCH_QUEUE_SERIAL);</div></pre></td></tr></table></figure>
-<p>串行队列即为单任务队列，任务只能按加入顺序执行。</p>
-<ul>
-<li>创建并发队列：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t myQueue = dispatch_queue)create(&quot;com.jiji.my_queue&quot;, DISPATCH_QUEUE_CONCURRENT);</div></pre></td></tr></table></figure>
-<p>并发队列，同时可以执行多个任务。</p>
-<ul>
-<li>获取主队列：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t mainQueue = dispatch_get_main_queue();</div></pre></td></tr></table></figure>
-<p>主队列，UI操作都在这个队列上进行。</p>
-<ul>
-<li>获取全局队列：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div></pre></td></tr></table></figure>
-<p>其中，全局队列的第一参数为优先级，这里默认为default，第二个参数为预留参数。我们一般可以在这个队列中处理一些耗时任务，如网络请求、IO等。</p>
-<h4 id="向队列中派发任务并执行任务："><a href="#向队列中派发任务并执行任务：" class="headerlink" title="向队列中派发任务并执行任务："></a>向队列中派发任务并执行任务：</h4><p>创建同步或异步任务时，都需要指定派发到的队列。</p>
-<ul>
-<li>串行队列 + 同步任务：</li>
-</ul>
-<p>本质上是在派发任务所在的线程中（不创建新线程），依次执行任务，完成一个后执行下一个。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">NSLog(@&quot;current thread = %@&quot;, [NSThread currentThread]);</div><div class="line">dispatch_queue_t myQueue = dispatch_queue_create(&quot;com.jiji.my_queue&quot;, DISPATCH_QUEUE_SERIAL);</div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;block 1---- %@&quot;, [NSThread currentThread]);</div><div class="line">&#125;);</div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;block 2---- %@&quot;, [NSThread currentThread]);</div><div class="line">&#125;);</div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;block 3---- %@&quot;, [NSThread currentThread]);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 14:00:56.434341+0800 Thread_Test2[5813:216673] current thread = <nsthread: 0x600000068f00="">{number = 1, name = main}<br>2018-03-05 14:00:58.435759+0800 Thread_Test2[5813:216673] block 1—- <nsthread: 0x600000068f00="">{number = 1, name = main}<br>2018-03-05 14:01:00.437177+0800 Thread_Test2[5813:216673] block 2—- <nsthread: 0x600000068f00="">{number = 1, name = main}<br>2018-03-05 14:01:02.438452+0800 Thread_Test2[5813:216673] block 3—- <nsthread: 0x600000068f00="">{number = 1, name = main}</nsthread:></nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<p>从上面的例子可以看出，向串行队列中派发的同步任务，执行时并没有开启新的线程，只是在当前线程中直接执行（这里是在主线程向队列派发任务，所以直接在主线程执行）。</p>
-<ul>
-<li>串行队列 + 异步任务：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">NSLog(@&quot;current thread = %@&quot;, [NSThread currentThread]);</div><div class="line">dispatch_queue_t myQueue = dispatch_queue_create(&quot;com.jiji.my_queue&quot;, DISPATCH_QUEUE_SERIAL);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;block 1---- %@&quot;, [NSThread currentThread]);</div><div class="line">&#125;);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;block 2---- %@&quot;, [NSThread currentThread]);</div><div class="line">&#125;);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;block 3---- %@&quot;, [NSThread currentThread]);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 14:08:13.786385+0800 Thread_Test2[5952:225569] current thread = <nsthread: 0x60400007c340="">{number = 1, name = main}<br>2018-03-05 14:08:15.787681+0800 Thread_Test2[5952:225858] block 1—- <nsthread: 0x60000027d680="">{number = 3, name = (null)}<br>2018-03-05 14:08:17.788864+0800 Thread_Test2[5952:225858] block 2—- <nsthread: 0x60000027d680="">{number = 3, name = (null)}<br>2018-03-05 14:08:19.790784+0800 Thread_Test2[5952:225858] block 3—- <nsthread: 0x60000027d680="">{number = 3, name = (null)}</nsthread:></nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<p>可以看到，向串行队列中派发异步任务，任务会在新线程中执行依次执行（系统单独创建了新线程）。</p>
-<ul>
-<li>并发队列 + 同步任务：</li>
-</ul>
-<p>这个要与“串行队列+同步”对比着来看：<br>直接在同一队列中向并发队列派发同步任务时（如都在主线程直接往队列中派发同步任务），结果是相同的，都是依次执行任务，如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">// 创建并发队列</div><div class="line">dispatch_queue_t myQueue = dispatch_queue_create(&quot;com.jiji.myQueue1&quot;, DISPATCH_QUEUE_CONCURRENT);</div><div class="line"></div><div class="line">// 添加同步任务</div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block0---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:5];</div><div class="line">    NSLog(@&quot;finished block0!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block1---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block1!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block2---------%@&quot;, [NSThread currentThread]);</div><div class="line">    sleep(2);</div><div class="line">    NSLog(@&quot;finished block2!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block3---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block3!!!!!!!!&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 14:53:14.154154+0800 Thread_Test2[6775:272681] start block0———<nsthread: 0x6000000641c0="">{number = 1, name = main}<br>2018-03-05 14:53:19.156046+0800 Thread_Test2[6775:272681] finished block0!!!!!!!!<br>2018-03-05 14:53:19.156402+0800 Thread_Test2[6775:272681] start block1———<nsthread: 0x6000000641c0="">{number = 1, name = main}<br>2018-03-05 14:53:21.157883+0800 Thread_Test2[6775:272681] finished block1!!!!!!!!<br>2018-03-05 14:53:21.158132+0800 Thread_Test2[6775:272681] start block2———<nsthread: 0x6000000641c0="">{number = 1, name = main}<br>2018-03-05 14:53:23.159384+0800 Thread_Test2[6775:272681] finished block2!!!!!!!!<br>2018-03-05 14:53:23.159621+0800 Thread_Test2[6775:272681] start block3———<nsthread: 0x6000000641c0="">{number = 1, name = main}<br>2018-03-05 14:53:25.160953+0800 Thread_Test2[6775:272681] finished block3!!!!!!!!</nsthread:></nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<p>看起来与“串行队列+同步”没有什么区别，这是由于派发任务（可以看做从上到下执行代码，将block加入）都在同一队列（这里是主线程）中执行。</p>
-<p>但是，当我们在不同的队列（即不同线程）中同时向你的并发队列中派发同步任务时，结果就不同了（这里才真正体现出了并发队列的并发性，即同时执行任务）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">// 创建并发队列</div><div class="line">dispatch_queue_t myQueue = dispatch_queue_create(&quot;com.jiji.myQueue1&quot;, DISPATCH_QUEUE_CONCURRENT);</div><div class="line"></div><div class="line">// 添加同步任务</div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block0---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:5];</div><div class="line">    NSLog(@&quot;finished block0!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">// 在全局队列中向自定义队列中派发同步任务</div><div class="line">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^&#123;</div><div class="line">//        NSLog(@&quot;current thread = %@&quot;, [NSThread currentThread]);</div><div class="line"></div><div class="line">    // 添加同步任务</div><div class="line">    dispatch_sync(myQueue, ^&#123;</div><div class="line">        NSLog(@&quot;start block1---------%@&quot;, [NSThread currentThread]);</div><div class="line">        [NSThread sleepForTimeInterval:2];</div><div class="line">        NSLog(@&quot;finished block1!!!!!!!!&quot;);</div><div class="line">    &#125;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block2---------%@&quot;, [NSThread currentThread]);</div><div class="line">    sleep(2);</div><div class="line">    NSLog(@&quot;finished block2!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block3---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block3!!!!!!!!&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 14:59:05.769961+0800 Thread_Test2[6879:280233] start block0———<nsthread: 0x600000069080="">{number = 1, name = main}<br>2018-03-05 14:59:10.770410+0800 Thread_Test2[6879:280233] finished block0!!!!!!!!<br>2018-03-05 14:59:10.770848+0800 Thread_Test2[6879:280233] start block2———<nsthread: 0x600000069080="">{number = 1, name = main}<br>2018-03-05 14:59:10.770956+0800 Thread_Test2[6879:280344] start block1———<nsthread: 0x600000273880="">{number = 3, name = (null)}<br>2018-03-05 14:59:12.771788+0800 Thread_Test2[6879:280233] finished block2!!!!!!!!<br>2018-03-05 14:59:12.772043+0800 Thread_Test2[6879:280233] start block3———<nsthread: 0x600000069080="">{number = 1, name = main}<br>2018-03-05 14:59:12.772084+0800 Thread_Test2[6879:280344] finished block1!!!!!!!!<br>2018-03-05 14:59:14.772608+0800 Thread_Test2[6879:280233] finished block3!!!!!!!!</nsthread:></nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<p>可以看到，执行任务的顺序为“0-2-1-3”（这里是由于block1是在其他线程中派发所致），但是执行时，仔细观察，在同一线程中执行的任务，都是依次执行并完成（与串行队列相同），<strong>但是在不同线程中（block1和block2所在线程），block是并行执行的，这里体现了并发队列的并发性</strong>。所以不能武断地认定“并发队列+同步”与“串行队列+同步”效果相同。这里需要尤其注意！（作为对比，“串行队列+同步”的情况下，在不同线程中派发同步任务，虽然派发顺序可能不同，但任务依然是串行执行，童鞋们请自行验证~）</p>
-<ul>
-<li>并发队列 + 异步任务：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">dispatch_async(globalQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block1---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block1!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_async(globalQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block2---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block2!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_async(globalQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block3---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block3!!!!!!!!&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 15:14:22.892746+0800 Thread_Test2[7097:295593] start block1———<nsthread: 0x604000465fc0="">{number = 3, name = (null)}<br>2018-03-05 15:14:22.892746+0800 Thread_Test2[7097:295584] start block2———<nsthread: 0x600000271cc0="">{number = 4, name = (null)}<br>2018-03-05 15:14:22.892756+0800 Thread_Test2[7097:295582] start block3———<nsthread: 0x6000002718c0="">{number = 5, name = (null)}<br>2018-03-05 15:14:24.897942+0800 Thread_Test2[7097:295584] finished block2!!!!!!!!<br>2018-03-05 15:14:24.897947+0800 Thread_Test2[7097:295582] finished block3!!!!!!!!<br>2018-03-05 15:14:24.897942+0800 Thread_Test2[7097:295593] finished block1!!!!!!!!</nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<p>可以看到，系统开启了三个新线程，同时执行了任务，即“并发+异步”。</p>
-<blockquote>
-<p>综上所述，</p>
-<p><em>“同步”</em>与<em>“异步”</em>的关键是<strong>是否开启新线程</strong>；</p>
-<p><em>“串行”</em>与<em>“并发”</em>的关键是<strong>是否可以同时执行任务</strong>。</p>
-</blockquote>
-<p><em>特别情况–“主队列”</em>：</p>
-<ul>
-<li>主队列 + 同步任务：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t mainQueue = dispatch_get_main_queue();</div><div class="line">dispatch_sync(mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block1---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block1!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_sync(mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block2---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block2!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_sync(mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block3---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block3!!!!!!!!&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：直接死锁。</p>
-<p>死锁原因：由于同步任务的执行顺序是“派发任务1-&gt;执行任务1-&gt;派发任务2-&gt;执行任务2…”，即下一个任务的派发要在上一个任务完成之后才能继续。然而，在主队列中，被派发的任务（block对象）会添加到主队列的末端。此时，<strong>派发任务函数没有返回（没有执行完成），会给主队列的线程加锁；新添加的任务由于在末端，前面的任务没有完成，就没有机会执行，也就不能返回；派发任务函数就不可能再继续往下执行（互相依赖），从而造成死锁</strong>。</p>
-<p>解决方案：在其他队列（非主线程）中向主队列派发同步任务，或在主队列中派发异步任务。</p>
-<p>同样，在串行队列自身内部派发同步任务（“异步任务嵌套同步”或“同步任务嵌套同步”），同样会导致死锁。</p>
-<ul>
-<li>主队列 + 异步任务：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t mainQueue = dispatch_get_main_queue();</div><div class="line">dispatch_async(mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block1---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block1!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_async(mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block2---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block2!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_async(mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block3---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block3!!!!!!!!&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 15:57:48.249706+0800 Thread_Test2[7880:347161] start block1———<nsthread: 0x604000065d00="">{number = 1, name = main}<br>2018-03-05 15:57:50.250190+0800 Thread_Test2[7880:347161] finished block1!!!!!!!!<br>2018-03-05 15:57:50.250654+0800 Thread_Test2[7880:347161] start block2———<nsthread: 0x604000065d00="">{number = 1, name = main}<br>2018-03-05 15:57:52.251663+0800 Thread_Test2[7880:347161] finished block2!!!!!!!!<br>2018-03-05 15:57:52.252088+0800 Thread_Test2[7880:347161] start block3———<nsthread: 0x604000065d00="">{number = 1, name = main}<br>2018-03-05 15:57:54.253489+0800 Thread_Test2[7880:347161] finished block3!!!!!!!!</nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<p>可见，在主队列派发异步任务，是在主线程同步执行（<strong>主队列中执行异步任务不会开启新线程</strong>）。</p>
-<h4 id="延迟执行任务："><a href="#延迟执行任务：" class="headerlink" title="延迟执行任务："></a>延迟执行任务：</h4><p>使用Dispatch_after函数和dispatch_time_t变量，向指定队列添加延迟指定时间执行的异步任务：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">NSLog(@&quot;start-----&quot;);</div><div class="line">dispatch_queue_t mainQueue = dispatch_get_main_queue();</div><div class="line">dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, (int64_t)3.0 * NSEC_PER_SEC);</div><div class="line">dispatch_after(time, mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;executing block!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">NSLog(@&quot;end======&quot;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 16:34:15.672982+0800 Thread_Test2[8449:389175] start—–<br>2018-03-05 16:34:15.673193+0800 Thread_Test2[8449:389175] end======<br>2018-03-05 16:34:18.673343+0800 Thread_Test2[8449:389175] executing block!!!!!!!!</p>
-</blockquote>
-<h4 id="只执行一次的任务（线程安全）："><a href="#只执行一次的任务（线程安全）：" class="headerlink" title="只执行一次的任务（线程安全）："></a>只执行一次的任务（线程安全）：</h4><p>使用Dispatch_once函数和静态的dispatch_once_t变量实现：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">static dispatch_once_t onceToken;</div><div class="line">dispatch_once(&amp;onceToken, ^&#123;</div><div class="line">    NSLog(@&quot;正在执行~~ %ld&quot;, onceToken);</div><div class="line">&#125;);</div><div class="line">NSLog(@&quot;%ld&quot;, onceToken);</div></pre></td></tr></table></figure>
-<p>连续执行两次，执行结果：</p>
-<blockquote>
-<p>2018-03-05 17:14:38.877559+0800 Thread_Test2[9012:424274] 正在执行~~ 1024<br>2018-03-05 17:14:38.877732+0800 Thread_Test2[9012:424274] -1<br>2018-03-05 17:14:41.878217+0800 Thread_Test2[9012:424274] -1</p>
-</blockquote>
-<p>由于onceToken变量为静态或全局变量，执行一次后会赋值为-1，以后即不会执行，dispatch_once函数可以保证在整个app运行期间只执行一次，且多线程安全（多线程同时调用时会同步执行，block执行完毕后才返回）。常用于单例设计中。</p>
-<h4 id="栅栏任务（任务分隔）："><a href="#栅栏任务（任务分隔）：" class="headerlink" title="栅栏任务（任务分隔）："></a>栅栏任务（任务分隔）：</h4><ul>
-<li>dispatch_barrier_async:</li>
-</ul>
-<p>使用dispatch_barrier_async函数派发的任务将队列中之前和之后的异步任务分隔开（执行完此栅栏任务才执行后面的）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t myQueue = dispatch_queue_create(&quot;com.jiji.myQueue&quot;, DISPATCH_QUEUE_CONCURRENT);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block1---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block1!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block2---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block2!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_barrier_async(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start barrier block---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished barrier block-=-=-=-=&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block3---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block3!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block4---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block4!!!!!!!!&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 17:50:53.017995+0800 Thread_Test2[9520:461498] start block1———<nsthread: 0x604000470ac0="">{number = 3, name = (null)}<br>2018-03-05 17:50:53.017995+0800 Thread_Test2[9520:461499] start block2———<nsthread: 0x604000470b00="">{number = 4, name = (null)}<br>2018-03-05 17:50:55.019075+0800 Thread_Test2[9520:461498] finished block1!!!!!!!!<br>2018-03-05 17:50:55.019075+0800 Thread_Test2[9520:461499] finished block2!!!!!!!!<br>2018-03-05 17:50:55.019459+0800 Thread_Test2[9520:461499] start barrier block———<nsthread: 0x604000470b00="">{number = 4, name = (null)}<br>2018-03-05 17:50:57.021234+0800 Thread_Test2[9520:461499] finished barrier block-=-=-=-=<br>2018-03-05 17:50:57.021626+0800 Thread_Test2[9520:461499] start block3———<nsthread: 0x604000470b00="">{number = 4, name = (null)}<br>2018-03-05 17:50:57.021644+0800 Thread_Test2[9520:461498] start block4———<nsthread: 0x604000470ac0="">{number = 3, name = (null)}<br>2018-03-05 17:50:59.025274+0800 Thread_Test2[9520:461499] finished block3!!!!!!!!<br>2018-03-05 17:50:59.025250+0800 Thread_Test2[9520:461498] finished block4!!!!!!!!</nsthread:></nsthread:></nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<p>注意：dispatch_barrier_async所派发到的队列<strong>必须是自己创建的并发队列</strong>，才会起到分隔作用，<strong>在串行或自带的全局队列中派发相当于普通的dispatch_async异步函数</strong>。</p>
-<ul>
-<li>dispatch_barrier_sync:</li>
-</ul>
-<p>与async版本大致作用相同，都是在自己的异步队列中起到分隔任务执行的作用：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t myQueue = dispatch_queue_create(&quot;com.jiji.myQueue&quot;, DISPATCH_QUEUE_CONCURRENT);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block1---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block1!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block2---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block2!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_barrier_sync(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start barrier block---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished barrier block-=-=-=-=&quot;);</div><div class="line">&#125;);</div><div class="line">NSLog(@&quot;aaa----&quot;);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block3---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block3!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">NSLog(@&quot;bbb===&quot;);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block4---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block4!!!!!!!!&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 18:20:42.129155+0800 Thread_Test2[9940:497853] start block2———<nsthread: 0x60400026e280="">{number = 4, name = (null)}<br>2018-03-05 18:20:42.129156+0800 Thread_Test2[9940:497854] start block1———<nsthread: 0x600000274180="">{number = 3, name = (null)}<br>2018-03-05 18:20:44.133480+0800 Thread_Test2[9940:497853] finished block2!!!!!!!!<br>2018-03-05 18:20:44.133480+0800 Thread_Test2[9940:497854] finished block1!!!!!!!!<br>2018-03-05 18:20:44.134002+0800 Thread_Test2[9940:497766] start barrier block———<nsthread: 0x6000000698c0="">{number = 1, name = main}<br>2018-03-05 18:20:46.134747+0800 Thread_Test2[9940:497766] finished barrier block-=-=-=-=<br>2018-03-05 18:20:46.136687+0800 Thread_Test2[9940:497766] aaa—-<br>2018-03-05 18:20:46.138866+0800 Thread_Test2[9940:497766] bbb===<br>2018-03-05 18:20:46.138930+0800 Thread_Test2[9940:497853] start block3———<nsthread: 0x60400026e280="">{number = 4, name = (null)}<br>2018-03-05 18:20:46.144088+0800 Thread_Test2[9940:497851] start block4———<nsthread: 0x600000273c80="">{number = 5, name = (null)}<br>2018-03-05 18:20:48.150834+0800 Thread_Test2[9940:497853] finished block3!!!!!!!!<br>2018-03-05 18:20:48.151900+0800 Thread_Test2[9940:497851] finished block4!!!!!!!!</nsthread:></nsthread:></nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<p>可见，与async作用大体一致，都是分隔两组任务的执行。区别是：“aaa”和“bbb”的输出是在barrier的任务完成之后。也就是说，<strong>dispatch_barrier_sync派发任务会阻碍当前线程运行，直到barrier的任务完成返回后再继续执行后面的代码</strong>（主线程任务和后面的派发）；而async的版本不会阻碍当前线程执行（会直接先输出“aaa”和“bbb”）。此外，<strong>在串行队列或自带的全局队列中派发barrier任务，相当于dispatch_sync</strong>。</p>
-<h4 id="迭代派发任务："><a href="#迭代派发任务：" class="headerlink" title="迭代派发任务："></a>迭代派发任务：</h4><p>使用dispatch_apply函数可以向队列中迭代派发多个任务，相当于GCD版本的for循环：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//    dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">//    dispatch_queue_t serialQueue = dispatch_queue_create(&quot;com.jiji.my_serial_queue&quot;, DISPATCH_QUEUE_SERIAL);</div><div class="line">dispatch_queue_t concurrentQueue = dispatch_queue_create(&quot;com.jiji.my_concurrent_queue&quot;, DISPATCH_QUEUE_CONCURRENT);</div><div class="line">dispatch_apply((size_t)5, concurrentQueue, ^(size_t index) &#123;</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;apply -- %ld, thread = %@&quot;, index, [NSThread currentThread]);</div><div class="line">&#125;);</div><div class="line">NSLog(@&quot;finished---&quot;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 21:26:02.462338+0800 Thread_Test2[11015:575150] apply – 0, thread = <nsthread: 0x60400007b040="">{number = 1, name = main}<br>2018-03-05 21:26:02.464843+0800 Thread_Test2[11015:575416] apply – 1, thread = <nsthread: 0x60000046ed80="">{number = 5, name = (null)}<br>2018-03-05 21:26:02.464840+0800 Thread_Test2[11015:575417] apply – 2, thread = <nsthread: 0x6040002763c0="">{number = 3, name = (null)}<br>2018-03-05 21:26:02.464854+0800 Thread_Test2[11015:575418] apply – 3, thread = <nsthread: 0x604000276280="">{number = 4, name = (null)}<br>2018-03-05 21:26:04.463205+0800 Thread_Test2[11015:575150] apply – 4, thread = <nsthread: 0x60400007b040="">{number = 1, name = main}<br>2018-03-05 21:26:04.463406+0800 Thread_Test2[11015:575150] finished—</nsthread:></nsthread:></nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<p>如上所示：</p>
-<ul>
-<li>在并发队列或全局队列中，dispatch_apply会派发size_t数量的异步任务，同时阻塞派发线程，待迭代的所有任务全部完成后继续向下执行（并发队列里是并发执行）。同时，系统会动态创建并分配任务的执行线程，防止线程的大量创建，优化多线程执行效率。</li>
-<li>在串行队列中，直接按照dispatch_sync同步任务，在派发线程中串行执行。</li>
-<li>在主队列中，死锁（主线程派发同步任务导致）。</li>
-</ul>
-<blockquote>
-<p>应用场景：<br>以像素为单位的image处理（防止线程爆炸）；<br>字典转模型（并发队列，异步处理后，回到主线程）</p>
-</blockquote>
-<h4 id="队列组："><a href="#队列组：" class="headerlink" title="队列组："></a>队列组：</h4><p>以组的形式管理多个队列执行任务：</p>
-<ul>
-<li>支持以dispatch_group_async的方式派发异步任务到组中；（dispatch_group_enter和dispatch_group_leave与dispatch_async配合使用效果相同）</li>
-<li>支持以dispatch_group_wait的方式阻塞当前队列组，直到执行完成所有派发的任务或到达超时时间后再继续向下执行（完成和超时后，队列组会清空）；</li>
-<li>dispatch_group_notify派发的任务在所有组任务完成后执行。</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">// 创建组</div><div class="line">dispatch_group_t group = dispatch_group_create();</div><div class="line"></div><div class="line">// 派发到全局队列中的异步任务，添加到组中</div><div class="line">dispatch_group_async(group, globalQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block1---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block1!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">// 以dispatch_group_enter的方式添加异步任务到组中</div><div class="line">dispatch_group_enter(group);</div><div class="line">dispatch_async(globalQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block2---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block2!!!!!!!!&quot;);</div><div class="line">    </div><div class="line">    // dispatch_group_leave从组中移除任务</div><div class="line">    dispatch_group_leave(group);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">// 等待任务（这里是等待组中的任务全部完成）</div><div class="line">dispatch_group_wait(group, DISPATCH_TIME_FOREVER);</div><div class="line"></div><div class="line">// 派发到全局队列中的异步任务，添加到组中</div><div class="line">dispatch_group_async(group, globalQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block3---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block3!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">// 全部执行完毕，切换回主线程执行</div><div class="line">dispatch_group_notify(group, dispatch_get_main_queue(), ^&#123;</div><div class="line">    NSLog(@&quot;finished all!!!&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 22:25:57.183194+0800 Thread_Test2[11842:630278] start block2———<nsthread: 0x60400027f800="">{number = 5, name = (null)}<br>2018-03-05 22:25:57.183195+0800 Thread_Test2[11842:630275] start block1———<nsthread: 0x6000004765c0="">{number = 4, name = (null)}<br>2018-03-05 22:25:59.184596+0800 Thread_Test2[11842:630275] finished block1!!!!!!!!<br>2018-03-05 22:25:59.184662+0800 Thread_Test2[11842:630278] finished block2!!!!!!!!<br>2018-03-05 22:25:59.185201+0800 Thread_Test2[11842:630278] start block3———<nsthread: 0x60400027f800="">{number = 5, name = (null)}<br>2018-03-05 22:26:01.189667+0800 Thread_Test2[11842:630278] finished block3!!!!!!!!<br>2018-03-05 22:26:01.189929+0800 Thread_Test2[11842:630025] finished all!!!</nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<h4 id="信号量："><a href="#信号量：" class="headerlink" title="信号量："></a>信号量：</h4><p><strong>信号量是一种基于计数器的多线程同步机制，用来管理对资源的并发访问。</strong></p>
-<p>计数器为原子性的值，可以保证多线程安全，使用时，分为两种情况：</p>
-<ol>
-<li>初始值为0时，可以把两个线程的异步任务变为同步任务（控制先后执行顺序，线程同步）；</li>
-<li>初始值大于0时，可以限制队列中的并发任务数（是几则同时可以有几个任务并发执行）；</li>
-</ol>
-<p>相关函数：</p>
-<ul>
-<li>dispatch_semaphore_create(value)：创建信号量（参数为并发数）</li>
-<li>dispatch_semaphore_wait(semaphore)：抢占资源，信号量值-1</li>
-<li>dispatch_semaphore_signal(semaphore)：释放资源，信号量值+1</li>
-</ul>
-<p>相关实例：</p>
-<ul>
-<li>“异步”变“同步”：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);</div><div class="line"></div><div class="line">__block int number = 0;</div><div class="line"></div><div class="line">dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">dispatch_async(globalQueue, ^&#123;</div><div class="line">    number = 100;</div><div class="line">    // 信号值+1，恢复派发线程继续执行</div><div class="line">    dispatch_semaphore_signal(semaphore);</div><div class="line">&#125;);</div><div class="line">// 初值是0，即为阻塞当前线程，一直等待</div><div class="line">dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</div><div class="line">NSLog(@&quot;number = %d&quot;, number);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 23:02:29.855585+0800 Thread_Test2[12363:659768] number = 100</p>
-</blockquote>
-<ul>
-<li>控制并发线程数：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">// 同时只允许一个线程执行任务</div><div class="line">dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);</div><div class="line">for (int i = 0; i &lt; 10; i++) &#123;</div><div class="line">    dispatch_async(globalQueue, ^&#123;</div><div class="line">        // 抢占资源（-1）</div><div class="line">        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</div><div class="line">        NSLog(@&quot;index = %d, semaphore = %@&quot;, i, semaphore);</div><div class="line">        // 释放资源（+1）</div><div class="line">        dispatch_semaphore_signal(semaphore);</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 23:20:34.300704+0800 Thread_Test2[12777:682814] index = 0, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.300918+0800 Thread_Test2[12777:682816] index = 1, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.301175+0800 Thread_Test2[12777:682815] index = 2, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.302360+0800 Thread_Test2[12777:682813] index = 3, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.303131+0800 Thread_Test2[12777:682814] index = 5, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.304928+0800 Thread_Test2[12777:682826] index = 4, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.305489+0800 Thread_Test2[12777:682816] index = 6, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.306229+0800 Thread_Test2[12777:682827] index = 7, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.306518+0800 Thread_Test2[12777:682829] index = 8, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.306642+0800 Thread_Test2[12777:682828] index = 9, semaphore = <os_dispatch_semaphore: 0x604000291b70=""></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></p>
-</blockquote>
-<p><strong>信号量初值为1时，即为线程加锁</strong>（前一个任务抢占资源后，下一个异步任务执行时，由于信号量值为0，线程进入等待状态，知道前一任务释放资源后继续执行）。</p>
-<ul>
-<li>保证数据的线程安全：</li>
-</ul>
-<p>实例：两个窗口的卖票问题（多线程间的数据共享与一致性）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line">@interface ViewController ()</div><div class="line">&#123;</div><div class="line">    /** 同步卖票系统的信号量 */</div><div class="line">    dispatch_semaphore_t _ticketSemaphore;</div><div class="line">    /** 余票总数 */</div><div class="line">    int _surplusTicketsCount;</div><div class="line">&#125;</div><div class="line">@end</div><div class="line"></div><div class="line">@implementation ViewController</div><div class="line">- (void)viewDidLoad &#123;</div><div class="line">	[self initTicketStatus];</div><div class="line">&#125;</div><div class="line">/** 初始化票及窗口信息 */</div><div class="line">- (void)initTicketStatus &#123;</div><div class="line">    // 每个售票口都是按顺序卖票，所以是串行队列</div><div class="line">    dispatch_queue_t queue1 = dispatch_queue_create(&quot;com.my_queue1&quot;, DISPATCH_QUEUE_SERIAL);</div><div class="line">    dispatch_queue_t queue2 = dispatch_queue_create(&quot;com.my_queue2&quot;, DISPATCH_QUEUE_SERIAL);</div><div class="line">    </div><div class="line">    // 共50张票</div><div class="line">    _surplusTicketsCount = 50;</div><div class="line">    </div><div class="line">    // 信号量同步两个窗口（同时只能一个窗口操作）</div><div class="line">    _ticketSemaphore = dispatch_semaphore_create(1);</div><div class="line">    </div><div class="line">    // 两个窗口同时开卖（每个队列异步执行卖票任务）</div><div class="line">    __weak typeof(self) weakSelf = self;</div><div class="line">    dispatch_async(queue1, ^&#123;</div><div class="line">        [weakSelf saleTicket];</div><div class="line">    &#125;);</div><div class="line">    dispatch_async(queue2, ^&#123;</div><div class="line">        [weakSelf saleTicket];</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)saleTicket &#123;</div><div class="line">    while (1) &#123;</div><div class="line">        // 获取资源（-1），此时信号量值为0，加锁</div><div class="line">        dispatch_semaphore_wait(_ticketSemaphore, DISPATCH_TIME_FOREVER);</div><div class="line">        </div><div class="line">        if (_surplusTicketsCount &gt; 0) &#123;</div><div class="line">            _surplusTicketsCount -= 1;</div><div class="line">            NSLog(@&quot;剩余票数：%d，窗口为：%@&quot;,</div><div class="line">                  _surplusTicketsCount,</div><div class="line">                  [NSThread currentThread]</div><div class="line">            );</div><div class="line">//            [NSThread sleepForTimeInterval:0.2];  // 不加延时时，多线程访问的顺序和值都有问题</div><div class="line">            </div><div class="line">            // 解锁(+1)，恢复资源</div><div class="line">            dispatch_semaphore_signal(_ticketSemaphore);</div><div class="line">        &#125; else &#123;</div><div class="line">            NSLog(@&quot;票已卖完，剩余票数：%d&quot;, _surplusTicketsCount);</div><div class="line">            </div><div class="line">            // 解锁(+1)，恢复资源</div><div class="line">            dispatch_semaphore_signal(_ticketSemaphore);</div><div class="line">            break;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure></p>
-<p>执行结果：两个队列任务依次执行，且执行时，余票信息正常输出。</p>
-<h3 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h3><ul>
-<li><a href="https://www.jianshu.com/p/2d57c72016c6" target="_blank" rel="external">iOS多线程：『GCD』详尽总结</a></li>
-<li><a href="http://blog.csdn.net/liuyang11908/article/details/70757534" target="_blank" rel="external"> iOS GCD之dispatch_semaphore（信号量）</a></li>
-<li><a href="http://blog.csdn.net/u013046795/article/details/47057585" target="_blank" rel="external">通过GCD中的dispatch<em>barrier</em>(a)sync加强对sync中所谓等待的理解</a></li>
-<li><a href="http://www.cocoachina.com/bbs/read.php?tid=1482884" target="_blank" rel="external">GCD中在主线程中用同步函数分派任务到串行队列中会产生死锁是什么原因？</a></li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/05/ios_GCD_learning/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
+    <a href="/2018/03/05/ios_GCD_learning/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">iOS GCD学习总结</div>
+      <i class="icon-circle-right"></i>
+    </a>
   
-    <article id="post-Swift 3.0语法学习记录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/15/Swift 3.0语法学习记录/">Swift 3.0语法学习记录</a>
-    </h1>
-  
-
-        
-        <a href="/2017/08/15/Swift 3.0语法学习记录/" class="archive-article-date">
-  	<time datetime="2017-08-15T15:51:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li><p>重载运算符时，前置运算符需要在“func”关键字前添加<strong>“<em>prefix</em>”</strong>关键字：</p>
-  <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Vector2D</span> </span>&#123;</div><div class="line">    <span class="keyword">var</span> x = <span class="number">0.0</span></div><div class="line">    <span class="keyword">var</span> y = <span class="number">0.0</span></div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">func</span> +<span class="params">(<span class="keyword">left</span>: Vector2D, <span class="keyword">right</span>: Vector2D)</span></span> -&gt; <span class="type">Vector2D</span> &#123;</div><div class="line">    <span class="keyword">return</span> <span class="type">Vector2D</span>(x: <span class="keyword">left</span>.x + <span class="keyword">right</span>.x, y: <span class="keyword">left</span>.y + <span class="keyword">right</span>.y)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 这里是前置运算符重载，需要添加“prefix”标识</span></div><div class="line"><span class="keyword">prefix</span> <span class="function"><span class="keyword">func</span> -<span class="params">(origin: Vector2D)</span></span> -&gt; <span class="type">Vector2D</span> &#123;</div><div class="line">    <span class="keyword">return</span> <span class="type">Vector2D</span>(x: -origin.x, y: -origin.y)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">let</span> vec1 = <span class="type">Vector2D</span>(x: <span class="number">2</span>, y: <span class="number">3</span>)</div><div class="line"><span class="keyword">let</span> vec2 = <span class="type">Vector2D</span>(x: <span class="number">1</span>, y: <span class="number">4</span>)</div><div class="line"><span class="keyword">let</span> vec3 = vec1 + vec2</div><div class="line"><span class="keyword">let</span> vec4 = -vec1</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<pre><code>&gt; 此外，“infix”为中置操作符（如+、-、*、/等两边都需要操作数的）；“postfix”为后置操作符；当然，“prefix”为前置操作符。
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/08/15/Swift 3.0语法学习记录/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-四维矩阵学习记录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/07/四维矩阵学习记录/">四维矩阵？？？</a>
-    </h1>
-  
-
-        
-        <a href="/2017/08/07/四维矩阵学习记录/" class="archive-article-date">
-  	<time datetime="2017-08-07T08:29:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>看了个好东西，<a href="http://www.cnblogs.com/graphics/archive/2012/08/02/2616017.html" target="_blank" rel="external">矩阵-DirectX与OpenGL的不同</a>，原帖讲的很清楚</p>
-<blockquote>
-<p>一直不明白iOS为啥用四维矩阵来表示三维的东西（其他平台可能也如此吧~）</p>
-<p>iOS平台上，使用OpenGL的四维矩阵表示空间</p>
-</blockquote>
-<p><img src="http://pic002.cnblogs.com/images/2012/64257/2012073120462521.gif" alt=""></p>
-<p>上面这个是标准的四维矩阵（这个是DirectX的，与OpenGL的互为转置矩阵，即ios的为竖着的“m11, m12, m13, m14”）</p>
-<p><img src="http://pic002.cnblogs.com/images/2012/64257/2012073121020368.gif" alt=""></p>
-<p>其中，(Tx，Ty，Tz)为平移分量（对应iOS的“m41, m42, m43”）</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/08/07/四维矩阵学习记录/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-SceneKit学习记录1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/18/SceneKit学习记录1/">SceneKit学习记录1_物理身体</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/18/SceneKit学习记录1/" class="archive-article-date">
-  	<time datetime="2017-07-18T05:34:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-18</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://developer.apple.com/documentation/scenekit/scnphysicsbody?language=objc" target="_blank" rel="external">原文档</a></p>
-<h1 id="物理身体类型（SCNPhysicsBodyType）"><a href="#物理身体类型（SCNPhysicsBodyType）" class="headerlink" title="物理身体类型（SCNPhysicsBodyType）"></a>物理身体类型（SCNPhysicsBodyType）</h1><blockquote>
-<p>分为三类：</p>
-<ul>
-<li>静态身体：SCNPhysicsBodyTypeStatic</li>
-<li>动态身体：SCNPhysicsBodyTypeDynamic</li>
-<li>运动身体：SCNPhysicsBodyTypeKinematic</li>
-</ul>
-</blockquote>
-<p><strong>作用</strong>：</p>
-<ul>
-<li>静态身体：不会被力或碰撞影响，不能移动</li>
-<li>动态身体：可以被其他类型的身体碰撞或施加力</li>
-<li>运动身体：不会被力或碰撞影响，但是可以直接移动他们去碰撞动态身体</li>
-</ul>
-<h4 id="Static（静态身体）"><a href="#Static（静态身体）" class="headerlink" title="Static（静态身体）"></a>Static（静态身体）</h4><table>
-<thead>
-<tr>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">影响</th>
-<th style="text-align:center">被影响</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Static</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Dynamic</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Kinematic</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-</tbody>
-</table>
-<h4 id="Dynamic（动态身体）"><a href="#Dynamic（动态身体）" class="headerlink" title="Dynamic（动态身体）"></a>Dynamic（动态身体）</h4><table>
-<thead>
-<tr>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">影响</th>
-<th style="text-align:center">被影响</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Static</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Dynamic</td>
-<td style="text-align:center">√</td>
-<td style="text-align:center">√</td>
-</tr>
-<tr>
-<td style="text-align:center">Kinematic</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">√</td>
-</tr>
-</tbody>
-</table>
-<h4 id="KineMatic（运动身体）"><a href="#KineMatic（运动身体）" class="headerlink" title="KineMatic（运动身体）"></a>KineMatic（运动身体）</h4><table>
-<thead>
-<tr>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">影响</th>
-<th style="text-align:center">被影响</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Static</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Dynamic</td>
-<td style="text-align:center">√</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Kinematic</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-</tbody>
-</table>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/18/SceneKit学习记录1/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-ARKit_doc_9" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/04/ARKit_doc_9/">ARKit文档瞎翻译（9）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/04/ARKit_doc_9/" class="archive-article-date">
-  	<time datetime="2017-07-04T07:19:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://developer.apple.com/documentation/arkit/arscnview/providing_3d_virtual_content_with_scenekit" target="_blank" rel="external">原文请戳</a></p>
-<h1 id="使用SceneKit提供3D内容"><a href="#使用SceneKit提供3D内容" class="headerlink" title="使用SceneKit提供3D内容"></a>使用SceneKit提供3D内容</h1><p>使用SceneKit来添加逼真的3D对象到你的AR体验中</p>
-<hr>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在AR中放置SpriteKit内容，你首先需要一个运行中的AR会话对象（参考<a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">创建一个基本的AR体验</a>）。</p>
-<p>因为ARKit可以自动匹配SceneKit空间到现实空间中，所以放置一个虚拟对象以便可以维持真实世界中的位置，只需要适当地设置这个对象的SceneKit位置就可以。举例来说，在一个默认配置中，下面的代码放置一个10cm的立方体，初始位置在相机前方20厘米处：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> cubeNode = <span class="type">SCNNode</span>(geometry: <span class="type">SCNBox</span>(width: <span class="number">0.1</span>, height: <span class="number">0.1</span>, length: <span class="number">0.1</span>, chamferRadius: <span class="number">0</span>))</div><div class="line">cubeNode.posotion = <span class="type">SCNVector3</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">0.2</span>)<span class="comment">// SceneKit/AR坐标系以“米”为单位</span></div><div class="line">sceneView.scene.rootNode.addChildNode(cubeNode)</div></pre></td></tr></table></figure>
-<p>以上代码直接在视图的SceneKit场景中放置了一个物体，由于ARKit匹配了SceneKit空间到现实空间中，该物体会自动追踪其在现实世界的位置。</p>
-<p>追踪现实位置，你不仅可以使用<a href="https://developer.apple.com/documentation/arkit/aranchor" target="_blank" rel="external">ARAnchor</a>类，或通过创建你自己的锚点并把他们添加到会话对象中，还可以监听ARKit自动创建的锚点。比如，当物体检测功能已打开，ARKit会为<br>每一个检测到的物体添加并更新锚点。要为这些锚点添加可见内容，可以向下面这样实现<a href="https://developer.apple.com/documentation/arkit/arscnviewdelegate" target="_blank" rel="external">ARSCNViewDelegate</a>的方法：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">renderer</span><span class="params">(<span class="number">_</span> renderer: SCNSceneRenderer, didAdd node: SCNNode, <span class="keyword">for</span> anchor: ARAnchor)</span></span> &#123;</div><div class="line">	<span class="comment">// 这个可视物体只允许已检测到的物体</span></div><div class="line">	<span class="keyword">guard</span> <span class="keyword">let</span> planeAnchor = anchor <span class="keyword">as</span>? <span class="type">ARPlaneAnchor</span> <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</div><div class="line">	</div><div class="line">	<span class="comment">// 使用它的位置和大小创建一个SceneKit物体来使节点可见</span></div><div class="line">	<span class="keyword">let</span> plane = <span class="type">SCNPlane</span>(width: <span class="type">SCFloat</span>(planeAnchor.extent.x), height: <span class="type">CGFloat</span>(planeAnchor.extent.z))</div><div class="line">	<span class="keyword">let</span> planeNode = <span class="type">SCNNode</span>(geometry: plane)</div><div class="line">	planeNode.position = <span class="type">SCNVector3Make</span>(planeAnchor.center.x, <span class="number">0</span>, planeAnchor.center.z)</div><div class="line">	</div><div class="line">	<span class="comment">// SCNPlanes在他们自己的坐标空间中式垂直朝向的</span></div><div class="line">	<span class="comment">// 旋转它来匹配水平朝向的ARPlaneAnchor</span></div><div class="line">	planeNode.transform = <span class="type">SCNMatrix4MakeRotation</span>(-<span class="type">Float</span>.pi / <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>)</div><div class="line">	</div><div class="line">	<span class="comment">// 像锚点一样，ARKit拥有这个节点，所以把这个物体添加为一个子节点。</span></div><div class="line">	node.addChildNode(planeNode)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="设计3D资源遵循的最好实践"><a href="#设计3D资源遵循的最好实践" class="headerlink" title="设计3D资源遵循的最好实践"></a>设计3D资源遵循的最好实践</h2><ul>
-<li>使用SceneKit自身的光照模型创建资源以便可以有更逼真的外观。（查看<a href="https://developer.apple.com/documentation/scenekit/scnmaterial" target="_blank" rel="external">SCNMaterial</a>类和<a href="https://developer.apple.com/library/content/samplecode/Badger/Introduction/Intro.html#//apple_ref/doc/uid/TP40017309" target="_blank" rel="external">獾：SceneKit高级渲染</a>示例代码工程）</li>
-<li>烤周围的遮罩阴影以便所有物体都可以在大场景的光照条件下都有合适的光照。</li>
-<li>在AR中如果你想要创建一个虚拟物体并把它放置到外界的水平面上，你需要在3D资源中包含一个带有温和的阴影纹理的透明物体，并把它放到虚拟物体下面。</li>
-</ul>
-<h2 id="另请参阅"><a href="#另请参阅" class="headerlink" title="另请参阅"></a>另请参阅</h2><h6 id="session"><a href="#session" class="headerlink" title="session"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2865589-session?language=objc" target="_blank" rel="external">session</a></h6><pre><code>在视图内容中管理着运动追踪和相机图像处理的AR会话对象
-</code></pre><h6 id="scene"><a href="#scene" class="headerlink" title="scene"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2875547-scene?language=objc" target="_blank" rel="external">scene</a></h6><pre><code>视图中显示的SceneKit场景
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/04/ARKit_doc_9/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-ARKit_doc_8" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/04/ARKit_doc_8/">ARKit文档瞎翻译（8）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/04/ARKit_doc_8/" class="archive-article-date">
-  	<time datetime="2017-07-04T06:05:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">原文请戳</a></p>
-<h1 id="ARSCNView"><a href="#ARSCNView" class="headerlink" title="ARSCNView"></a>ARSCNView</h1><p>使用3D的SceneKit内容进而增强相机来显示AR体验的一种视图。</p>
-<hr>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>ARSCNView提供了一种最简单的方式来创建AR体验，即混合了虚拟的3D内容到相机捕捉的真实世界的视图中。当你运行视图提供的<a href="https://developer.apple.com/documentation/arkit/arsession?language=objc" target="_blank" rel="external">ARSession</a>对象时：</p>
-<ul>
-<li>该视图会自动渲染从相机拍摄到的实时视频并将其作为背景。</li>
-<li>该视图的SceneKit场景坐标系可以直接响应通过会话配置的AR坐标系。</li>
-<li>该视图会自动移动它的SceneKit相机来匹配设备在现实世界中的移动。</li>
-</ul>
-<p>因为ARKit可以自动匹配SceneKit空间到真实世界中，所以放置一个虚拟物体以便可以维持在现实中的位置，只需要适当地设置这个对象的SceneKit位置就可以。</p>
-<p>你无需必须使用<a href="https://developer.apple.com/documentation/arkit/aranchor?language=objc" target="_blank" rel="external">ARAnchor</a>类来追踪添加到场景中的物体位置，但是通过实现<a href="https://developer.apple.com/documentation/arkit/arscnviewdelegate?language=objc" target="_blank" rel="external">ARSCNViewDelegate</a>中的方法，你可以添加SceneKit内容到任何被ARKit自动识别出的锚点上。</p>
-<h2 id="话题"><a href="#话题" class="headerlink" title="话题"></a>话题</h2><h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><h6 id="使用SceneKit提供3D的虚拟内容"><a href="#使用SceneKit提供3D的虚拟内容" class="headerlink" title="使用SceneKit提供3D的虚拟内容"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/providing_3d_virtual_content_with_scenekit?language=objc" target="_blank" rel="external">使用SceneKit提供3D的虚拟内容</a></h6><pre><code>使用SceneKit来添加逼真的3D对象到你的AR体验中
-</code></pre><h6 id="session"><a href="#session" class="headerlink" title="session"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2865796-session?language=objc" target="_blank" rel="external">session</a></h6><pre><code>管理着视图内容中的运动追踪和相机视图处理的AR会话对象
-</code></pre><h6 id="scene"><a href="#scene" class="headerlink" title="scene"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2875547-scene?language=objc" target="_blank" rel="external">scene</a></h6><pre><code>显示在视图中的SceneKit场景
-</code></pre><h3 id="负责AR更新"><a href="#负责AR更新" class="headerlink" title="负责AR更新"></a>负责AR更新</h3><h6 id="delegate"><a href="#delegate" class="headerlink" title="delegate"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2865797-delegate?language=objc" target="_blank" rel="external">delegate</a></h6><pre><code>你提供的一个对象，用于使用SceneKit内容来同步处理视图的AR场景信息。
-</code></pre><h6 id="ARSCNViewDelegate"><a href="#ARSCNViewDelegate" class="headerlink" title="ARSCNViewDelegate"></a><a href="https://developer.apple.com/documentation/arkit/arscnviewdelegate?language=objc" target="_blank" rel="external">ARSCNViewDelegate</a></h6><pre><code>可以实现的一系列方法，你可以用他们使用AR会话对象来同步处理SceneKit内容。
-</code></pre><h3 id="真实世界表面的碰撞检测"><a href="#真实世界表面的碰撞检测" class="headerlink" title="真实世界表面的碰撞检测"></a>真实世界表面的碰撞检测</h3><h6 id="hitTest-types"><a href="#hitTest-types" class="headerlink" title="- hitTest:types:"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2875544-hittest?language=objc" target="_blank" rel="external">- hitTest:types:</a></h6><pre><code>在截取的相机图像中搜索真实世界的物体或AR锚点，与SceneKit视图中的一个点相对应。
-</code></pre><h3 id="映射内容到现实世界的位置中"><a href="#映射内容到现实世界的位置中" class="headerlink" title="映射内容到现实世界的位置中"></a>映射内容到现实世界的位置中</h3><h6 id="anchorForNode"><a href="#anchorForNode" class="headerlink" title="- anchorForNode:"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2875546-anchorfornode?language=objc" target="_blank" rel="external">- anchorForNode:</a></h6><pre><code>如果存在，返回与指定SceneKit节点相关的AR锚点
-</code></pre><h6 id="nodeForAnchor"><a href="#nodeForAnchor" class="headerlink" title="- nodeForAnchor:"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2874122-nodeforanchor?language=objc" target="_blank" rel="external">- nodeForAnchor:</a></h6><pre><code>如果存在，返回与指定AR锚点相关的SceneKit节点
-</code></pre><h3 id="处理场景光照"><a href="#处理场景光照" class="headerlink" title="处理场景光照"></a>处理场景光照</h3><h6 id="automaticallyUpdatesLighting"><a href="#automaticallyUpdatesLighting" class="headerlink" title="automaticallyUpdatesLighting"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2887446-automaticallyupdateslighting?language=objc" target="_blank" rel="external">automaticallyUpdatesLighting</a></h6><pre><code>一个布尔值，指定了在视图的场景中，是否需要ARKit创建并更新SceneKit光照。
-</code></pre><h3 id="调试AR显示"><a href="#调试AR显示" class="headerlink" title="调试AR显示"></a>调试AR显示</h3><h6 id="ARSCNDebugOptions"><a href="#ARSCNDebugOptions" class="headerlink" title="ARSCNDebugOptions"></a><a href="https://developer.apple.com/documentation/arkit/arscndebugoptions?language=objc" target="_blank" rel="external">ARSCNDebugOptions</a></h6><pre><code>绘制遮罩内容的一些设置项来帮助调试在SceneKit视图中的AR追踪功能。
-</code></pre><h2 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h2><h3 id="继承自"><a href="#继承自" class="headerlink" title="继承自"></a>继承自</h3><p><a href="https://developer.apple.com/documentation/scenekit/scnview?language=objc" target="_blank" rel="external">SCNView</a></p>
-<h2 id="另请参阅"><a href="#另请参阅" class="headerlink" title="另请参阅"></a>另请参阅</h2><h3 id="基本视图"><a href="#基本视图" class="headerlink" title="基本视图"></a>基本视图</h3><h6 id="创建一个基本的AR体验"><a href="#创建一个基本的AR体验" class="headerlink" title="创建一个基本的AR体验"></a><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">创建一个基本的AR体验</a></h6><pre><code>配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容
-</code></pre><h6 id="ARSKView"><a href="#ARSKView" class="headerlink" title="ARSKView"></a><a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a></h6><pre><code>使用2D的SpriteKit内容进而增强相机来显示AR体验的一种视图。
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/04/ARKit_doc_8/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-ARKit_doc_7" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/04/ARKit_doc_7/">ARKit文档瞎翻译（7）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/04/ARKit_doc_7/" class="archive-article-date">
-  	<time datetime="2017-07-04T03:28:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">原文请戳</a></p>
-<h1 id="ARSKView"><a href="#ARSKView" class="headerlink" title="ARSKView"></a>ARSKView</h1><p>使用2D的SpriteKit内容进而增强相机来显示AR体验的一种视图。</p>
-<hr>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>使用ARSKView类，可以在设备相机拍摄的真实世界视图的3D空间中放置2D元素来创建AR体验。当你运行这个视图提供的<a href="https://developer.apple.com/documentation/arkit/arsession?language=objc" target="_blank" rel="external">ARSession</a>对象时：</p>
-<ul>
-<li>该视图会自动渲染从相机拍摄到的实时视频并将其作为背景。</li>
-<li>当你实现了<a href="https://developer.apple.com/documentation/arkit/arskviewdelegate?language=objc" target="_blank" rel="external">ARSKViewDelegate</a>的方法把SpriteKit内容和真实世界的位置联系在一起时，该视图会自动缩放并旋转SpriteKit节点，以便他们在相机中看起来就像可以在真实世界中追踪到一样。</li>
-</ul>
-<h2 id="话题"><a href="#话题" class="headerlink" title="话题"></a>话题</h2><h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><h6 id="使用SpriteKit提供2D虚拟内容"><a href="#使用SpriteKit提供2D虚拟内容" class="headerlink" title="使用SpriteKit提供2D虚拟内容"></a><a href="https://developer.apple.com/documentation/arkit/arskview/providing_2d_virtual_content_with_spritekit?language=objc" target="_blank" rel="external">使用SpriteKit提供2D虚拟内容</a></h6><pre><code>在AR体验中，使用SpriteKit在3D空间中放置2D图片
-</code></pre><h6 id="session"><a href="#session" class="headerlink" title="session"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2865589-session?language=objc" target="_blank" rel="external">session</a></h6><pre><code>管理着视图内容中的运动追踪和相机视图处理的AR会话对象
-</code></pre><h3 id="负责AR更新"><a href="#负责AR更新" class="headerlink" title="负责AR更新"></a>负责AR更新</h3><h6 id="delegate"><a href="#delegate" class="headerlink" title="delegate"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2865597-delegate?language=objc" target="_blank" rel="external">delegate</a></h6><pre><code>你提供的一个对象，用于使用SpriteKit内容来同步处理视图中的AR场景信息。
-</code></pre><h6 id="ARSKViewDelegate"><a href="#ARSKViewDelegate" class="headerlink" title="ARSKViewDelegate"></a><a href="https://developer.apple.com/documentation/arkit/arskviewdelegate?language=objc" target="_blank" rel="external">ARSKViewDelegate</a></h6><pre><code>可以实现的一系列方法，你可以用他们使用AR会话对象来同步处理SpriteKit内容。
-</code></pre><h3 id="真实世界表面的碰撞检测"><a href="#真实世界表面的碰撞检测" class="headerlink" title="真实世界表面的碰撞检测"></a>真实世界表面的碰撞检测</h3><h6 id="hitTest-types"><a href="#hitTest-types" class="headerlink" title="- hitTest:types:"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2875733-hittest?language=objc" target="_blank" rel="external">- hitTest:types:</a></h6><pre><code>在截取的相机图像中搜索真实世界的物体或AR锚点，与SpriteKit视图中的一个点相对应。
-</code></pre><h3 id="映射内容到真实世界的位置中"><a href="#映射内容到真实世界的位置中" class="headerlink" title="映射内容到真实世界的位置中"></a>映射内容到真实世界的位置中</h3><h6 id="anchorForNode"><a href="#anchorForNode" class="headerlink" title="- anchorForNode:"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2875729-anchorfornode?language=objc" target="_blank" rel="external">- anchorForNode:</a></h6><pre><code>如果存在，返回与指定SpriteKit节点相关的AR锚点
-</code></pre><h6 id="nodeForAnchor"><a href="#nodeForAnchor" class="headerlink" title="- nodeForAnchor:"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2873513-nodeforanchor?language=objc" target="_blank" rel="external">- nodeForAnchor:</a></h6><pre><code>如果存在，返回与指定AR锚点相关的SpriteKit节点
-</code></pre><h2 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h2><h3 id="继承自"><a href="#继承自" class="headerlink" title="继承自"></a>继承自</h3><p><a href="https://developer.apple.com/documentation/spritekit/skview?language=objc" target="_blank" rel="external">SKView</a></p>
-<h2 id="另请参阅"><a href="#另请参阅" class="headerlink" title="另请参阅"></a>另请参阅</h2><h3 id="基本视图"><a href="#基本视图" class="headerlink" title="基本视图"></a>基本视图</h3><h6 id="创建一个基本的AR体验"><a href="#创建一个基本的AR体验" class="headerlink" title="创建一个基本的AR体验"></a><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">创建一个基本的AR体验</a></h6><pre><code>配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容
-</code></pre><h6 id="ARSCNView"><a href="#ARSCNView" class="headerlink" title="ARSCNView"></a><a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a></h6><pre><code>使用3D的SceneKit内容进而增强相机来显示AR体验的一种视图。
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/04/ARKit_doc_7/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-ARKit_doc_6" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/03/ARKit_doc_6/">ARKit文档瞎翻译（6）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/03/ARKit_doc_6/" class="archive-article-date">
-  	<time datetime="2017-07-03T14:06:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://developer.apple.com/documentation/arkit/arskview/providing_2d_virtual_content_with_spritekit?language=objc" target="_blank" rel="external">原文请戳</a></p>
-<h1 id="使用SpriteKit提供2D内容"><a href="#使用SpriteKit提供2D内容" class="headerlink" title="使用SpriteKit提供2D内容"></a>使用SpriteKit提供2D内容</h1><p>在AR体验中，使用SpriteKit在3D空间中放置2D图片</p>
-<hr>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在AR中放置SpriteKit内容，你首先需要一个运行中的AR会话对象（参考<a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">创建一个基本的AR体验</a>）。</p>
-<p>SpriteKit是内置的2D虚拟内容，但是AR需要的是真实世界的3D空间。使用<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>类通过提供2D精灵（<a href="https://developer.apple.com/documentation/spritekit/sknode?language=objc" target="_blank" rel="external">SKNode</a>对象）相当于真实世界的3D位置（<a href="https://developer.apple.com/documentation/arkit/aranchor?language=objc" target="_blank" rel="external">ARAnchor</a>对象）来创建AR体验。当使用者移动设备，与锚点相似，视图会自动旋转并且缩放SpriteKit节点，以至于他们在相机中看起来就像是在真实世界中一样可以追踪。</p>
-<p>举例来说，你可以放置2D图片就像是漂浮在3D空间中：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 创建一个在相机前面0.2米的平移变换</span></div><div class="line"><span class="keyword">var</span> translation = matrix_identity_float4x4</div><div class="line">translation.column.<span class="number">3</span>.z = -<span class="number">0.2</span></div><div class="line"><span class="keyword">let</span> transform = simd_mul(view.session.currentFrame.camera.transform, translation)</div><div class="line">	</div><div class="line"><span class="comment">//在会话对象上添加一个新锚点</span></div><div class="line"><span class="keyword">let</span> anchor = <span class="type">ARAnchor</span>(transform: transform)</div><div class="line">view.session.add(anchor: anchor)</div><div class="line">	</div><div class="line"><span class="comment">//（其他的什么...）提供一个标签结点来代表锚点</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">view</span><span class="params">(<span class="number">_</span> view: ARSKView, nodeFor anchor: ARAnchor)</span></span> -&gt; <span class="type">SKNode</span>? &#123;</div><div class="line">	<span class="keyword">return</span> <span class="type">SKLabelNode</span>(text: <span class="string">"👾"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>上面中<a href="https://developer.apple.com/documentation/arkit/arskviewdelegate/2865596-view?language=objc" target="_blank" rel="external">view:nodeForAnchor:</a>方法返回一个<a href="https://developer.apple.com/documentation/spritekit/sklabelnode?language=objc" target="_blank" rel="external">SKLabelNode</a>对象，它可以显示一个文字标签。像大多数的SpriteKit节点一样，这个类创建了一个2D的虚拟替代物，所以<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>类展现节点用一种广告牌的方式：精灵缩放并且旋转（沿着它的z轴）以至于它看起来就像是跟随着3D位置中的锚点一样，但是总是朝向着相机。</p>
-<hr>
-<h2 id="另请参阅"><a href="#另请参阅" class="headerlink" title="另请参阅"></a>另请参阅</h2><h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><h6 id="session"><a href="#session" class="headerlink" title="session"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2865589-session?language=objc" target="_blank" rel="external">session</a></h6><pre><code>在视图内容中管理着运动追踪和相机图像处理的AR会话对象
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/03/ARKit_doc_6/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-ARKit_doc_5" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/03/ARKit_doc_5/">ARKit文档瞎翻译（5）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/03/ARKit_doc_5/" class="archive-article-date">
-  	<time datetime="2017-07-03T08:27:40.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">原文请戳</a></p>
-<h1 id="创建一个基本的AR体验"><a href="#创建一个基本的AR体验" class="headerlink" title="创建一个基本的AR体验"></a>创建一个基本的AR体验</h1><p>配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容</p>
-<hr>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>当你使用<a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSSNView</a>或<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>类，ARKit会自动处理创建AR体验中的基本需求：每个视图都显示了一个以实时相机视图作为背景并且渲染了一个你提供的2D或3D覆盖层来创建那个真实世界中的幻想内容。使用其中一个类，你需要配置你想要创建的AR体验的种类，并且为你的覆盖层内容选择位置和代表。</p>
-<p>若使用自己的视图来创建AR体验，请看<a href="https://developer.apple.com/documentation/arkit/displaying_an_ar_experience_with_metal?language=objc" target="_blank" rel="external">使用Metal来展示AR体验</a>。</p>
-<blockquote>
-<p>备注：<br>这篇文章覆盖了在XCode工程模板中的代码。想要查看完整示例代码，使用AR模板创建一个新的iOS工程，并且在内容技术弹出菜单中选择SceneKit或SpriteKit。</p>
-</blockquote>
-<h2 id="配置并运行AR会话"><a href="#配置并运行AR会话" class="headerlink" title="配置并运行AR会话"></a>配置并运行AR会话</h2><p><a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a>和<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>类都包含了一个在创建AR体验中负责运动追踪和图像处理的<a href="https://developer.apple.com/documentation/arkit/arsession?language=objc" target="_blank" rel="external">ARSession</a>对象。可是，为了能够运行这个会话，你必须要提供一个会话配置。</p>
-<p><img src="https://docs-assets.developer.apple.com/published/ffb3831f78/50bedfc6-93ce-400c-a41d-35728e32d653.png" alt="关系图"></p>
-<p><a href="https://developer.apple.com/documentation/arkit/arworldtrackingsessionconfiguration?language=objc" target="_blank" rel="external">ARWorldTrackingSessionConfiguration</a>类提供了更高精度的运动追踪并且开放了一些特性来帮助你放置虚拟内容到真实世界的平面上。在世界追踪不可用的情况下，基本类<a href="https://developer.apple.com/documentation/arkit/arsessionconfiguration?language=objc" target="_blank" rel="external">ARSessionConfiguration</a>提供了简单的运动追踪来许可较少的AR体验。为了允许一个AR会话，使用一个你指定的选项来创建一个会话配置对象，之后在你的<a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a>或<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>实例的<a href="https://developer.apple.com/documentation/arkit/arscnview/2865796-session?language=objc" target="_blank" rel="external">session</a>对象上调用<a href="https://developer.apple.com/documentation/arkit/arsession/2875735-runwithconfiguration?language=objc" target="_blank" rel="external">runWithConfiguration:options:</a>方法。</p>
-<pre><code class="swift"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewWillAppear</span><span class="params">(<span class="number">_</span> animated: Bool)</span></span> {
-    <span class="keyword">super</span>.viewWillAppear(animated)
-
-    <span class="comment">// Create a session configuration</span>
-    <span class="keyword">let</span> configuration = <span class="type">ARWorldTrackingConfiguation</span>()
-    configuration.planeDetection = .horizontal
-
-    <span class="comment">// Run the view's session</span>
-    sceneView.session.run(configuration)
-}
-</code></pre>
-<blockquote>
-<p>注意</p>
-<p>只有视图将要显示在屏幕上时再运行你的会话。</p>
-</blockquote>
-<p>在你已经设置好你的会话对象后，在视图中使用SceneKit或SpriteKit来放置虚拟内容。</p>
-<hr>
-<h2 id="话题"><a href="#话题" class="headerlink" title="话题"></a>话题</h2><h3 id="下一步"><a href="#下一步" class="headerlink" title="下一步"></a>下一步</h3><h6 id="使用SceneKit提供3D虚拟内容"><a href="#使用SceneKit提供3D虚拟内容" class="headerlink" title="使用SceneKit提供3D虚拟内容"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/providing_3d_virtual_content_with_scenekit?language=objc" target="_blank" rel="external">使用SceneKit提供3D虚拟内容</a></h6><pre><code>在AR体验中，使用SceneKit添加逼真的3D对象
-</code></pre><h6 id="使用SpriteKit提供2D虚拟内容"><a href="#使用SpriteKit提供2D虚拟内容" class="headerlink" title="使用SpriteKit提供2D虚拟内容"></a><a href="https://developer.apple.com/documentation/arkit/arskview/providing_2d_virtual_content_with_spritekit?language=objc" target="_blank" rel="external">使用SpriteKit提供2D虚拟内容</a></h6><pre><code>在AR体验中，使用SpriteKit在3D空间中放置2D图片
-</code></pre><h2 id="另请参阅"><a href="#另请参阅" class="headerlink" title="另请参阅"></a>另请参阅</h2><h3 id="基本视图"><a href="#基本视图" class="headerlink" title="基本视图"></a>基本视图</h3><h6 id="ARSCNView"><a href="#ARSCNView" class="headerlink" title="ARSCNView"></a><a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a></h6><pre><code>在AR体验中，使用3D的SceneKit内容来增强相机视图的一种视图。
-</code></pre><h6 id="ARSKView"><a href="#ARSKView" class="headerlink" title="ARSKView"></a><a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a></h6><pre><code>在AR体验中，使用2D的SpriteKit内容来增强相机视图的一种视图。
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/03/ARKit_doc_5/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
+</nav>
 
 
 
@@ -1143,9 +277,10 @@
 
   
   
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
-    </nav>
+  
+
+  
+
   
 
 
@@ -1168,8 +303,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
