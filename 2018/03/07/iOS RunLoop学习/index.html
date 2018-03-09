@@ -8,17 +8,22 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>iOS RunLoop学习 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="还在学习中，只是看了两篇博文，有点醍醐灌顶，待更加了解后更新。。。参考资料： 深入理解RunLoop iOS刨根问底-深入理解RunLoop">
+  <meta name="description" content="RunLoop简介及与线程的关系：简而言之，RunLoop就是一个“do-while”循环–一个事件队列循环。循环时，系统会依次从事件队列中取出事件并执行；没有事件处理时，RunLoop会进入休眠，等待事件唤醒处理，以节省系统资源，即“休眠-&amp;gt;事件唤醒-&amp;gt;处理事件-&amp;gt;休眠…”的逻辑。 在iOS中，RunLoop存在的类为CFRunLoopRef和NSRunLoop。前者为Core">
 <meta name="keywords" content="学习笔记">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS RunLoop学习">
 <meta property="og:url" content="http://yoursite.com/2018/03/07/iOS RunLoop学习/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="还在学习中，只是看了两篇博文，有点醍醐灌顶，待更加了解后更新。。。参考资料： 深入理解RunLoop iOS刨根问底-深入理解RunLoop">
-<meta property="og:updated_time" content="2018-03-07T06:21:53.000Z">
+<meta property="og:description" content="RunLoop简介及与线程的关系：简而言之，RunLoop就是一个“do-while”循环–一个事件队列循环。循环时，系统会依次从事件队列中取出事件并执行；没有事件处理时，RunLoop会进入休眠，等待事件唤醒处理，以节省系统资源，即“休眠-&amp;gt;事件唤醒-&amp;gt;处理事件-&amp;gt;休眠…”的逻辑。 在iOS中，RunLoop存在的类为CFRunLoopRef和NSRunLoop。前者为Core">
+<meta property="og:image" content="https://blog.ibireme.com/wp-content/uploads/2015/05/RunLoop_0.png">
+<meta property="og:image" content="https://blog.ibireme.com/wp-content/uploads/2015/05/RunLoop_1.png">
+<meta property="og:image" content="https://blog.ibireme.com/wp-content/uploads/2015/05/RunLoop_5.png">
+<meta property="og:image" content="https://blog.ibireme.com/wp-content/uploads/2015/05/RunLoop_network.png">
+<meta property="og:updated_time" content="2018-03-09T07:08:26.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS RunLoop学习">
-<meta name="twitter:description" content="还在学习中，只是看了两篇博文，有点醍醐灌顶，待更加了解后更新。。。参考资料： 深入理解RunLoop iOS刨根问底-深入理解RunLoop">
+<meta name="twitter:description" content="RunLoop简介及与线程的关系：简而言之，RunLoop就是一个“do-while”循环–一个事件队列循环。循环时，系统会依次从事件队列中取出事件并执行；没有事件处理时，RunLoop会进入休眠，等待事件唤醒处理，以节省系统资源，即“休眠-&amp;gt;事件唤醒-&amp;gt;处理事件-&amp;gt;休眠…”的逻辑。 在iOS中，RunLoop存在的类为CFRunLoopRef和NSRunLoop。前者为Core">
+<meta name="twitter:image" content="https://blog.ibireme.com/wp-content/uploads/2015/05/RunLoop_0.png">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -176,9 +181,76 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="还在学习中，只是看了两篇博文，有点醍醐灌顶，待更加了解后更新。。。"><a href="#还在学习中，只是看了两篇博文，有点醍醐灌顶，待更加了解后更新。。。" class="headerlink" title="还在学习中，只是看了两篇博文，有点醍醐灌顶，待更加了解后更新。。。"></a>还在学习中，只是看了两篇博文，有点醍醐灌顶，待更加了解后更新。。。</h2><h3 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h3><ul>
+        <h3 id="RunLoop简介及与线程的关系："><a href="#RunLoop简介及与线程的关系：" class="headerlink" title="RunLoop简介及与线程的关系："></a>RunLoop简介及与线程的关系：</h3><p>简而言之，RunLoop就是一个“do-while”循环–一个事件队列循环。循环时，系统会依次从事件队列中取出事件并执行；没有事件处理时，RunLoop会进入休眠，等待事件唤醒处理，以节省系统资源，即“休眠-&gt;事件唤醒-&gt;处理事件-&gt;休眠…”的逻辑。</p>
+<p>在iOS中，RunLoop存在的类为CFRunLoopRef和NSRunLoop。前者为CoreFoundation框架，C语言编写，线程安全；后者是OC封装，线程不安全。</p>
+<p><strong>RunLoop与线程是一一对应的</strong>。根据源代码（苹果的官方文档或下面的参考资料中可以看到）可知，RunLoop对象存在于底层的一个全局字典中，key为线程（线程指针），value为RunLoop对象。</p>
+<p><strong>应用初始化时，系统自动创建此全局字典，并自动创建主线程的RunLoop，以保证APP在运行时不退出。子线程的RunLoop不会自动创建。</strong>由于系统没有直接提供创建RunLoop的API，在子线程中只能通过CFRunLoopGetCurrent()或[NSRunLoop currentRunLoop]来间接获取Runloop（子线程中首次访问RunLoop时，系统会创建RunLoop对象并保存到全局字典中）。获取主线程的RunLoop的方式是CFRunLoopGetMain()和[NSRunLoop mainRunLoop]。</p>
+<h3 id="RunLoop的组成结构："><a href="#RunLoop的组成结构：" class="headerlink" title="RunLoop的组成结构："></a>RunLoop的组成结构：</h3><p>先看图（摘自<a href="https://blog.ibireme.com/2015/05/18/runloop/" target="_blank" rel="external">深入理解RunLoop</a>）</p>
+<p><img src="https://blog.ibireme.com/wp-content/uploads/2015/05/RunLoop_0.png" alt="img"></p>
+<p>如图所示，RunLoop对象包含了若干个Mode对象（CFRunLoopModeRef），一个Mode对象中包含了若干个Item（Item为Source、Observer或Timer的一种或几种）。</p>
+<p>其中<strong>CFRunLoopSourceRef</strong>分为Source0和Source1两种：source0对象只有一个Call_Out回调函数指针，不能主动唤醒RunLoop，处理事件时只能依照RunLoop的执行顺序被动执行或外界手动唤醒；source1对象则不同，除了带有Call_Out回调外，还包含一个Mach_Port端口参数（每个Source1唯一），外部可以通过这个端口与其进行线程间通信，且source1事件可以主动唤醒RunLoop进行处理。</p>
+<p><strong>CFRunLoopObserverRef</strong>即为监听者，带有Call_Out函数回调函数指针，外部可以监听对应Observer来识别当前RunLoop的活动状态，RunLoop的活动状态包括:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">CF_OPTIONS</span><span class="params">(CFOptionFlags, CFRunLoopActivity)</span> </span>&#123;</div><div class="line">	<span class="comment">// 即将进入RunLoop</span></div><div class="line">	kCFRunLoopEntry = (<span class="number">1U</span>L &lt;&lt; <span class="number">0</span>), </div><div class="line">	<span class="comment">// 即将处理Timer</span></div><div class="line">	kCFRunLoopBeforeTimers = (<span class="number">1U</span>L &lt;&lt; <span class="number">1</span>),</div><div class="line">	<span class="comment">// 即将处理Source</span></div><div class="line">	kCFRunLoopBeforeSources = (<span class="number">1U</span>L &lt;&lt; <span class="number">2</span>),</div><div class="line">	<span class="comment">// 即将进入休眠</span></div><div class="line">	kCFRunLoopBeforeWaiting = (<span class="number">1U</span>L &lt;&lt; <span class="number">5</span>),</div><div class="line">	<span class="comment">// 刚刚从睡眠中唤醒</span></div><div class="line">	kCFRunLoopAfterWaiting = (<span class="number">1U</span>L &lt;&lt; <span class="number">6</span>),</div><div class="line">	<span class="comment">// 即将退出RunLoop</span></div><div class="line">	kCFRunLoopExit = (<span class="number">1U</span>L &lt;&lt; <span class="number">7</span>)</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p><strong>CFRunLoopTimerRef</strong>是基于时间的触发器，也包含一个Call_Out回调函数指针（还有RunLoop上所有timer对象共享的的Mach_Port端口），与上层的NSTimer相同（toll-free bridged），添加到系统后，RunLoop会提前计算好触发时间并添加到RunLoop中，等待到时间时自动执行回调。</p>
+<p><strong>Timer、Source0（1）、Observer同城为mode item。一个item可以添加到多个item中（下面的common item会说明）。而且，只有当至少包含一个item的mode存在时，对应的RunLoop对象才会持续运行且不退出（线程“保活”的原因）。</strong></p>
+<h3 id="RunLoop-Mode的结构："><a href="#RunLoop-Mode的结构：" class="headerlink" title="RunLoop Mode的结构："></a>RunLoop Mode的结构：</h3><p>大致结构如下（摘自<a href="https://blog.ibireme.com/2015/05/18/runloop/" target="_blank" rel="external">深入理解RunLoop</a>），可以在APP启动后打印[NSRunLoop currentRunloop]自行查看完整RunLoop对象的结构：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">CFRunLoopMode</span> &#123;</span></div><div class="line">	CFStringRef _name;	<span class="comment">// mode的名称（如“kCFRunLoopDefaultMode”）</span></div><div class="line">	CFMutableSetRef _source0;</div><div class="line">	CFMutableSetRef _source1;</div><div class="line">	CFMutableArrayRef _observers;</div><div class="line">	CFMutableArrayRef _timers;</div><div class="line">	...</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">CFRunLoop</span> &#123;</span></div><div class="line">	CFMutableSetRef _commonModes;</div><div class="line">	CFMutableSetRef _commonModeItems;</div><div class="line">	CFRunLoopModeRef _currentMode;	<span class="comment">// 当前所处mode（即mode的name）</span></div><div class="line">	CFMutableSetRef _modes;		<span class="comment">// 包含所有支持的mode</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面中的<strong>commonModes即为“标记为Common的mode对象集合”。对应的共享item即为commonModeItems集合。每当RunLoop内容变化时，_commonModeItems里面的所有item（observer、timer和source）都会同步到所有的commonModes的mode中。</strong></p>
+<p>例如，对主线程的RunLoop来说，commonModes即包含两个：kCFRunLoopDefaultMode（NSDefaultRunLoopMode）和UITrackingRunLoopMode。其中当app处于列表滑动状态时，主线程处于trackingMode；其余时候处于defaultMode。</p>
+<p><strong>同一时间，RunLoop只能处于一个mode模式下工作，切换mode时需要退出并重新指定mode。</strong></p>
+<h3 id="RunLoop的内部逻辑："><a href="#RunLoop的内部逻辑：" class="headerlink" title="RunLoop的内部逻辑："></a>RunLoop的内部逻辑：</h3><p>就是“do-while”，看图（摘自<a href="https://blog.ibireme.com/2015/05/18/runloop/" target="_blank" rel="external">深入理解RunLoop</a>）：</p>
+<p><img src="https://blog.ibireme.com/wp-content/uploads/2015/05/RunLoop_1.png" alt="img"></p>
+<p>主要的运行循环为2~9步，这部分实现了“do-while”的逻辑；<br>核心为第7步，在没有事件待处理时，进行休眠，等待事件唤醒。</p>
+<h3 id="RunLoop“休眠”机制："><a href="#RunLoop“休眠”机制：" class="headerlink" title="RunLoop“休眠”机制："></a>RunLoop“休眠”机制：</h3><p><strong>休眠时，RunLoop执行的核心函数为：mach_msg();</strong><br>此函数为XNU内核的Mach层的基本函数。Mach对象间使用“消息”在端口（“port”）之间进行进程间通信。<br>mach_msg()函数实际调用了函数mach_msg_trap()，即Mach陷阱函数。调用后，系统会切换至内核态，内核态中的mach_msg()函数完成真正的工作（休眠等待、唤醒等）。</p>
+<p>看图（摘自<a href="https://blog.ibireme.com/2015/05/18/runloop/" target="_blank" rel="external">深入理解RunLoop</a>）：<br><img src="https://blog.ibireme.com/wp-content/uploads/2015/05/RunLoop_5.png" alt="img"></p>
+<h3 id="RunLoop在APP中的功能："><a href="#RunLoop在APP中的功能：" class="headerlink" title="RunLoop在APP中的功能："></a>RunLoop在APP中的功能：</h3><ul>
+<li>AutoReleasePool:</li>
+</ul>
+<p>App启动后，iOS在主线程的RunLoop中注册了两个Observer，回调都是_wrapRunLoopWithAutoreleasePoolHandler()，其中一个优先级为最高（-2147483647），一个为最低（2147483647），这保证了创建自动释放池在所有代码运行之前，且释放池在所有任务之后，使整个app的代码运行在自动释放池中，防止了内存泄漏。</p>
+<ul>
+<li>事件响应：</li>
+</ul>
+<p><strong>iOS注册的用于接收系统硬件事件的Source1对象，回调为__IOHIDEventSystemClientCallback()，用于处理触摸、按键、传感器等事件。</strong></p>
+<p>处理逻辑为：SpringBoard接收到转化后的IOHIDEvent事件，通过mach_port转发给需要的App进程，之后source1的回调会主动触发，调用<strong>UIApplicationHandleEventQueue()进行应用内分发。
+</strong>UIApplicationHandleEventQueue()会将事件包装成UIEvent进行处理或分发。其中，手势、屏幕旋转等转发给UIWindow进行处理，通常的UIButton点击、touchBegin等触摸事件直接在这个回调中进行处理。</p>
+<ul>
+<li>手势识别：</li>
+</ul>
+<p>识别手势时，系统会先调用cancel将touchBegin等事件进行打断，随后会将对应的UIGestureRecognizer标记为待处理。<br>iOS注册的beforeWaiting的observer所对应的回调即为集中处理手势识别的函数：_UIGestureRecognizerUpdateObserver()。其内部会检测所有已标记的手势对象，并调用手势的回调函数。</p>
+<ul>
+<li>界面更新：</li>
+</ul>
+<p>当我们设置了view的frame，更新了view或者layer的层次后，甚至手动调用setNeedsDisplay或setNeedsLayout后，系统并不是立即渲染页面，而是将所有的界面更新请求添加到一个整体的容器中，等待下个RunLoop事件运行时，才进行统一更新。</p>
+<p>iOS会在RunLoop中注册一个Observer，分别监听beforeWaiting和Exit状态，对应的回调为_ZN2CA11Transaction17observer_callbackEP19__CFRunLoopObservermPv()。在这两个状态中，系统会遍历容器中所有的UI更新请求，并统一渲染更新。</p>
+<ul>
+<li>定时器：</li>
+</ul>
+<p>NSTimer即为CFRunLoopTimerRef（timer对象）。注册NSTimer后，系统会在指定的触发时间在RunLoop中添加好timer事件及回调（由于有tolerance时间，不会特别准确，而且若回调timer时，线程正在执行繁重的任务，可能会导致此次调用被错过）。<br>CADisplayLink，是一个与屏幕刷新率相同的定时器（与NSTimer不同，内部为source对象）。功能上与timer相同，且仍然会被长任务卡住。</p>
+<ul>
+<li>PerformSelector：</li>
+</ul>
+<p>调用NSObject的performSelector:afterDelay:时，系统即创建一个timer并添加到线程的RunLoop中（与timer相同）。若此时线程没有RunLoop，则此方法无效（子线程需调用[[NSRunLoop currentRunLoop] run]才可）。</p>
+<ul>
+<li>GCD：</li>
+</ul>
+<p>主要是在dispatch_async(dispatch_get_main_queue(), block)中，libDispatch会发消息主动唤醒主线程的RunLoop，RunLoop即获取block并在<strong>CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE</strong>()中执行这个block。但是在子线程的GCD异步函数中，还是直接由libDispatch进行处理。</p>
+<ul>
+<li>网络请求：</li>
+</ul>
+<p>iOS的网络请求此下而上分为：</p>
+<blockquote>
+<p>CFSocket    -&gt; 负责基本的socket通信<br>CFNetwork    -&gt; socket的封装（ASIHTTPRequest在这工作）<br>NSURLConnection    -&gt; AFNetworking 1.x<br>NSURLSession        -&gt; AFNetworking 2.x，Alamofire</p>
+</blockquote>
+<p>这里解释一下NSURLConnection的delegate不断被调用的原因，NSURLConnection的主要工作过程，看图先（摘自<a href="https://blog.ibireme.com/2015/05/18/runloop/" target="_blank" rel="external">深入理解RunLoop</a>）：</p>
+<p><img src="https://blog.ibireme.com/wp-content/uploads/2015/05/RunLoop_network.png" alt="img"></p>
+<p>NSURLConcentration在调用start开始请求后，delegate会获取请求线程的RunLoop对象，在其中的defaultMode中添加4个source0对象。其中CFMultiplexerSource负责delegate的各种回调，CFHTTPCookieStorage负责各种Cookie。<br>开始网络传输时，NSURLConcentration创建了两个新线程（上图中的CFSocket线程和ConnectionLoader线程），ConnectionLoader线程的RunLoop会接受底层socket线程的source1传递的消息，并通过请求线程的source0事件，唤醒请求线程并调用相应的delegate回调。</p>
+<h3 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h3><ul>
 <li><a href="https://blog.ibireme.com/2015/05/18/runloop/" target="_blank" rel="external">深入理解RunLoop</a></li>
 <li><a href="http://www.cnblogs.com/kenshincui/p/6823841.html" target="_blank" rel="external">iOS刨根问底-深入理解RunLoop</a></li>
+<li><a href="http://www.imlifengfeng.com/blog/?p=487" target="_blank" rel="external">iOS RunLoop详解</a></li>
+<li><a href="http://www.jb51.net/article/123505.htm" target="_blank" rel="external">Dispatch Source Timer的使用及注意事项介绍</a></li>
+<li><a href="https://www.jianshu.com/p/536184bfd163" target="_blank" rel="external">IOS—实例化讲解RunLoop
+</a></li>
 </ul>
 
       
