@@ -271,6 +271,7 @@
 <p>将timer添加到主线程RunLoop的commonMode中：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:<span class="number">0.5</span> repeats:YES block:^(NSTimer * _Nonnull timer) &#123;</div><div class="line">    NSLog(@<span class="string">"timer---"</span>);</div><div class="line">&#125;];</div><div class="line">[[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];</div></pre></td></tr></table></figure>
 <h3 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h3><ul>
+<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW23" target="_blank" rel="external">Run Loops</a></li>
 <li><a href="https://blog.ibireme.com/2015/05/18/runloop/" target="_blank" rel="external">深入理解RunLoop</a></li>
 <li><a href="http://www.cnblogs.com/kenshincui/p/6823841.html" target="_blank" rel="external">iOS刨根问底-深入理解RunLoop</a></li>
 <li><a href="http://www.imlifengfeng.com/blog/?p=487" target="_blank" rel="external">iOS RunLoop详解</a></li>
