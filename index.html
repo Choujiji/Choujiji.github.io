@@ -156,6 +156,79 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Objective-C 2.0 category" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/03/26/Objective-C 2.0 category/">Objective-C 2.0的category</a>
+    </h1>
+  
+
+        
+        <a href="/2018/03/26/Objective-C 2.0 category/" class="archive-article-date">
+  	<time datetime="2018-03-26T14:40:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<ul>
+<li><strong>class和category的数据结构</strong></li>
+<li><strong>为什么category只能添加方法？</strong></li>
+<li><strong>category如何正确添加属性</strong></li>
+<li><strong>category为何不要覆盖父类方法？</strong></li>
+<li><strong>多个category覆盖同名方法的执行顺序</strong></li>
+</ul>
+</blockquote>
+<h3 id="class和category的数据结构"><a href="#class和category的数据结构" class="headerlink" title="class和category的数据结构"></a>class和category的数据结构</h3><p>在学习runtime时，可以知道，<em>OC的所有数据结构，包括对象、类、方法、协议等等，都是C的结构体</em>。<br>类的实例，即对象，主要只包含了一个isa指针，指向其所属的class。而class的isa指针则指向其元类（meta class），元类的isa指向根原类，根元类isa指向自身。</p>
+<p>来一张转烂了的图，顺便说明isa和super指针的指向关系：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3270116-4fef3651af3f80d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/550" alt="img"></p>
+<p>class的主要数据结构（元类与其相同）：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> &#123;</span></div><div class="line">	Class isa    OBJC_ISA_AVAILABILITY;</div><div class="line">	</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> !__OBJC2__</span></div><div class="line">	Class super_class;    <span class="comment">// 父类</span></div><div class="line">	<span class="keyword">const</span> <span class="keyword">char</span> *name;    <span class="comment">// 类名</span></div><div class="line">	<span class="keyword">long</span> version;    <span class="comment">// 类版本信息，默认0</span></div><div class="line">	<span class="keyword">long</span> info;    <span class="comment">// 类信息</span></div><div class="line">	<span class="keyword">long</span> instance_size;    <span class="comment">// 类实例变量大小</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_ivar_list</span> *<span class="title">ivars</span>;</span>    <span class="comment">// 成员变量链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_method_list</span> **<span class="title">methodlists</span>;</span>    <span class="comment">// 方法链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_cache</span> *<span class="title">cache</span>;</span>    <span class="comment">// 方法缓存</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_protocol_list</span> *<span class="title">protocols</span>;</span>    <span class="comment">// 遵循的协议链表</span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"></div><div class="line">&#125; OBJC2_UNAVAILABLE;</div></pre></td></tr></table></figure>
+<p>简要说明下：<br>根据class的数据结构，即可了解runtime的主要功能：可以在运行时获取类的相关信息，包括实例变量、方法列表、协议列表等，且可以通过相关api对各部分进行增删改查等操作（甚至是修改method的实现）。<br>OC中的方法调用，并非在编译期确定调用地址，而是在运行时才会确定调用方法的真正地址（通过objc_msgsend函数进行方法调用）。子类的方法调用，会在methodlist中查找，未找到后，会在父类的methodlist中继续查找，直到找到后调用（未找到后进入消息转发）。找到后，会将此method的地址放入cache中，以加快访问。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/03/26/Objective-C 2.0 category/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-iOS runtime学习" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -176,7 +249,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="开坑，待补-，学习总结"><a href="#开坑，待补-，学习总结" class="headerlink" title="开坑，待补~，学习总结~"></a>开坑，待补~，学习总结~</h3>
+        <h3 id="开坑，待补-，学习总结"><a href="#开坑，待补-，学习总结" class="headerlink" title="开坑，待补~，学习总结~"></a>开坑，待补~，学习总结~</h3><h3 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h3><ul>
+<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048-CH1-SW1" target="_blank" rel="external">Objective-C Runtime Programming Guide</a></li>
+<li><a href="https://www.jianshu.com/p/0e6eb2f9ed5d" target="_blank" rel="external">iOS-runtime通篇详解-上</a></li>
+<li><a href="https://www.jianshu.com/p/f1544b27d007" target="_blank" rel="external">iOS-runtime通篇详解-下</a></li>
+<li><a href="https://www.jianshu.com/p/efeb33712445#" target="_blank" rel="external">Runtime全方位装逼指南
+</a></li>
+</ul>
+
       
 
       
@@ -1127,74 +1207,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/07/04/ARKit_doc_7/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-ARKit_doc_6" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/03/ARKit_doc_6/">ARKit文档瞎翻译（6）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/03/ARKit_doc_6/" class="archive-article-date">
-  	<time datetime="2017-07-03T14:06:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://developer.apple.com/documentation/arkit/arskview/providing_2d_virtual_content_with_spritekit?language=objc" target="_blank" rel="external">原文请戳</a></p>
-<h1 id="使用SpriteKit提供2D内容"><a href="#使用SpriteKit提供2D内容" class="headerlink" title="使用SpriteKit提供2D内容"></a>使用SpriteKit提供2D内容</h1><p>在AR体验中，使用SpriteKit在3D空间中放置2D图片</p>
-<hr>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在AR中放置SpriteKit内容，你首先需要一个运行中的AR会话对象（参考<a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">创建一个基本的AR体验</a>）。</p>
-<p>SpriteKit是内置的2D虚拟内容，但是AR需要的是真实世界的3D空间。使用<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>类通过提供2D精灵（<a href="https://developer.apple.com/documentation/spritekit/sknode?language=objc" target="_blank" rel="external">SKNode</a>对象）相当于真实世界的3D位置（<a href="https://developer.apple.com/documentation/arkit/aranchor?language=objc" target="_blank" rel="external">ARAnchor</a>对象）来创建AR体验。当使用者移动设备，与锚点相似，视图会自动旋转并且缩放SpriteKit节点，以至于他们在相机中看起来就像是在真实世界中一样可以追踪。</p>
-<p>举例来说，你可以放置2D图片就像是漂浮在3D空间中：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 创建一个在相机前面0.2米的平移变换</span></div><div class="line"><span class="keyword">var</span> translation = matrix_identity_float4x4</div><div class="line">translation.column.<span class="number">3</span>.z = -<span class="number">0.2</span></div><div class="line"><span class="keyword">let</span> transform = simd_mul(view.session.currentFrame.camera.transform, translation)</div><div class="line">	</div><div class="line"><span class="comment">//在会话对象上添加一个新锚点</span></div><div class="line"><span class="keyword">let</span> anchor = <span class="type">ARAnchor</span>(transform: transform)</div><div class="line">view.session.add(anchor: anchor)</div><div class="line">	</div><div class="line"><span class="comment">//（其他的什么...）提供一个标签结点来代表锚点</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">view</span><span class="params">(<span class="number">_</span> view: ARSKView, nodeFor anchor: ARAnchor)</span></span> -&gt; <span class="type">SKNode</span>? &#123;</div><div class="line">	<span class="keyword">return</span> <span class="type">SKLabelNode</span>(text: <span class="string">"👾"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>上面中<a href="https://developer.apple.com/documentation/arkit/arskviewdelegate/2865596-view?language=objc" target="_blank" rel="external">view:nodeForAnchor:</a>方法返回一个<a href="https://developer.apple.com/documentation/spritekit/sklabelnode?language=objc" target="_blank" rel="external">SKLabelNode</a>对象，它可以显示一个文字标签。像大多数的SpriteKit节点一样，这个类创建了一个2D的虚拟替代物，所以<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>类展现节点用一种广告牌的方式：精灵缩放并且旋转（沿着它的z轴）以至于它看起来就像是跟随着3D位置中的锚点一样，但是总是朝向着相机。</p>
-<hr>
-<h2 id="另请参阅"><a href="#另请参阅" class="headerlink" title="另请参阅"></a>另请参阅</h2><h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><h6 id="session"><a href="#session" class="headerlink" title="session"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2865589-session?language=objc" target="_blank" rel="external">session</a></h6><pre><code>在视图内容中管理着运动追踪和相机图像处理的AR会话对象
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/03/ARKit_doc_6/">展开全文 >></a>
         </p>
       
 

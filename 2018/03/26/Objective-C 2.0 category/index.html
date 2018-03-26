@@ -6,17 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2018 | 臭吉吉的瞎记空间</title>
+  <title>Objective-C 2.0的category | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="督促自己好好学习哦~">
-<meta property="og:type" content="website">
-<meta property="og:title" content="臭吉吉的瞎记空间">
-<meta property="og:url" content="http://yoursite.com/archives/2018/index.html">
+  <meta name="description" content="class和category的数据结构 为什么category只能添加方法？ category如何正确添加属性 category为何不要覆盖父类方法？ 多个category覆盖同名方法的执行顺序   class和category的数据结构在学习runtime时，可以知道，OC的所有数据结构，包括对象、类、方法、协议等等，都是C的结构体。类的实例，即对象，主要只包含了一个isa指针，指向其所属的">
+<meta name="keywords" content="学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Objective-C 2.0的category">
+<meta property="og:url" content="http://yoursite.com/2018/03/26/Objective-C 2.0 category/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="督促自己好好学习哦~">
+<meta property="og:description" content="class和category的数据结构 为什么category只能添加方法？ category如何正确添加属性 category为何不要覆盖父类方法？ 多个category覆盖同名方法的执行顺序   class和category的数据结构在学习runtime时，可以知道，OC的所有数据结构，包括对象、类、方法、协议等等，都是C的结构体。类的实例，即对象，主要只包含了一个isa指针，指向其所属的">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3270116-4fef3651af3f80d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/550">
+<meta property="og:updated_time" content="2018-03-26T15:24:10.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="臭吉吉的瞎记空间">
-<meta name="twitter:description" content="督促自己好好学习哦~">
+<meta name="twitter:title" content="Objective-C 2.0的category">
+<meta name="twitter:description" content="class和category的数据结构 为什么category只能添加方法？ category如何正确添加属性 category为何不要覆盖父类方法？ 多个category覆盖同名方法的执行顺序   class和category的数据结构在学习runtime时，可以知道，OC的所有数据结构，包括对象、类、方法、协议等等，都是C的结构体。类的实例，即对象，主要只包含了一个isa指针，指向其所属的">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/3270116-4fef3651af3f80d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/550">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -154,36 +158,49 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-Objective-C 2.0 category" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      Objective-C 2.0的category
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/26/Objective-C 2.0 category/" class="archive-article-date">
+
+        
+        <a href="/2018/03/26/Objective-C 2.0 category/" class="archive-article-date">
   	<time datetime="2018-03-26T14:40:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-26</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/26/Objective-C 2.0 category/">Objective-C 2.0的category</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<ul>
+<li><strong>class和category的数据结构</strong></li>
+<li><strong>为什么category只能添加方法？</strong></li>
+<li><strong>category如何正确添加属性</strong></li>
+<li><strong>category为何不要覆盖父类方法？</strong></li>
+<li><strong>多个category覆盖同名方法的执行顺序</strong></li>
+</ul>
+</blockquote>
+<h3 id="class和category的数据结构"><a href="#class和category的数据结构" class="headerlink" title="class和category的数据结构"></a>class和category的数据结构</h3><p>在学习runtime时，可以知道，<em>OC的所有数据结构，包括对象、类、方法、协议等等，都是C的结构体</em>。<br>类的实例，即对象，主要只包含了一个isa指针，指向其所属的class。而class的isa指针则指向其元类（meta class），元类的isa指向根原类，根元类isa指向自身。</p>
+<p>来一张转烂了的图，顺便说明isa和super指针的指向关系：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3270116-4fef3651af3f80d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/550" alt="img"></p>
+<p>class的主要数据结构（元类与其相同）：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> &#123;</span></div><div class="line">	Class isa    OBJC_ISA_AVAILABILITY;</div><div class="line">	</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> !__OBJC2__</span></div><div class="line">	Class super_class;    <span class="comment">// 父类</span></div><div class="line">	<span class="keyword">const</span> <span class="keyword">char</span> *name;    <span class="comment">// 类名</span></div><div class="line">	<span class="keyword">long</span> version;    <span class="comment">// 类版本信息，默认0</span></div><div class="line">	<span class="keyword">long</span> info;    <span class="comment">// 类信息</span></div><div class="line">	<span class="keyword">long</span> instance_size;    <span class="comment">// 类实例变量大小</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_ivar_list</span> *<span class="title">ivars</span>;</span>    <span class="comment">// 成员变量链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_method_list</span> **<span class="title">methodlists</span>;</span>    <span class="comment">// 方法链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_cache</span> *<span class="title">cache</span>;</span>    <span class="comment">// 方法缓存</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_protocol_list</span> *<span class="title">protocols</span>;</span>    <span class="comment">// 遵循的协议链表</span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"></div><div class="line">&#125; OBJC2_UNAVAILABLE;</div></pre></td></tr></table></figure>
+<p>简要说明下：<br>根据class的数据结构，即可了解runtime的主要功能：可以在运行时获取类的相关信息，包括实例变量、方法列表、协议列表等，且可以通过相关api对各部分进行增删改查等操作（甚至是修改method的实现）。<br>OC中的方法调用，并非在编译期确定调用地址，而是在运行时才会确定调用方法的真正地址（通过objc_msgsend函数进行方法调用）。子类的方法调用，会在methodlist中查找，未找到后，会在父类的methodlist中继续查找，直到找到后调用（未找到后进入消息转发）。找到后，会将此method的地址放入cache中，以加快访问。</p>
 
-        <div class="article-info info-on-right">
-          
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -195,133 +212,89 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2018/03/26/Objective-C 2.0 category/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/14/iOS runtime学习/" class="archive-article-date">
-  	<time datetime="2018-03-14T03:33:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-14</time>
-</a>
-        </div>
-    	 
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/14/iOS runtime学习/">iOS runtime学习</a>
-    </h1>
+  
+    <a href="/2018/03/14/iOS runtime学习/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">iOS runtime学习</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+  
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/07/iOS RunLoop学习/" class="archive-article-date">
-  	<time datetime="2018-03-07T06:21:53.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-07</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/07/iOS RunLoop学习/">iOS RunLoop学习</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/05/ios_GCD_learning/" class="archive-article-date">
-  	<time datetime="2018-03-05T03:20:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-05</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/05/ios_GCD_learning/">iOS GCD学习总结</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -344,8 +317,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: true,

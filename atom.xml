@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-03-14T03:33:33.000Z</updated>
+  <updated>2018-03-26T15:24:10.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,17 +16,63 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Objective-C 2.0的category</title>
+    <link href="http://yoursite.com/2018/03/26/Objective-C%202.0%20category/"/>
+    <id>http://yoursite.com/2018/03/26/Objective-C 2.0 category/</id>
+    <published>2018-03-26T14:40:03.000Z</published>
+    <updated>2018-03-26T15:24:10.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<ul>
+<li><strong>class和category的数据结构</strong></li>
+<li><strong>为什么category只能添加方法？</strong></li>
+<li><strong>category如何正确添加属性</strong></li>
+<li><strong>category为何不要覆盖父类方法？</strong></li>
+<li><strong>多个category覆盖同名方法的执行顺序</strong></li>
+</ul>
+</blockquote>
+<h3 id="class和category的数据结构"><a href="#class和category的数据结构" class="headerlink" title="class和category的数据结构"></a>class和category的数据结构</h3><p>在学习runtime时，可以知道，<em>OC的所有数据结构，包括对象、类、方法、协议等等，都是C的结构体</em>。<br>类的实例，即对象，主要只包含了一个isa指针，指向其所属的class。而class的isa指针则指向其元类（meta class），元类的isa指向根原类，根元类isa指向自身。</p>
+<p>来一张转烂了的图，顺便说明isa和super指针的指向关系：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3270116-4fef3651af3f80d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/550" alt="img"></p>
+<p>class的主要数据结构（元类与其相同）：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> &#123;</span></div><div class="line">	Class isa    OBJC_ISA_AVAILABILITY;</div><div class="line">	</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> !__OBJC2__</span></div><div class="line">	Class super_class;    <span class="comment">// 父类</span></div><div class="line">	<span class="keyword">const</span> <span class="keyword">char</span> *name;    <span class="comment">// 类名</span></div><div class="line">	<span class="keyword">long</span> version;    <span class="comment">// 类版本信息，默认0</span></div><div class="line">	<span class="keyword">long</span> info;    <span class="comment">// 类信息</span></div><div class="line">	<span class="keyword">long</span> instance_size;    <span class="comment">// 类实例变量大小</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_ivar_list</span> *<span class="title">ivars</span>;</span>    <span class="comment">// 成员变量链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_method_list</span> **<span class="title">methodlists</span>;</span>    <span class="comment">// 方法链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_cache</span> *<span class="title">cache</span>;</span>    <span class="comment">// 方法缓存</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_protocol_list</span> *<span class="title">protocols</span>;</span>    <span class="comment">// 遵循的协议链表</span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"></div><div class="line">&#125; OBJC2_UNAVAILABLE;</div></pre></td></tr></table></figure>
+<p>简要说明下：<br>根据class的数据结构，即可了解runtime的主要功能：可以在运行时获取类的相关信息，包括实例变量、方法列表、协议列表等，且可以通过相关api对各部分进行增删改查等操作（甚至是修改method的实现）。<br>OC中的方法调用，并非在编译期确定调用地址，而是在运行时才会确定调用方法的真正地址（通过objc_msgsend函数进行方法调用）。子类的方法调用，会在methodlist中查找，未找到后，会在父类的methodlist中继续查找，直到找到后调用（未找到后进入消息转发）。找到后，会将此method的地址放入cache中，以加快访问。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;class和category的数据结构&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;为什么category只能添加方法？&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;category如何正确添加属性&lt;/s
+    
+    </summary>
+    
+    
+      <category term="学习笔记" scheme="http://yoursite.com/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
     <title>iOS runtime学习</title>
     <link href="http://yoursite.com/2018/03/14/iOS%20runtime%E5%AD%A6%E4%B9%A0/"/>
     <id>http://yoursite.com/2018/03/14/iOS runtime学习/</id>
     <published>2018-03-14T03:33:33.000Z</published>
-    <updated>2018-03-14T03:33:33.000Z</updated>
+    <updated>2018-03-14T08:03:11.000Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="开坑，待补-，学习总结"><a href="#开坑，待补-，学习总结" class="headerlink" title="开坑，待补~，学习总结~"></a>开坑，待补~，学习总结~</h3>]]></content>
+    <content type="html"><![CDATA[<h3 id="开坑，待补-，学习总结"><a href="#开坑，待补-，学习总结" class="headerlink" title="开坑，待补~，学习总结~"></a>开坑，待补~，学习总结~</h3><h3 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h3><ul>
+<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048-CH1-SW1" target="_blank" rel="external">Objective-C Runtime Programming Guide</a></li>
+<li><a href="https://www.jianshu.com/p/0e6eb2f9ed5d" target="_blank" rel="external">iOS-runtime通篇详解-上</a></li>
+<li><a href="https://www.jianshu.com/p/f1544b27d007" target="_blank" rel="external">iOS-runtime通篇详解-下</a></li>
+<li><a href="https://www.jianshu.com/p/efeb33712445#" target="_blank" rel="external">Runtime全方位装逼指南
+</a></li>
+</ul>
+]]></content>
     
     <summary type="html">
     
-      &lt;h3 id=&quot;开坑，待补-，学习总结&quot;&gt;&lt;a href=&quot;#开坑，待补-，学习总结&quot; class=&quot;headerlink&quot; title=&quot;开坑，待补~，学习总结~&quot;&gt;&lt;/a&gt;开坑，待补~，学习总结~&lt;/h3&gt;
+      &lt;h3 id=&quot;开坑，待补-，学习总结&quot;&gt;&lt;a href=&quot;#开坑，待补-，学习总结&quot; class=&quot;headerlink&quot; title=&quot;开坑，待补~，学习总结~&quot;&gt;&lt;/a&gt;开坑，待补~，学习总结~&lt;/h3&gt;&lt;h3 id=&quot;参考资料：&quot;&gt;&lt;a href=&quot;#参考资料：&quot; cla
     
     </summary>
     
