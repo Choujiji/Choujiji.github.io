@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
 <meta property="og:description" content="class和category的数据结构 为什么category只能添加方法？ category如何正确添加属性 category为何不要覆盖父类方法？ 多个category覆盖同名方法的执行顺序   class和category的数据结构在学习runtime时，可以知道，OC的所有数据结构，包括对象、类、方法、协议等等，都是C的结构体。类的实例，即对象，主要只包含了一个isa指针，指向其所属的">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3270116-4fef3651af3f80d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/550">
-<meta property="og:updated_time" content="2018-03-26T15:24:10.000Z">
+<meta property="og:updated_time" content="2018-03-26T15:26:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Objective-C 2.0的category">
 <meta name="twitter:description" content="class和category的数据结构 为什么category只能添加方法？ category如何正确添加属性 category为何不要覆盖父类方法？ 多个category覆盖同名方法的执行顺序   class和category的数据结构在学习runtime时，可以知道，OC的所有数据结构，包括对象、类、方法、协议等等，都是C的结构体。类的实例，即对象，主要只包含了一个isa指针，指向其所属的">
@@ -192,7 +192,11 @@
 <p><img src="https://upload-images.jianshu.io/upload_images/3270116-4fef3651af3f80d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/550" alt="img"></p>
 <p>class的主要数据结构（元类与其相同）：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> &#123;</span></div><div class="line">	Class isa    OBJC_ISA_AVAILABILITY;</div><div class="line">	</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> !__OBJC2__</span></div><div class="line">	Class super_class;    <span class="comment">// 父类</span></div><div class="line">	<span class="keyword">const</span> <span class="keyword">char</span> *name;    <span class="comment">// 类名</span></div><div class="line">	<span class="keyword">long</span> version;    <span class="comment">// 类版本信息，默认0</span></div><div class="line">	<span class="keyword">long</span> info;    <span class="comment">// 类信息</span></div><div class="line">	<span class="keyword">long</span> instance_size;    <span class="comment">// 类实例变量大小</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_ivar_list</span> *<span class="title">ivars</span>;</span>    <span class="comment">// 成员变量链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_method_list</span> **<span class="title">methodlists</span>;</span>    <span class="comment">// 方法链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_cache</span> *<span class="title">cache</span>;</span>    <span class="comment">// 方法缓存</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_protocol_list</span> *<span class="title">protocols</span>;</span>    <span class="comment">// 遵循的协议链表</span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"></div><div class="line">&#125; OBJC2_UNAVAILABLE;</div></pre></td></tr></table></figure>
-<p>简要说明下：<br>根据class的数据结构，即可了解runtime的主要功能：可以在运行时获取类的相关信息，包括实例变量、方法列表、协议列表等，且可以通过相关api对各部分进行增删改查等操作（甚至是修改method的实现）。<br>OC中的方法调用，并非在编译期确定调用地址，而是在运行时才会确定调用方法的真正地址（通过objc_msgsend函数进行方法调用）。子类的方法调用，会在methodlist中查找，未找到后，会在父类的methodlist中继续查找，直到找到后调用（未找到后进入消息转发）。找到后，会将此method的地址放入cache中，以加快访问。</p>
+<p>简要说明下：</p>
+<ul>
+<li>根据class的数据结构，即可了解runtime的主要功能：可以在运行时获取类的相关信息，包括实例变量、方法列表、协议列表等，且可以通过相关api对各部分进行增删改查等操作（甚至是修改method的实现）。</li>
+<li>OC中的方法调用，并非在编译期确定调用地址，而是在运行时才会确定调用方法的真正地址（通过objc_msgsend函数进行方法调用）。子类的方法调用，会在methodlist中查找，未找到后，会在父类的methodlist中继续查找，直到找到后调用（未找到后进入消息转发）。找到后，会将此method的地址放入cache中，以加快访问。</li>
+</ul>
 
       
 
