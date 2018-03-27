@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
 <meta property="og:description" content="class和category的数据结构 为什么category只能添加方法，不能添加属性？ category为何不要覆盖父类方法？ 多个category覆盖同名方法的执行顺序   class和category的数据结构在学习runtime时，可以知道，OC的所有数据结构，包括对象、类、方法、协议等等，都是C的结构体。类的实例，即对象，主要只包含了一个isa指针，指向其所属的class。而cla">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3270116-4fef3651af3f80d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/550">
-<meta property="og:updated_time" content="2018-03-27T05:33:15.000Z">
+<meta property="og:updated_time" content="2018-03-27T05:39:39.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Objective-C 2.0的category">
 <meta name="twitter:description" content="class和category的数据结构 为什么category只能添加方法，不能添加属性？ category为何不要覆盖父类方法？ 多个category覆盖同名方法的执行顺序   class和category的数据结构在学习runtime时，可以知道，OC的所有数据结构，包括对象、类、方法、协议等等，都是C的结构体。类的实例，即对象，主要只包含了一个isa指针，指向其所属的class。而cla">
@@ -226,6 +226,8 @@
 <p>所以，多个分类同时覆盖主类的方法时，执行结果无法直接确定，可能会出现不可预估的问题。</p>
 <p>参考内容：</p>
 <ul>
+<li><a href="https://tech.meituan.com/DiveIntoCategory.html" target="_blank" rel="external">深入理解Objective-C：Category
+</a></li>
 <li><a href="http://blog.sina.com.cn/s/blog_14679a7d20102xae4.html" target="_blank" rel="external">iOS OC中分类Category实现原理</a></li>
 <li><a href="https://www.jianshu.com/p/87cfbdda0a68" target="_blank" rel="external">【iOS】category 重写方法的调用</a></li>
 </ul>
