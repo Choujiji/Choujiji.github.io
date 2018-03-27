@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-03-26T15:26:21.000Z</updated>
+  <updated>2018-03-27T03:09:36.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,13 +20,12 @@
     <link href="http://yoursite.com/2018/03/26/Objective-C%202.0%20category/"/>
     <id>http://yoursite.com/2018/03/26/Objective-C 2.0 category/</id>
     <published>2018-03-26T14:40:03.000Z</published>
-    <updated>2018-03-26T15:26:21.000Z</updated>
+    <updated>2018-03-27T03:09:36.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <ul>
 <li><strong>class和category的数据结构</strong></li>
-<li><strong>为什么category只能添加方法？</strong></li>
-<li><strong>category如何正确添加属性</strong></li>
+<li><strong>为什么category只能添加方法，不能添加属性？</strong></li>
 <li><strong>category为何不要覆盖父类方法？</strong></li>
 <li><strong>多个category覆盖同名方法的执行顺序</strong></li>
 </ul>
@@ -41,6 +40,38 @@
 <li>根据class的数据结构，即可了解runtime的主要功能：可以在运行时获取类的相关信息，包括实例变量、方法列表、协议列表等，且可以通过相关api对各部分进行增删改查等操作（甚至是修改method的实现）。</li>
 <li>OC中的方法调用，并非在编译期确定调用地址，而是在运行时才会确定调用方法的真正地址（通过objc_msgsend函数进行方法调用）。子类的方法调用，会在methodlist中查找，未找到后，会在父类的methodlist中继续查找，直到找到后调用（未找到后进入消息转发）。找到后，会将此method的地址放入cache中，以加快访问。</li>
 </ul>
+<p>我们主要讨论的category，其结构如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">category_t</span> &#123;</span></div><div class="line">	<span class="keyword">const</span> <span class="keyword">char</span> *name;    <span class="comment">// 类名</span></div><div class="line">	<span class="keyword">classref_t</span> cls;    <span class="comment">// 类</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">method_list_t</span> *<span class="title">instanceMethods</span>;</span>    <span class="comment">// 保存添加的实例方法的链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">method_list_t</span> *<span class="title">classMethods</span>;</span>    <span class="comment">// 保存添加的类方法的链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">protocol_list_t</span> *<span class="title">protocols</span>;</span>    <span class="comment">// 保存实现的协议方法的链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">property_list_t</span> *<span class="title">instanceProperties</span>;</span>    <span class="comment">// 保存所有添加的属性</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="为什么category只能添加方法，不能添加属性？"><a href="#为什么category只能添加方法，不能添加属性？" class="headerlink" title="为什么category只能添加方法，不能添加属性？"></a>为什么category只能添加方法，不能添加属性？</h3><p>从category的结构中可以看出，<strong>由于内部只保存了属性，并不包含ivar，即只生成了setter和getter方法的声明，没有对应实现，更没有对应的成员变量保存</strong>。所以在category中添加属性，需要使用runtime的相关对象（associate_object）进行。<br>而且对于category来说，<strong>添加的方法会在编译后添加到主类的方法列表中（实例方法添加到主类，类方法添加到主类所属的元类中）</strong>。</p>
+<h3 id="category为何不要覆盖父类方法？"><a href="#category为何不要覆盖父类方法？" class="headerlink" title="category为何不要覆盖父类方法？"></a>category为何不要覆盖父类方法？</h3><p>我们都知道，在category中覆盖父类方法时，系统会弹出警告（主类也实现了此方法），且调用原方法时，系统会执行category的实现，从而导致原始方法实现被覆盖。这里是为什么？<br>我们知道，由于category的方法在runtime加载后会添加到本类的方法表中，方法表保存的是方法的SEL，可以推测：</p>
+<ol>
+<li>原SEL被覆盖</li>
+<li>两个同名方法都被加入到方法表中，调用时只执行了category的</li>
+</ol>
+<p>另一个问题是，runtime在加载时，对于本类和category的加载顺序是什么。</p>
+<p>参照以下代码可以验证：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">// 主类</div><div class="line">#import &lt;Foundation/Foundation.h&gt;</div><div class="line"></div><div class="line">@interface TestClassForCategory : NSObject</div><div class="line"></div><div class="line">- (void)testMethod;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">#import "TestClassForCategory.h"</div><div class="line"></div><div class="line">@implementation TestClassForCategory</div><div class="line"></div><div class="line">+ (void)load &#123;</div><div class="line">    NSLog(@"load === TestClassForCategory");</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)testMethod &#123;</div><div class="line">    NSLog(@"instance method~~~~");</div><div class="line">&#125;</div><div class="line">@end</div><div class="line"></div><div class="line"></div><div class="line">// 分类（category）</div><div class="line">#import "TestClassForCategory.h"</div><div class="line"></div><div class="line">@interface TestClassForCategory (Category1)</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">#import "TestClassForCategory+Category1.h"</div><div class="line"></div><div class="line">@implementation TestClassForCategory (Category1)</div><div class="line"></div><div class="line">+ (void)load &#123;</div><div class="line">    NSLog(@"load === TestClassForCategory+Category1");</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)testMethod &#123;</div><div class="line">    // category的方法会添加到</div><div class="line">    NSLog(@"category1----");</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
+<p>我们可以在自己的测试类中，实例化TestClassForCategory并调用testMethod方法，可以看到输出结果：</p>
+<blockquote>
+<p>2018-03-27 07:55:10.278999+0800 Runtime_Learning2[3506:4499896] load === TestClassForCategory<br>2018-03-27 07:55:10.280645+0800 Runtime_Learning2[3506:4499896] load === TestClassForCategory+Category1<br>2018-03-27 07:55:14.702309+0800 Runtime_Learning2[3506:4499896] category1—-</p>
+</blockquote>
+<p>由此可以证明，<strong>runtime加载时，首先加载主类，然后加载category。</strong></p>
+<p>我们通过runtime的api来获取一下TestClassForCategory的方法表：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 打印TestClassForCategory的methodlist</span></div><div class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> methodlistCount;</div><div class="line">Method *methodlist =  class_copyMethodList([TestClassForCategory class], &amp;methodlistCount);</div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; methodlistCount; i++) &#123;</div><div class="line">    Method method = methodlist[i];</div><div class="line">    SEL sel = method_getName(method);</div><div class="line">    IMP imp = method_getImplementation(method);</div><div class="line">    NSLog(@<span class="string">"method - %@"</span>, NSStringFromSelector(sel));</div><div class="line">    imp();</div><div class="line">&#125;</div><div class="line"><span class="built_in">free</span>(methodlist);</div></pre></td></tr></table></figure>
+<p>执行结果如下：</p>
+<blockquote>
+<p>2018-03-27 07:55:10.683704+0800 Runtime_Learning2[3506:4499896] method - testMethod<br>2018-03-27 07:55:10.683855+0800<br>Runtime_Learning2[3506:4499896] category1—-<br>2018-03-27 07:55:10.683965+0800 Runtime_Learning2[3506:4499896] method - testMethod<br>2018-03-27 07:55:10.684055+0800 Runtime_Learning2[3506:4499896] instance method<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">可以看到，**在主类的方法表中，果然保存了主类和分类两个SEL，且方法实现均可以被调用**。联系着load方法的执行顺序，我们可以知道，**class在方法列表中添加方法时，是依照“头部插入”的方式（“头插法”）来修改链表的**。</div><div class="line">原理如下（转自[iOS OC中分类Category实现原理](http://blog.sina.com.cn/s/blog_14679a7d20102xae4.html)）：</div><div class="line"></div><div class="line">![img](http://img.blog.csdn.net/20180131104524542?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvc2hpaHVib2tl/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)</div><div class="line"></div><div class="line">由此可见，当分类中覆盖了主类的方法后，**由于分类的方法在原方法前部，导致调用方法时，系统查找到第一个方法后，直接返回执行，本类方法不会执行**。所以一般不建议在分类中覆盖主类方法。</div><div class="line"></div><div class="line">### 多个category覆盖同名方法的执行顺序</div><div class="line"></div><div class="line">我们知道，在类的方法表中添加方法使用的是“头插法”，但当给主类添加多个分类时，分类方法的加载顺序又是如何呢？</div><div class="line">根据代码来看：</div><div class="line"></div><div class="line">``` C</div><div class="line">// 在以上代码的基础上再添加第二个category</div><div class="line">#import &quot;TestClassForCategory.h&quot;</div><div class="line"></div><div class="line">@interface TestClassForCategory (Category2)</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">#import &quot;TestClassForCategory+Category2.h&quot;</div><div class="line"></div><div class="line">@implementation TestClassForCategory (Category2)</div><div class="line"></div><div class="line">+ (void)load &#123;</div><div class="line">    NSLog(@&quot;load === TestClassForCategory+Category2&quot;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)testMethod &#123;</div><div class="line">    // category的方法会添加到</div><div class="line">    NSLog(@&quot;category2----&quot;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div><div class="line">```</div><div class="line">执行结果如下：</div><div class="line">&gt; </div><div class="line">&gt; 2018-03-27 10:58:50.708610+0800 Runtime_Learning2[4434:4568830] load === TestClassForCategory</div><div class="line">&gt; 2018-03-27 10:58:50.711459+0800 Runtime_Learning2[4434:4568830] load === TestClassForCategory+Category1</div><div class="line">&gt; 2018-03-27 10:58:50.712078+0800 Runtime_Learning2[4434:4568830] load === TestClassForCategory+Category2</div><div class="line">&gt; 2018-03-27 10:58:50.927215+0800 Runtime_Learning2[4434:4568830] method - testMethod</div><div class="line">&gt; 2018-03-27 10:58:50.927375+0800 Runtime_Learning2[4434:4568830] category2----</div><div class="line">&gt; 2018-03-27 10:58:50.927585+0800 Runtime_Learning2[4434:4568830] method - testMethod</div><div class="line">&gt; 2018-03-27 10:58:50.928280+0800 Runtime_Learning2[4434:4568830] category1----</div><div class="line">&gt; 2018-03-27 10:58:50.928472+0800 Runtime_Learning2[4434:4568830] method - testMethod</div><div class="line">&gt; 2018-03-27 10:58:50.928653+0800 Runtime_Learning2[4434:4568830] instance method</div></pre></td></tr></table></figure></p>
+<p>2018-03-27 10:58:53.851391+0800 Runtime_Learning2[4434:4568830] category2—-</p>
+</blockquote>
+<p>可以看到，最后加载的category2，则执行方法指向的是category2的方法。原因在哪呢？</p>
+<p>在工程TARGETS -&gt; Build Phases -&gt; Compile Sources中，我们可以看到，自上而下，编译资源的顺序是：Category1.m、Category2.m，我们可以自己上下调整编译顺序并执行，结果显而易见：</p>
+<p><strong>多个category的加载顺序（也是方法的覆盖顺序）是依照Compile Sources的顺序自上而下确定的。</strong></p>
+<p>所以，多个分类同时覆盖主类的方法时，执行结果无法直接确定，可能会出现不可预估的问题。</p>
+<p>参考内容：</p>
+<ul>
+<li><a href="http://blog.sina.com.cn/s/blog_14679a7d20102xae4.html" target="_blank" rel="external">iOS OC中分类Category实现原理</a></li>
+<li><a href="https://www.jianshu.com/p/87cfbdda0a68" target="_blank" rel="external">【iOS】category 重写方法的调用</a></li>
+</ul>
 ]]></content>
     
     <summary type="html">
@@ -48,8 +79,8 @@
       &lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;class和category的数据结构&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;为什么category只能添加方法？&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;category如何正确添加属性&lt;/s
+&lt;li&gt;&lt;strong&gt;为什么category只能添加方法，不能添加属性？&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;category为何不要
     
     </summary>
     
