@@ -220,6 +220,7 @@
 <p>可以看到，最后加载的category2，则执行方法指向的是category2的方法。原因在哪呢？</p>
 <p>在工程TARGETS -&gt; Build Phases -&gt; Compile Sources中，我们可以看到，自上而下，编译资源的顺序是：Category1.m、Category2.m，我们可以自己上下调整编译顺序并执行，结果显而易见：</p>
 <p><strong>多个category的加载顺序（也是方法的覆盖顺序）是依照Compile Sources的顺序自上而下确定的。</strong></p>
+<p><em>注意，返回值不同的方法也会覆盖，因为SEL与返回值无关。</em></p>
 <p>所以，多个分类同时覆盖主类的方法时，执行结果无法直接确定，可能会出现不可预估的问题。</p>
 <p>参考内容：</p>
 <ul>
@@ -290,6 +291,7 @@
 <li><a href="https://www.jianshu.com/p/f1544b27d007" target="_blank" rel="external">iOS-runtime通篇详解-下</a></li>
 <li><a href="https://www.jianshu.com/p/efeb33712445#" target="_blank" rel="external">Runtime全方位装逼指南
 </a></li>
+<li><a href="https://www.jianshu.com/p/19f280afcb24" target="_blank" rel="external">iOS 模块详解—「Runtime面试、工作」看我就 🐒 了 ^_^.</a></li>
 </ul>
 
       
