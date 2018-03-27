@@ -249,6 +249,13 @@
 </li>
 <li><p>提问：当Category已经覆盖了Class中的方法时，如何调用Class中的原方法？<br>  答：由于使用“头插法”，Category的方法已经在Class的方法列表头部。系统调用方法时是从头开始检索，查到对应Method后即跳转IMP进行调用。我们可以使用runtime的api手动遍历Class的方法表，找到最后一个同名方法，直接调用IMP。</p>
 </li>
+<li><p>扩展一个类的方式：</p>
+<ol>
+<li>子类化</li>
+<li>使用category</li>
+<li>使用协议抽象（如UITableView的delegate和data source，可以给具有显示功能的类进行扩展）</li>
+</ol>
+</li>
 </ul>
 <p>参考内容：</p>
 <ul>

@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
 <meta property="og:description" content="class和category的数据结构 为什么category只能添加方法，不能添加属性？ category为何不要覆盖父类方法？ 多个category覆盖同名方法的执行顺序 category与extension的区别 关联对象和其他补充   class和category的数据结构在学习runtime时，可以知道，OC的所有数据结构，包括对象、类、方法、协议等等，都是C的结构体。类的实例，即对">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3270116-4fef3651af3f80d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/550">
-<meta property="og:updated_time" content="2018-03-27T08:42:27.000Z">
+<meta property="og:updated_time" content="2018-03-27T08:50:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Objective-C 2.0的category">
 <meta name="twitter:description" content="class和category的数据结构 为什么category只能添加方法，不能添加属性？ category为何不要覆盖父类方法？ 多个category覆盖同名方法的执行顺序 category与extension的区别 关联对象和其他补充   class和category的数据结构在学习runtime时，可以知道，OC的所有数据结构，包括对象、类、方法、协议等等，都是C的结构体。类的实例，即对">
@@ -250,6 +250,13 @@
 <li><p>提问：在class的load方法中，可以调用Category的方法吗？<br>  答：可以。runtime加载class和category等是在load方法调用前执行的，此时Category的方法已经加载到class的方法列表中，可以直接调用。</p>
 </li>
 <li><p>提问：当Category已经覆盖了Class中的方法时，如何调用Class中的原方法？<br>  答：由于使用“头插法”，Category的方法已经在Class的方法列表头部。系统调用方法时是从头开始检索，查到对应Method后即跳转IMP进行调用。我们可以使用runtime的api手动遍历Class的方法表，找到最后一个同名方法，直接调用IMP。</p>
+</li>
+<li><p>扩展一个类的方式：</p>
+<ol>
+<li>子类化</li>
+<li>使用category</li>
+<li>使用协议抽象（如UITableView的delegate和data source，可以给具有显示功能的类进行扩展）</li>
+</ol>
 </li>
 </ul>
 <p>参考内容：</p>
