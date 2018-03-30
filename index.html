@@ -156,6 +156,114 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Objective-C 2.0 动态绑定和消息转发" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/03/30/Objective-C 2.0 动态绑定和消息转发/">Objective-C 2.0 方法调用中的动态绑定和消息转发</a>
+    </h1>
+  
+
+        
+        <a href="/2018/03/30/Objective-C 2.0 动态绑定和消息转发/" class="archive-article-date">
+  	<time datetime="2018-03-30T06:06:41.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<ul>
+<li><strong>OC方法调用的实质</strong></li>
+<li><strong>动态绑定和消息转发的流程</strong></li>
+<li><strong>动态绑定实例（添加实例方法、添加类方法）</strong></li>
+<li><strong>消息转发实例</strong></li>
+<li><strong>消息转发模拟“多继承”以及二者的区别</strong></li>
+<li><strong>使用消息转发代替继承</strong></li>
+</ul>
+</blockquote>
+<h3 id="OC方法调用的实质"><a href="#OC方法调用的实质" class="headerlink" title="OC方法调用的实质"></a>OC方法调用的实质</h3><p>我们都知道，OC是C语言的超集，赋予了C强大的动态特性，其功劳主要归功于OC的运行时系统（runtime）。OC调用方法的实质是发送消息（即objc_msgSend函数）。在编译期，对象理论上可以调用任何方法，即使此方法并没有实现。直到运行期，系统才会根据方法名（SEL）去class的数据结构中查找对应方法进行方法调用。</p>
+<h3 id="动态绑定和消息转发的流程"><a href="#动态绑定和消息转发的流程" class="headerlink" title="动态绑定和消息转发的流程"></a>动态绑定和消息转发的流程</h3><p>给对象（类的实例）发送消息（即调用方法）的大致流程如下：</p>
+<ol>
+<li>根据实例的isa指针确定所属class</li>
+<li>在class的缓存表中查看是否存在此方法。若存在，加入缓存表后，找到对应IMP直接调用</li>
+<li>不存在缓存时，在class的方法表中查找。若存在，加入缓存表后，找到对应IMP直接调用</li>
+<li>方法表不存在时，根据class的super_class指针，在父类的方法表中继续查找。若存在，加入缓存表后，找到对应IMP直接调用</li>
+<li>都没有查找到时，runtime会启动动态绑定，调用resolveInstanceMethod方法，此时，可以动态添加此方法到class中。如已添加，加入缓存表后，找到对应IMP直接调用</li>
+<li>若没有动态添加方法，runtime会启动快速消息转发机制，即调用forwardTargetForSelector方法。我们可以直接返回一个类实例，指定其为调用者的代理对象，直接执行其对应的方法</li>
+<li>如果没有指定代理对象，runtime会启动完整的消息转发机制（forwardInvocation）：首先，调用methodSignatureForSelector方法，返回一个包含此方法实例对象的方法签名；接着，系统会根据此方法签名，生成一个NSInvacation对象（包含着方法选择器等信息），带有此参数并调用forwardInvocation方法。我们在forwardInvocation中，使用invacation对象调用invokeWithTarget方法，传入需要转发的实例对象。即完成了消息转发，系统会自动调用转发对象的对应方法，并将结果返回给最初的调用者。</li>
+<li>如果我们没有把消息转发给任何对象，最后系统会调用doesNotRecognizeMethod方法，并在其内部抛出异常，即表示无法处理此消息，最终默认crash掉APP。</li>
+</ol>
+<blockquote>
+<p>以上步骤中，1~4为方法的正常调用流程，5为动态绑定流程，6~8为消息转发流程。</p>
+</blockquote>
+<p>转发一张动态绑定和消息转发的流程图（上面的步骤5~8）：<br><img src="https://upload-images.jianshu.io/upload_images/1457495-8ee6afef466e6177.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700" alt="img"></p>
+<h3 id="动态绑定实例"><a href="#动态绑定实例" class="headerlink" title="动态绑定实例"></a>动态绑定实例</h3><ul>
+<li>添加实例方法</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    </div><div class="line">    [self performSelector:@selector(missingMethod:) withObject:@&quot;haha&quot;];</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (BOOL)resolveInstanceMethod:(SEL)sel &#123;</div><div class="line">    if (NSSelectorFromString(@&quot;missingMethod:&quot;) == sel) &#123;</div><div class="line">        // 是我们调用的方法，使用runtime添加实现</div><div class="line">        // 方法描述中，v--void；@--id；:--SEL</div><div class="line">        class_addMethod([self class], sel, (IMP)missingMethodIMP, &quot;v@:@\&quot;NSString\&quot;&quot;);</div><div class="line">        return YES;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    // 返回默认实现</div><div class="line">    return [super resolveInstanceMethod:sel];</div><div class="line">&#125;</div><div class="line"></div><div class="line">void missingMethodIMP(id self, SEL _cmd, NSString *param) &#123;</div><div class="line">    NSLog(@&quot;calling missingMethodIMP with: %@&quot;, param);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>添加类方法：</li>
+</ul>
+<p>我们知道，与实例方法不同，类方法是保存在类所属元类的方法表中（即class -&gt; isa -&gt; meta class -&gt; method list）。所以给类动态绑定类方法，需要绑定到元类中，通过resolveClassMethod进行添加：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    </div><div class="line">    [[self class] performSelector:@selector(missingClassMethod:) withObject:@&quot;haha&quot;];</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (BOOL)resolveClassMethod:(SEL)sel &#123;</div><div class="line">    if (NSSelectorFromString(@&quot;missingClassMethod:&quot;) == sel) &#123;</div><div class="line">        // 是我们调用的方法，使用runtime添加实现</div><div class="line">        // 获取meta class</div><div class="line">        const char *className = class_getName(self);</div><div class="line">        id metaClass = objc_getMetaClass(className);</div><div class="line">        // 添加方法</div><div class="line">        return class_addMethod(metaClass, sel, (IMP)missingClassMethodIMP, &quot;v@:@\&quot;NSString\&quot;&quot;);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    return [super resolveClassMethod:sel];</div><div class="line">&#125;</div><div class="line"></div><div class="line">void missingClassMethodIMP(id self, SEL _cmd, NSString *param) &#123;</div><div class="line">    NSLog(@&quot;calling missingClassMethodIMP with: %@&quot;, param);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="消息转发实例"><a href="#消息转发实例" class="headerlink" title="消息转发实例"></a>消息转发实例</h3><p>这里只列举了实例方法的消息转发。对于类方法的消息转发，只需将对应的“-”改为“+”即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line">#import &lt;Foundation/Foundation.h&gt;</div><div class="line"></div><div class="line">@interface ClassAForForward : NSObject</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">#import &quot;ClassAForForward.h&quot;</div><div class="line">#import &quot;ClassBForForward.h&quot;</div><div class="line"></div><div class="line">@implementation ClassAForForward</div><div class="line"></div><div class="line">+ (BOOL)resolveInstanceMethod:(SEL)sel &#123;</div><div class="line">    // 这里只是演示一下，首先会进入动态绑定过程</div><div class="line">    // 由于没有任何作用，会进入消息转发流程</div><div class="line">    return [super resolveInstanceMethod:sel];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (id)forwardingTargetForSelector:(SEL)aSelector &#123;</div><div class="line">    // 此方法可以直接指定转发的对象</div><div class="line">    // 省略了获取方法签名和生成转发对象组合的方式</div><div class="line">    // 效率高</div><div class="line">    if (aSelector == NSSelectorFromString(@&quot;methodB&quot;)) &#123;</div><div class="line">        return [[ClassBForForward alloc] init];</div><div class="line">    &#125;</div><div class="line">    // 直接返回，则会触发完整的消息转发机制</div><div class="line">    return [super forwardingTargetForSelector:aSelector];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector &#123;</div><div class="line">    NSMethodSignature *signature = [super methodSignatureForSelector:aSelector];</div><div class="line">    if (!signature) &#123;</div><div class="line">        // 找不到SEL对应的方法签名，</div><div class="line">        // 提供一个自定义的方法签名，返回给本类用于转发调用（forwardInvocation）</div><div class="line">        ClassBForForward *bInstance = [[ClassBForForward alloc] init];</div><div class="line">        // 将带有此selector的类的方法签名返回给本类</div><div class="line">        // 使本类调用“转发调用”方法（forwardInvocation）【即runtime会生成一个invocation传入到转发方法中并调用】</div><div class="line">        // 相当于带有selector的类实例“代理”了本类执行selector</div><div class="line">        signature = [bInstance methodSignatureForSelector:aSelector];</div><div class="line">    &#125;</div><div class="line">    return signature;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)forwardInvocation:(NSInvocation *)anInvocation &#123;</div><div class="line">    SEL aSelector = [anInvocation selector];</div><div class="line">    if (aSelector) &#123;</div><div class="line">        // 本类实例指定代理对象来调用selector</div><div class="line">        // 转发给代理对象</div><div class="line">        ClassBForForward *bInstance = [[ClassBForForward alloc] init];</div><div class="line">        [anInvocation invokeWithTarget:bInstance];</div><div class="line">    &#125; else &#123;</div><div class="line">        // 返回给系统继续调用（调用doesNotRecognizeSelector方法）</div><div class="line">        [super forwardInvocation:anInvocation];</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)doesNotRecognizeSelector:(SEL)aSelector &#123;</div><div class="line">    // 最终无法转发的方法，会执行这里，之后默认crash</div><div class="line">    [super doesNotRecognizeSelector:aSelector];</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
+<h3 id="消息转发模拟“多继承”以及二者的区别"><a href="#消息转发模拟“多继承”以及二者的区别" class="headerlink" title="消息转发模拟“多继承”以及二者的区别"></a>消息转发模拟“多继承”以及二者的区别</h3><p>面向对象编程，其实根本目的就是为了代码复用。面向对象的方式之一就是继承，但由于OC只支持单继承，一定程度上减少了很多代码复用的机会，而且并不是所有的类都可以直接继承（如OC的类簇）。而消息转发机制可以在一定程度上解决这个问题。</p>
+<p>个人理解，消息转发实际上与代理模式一样，调用者本身不具备指定功能，通过代理对象调用方法来间接实现自己的功能。外部看起来与本身直接调用一样。当把多个功能分别转发给多个对象后，调用者本身就具备了多个类的多种功能，看起来就像是多继承一样。这也就赋予了OC“多继承”的功能，而且实现了代码复用（功能复用）。</p>
+<p>但是消息转发和真正的多继承还是存在明显区别的：</p>
+<ul>
+<li>多继承是“多合一”：多个父类的功能组合生成子类，子类的功能及结构会变多且复杂。</li>
+<li>消息转发是“一分多”：通过代理对象，将多个功能分发到多个类中进行实现，本类的实际结构和功能则相对简单，且对外部透明。</li>
+</ul>
+<h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3><p>虽然消息转发隐藏了细节，在外部看起来像是调用类存在某种功能（实现了这个方法），或者是你认为调用类“继承”了转发类。但实际上，通过诸如respondsToSelector、isKindOfClass等函数还是可以识别出真相（此类函数只会查看本身的继承链，不会查看转发链）。如果你想要完全模拟“继承”，则需要覆盖此类方法才行。<br><em>官方文档有说过，一定要慎用消息转发，在没有彻底弄清转发机制和本类及转发类的功能时，不要乱用这个机制。</em></p>
+<p>参考内容：</p>
+<ul>
+<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtForwarding.html#//apple_ref/doc/uid/TP40008048-CH105-SW1" target="_blank" rel="external">Message Forwarding</a></li>
+<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtDynamicResolution.html#//apple_ref/doc/uid/TP40008048-CH102-SW1" target="_blank" rel="external">Dynamic Method Resolution</a></li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/03/30/Objective-C 2.0 动态绑定和消息转发/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-Objective-C 2.0 category" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1207,82 +1315,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/07/04/ARKit_doc_8/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-ARKit_doc_7" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/04/ARKit_doc_7/">ARKit文档瞎翻译（7）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/04/ARKit_doc_7/" class="archive-article-date">
-  	<time datetime="2017-07-04T03:28:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">原文请戳</a></p>
-<h1 id="ARSKView"><a href="#ARSKView" class="headerlink" title="ARSKView"></a>ARSKView</h1><p>使用2D的SpriteKit内容进而增强相机来显示AR体验的一种视图。</p>
-<hr>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>使用ARSKView类，可以在设备相机拍摄的真实世界视图的3D空间中放置2D元素来创建AR体验。当你运行这个视图提供的<a href="https://developer.apple.com/documentation/arkit/arsession?language=objc" target="_blank" rel="external">ARSession</a>对象时：</p>
-<ul>
-<li>该视图会自动渲染从相机拍摄到的实时视频并将其作为背景。</li>
-<li>当你实现了<a href="https://developer.apple.com/documentation/arkit/arskviewdelegate?language=objc" target="_blank" rel="external">ARSKViewDelegate</a>的方法把SpriteKit内容和真实世界的位置联系在一起时，该视图会自动缩放并旋转SpriteKit节点，以便他们在相机中看起来就像可以在真实世界中追踪到一样。</li>
-</ul>
-<h2 id="话题"><a href="#话题" class="headerlink" title="话题"></a>话题</h2><h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><h6 id="使用SpriteKit提供2D虚拟内容"><a href="#使用SpriteKit提供2D虚拟内容" class="headerlink" title="使用SpriteKit提供2D虚拟内容"></a><a href="https://developer.apple.com/documentation/arkit/arskview/providing_2d_virtual_content_with_spritekit?language=objc" target="_blank" rel="external">使用SpriteKit提供2D虚拟内容</a></h6><pre><code>在AR体验中，使用SpriteKit在3D空间中放置2D图片
-</code></pre><h6 id="session"><a href="#session" class="headerlink" title="session"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2865589-session?language=objc" target="_blank" rel="external">session</a></h6><pre><code>管理着视图内容中的运动追踪和相机视图处理的AR会话对象
-</code></pre><h3 id="负责AR更新"><a href="#负责AR更新" class="headerlink" title="负责AR更新"></a>负责AR更新</h3><h6 id="delegate"><a href="#delegate" class="headerlink" title="delegate"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2865597-delegate?language=objc" target="_blank" rel="external">delegate</a></h6><pre><code>你提供的一个对象，用于使用SpriteKit内容来同步处理视图中的AR场景信息。
-</code></pre><h6 id="ARSKViewDelegate"><a href="#ARSKViewDelegate" class="headerlink" title="ARSKViewDelegate"></a><a href="https://developer.apple.com/documentation/arkit/arskviewdelegate?language=objc" target="_blank" rel="external">ARSKViewDelegate</a></h6><pre><code>可以实现的一系列方法，你可以用他们使用AR会话对象来同步处理SpriteKit内容。
-</code></pre><h3 id="真实世界表面的碰撞检测"><a href="#真实世界表面的碰撞检测" class="headerlink" title="真实世界表面的碰撞检测"></a>真实世界表面的碰撞检测</h3><h6 id="hitTest-types"><a href="#hitTest-types" class="headerlink" title="- hitTest:types:"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2875733-hittest?language=objc" target="_blank" rel="external">- hitTest:types:</a></h6><pre><code>在截取的相机图像中搜索真实世界的物体或AR锚点，与SpriteKit视图中的一个点相对应。
-</code></pre><h3 id="映射内容到真实世界的位置中"><a href="#映射内容到真实世界的位置中" class="headerlink" title="映射内容到真实世界的位置中"></a>映射内容到真实世界的位置中</h3><h6 id="anchorForNode"><a href="#anchorForNode" class="headerlink" title="- anchorForNode:"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2875729-anchorfornode?language=objc" target="_blank" rel="external">- anchorForNode:</a></h6><pre><code>如果存在，返回与指定SpriteKit节点相关的AR锚点
-</code></pre><h6 id="nodeForAnchor"><a href="#nodeForAnchor" class="headerlink" title="- nodeForAnchor:"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2873513-nodeforanchor?language=objc" target="_blank" rel="external">- nodeForAnchor:</a></h6><pre><code>如果存在，返回与指定AR锚点相关的SpriteKit节点
-</code></pre><h2 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h2><h3 id="继承自"><a href="#继承自" class="headerlink" title="继承自"></a>继承自</h3><p><a href="https://developer.apple.com/documentation/spritekit/skview?language=objc" target="_blank" rel="external">SKView</a></p>
-<h2 id="另请参阅"><a href="#另请参阅" class="headerlink" title="另请参阅"></a>另请参阅</h2><h3 id="基本视图"><a href="#基本视图" class="headerlink" title="基本视图"></a>基本视图</h3><h6 id="创建一个基本的AR体验"><a href="#创建一个基本的AR体验" class="headerlink" title="创建一个基本的AR体验"></a><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">创建一个基本的AR体验</a></h6><pre><code>配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容
-</code></pre><h6 id="ARSCNView"><a href="#ARSCNView" class="headerlink" title="ARSCNView"></a><a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a></h6><pre><code>使用3D的SceneKit内容进而增强相机来显示AR体验的一种视图。
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/04/ARKit_doc_7/">展开全文 >></a>
         </p>
       
 
