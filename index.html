@@ -156,6 +156,141 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-KVC基础学习总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/04/KVC基础学习总结/">KVC基础学习总结</a>
+    </h1>
+  
+
+        
+        <a href="/2018/04/04/KVC基础学习总结/" class="archive-article-date">
+  	<time datetime="2018-04-04T06:16:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>看KVC文档的知识总结</p>
+<h3 id="参考内容："><a href="#参考内容：" class="headerlink" title="参考内容："></a>参考内容：</h3><ul>
+<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueCoding/BasicPrinciples.html#//apple_ref/doc/uid/20002170-BAJEAIEE" target="_blank" rel="external">Key-Value Coding Fundamentals</a></li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/04/04/KVC基础学习总结/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article id="post-iOS Protocol（协议）的简单总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/03/iOS Protocol（协议）的简单总结/">iOS Protocol（协议）的简单总结</a>
+    </h1>
+  
+
+        
+        <a href="/2018/04/03/iOS Protocol（协议）的简单总结/" class="archive-article-date">
+  	<time datetime="2018-04-03T02:50:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>协议保存在类结构的协议表中，我们可以使用runtime的相关api查看指定类遵循的协议，或动态修改遵循的协议等。</p>
+<h3 id="语法总结："><a href="#语法总结：" class="headerlink" title="语法总结："></a>语法总结：</h3><ol>
+<li>协议中可以声明<strong>方法、属性</strong></li>
+<li>协议方法分为可选可必选</li>
+<li><strong>协议属性不会自动合成</strong>（与@dynamic的property一样）</li>
+<li>协议可继承（通过xcode创建的protocol文件，默认继承了NSObject协议），且为单继承，子协议默认继承了父协议的所有内容</li>
+</ol>
+<h3 id="使用建议："><a href="#使用建议：" class="headerlink" title="使用建议："></a>使用建议：</h3><ol>
+<li>当主类遵循多个协议时，可以使用category将主类分开，防止代码量过大且过于复杂</li>
+<li>协议可以让使用类匿名（即对外返回id<xxx>的对象），公开的api放到protocol中，一般用于设计framework等。可以参见NSFetchResultController类的设计。</xxx></li>
+</ol>
+<h3 id="参考内容："><a href="#参考内容：" class="headerlink" title="参考内容："></a>参考内容：</h3><ul>
+<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/WorkingwithProtocols/WorkingwithProtocols.html#//apple_ref/doc/uid/TP40011210-CH11-SW1" target="_blank" rel="external">Working with Protocols</a></li>
+<li></li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/04/03/iOS Protocol（协议）的简单总结/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-Objective-C 2.0 动态绑定和消息转发" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1173,165 +1308,9 @@
 
 
   
-    <article id="post-ARKit_doc_9" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/04/ARKit_doc_9/">ARKit文档瞎翻译（9）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/04/ARKit_doc_9/" class="archive-article-date">
-  	<time datetime="2017-07-04T07:19:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://developer.apple.com/documentation/arkit/arscnview/providing_3d_virtual_content_with_scenekit" target="_blank" rel="external">原文请戳</a></p>
-<h1 id="使用SceneKit提供3D内容"><a href="#使用SceneKit提供3D内容" class="headerlink" title="使用SceneKit提供3D内容"></a>使用SceneKit提供3D内容</h1><p>使用SceneKit来添加逼真的3D对象到你的AR体验中</p>
-<hr>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在AR中放置SpriteKit内容，你首先需要一个运行中的AR会话对象（参考<a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">创建一个基本的AR体验</a>）。</p>
-<p>因为ARKit可以自动匹配SceneKit空间到现实空间中，所以放置一个虚拟对象以便可以维持真实世界中的位置，只需要适当地设置这个对象的SceneKit位置就可以。举例来说，在一个默认配置中，下面的代码放置一个10cm的立方体，初始位置在相机前方20厘米处：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> cubeNode = <span class="type">SCNNode</span>(geometry: <span class="type">SCNBox</span>(width: <span class="number">0.1</span>, height: <span class="number">0.1</span>, length: <span class="number">0.1</span>, chamferRadius: <span class="number">0</span>))</div><div class="line">cubeNode.posotion = <span class="type">SCNVector3</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">0.2</span>)<span class="comment">// SceneKit/AR坐标系以“米”为单位</span></div><div class="line">sceneView.scene.rootNode.addChildNode(cubeNode)</div></pre></td></tr></table></figure>
-<p>以上代码直接在视图的SceneKit场景中放置了一个物体，由于ARKit匹配了SceneKit空间到现实空间中，该物体会自动追踪其在现实世界的位置。</p>
-<p>追踪现实位置，你不仅可以使用<a href="https://developer.apple.com/documentation/arkit/aranchor" target="_blank" rel="external">ARAnchor</a>类，或通过创建你自己的锚点并把他们添加到会话对象中，还可以监听ARKit自动创建的锚点。比如，当物体检测功能已打开，ARKit会为<br>每一个检测到的物体添加并更新锚点。要为这些锚点添加可见内容，可以向下面这样实现<a href="https://developer.apple.com/documentation/arkit/arscnviewdelegate" target="_blank" rel="external">ARSCNViewDelegate</a>的方法：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">renderer</span><span class="params">(<span class="number">_</span> renderer: SCNSceneRenderer, didAdd node: SCNNode, <span class="keyword">for</span> anchor: ARAnchor)</span></span> &#123;</div><div class="line">	<span class="comment">// 这个可视物体只允许已检测到的物体</span></div><div class="line">	<span class="keyword">guard</span> <span class="keyword">let</span> planeAnchor = anchor <span class="keyword">as</span>? <span class="type">ARPlaneAnchor</span> <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</div><div class="line">	</div><div class="line">	<span class="comment">// 使用它的位置和大小创建一个SceneKit物体来使节点可见</span></div><div class="line">	<span class="keyword">let</span> plane = <span class="type">SCNPlane</span>(width: <span class="type">SCFloat</span>(planeAnchor.extent.x), height: <span class="type">CGFloat</span>(planeAnchor.extent.z))</div><div class="line">	<span class="keyword">let</span> planeNode = <span class="type">SCNNode</span>(geometry: plane)</div><div class="line">	planeNode.position = <span class="type">SCNVector3Make</span>(planeAnchor.center.x, <span class="number">0</span>, planeAnchor.center.z)</div><div class="line">	</div><div class="line">	<span class="comment">// SCNPlanes在他们自己的坐标空间中式垂直朝向的</span></div><div class="line">	<span class="comment">// 旋转它来匹配水平朝向的ARPlaneAnchor</span></div><div class="line">	planeNode.transform = <span class="type">SCNMatrix4MakeRotation</span>(-<span class="type">Float</span>.pi / <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>)</div><div class="line">	</div><div class="line">	<span class="comment">// 像锚点一样，ARKit拥有这个节点，所以把这个物体添加为一个子节点。</span></div><div class="line">	node.addChildNode(planeNode)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="设计3D资源遵循的最好实践"><a href="#设计3D资源遵循的最好实践" class="headerlink" title="设计3D资源遵循的最好实践"></a>设计3D资源遵循的最好实践</h2><ul>
-<li>使用SceneKit自身的光照模型创建资源以便可以有更逼真的外观。（查看<a href="https://developer.apple.com/documentation/scenekit/scnmaterial" target="_blank" rel="external">SCNMaterial</a>类和<a href="https://developer.apple.com/library/content/samplecode/Badger/Introduction/Intro.html#//apple_ref/doc/uid/TP40017309" target="_blank" rel="external">獾：SceneKit高级渲染</a>示例代码工程）</li>
-<li>烤周围的遮罩阴影以便所有物体都可以在大场景的光照条件下都有合适的光照。</li>
-<li>在AR中如果你想要创建一个虚拟物体并把它放置到外界的水平面上，你需要在3D资源中包含一个带有温和的阴影纹理的透明物体，并把它放到虚拟物体下面。</li>
-</ul>
-<h2 id="另请参阅"><a href="#另请参阅" class="headerlink" title="另请参阅"></a>另请参阅</h2><h6 id="session"><a href="#session" class="headerlink" title="session"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2865589-session?language=objc" target="_blank" rel="external">session</a></h6><pre><code>在视图内容中管理着运动追踪和相机图像处理的AR会话对象
-</code></pre><h6 id="scene"><a href="#scene" class="headerlink" title="scene"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2875547-scene?language=objc" target="_blank" rel="external">scene</a></h6><pre><code>视图中显示的SceneKit场景
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/04/ARKit_doc_9/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-ARKit_doc_8" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/04/ARKit_doc_8/">ARKit文档瞎翻译（8）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/04/ARKit_doc_8/" class="archive-article-date">
-  	<time datetime="2017-07-04T06:05:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">原文请戳</a></p>
-<h1 id="ARSCNView"><a href="#ARSCNView" class="headerlink" title="ARSCNView"></a>ARSCNView</h1><p>使用3D的SceneKit内容进而增强相机来显示AR体验的一种视图。</p>
-<hr>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>ARSCNView提供了一种最简单的方式来创建AR体验，即混合了虚拟的3D内容到相机捕捉的真实世界的视图中。当你运行视图提供的<a href="https://developer.apple.com/documentation/arkit/arsession?language=objc" target="_blank" rel="external">ARSession</a>对象时：</p>
-<ul>
-<li>该视图会自动渲染从相机拍摄到的实时视频并将其作为背景。</li>
-<li>该视图的SceneKit场景坐标系可以直接响应通过会话配置的AR坐标系。</li>
-<li>该视图会自动移动它的SceneKit相机来匹配设备在现实世界中的移动。</li>
-</ul>
-<p>因为ARKit可以自动匹配SceneKit空间到真实世界中，所以放置一个虚拟物体以便可以维持在现实中的位置，只需要适当地设置这个对象的SceneKit位置就可以。</p>
-<p>你无需必须使用<a href="https://developer.apple.com/documentation/arkit/aranchor?language=objc" target="_blank" rel="external">ARAnchor</a>类来追踪添加到场景中的物体位置，但是通过实现<a href="https://developer.apple.com/documentation/arkit/arscnviewdelegate?language=objc" target="_blank" rel="external">ARSCNViewDelegate</a>中的方法，你可以添加SceneKit内容到任何被ARKit自动识别出的锚点上。</p>
-<h2 id="话题"><a href="#话题" class="headerlink" title="话题"></a>话题</h2><h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><h6 id="使用SceneKit提供3D的虚拟内容"><a href="#使用SceneKit提供3D的虚拟内容" class="headerlink" title="使用SceneKit提供3D的虚拟内容"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/providing_3d_virtual_content_with_scenekit?language=objc" target="_blank" rel="external">使用SceneKit提供3D的虚拟内容</a></h6><pre><code>使用SceneKit来添加逼真的3D对象到你的AR体验中
-</code></pre><h6 id="session"><a href="#session" class="headerlink" title="session"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2865796-session?language=objc" target="_blank" rel="external">session</a></h6><pre><code>管理着视图内容中的运动追踪和相机视图处理的AR会话对象
-</code></pre><h6 id="scene"><a href="#scene" class="headerlink" title="scene"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2875547-scene?language=objc" target="_blank" rel="external">scene</a></h6><pre><code>显示在视图中的SceneKit场景
-</code></pre><h3 id="负责AR更新"><a href="#负责AR更新" class="headerlink" title="负责AR更新"></a>负责AR更新</h3><h6 id="delegate"><a href="#delegate" class="headerlink" title="delegate"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2865797-delegate?language=objc" target="_blank" rel="external">delegate</a></h6><pre><code>你提供的一个对象，用于使用SceneKit内容来同步处理视图的AR场景信息。
-</code></pre><h6 id="ARSCNViewDelegate"><a href="#ARSCNViewDelegate" class="headerlink" title="ARSCNViewDelegate"></a><a href="https://developer.apple.com/documentation/arkit/arscnviewdelegate?language=objc" target="_blank" rel="external">ARSCNViewDelegate</a></h6><pre><code>可以实现的一系列方法，你可以用他们使用AR会话对象来同步处理SceneKit内容。
-</code></pre><h3 id="真实世界表面的碰撞检测"><a href="#真实世界表面的碰撞检测" class="headerlink" title="真实世界表面的碰撞检测"></a>真实世界表面的碰撞检测</h3><h6 id="hitTest-types"><a href="#hitTest-types" class="headerlink" title="- hitTest:types:"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2875544-hittest?language=objc" target="_blank" rel="external">- hitTest:types:</a></h6><pre><code>在截取的相机图像中搜索真实世界的物体或AR锚点，与SceneKit视图中的一个点相对应。
-</code></pre><h3 id="映射内容到现实世界的位置中"><a href="#映射内容到现实世界的位置中" class="headerlink" title="映射内容到现实世界的位置中"></a>映射内容到现实世界的位置中</h3><h6 id="anchorForNode"><a href="#anchorForNode" class="headerlink" title="- anchorForNode:"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2875546-anchorfornode?language=objc" target="_blank" rel="external">- anchorForNode:</a></h6><pre><code>如果存在，返回与指定SceneKit节点相关的AR锚点
-</code></pre><h6 id="nodeForAnchor"><a href="#nodeForAnchor" class="headerlink" title="- nodeForAnchor:"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2874122-nodeforanchor?language=objc" target="_blank" rel="external">- nodeForAnchor:</a></h6><pre><code>如果存在，返回与指定AR锚点相关的SceneKit节点
-</code></pre><h3 id="处理场景光照"><a href="#处理场景光照" class="headerlink" title="处理场景光照"></a>处理场景光照</h3><h6 id="automaticallyUpdatesLighting"><a href="#automaticallyUpdatesLighting" class="headerlink" title="automaticallyUpdatesLighting"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2887446-automaticallyupdateslighting?language=objc" target="_blank" rel="external">automaticallyUpdatesLighting</a></h6><pre><code>一个布尔值，指定了在视图的场景中，是否需要ARKit创建并更新SceneKit光照。
-</code></pre><h3 id="调试AR显示"><a href="#调试AR显示" class="headerlink" title="调试AR显示"></a>调试AR显示</h3><h6 id="ARSCNDebugOptions"><a href="#ARSCNDebugOptions" class="headerlink" title="ARSCNDebugOptions"></a><a href="https://developer.apple.com/documentation/arkit/arscndebugoptions?language=objc" target="_blank" rel="external">ARSCNDebugOptions</a></h6><pre><code>绘制遮罩内容的一些设置项来帮助调试在SceneKit视图中的AR追踪功能。
-</code></pre><h2 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h2><h3 id="继承自"><a href="#继承自" class="headerlink" title="继承自"></a>继承自</h3><p><a href="https://developer.apple.com/documentation/scenekit/scnview?language=objc" target="_blank" rel="external">SCNView</a></p>
-<h2 id="另请参阅"><a href="#另请参阅" class="headerlink" title="另请参阅"></a>另请参阅</h2><h3 id="基本视图"><a href="#基本视图" class="headerlink" title="基本视图"></a>基本视图</h3><h6 id="创建一个基本的AR体验"><a href="#创建一个基本的AR体验" class="headerlink" title="创建一个基本的AR体验"></a><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">创建一个基本的AR体验</a></h6><pre><code>配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容
-</code></pre><h6 id="ARSKView"><a href="#ARSKView" class="headerlink" title="ARSKView"></a><a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a></h6><pre><code>使用2D的SpriteKit内容进而增强相机来显示AR体验的一种视图。
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/04/ARKit_doc_8/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 
