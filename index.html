@@ -183,6 +183,7 @@
 <li><strong>使用集合操作符</strong></li>
 <li><strong>描述非对象的值（基本数据类型和结构体等）</strong></li>
 <li><strong>属性类型验证</strong></li>
+<li><strong>访问器的搜索方式</strong></li>
 </ul>
 </blockquote>
 <h3 id="对象属性值的设置和获取"><a href="#对象属性值的设置和获取" class="headerlink" title="对象属性值的设置和获取"></a>对象属性值的设置和获取</h3><ol>
@@ -261,6 +262,30 @@
 </ol>
 <p>举例来说：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line">@interface Transaction : NSObject</div><div class="line"></div><div class="line"><span class="comment">/** 工作内容类型（这里用于验证属性） */</span></div><div class="line">@property (copy, nonatomic) NSString *work;</div><div class="line"></div><div class="line"><span class="comment">/** 收款人数组 一对多 */</span></div><div class="line">@property (nonatomic) NSArray&lt;NSString *&gt; *payee;</div><div class="line"><span class="comment">/** 钱数 */</span></div><div class="line">@property (nonatomic) NSInteger money;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">"Transaction.h"</span></span></div><div class="line"></div><div class="line">@implementation Transaction</div><div class="line"></div><div class="line">- (BOOL)validateWork:(id * _Nullable)workValue error:(out NSError * _Nullable *)error &#123;</div><div class="line">    <span class="keyword">if</span> (![*workValue isKindOfClass:[NSString class]]) &#123;</div><div class="line"><span class="comment">//        // 不修改，直接返回错误</span></div><div class="line"><span class="comment">//        if (error) &#123;</span></div><div class="line"><span class="comment">//            *error = [NSError errorWithDomain:@"validate error" code:9999 userInfo:@&#123;@"reason": @"invalid type"&#125;];</span></div><div class="line"><span class="comment">//        &#125;</span></div><div class="line"><span class="comment">//        return NO;</span></div><div class="line">        <span class="comment">// 将值修改为符合要求的值</span></div><div class="line">        *workValue = [NSString stringWithFormat:@<span class="string">"%@"</span>, *workValue];</div><div class="line">        <span class="keyword">return</span> YES;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> YES;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line"><span class="comment">/** 外部调用 */</span></div><div class="line"></div><div class="line"><span class="comment">// -----------测试属性验证</span></div><div class="line"><span class="comment">// 对应类中如果没有自己实现validate&lt;Key&gt;:error:方法，则验证无效，都返回YES</span></div><div class="line"><span class="comment">// validate&lt;Key&gt;:error:方法中可以对数据进行合法性判断，返回错误；或将不合法数据转化为合法数据（创建个新数据），返回成功。</span></div><div class="line">NSError *error = nil;</div><div class="line">id targetValue = @<span class="number">123</span>;	<span class="comment">// 这里错误传入了NSNumber对象，用以进行验证</span></div><div class="line">BOOL isValid = [targetTransaction validateValue:&amp;targetValue forKey:@<span class="string">"work"</span> error:&amp;error];</div><div class="line">NSLog(@<span class="string">"%d"</span>, isValid);</div></pre></td></tr></table></figure>
+<h3 id="访问器的搜索方式"><a href="#访问器的搜索方式" class="headerlink" title="访问器的搜索方式"></a>访问器的搜索方式</h3><p><strong>NSObject提供给NSKeyValueCoding协议的默认实现，是使用基于键（key）的访问器，根据一系列规则来调用对象的属性。</strong>这些协议方法使用一个键（key）参数来搜索对象实例的访问器（accessor）、实例变量和一些遵循确定命名规范的方法。了解搜索的工作原理，不仅有助于追踪KVC对象的行为，还可以帮助编写自己的兼容对象（类似KVC）。</p>
+<ul>
+<li><strong>基本getter的搜索模式（valueForKey:的工作模式）：</strong></li>
+</ul>
+<ol>
+<li><strong>首先依次查找访问方法set<key>、<key>、is<key>、_<key>。</key></key></key></key></strong>找到则跳到【5】中处理结果，否则进入下一步。</li>
+<li><strong>若没有找到访问器方法，则搜索匹配名为countOf<key>和objectIn<key>AtIndex:的实例方法（这些是NSArray中定义的方法），还有<key>AtIndexes:方法（对应NSArray中的objectsAtIndexes:）。如果找到了第一个方法和后两者之一，则创建一个集合代理对象来响应所有的NSArray方法并返回。</key></key></key></strong>不满足则进入下一步【3】。<br> 代理对象会把收到的所有的NSArray的消息（即API调用）转化成使用countOf<key>、objectIn<key>AtIndex:和<key>AtIndexes:方法组合而成的KVC兼容对象。如果原类中额外实现了get<key>:range:方法，此代理对象也会适时使用。实际上，代理对象和生成的KVC兼容对象一起工作，让它看起来就像是一个NSArray对象（虽然不是）。</key></key></key></key></li>
+<li><strong>当没有找到访问器方法和数组的访问方法时，系统再继续查找一组三个名为countOf<key>、enumeratorOf<key>和memberOf<key>:的实例方法(都是NSSet类中的方法)。三个方法都找到，则创建一个集合代理对象来响应所有的NSSet方法并返回。</key></key></key></strong>不满足则进入下一步【4】。<br> 与NSArray的兼容对象一样，系统会根据实现的方法生成一个NSSet的兼容对象，与代理集合对象一起工作，来使其看起来像是一个NSSet对象。</li>
+<li><strong>访问器方法和集合访问方法组都没有找到，系统会查看类中是否实现了accessInstanceVariablesDirectly，如果该方法返回YES，则进入成员列表中进行进一步查找。依次查找名为_<key>、_is<key>、<key>和is<key>的成员变量。</key></key></key></key></strong>找到则跳到【5】中处理结果，否则进入下一步。</li>
+<li>如果得到的属性值是对象指针，直接返回结果。如果值是一个支持NSNumber转换的基本数据类型值，则封包成NSNumber对象返回。如果是一个不支持NSNumber转换的基本数据类型值（如结构体），则封包成NSValue对象返回。</li>
+<li>若以上查找均失败，则触发valueForUndefinedKey:方法，默认抛出异常。子类可以覆盖此方法。</li>
+</ol>
+<ul>
+<li><strong>基本setter的搜索模式（setValue:forKey:的工作模式）：</strong></li>
+</ul>
+<p>默认实现是，给定key和value参数作为输入，试图把key设置为value（对于非对象属性，要先解包成相应值）。被调用的对象依照下面的程序进行查找：</p>
+<ol>
+<li><strong>依次查找名为set<key>:或_set<key>的访问器方法，找到后，使用输入值触发该方法并完成（依照需要先解包值）。</key></key></strong></li>
+<li><strong>没找到访问器时，查看类方法accessInstanceVariablesDirectly，如果返回YES，依次查找成员变量中的类似_<key>、_is<key>或is<key>。找到，使用输入值触发该方法并完成（依照需要先解包值）。</key></key></key></strong></li>
+<li><strong>以上都没找到，则触发setValue:forUndefinedKey:方法。默认抛出异常，子类可以覆盖并提供其他行为（如赋值给其他属性等）。</strong></li>
+</ol>
+<ul>
+<li><strong>可变数组的搜索模式：</strong></li>
+</ul>
 <h3 id="参考内容："><a href="#参考内容：" class="headerlink" title="参考内容："></a>参考内容：</h3><ul>
 <li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueCoding/BasicPrinciples.html#//apple_ref/doc/uid/20002170-BAJEAIEE" target="_blank" rel="external">Key-Value Coding Fundamentals</a></li>
 </ul>
