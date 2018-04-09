@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
 <meta property="og:description" content="对象属性值的设置和获取 访问集合属性值的专用API 使用集合操作符 描述非对象的值（基本数据类型和结构体等） 属性类型验证 访问器的搜索方式   对象属性值的设置和获取 KVC的通用API setValueForKey(Path): valueForKey(Path):  一次设置、获取多个属性值 setValueForKeysWithDictionary: 对内部的每一个属性均发送setVa">
 <meta property="og:image" content="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueCoding/art/keypath.jpg">
-<meta property="og:updated_time" content="2018-04-09T07:48:56.000Z">
+<meta property="og:updated_time" content="2018-04-09T23:10:01.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="KVC基础学习总结">
 <meta name="twitter:description" content="对象属性值的设置和获取 访问集合属性值的专用API 使用集合操作符 描述非对象的值（基本数据类型和结构体等） 属性类型验证 访问器的搜索方式   对象属性值的设置和获取 KVC的通用API setValueForKey(Path): valueForKey(Path):  一次设置、获取多个属性值 setValueForKeysWithDictionary: 对内部的每一个属性均发送setVa">
@@ -255,8 +255,8 @@
 </ol>
 <p>对于自定义结构体的KVC，举例如下：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">typedef struct &#123;</div><div class="line">    float x;</div><div class="line">    float y;</div><div class="line">    float z;</div><div class="line">&#125; ThreeFloats;</div><div class="line"></div><div class="line">@interface ViewController ()</div><div class="line"></div><div class="line">@property (nonatomic) ThreeFloats threeFloats;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation ViewController</div><div class="line"></div><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    </div><div class="line">    // ------自定义的非对象数据KVC测试（自定义结构体转NSValue）</div><div class="line">    // 创建结构体数据</div><div class="line">    ThreeFloats floats = &#123;</div><div class="line">        1., 2., 3.</div><div class="line">    &#125;;</div><div class="line">    // 转化为NSValue</div><div class="line">    NSValue *customStructValue = [NSValue valueWithBytes:&amp;floats objCType:@encode(ThreeFloats)];</div><div class="line">    // KVC保存</div><div class="line">    [self setValue:customStructValue forKey:@"threeFloats"];</div><div class="line">    // 读取值</div><div class="line">    NSValue *propertyValue = [self valueForKey:@"threeFloats"];</div><div class="line">    // 转回结构体值</div><div class="line">    ThreeFloats resultFloats;</div><div class="line">    [propertyValue getValue:&amp;resultFloats size:sizeof(ThreeFloats)];</div><div class="line">    NSLog(@"%f, %f, %f", resultFloats.x, resultFloats.y, resultFloats.z);</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
-<h3 id="属性类型验证"><a href="#属性类型验证" class="headerlink" title="属性类型验证"></a>属性类型验证</h3><p>KVC协议定义了一些方法用于验证属性。除了使用key或keyPath进行设置和获取值以外，还可以使用它们进行属性验证。当调用validateValue:forKey:error（或者validateValue:forKeyPath:error）方法时，协议方法的默认实现是去查找是否对key存在validate<key>:error:方法。如果没有实现此方法，则验证方法默认通过，返回YES；如果你实现了这个key的方法，则会根据此方法的验证结果来返回原验证结果。</key></p>
-<p>你实现的validate<key>:error:方法根据key的值和error的指针，有三种验证实现方案：</key></p>
+<h3 id="属性类型验证"><a href="#属性类型验证" class="headerlink" title="属性类型验证"></a>属性类型验证</h3><p>KVC协议定义了一些方法用于验证属性。除了使用key或keyPath进行设置和获取值以外，还可以使用它们进行属性验证。当调用validateValue:forKey:error（或者validateValue:forKeyPath:error）方法时，协议方法的默认实现是去查找是否对key存在validate[key]:error:方法。如果没有实现此方法，则验证方法默认通过，返回YES；如果你实现了这个key的方法，则会根据此方法的验证结果来返回原验证结果。</p>
+<p>你实现的validate[key]:error:方法根据key的值和error的指针，有三种验证实现方案：</p>
 <ol>
 <li>判定传入的值符合要求，直接返回YES，且不修改值和错误对象。</li>
 <li>判定传入的值不符合，且不对此值进行类型修正（如类型转换等）。这种情况下，方法返回NO，并且对用户传入的错误指针（如果传入了）进行赋值，包含其中的错误信息。</li>
@@ -269,10 +269,10 @@
 <li><strong>基本getter的搜索模式（valueForKey:的工作模式）：</strong></li>
 </ul>
 <ol>
-<li><strong>首先依次查找访问方法set<key>、<key>、is<key>、_<key>。</key></key></key></key></strong>找到则跳到【5】中处理结果，否则进入下一步。</li>
-<li><strong>若没有找到访问器方法，则搜索匹配名为countOf<key>和objectIn<key>AtIndex:的实例方法（这些是NSArray中定义的方法），还有<key>AtIndexes:方法（对应NSArray中的objectsAtIndexes:）。如果找到了第一个方法和后两者之一，则创建一个集合代理对象来响应所有的NSArray方法并返回。</key></key></key></strong>不满足则进入下一步【3】。<br> 代理对象会把收到的所有的NSArray的消息（即API调用）转化成使用countOf<key>、objectIn<key>AtIndex:和<key>AtIndexes:方法组合而成的KVC兼容对象。如果原类中额外实现了get<key>:range:方法，此代理对象也会适时使用。实际上，代理对象和生成的KVC兼容对象一起工作，让它看起来就像是一个NSArray对象（虽然不是）。</key></key></key></key></li>
-<li><strong>当没有找到访问器方法和数组的访问方法时，系统再继续查找一组三个名为countOf<key>、enumeratorOf<key>和memberOf<key>:的实例方法(都是NSSet类中的方法)。三个方法都找到，则创建一个集合代理对象来响应所有的NSSet方法并返回。</key></key></key></strong>不满足则进入下一步【4】。<br> 与NSArray的兼容对象一样，系统会根据实现的方法生成一个NSSet的兼容对象，与代理集合对象一起工作，来使其看起来像是一个NSSet对象。</li>
-<li><strong>访问器方法和集合访问方法组都没有找到，系统会查看类中是否实现了accessInstanceVariablesDirectly，如果该方法返回YES，则进入成员列表中进行进一步查找。依次查找名为_<key>、_is<key>、<key>和is<key>的成员变量。</key></key></key></key></strong>找到则跳到【5】中处理结果，否则进入下一步。</li>
+<li><strong>首先依次查找访问方法set[Key]、[key]、is[Key]、_[key]。</strong>找到则跳到【5】中处理结果，否则进入下一步。</li>
+<li><strong>若没有找到访问器方法，则搜索匹配名为countOf[Key]和objectIn[Key]AtIndex:的实例方法（与NSArray中定义的原方法一致），还有[key]AtIndexes:方法（与NSArray中的objectsAtIndexes:一致）。如果找到了第一个方法和后两者之一，则创建一个集合代理对象来响应所有的NSArray方法并返回。</strong>不满足则进入下一步【3】。<br> 代理对象会把收到的所有的NSArray的消息（即API调用）转化成给新创建的KVC兼容对象发送countOf[Key]、objectIn[Key]AtIndex:和[key]AtIndexes:消息。如果原类中额外实现了get[Key]:range:方法，此代理对象也会适时使用。实际上，代理对象和生成的KVC兼容对象一起工作，让它看起来就像是一个NSArray对象（虽然不是）。</li>
+<li><strong>当没有找到访问器方法和数组的访问方法时，系统再继续查找一组三个名为countOf[Key]、enumeratorOf[Key]和memberOf[Key]:的实例方法(都是NSSet类中的方法)。三个方法都找到，则创建一个集合代理对象来响应所有的NSSet方法并返回。</strong>不满足则进入下一步【4】。<br> 与NSArray的兼容对象一样，系统会根据实现的方法生成一个NSSet的兼容对象，与代理集合对象一起工作，来使其看起来像是一个NSSet对象（与上面一样，给返回的代理集合对象调用你实现的countOf[Key]、enumeratorOf[Key]和memberOf[Key]:方法，使看起来像是返回了NSSet对象一样。）。</li>
+<li><strong>访问器方法和集合访问方法组都没有找到，系统会查看类中是否实现了accessInstanceVariablesDirectly，如果该方法返回YES，则进入成员列表中进行进一步查找。依次查找名为_[key]、_is[Key]、[key]和is[Key]的成员变量。</strong>找到则跳到【5】中处理结果，否则进入下一步。</li>
 <li>如果得到的属性值是对象指针，直接返回结果。如果值是一个支持NSNumber转换的基本数据类型值，则封包成NSNumber对象返回。如果是一个不支持NSNumber转换的基本数据类型值（如结构体），则封包成NSValue对象返回。</li>
 <li>若以上查找均失败，则触发valueForUndefinedKey:方法，默认抛出异常。子类可以覆盖此方法。</li>
 </ol>
@@ -281,13 +281,24 @@
 </ul>
 <p>默认实现是，给定key和value参数作为输入，试图把key设置为value（对于非对象属性，要先解包成相应值）。被调用的对象依照下面的程序进行查找：</p>
 <ol>
-<li><strong>依次查找名为set<key>:或_set<key>的访问器方法，找到后，使用输入值触发该方法并完成（依照需要先解包值）。</key></key></strong></li>
-<li><strong>没找到访问器时，查看类方法accessInstanceVariablesDirectly，如果返回YES，依次查找成员变量中的类似_<key>、_is<key>或is<key>。找到，使用输入值触发该方法并完成（依照需要先解包值）。</key></key></key></strong></li>
+<li><strong>依次查找名为set[Key]:或_set[Key]的访问器方法，找到后，使用输入值触发该方法并完成（依照需要先解包值）。</strong></li>
+<li><strong>没找到访问器时，查看类方法accessInstanceVariablesDirectly，如果返回YES，依次查找成员变量中的类似_[key]、_is[Key]或is[Key]。找到，使用输入值触发该方法并完成（依照需要先解包值）。</strong></li>
 <li><strong>以上都没找到，则触发setValue:forUndefinedKey:方法。默认抛出异常，子类可以覆盖并提供其他行为（如赋值给其他属性等）。</strong></li>
 </ol>
 <ul>
 <li><strong>可变数组的搜索模式：</strong></li>
 </ul>
+<p>mutableArrayValueForKey:方法默认实现是输入key，返回调用对象的以key命名的属性。此访问器的调用程序如下：</p>
+<ol>
+<li>查找一组方法命名如insertObject:in[Key]AtIndex:和removeObjectFrom[Key]AtIndex:（与NSMutableArray中的insertObject:atIndex和removeObjectAtIndex:一致），或者名为insert[Key]:atIndexed:和removeObjectsAtIndexes:（与NSMutableArray的insertObjects:atIndexes:和removeObjectsAtIndexesL:一致）。<br> 如果调用对象至少包含一个插入方法和一个删除方法，就返回一个可变代理对象来响应NSMutableArray的所有消息：通过给原调用mutableArrayValueForKey:的对象直接发送insertObject:in[Key]AtIndex:、removeObjectFrom[Key]AtIndex:、insert[Key]:atIndexed:和removeObjectsAtIndexes:消息。<br> 如果这个返回的对象还实现了可选的替换方法，如replaceObjectIn[Key]AtIndex:withObject:或replace[Key]AtIndexes:with[Key]:，代理对象也会适时调用此方法来提高效率。</li>
+<li><p>如果对象没有这些可变的数组方法，就查找名字如set[Key]:的访问方法进行匹配。在这种情况下，通过给调用mutableArrayValueForKey:方法的对象发送set[Key]:消息，返回一个可以响应NSMutableArray消息的代理对象。</p>
+<blockquote>
+<p>注意：<br>步骤【2】中的机制由于需要多次创建新的集合对象（不是修改已存在的对象），导致性能要比步骤【1】中要差了不少。所以自己设计KVC相关对象时要避免这种代码。</p>
+</blockquote>
+</li>
+<li><p>啥的</p>
+</li>
+</ol>
 <h3 id="参考内容："><a href="#参考内容：" class="headerlink" title="参考内容："></a>参考内容：</h3><ul>
 <li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueCoding/BasicPrinciples.html#//apple_ref/doc/uid/20002170-BAJEAIEE" target="_blank" rel="external">Key-Value Coding Fundamentals</a></li>
 </ul>
