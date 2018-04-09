@@ -8,17 +8,19 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>KVC基础学习总结 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="看KVC文档的知识总结 参考内容： Key-Value Coding Fundamentals">
+  <meta name="description" content="对象属性值的设置和获取 访问集合属性值的专用API 使用集合操作符 描述非对象的值（基本数据类型和结构体等） 属性类型验证   对象属性值的设置和获取 KVC的通用API  setValueForKey(Path):  valueForKey(Path):  一次设置、获取多个属性值  setValueForKeysWithDictionary: 对内部的每一个属性均发送setValueFor">
 <meta name="keywords" content="学习笔记">
 <meta property="og:type" content="article">
 <meta property="og:title" content="KVC基础学习总结">
 <meta property="og:url" content="http://yoursite.com/2018/04/04/KVC基础学习总结/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="看KVC文档的知识总结 参考内容： Key-Value Coding Fundamentals">
-<meta property="og:updated_time" content="2018-04-04T06:16:33.000Z">
+<meta property="og:description" content="对象属性值的设置和获取 访问集合属性值的专用API 使用集合操作符 描述非对象的值（基本数据类型和结构体等） 属性类型验证   对象属性值的设置和获取 KVC的通用API  setValueForKey(Path):  valueForKey(Path):  一次设置、获取多个属性值  setValueForKeysWithDictionary: 对内部的每一个属性均发送setValueFor">
+<meta property="og:image" content="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueCoding/art/keypath.jpg">
+<meta property="og:updated_time" content="2018-04-09T02:59:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="KVC基础学习总结">
-<meta name="twitter:description" content="看KVC文档的知识总结 参考内容： Key-Value Coding Fundamentals">
+<meta name="twitter:description" content="对象属性值的设置和获取 访问集合属性值的专用API 使用集合操作符 描述非对象的值（基本数据类型和结构体等） 属性类型验证   对象属性值的设置和获取 KVC的通用API  setValueForKey(Path):  valueForKey(Path):  一次设置、获取多个属性值  setValueForKeysWithDictionary: 对内部的每一个属性均发送setValueFor">
+<meta name="twitter:image" content="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueCoding/art/keypath.jpg">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -176,7 +178,95 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>看KVC文档的知识总结</p>
+        <blockquote>
+<ul>
+<li><strong>对象属性值的设置和获取</strong></li>
+<li><strong>访问集合属性值的专用API</strong></li>
+<li><strong>使用集合操作符</strong></li>
+<li><strong>描述非对象的值（基本数据类型和结构体等）</strong></li>
+<li><strong>属性类型验证</strong></li>
+</ul>
+</blockquote>
+<h3 id="对象属性值的设置和获取"><a href="#对象属性值的设置和获取" class="headerlink" title="对象属性值的设置和获取"></a>对象属性值的设置和获取</h3><ol>
+<li><p>KVC的通用API</p>
+<p> setValueForKey(Path):</p>
+<p> valueForKey(Path):</p>
+</li>
+<li><p>一次设置、获取多个属性值</p>
+<p> setValueForKeysWithDictionary: 对内部的每一个属性均发送setValueForKey消息</p>
+<p> dictionaryWithValueForKeys:    根据keys数组返回字典</p>
+</li>
+</ol>
+<h3 id="访问集合属性值的专用API"><a href="#访问集合属性值的专用API" class="headerlink" title="访问集合属性值的专用API"></a>访问集合属性值的专用API</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">通过key访问集合</th>
+<th style="text-align:center">通过keyPath访问集合</th>
+<th style="text-align:center">被代理的类</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">mutableArrayValueForKey:</td>
+<td style="text-align:center">mutableArrayValueForKeyPath:</td>
+<td style="text-align:center">NSMutableArray</td>
+</tr>
+<tr>
+<td style="text-align:center">mutableSetValueForKey:</td>
+<td style="text-align:center">mutableSetValueForKeyPath:</td>
+<td style="text-align:center">NSMutableSet</td>
+</tr>
+<tr>
+<td style="text-align:center">mutableOrderedSetValueForKey:</td>
+<td style="text-align:center">mutableOrderedSetValueForKeyPath:</td>
+<td style="text-align:center">NSMutableOrderedSet</td>
+</tr>
+</tbody>
+</table>
+<p>访问集合属性的值时除了可以直接使用基本valueForKey(Path):方法，还可以使用上述三类专用API进行访问。当你对集合属性进行修改（增、删、改）时，上表的三类方法可以更高效的完成任务，他们分别返回一个类似NSMutableArray、NSMutableSet和NSMutableOrderedSet的代理类的对象，可以在此对象上直接调用任何相关类的api来直接操作属性值。</p>
+<p>使用此类api管理集合属性的高效体现在：</p>
+<ol>
+<li>比类型为不可变集合类型属性，通过valueForKey:取值，转换并修改后，再通过setValueForKey:保存回去效率高</li>
+<li>比直接将集合属性类型设置成mutable类修改高效</li>
+<li>对KVO有效</li>
+</ol>
+<p>示例代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">// ------------返回一个可变对象的代理类（这里是仿可变数组类型，可以调用所有NSMutableArray的api）</div><div class="line">id mutableTransactions = [account mutableArrayValueForKey:@&quot;transactions&quot;];</div><div class="line">NSLog(@&quot;%@&quot;, mutableTransactions);</div><div class="line">// 对返回的代理类对象进行操作（添加、删除、修改等），会直接在原属性上进行操作。</div><div class="line">// 这比直接通过valueForKey获取集合对象后，修改，再setValueForKey存储回去效率高；也比直接维护一个可变集合属性效率高。</div><div class="line">// 且这种方法对KVO有帮助（直接操作修改集合属性不会触发KVO）</div><div class="line">Transaction *targetTransaction = mutableTransactions[0];</div><div class="line">targetTransaction.work = @&quot;hhhhaaaa&quot;;</div><div class="line">// 再次取出</div><div class="line">transactions = [account valueForKeyPath:@&quot;transactions&quot;];</div><div class="line">NSLog(@&quot;%@&quot;, transactions);</div></pre></td></tr></table></figure>
+<h3 id="使用集合操作符"><a href="#使用集合操作符" class="headerlink" title="使用集合操作符"></a>使用集合操作符</h3><p>在使用valueForKeyPath:访问集合属性时，可以在keyPath中使用集合操作符来直接操作返回的值。集合操作符使用“@”字符标识，使用集合操作符的keyPath结构如下：</p>
+<p><img src="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueCoding/art/keypath.jpg" alt="img"></p>
+<p>如图可知：keyPath分为<em>左keyPath、集合操作符、右keyPath</em>三部分。</p>
+<p>集合操作符主要分为三类：</p>
+<ul>
+<li><strong>聚合操作符</strong>：对集合对象进行操作，返回匹配条件的单一对象作为结果（@count除外，它没有右keyPath，且返回一个NSNumber对象）。</li>
+</ul>
+<p>主要包括：@sum、@max、@min、@avg、@count等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">// 聚合操作符（操作集合属性，返回单个对象）</div><div class="line">// @count</div><div class="line">NSNumber *count = [account valueForKeyPath:@&quot;transactions.@count&quot;];</div><div class="line">NSLog(@&quot;%@&quot;, count); // @count，省略右keypath</div><div class="line">// @max</div><div class="line">NSNumber *maxMoney = [account valueForKeyPath:@&quot;transactions.@max.money&quot;];</div><div class="line">NSLog(@&quot;%@&quot;, maxMoney);</div><div class="line">// @min</div><div class="line">NSNumber *minMoney = [account.transactions valueForKeyPath:@&quot;@min.money&quot;];  // 直接对集合属性取值，可省略左keypath</div><div class="line">NSLog(@&quot;%@&quot;, minMoney);</div><div class="line">// @sum</div><div class="line">NSNumber *sumMoney = [account valueForKeyPath:@&quot;transactions.@sum.money&quot;];</div><div class="line">NSLog(@&quot;%@&quot;, sumMoney);</div></pre></td></tr></table></figure>
+<ul>
+<li><strong>数组操作符</strong>：对集合对象进行操作，通过对右keyPath指定的值进行操作，返回特定条件的集合对象。</li>
+</ul>
+<p>主要包括@unionOfObjects和@distinctUnionOfObjects，二者区别是：前者直接返回指定属性的值的数组，不过滤重复的值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">// 数组操作符（操作集合属性，返回集合对象）</div><div class="line">// @unionOfObjects 指定对象的集合</div><div class="line">id unionOfWorks = [account.transactions valueForKeyPath:@&quot;@unionOfObjects.work&quot;];</div><div class="line">NSLog(@&quot;%@&quot;, unionOfWorks);</div><div class="line">// @distinctUnionOfObjects 指定对象的不重复集合</div><div class="line">id distinctUnionOfWorks = [account.transactions valueForKeyPath:@&quot;@distinctUnionOfObjects.work&quot;];</div><div class="line">NSLog(@&quot;%@&quot;, distinctUnionOfWorks);</div></pre></td></tr></table></figure>
+<ul>
+<li><strong>嵌套操作符</strong>：对于包含属性对象的集合所组成的集合（如数组内部包含的所有元素都是数组，这些子数组内部都是属性对象），嵌套操作符通过对右keyPath指定的值进行操作，返回特定条件的集合对象。</li>
+</ul>
+<p>包括@unionOfArrays、@distinctUnionOfArrays和@distinctUnionOfSets，前两者对嵌套数组进行操作、第三个对集合（NSSet）进行操作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">// 嵌套操作符（操作包括集合属性对象的嵌套对象，返回集合对象）</div><div class="line">Transaction *moreWork1 = [[Transaction alloc] init];</div><div class="line">moreWork1.work = @&quot;收入10000&quot;;</div><div class="line">moreWork1.payee = @[@&quot;臭吉吉2&quot;, @&quot;jiji2&quot;];</div><div class="line">moreWork1.money = 10000;</div><div class="line">Transaction *moreWork2 = [[Transaction alloc] init];</div><div class="line">moreWork2.work = @&quot;支出2002&quot;;</div><div class="line">moreWork2.payee = @[@&quot;赵吉222&quot;];</div><div class="line">moreWork2.money = 2002;</div><div class="line">NSArray *nestedTransactions = @[account.transactions, @[moreWork1, moreWork2]]; // 所有的最小子元素都是transaction对象</div><div class="line">// 注意：@unionOfArrays和@distinctUnionOfArrays的数据源，必须是数组嵌套成的数组，不能是元素与数组组合成的数据源数组。，如下面就不可以</div><div class="line">//    NSArray *nestedTransactions = @[account.transactions, @[moreWork1, moreWork2], moreWork3];</div><div class="line"></div><div class="line">// @unionOfArrays</div><div class="line">id unionOfWorksArray = [nestedTransactions valueForKeyPath:@&quot;@unionOfArrays.work&quot;];</div><div class="line">NSLog(@&quot;%@&quot;, unionOfWorksArray);</div><div class="line">// @distinctUnionOfArrays</div><div class="line">id distinctUnionOfWorksArray = [nestedTransactions valueForKeyPath:@&quot;@distinctUnionOfArrays.work&quot;];</div><div class="line">NSLog(@&quot;%@&quot;, distinctUnionOfWorksArray);</div><div class="line">// @distinctUnionOfSets</div><div class="line">NSSet *nestedTransactionsSet = [NSSet setWithObjects:</div><div class="line">    [NSSet setWithArray:account.transactions],</div><div class="line">    [NSSet setWithObjects:moreWork1, moreWork2, nil],</div><div class="line">    nil</div><div class="line">]; // 所有的最小子元素都是transaction对象，整体及子集合必须都是set</div><div class="line">id distinctUnionOfWorksSet = [nestedTransactionsSet valueForKeyPath:@&quot;@distinctUnionOfSets.work&quot;];</div><div class="line">NSLog(@&quot;%@&quot;, distinctUnionOfWorksSet);</div></pre></td></tr></table></figure>
+<h3 id="描述非对象的值（基本数据类型和结构体等）"><a href="#描述非对象的值（基本数据类型和结构体等）" class="headerlink" title="描述非对象的值（基本数据类型和结构体等）"></a>描述非对象的值（基本数据类型和结构体等）</h3><ol>
+<li>对于基本数据类型的值，使用KVC进行设置和获取时需要将值进行对NSNumber类的封包和解包。</li>
+<li>对于内置的结构体，如NSPoint、NSRange、NSRect和NSSize，需要使用NSValue类对数据进行封包和解包。</li>
+<li>对于自定义的结构体，使用NSValue的通用api对数据进行封包和解包。</li>
+</ol>
+<p>对于自定义结构体的KVC，举例如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">typedef struct &#123;</div><div class="line">    float x;</div><div class="line">    float y;</div><div class="line">    float z;</div><div class="line">&#125; ThreeFloats;</div><div class="line"></div><div class="line">@interface ViewController ()</div><div class="line"></div><div class="line">@property (nonatomic) ThreeFloats threeFloats;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation ViewController</div><div class="line"></div><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    </div><div class="line">    // ------自定义的非对象数据KVC测试（自定义结构体转NSValue）</div><div class="line">    // 创建结构体数据</div><div class="line">    ThreeFloats floats = &#123;</div><div class="line">        1., 2., 3.</div><div class="line">    &#125;;</div><div class="line">    // 转化为NSValue</div><div class="line">    NSValue *customStructValue = [NSValue valueWithBytes:&amp;floats objCType:@encode(ThreeFloats)];</div><div class="line">    // KVC保存</div><div class="line">    [self setValue:customStructValue forKey:@&quot;threeFloats&quot;];</div><div class="line">    // 读取值</div><div class="line">    NSValue *propertyValue = [self valueForKey:@&quot;threeFloats&quot;];</div><div class="line">    // 转回结构体值</div><div class="line">    ThreeFloats resultFloats;</div><div class="line">    [propertyValue getValue:&amp;resultFloats size:sizeof(ThreeFloats)];</div><div class="line">    NSLog(@&quot;%f, %f, %f&quot;, resultFloats.x, resultFloats.y, resultFloats.z);</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
+<h3 id="属性类型验证"><a href="#属性类型验证" class="headerlink" title="属性类型验证"></a>属性类型验证</h3><p>KVC协议定义了一些方法用于验证属性。除了使用key或keyPath进行设置和获取值以外，还可以使用它们进行属性验证。当调用validateValue:forKey:error（或者validateValue:forKeyPath:error）方法时，协议方法的默认实现是去查找是否对key存在validate<key>:error:方法。如果没有实现此方法，则验证方法默认通过，返回YES；如果你实现了这个key的方法，则会根据此方法的验证结果来返回原验证结果。</key></p>
+<p>你实现的validate<key>:error:方法根据key的值和error的指针，有三种验证实现方案：</key></p>
+<ol>
+<li>判定传入的值符合要求，直接返回YES，且不修改值和错误对象。</li>
+<li>判定传入的值不符合，且不对此值进行类型修正（如类型转换等）。这种情况下，方法返回NO，并且对用户传入的错误指针（如果传入了）进行赋值，包含其中的错误信息。</li>
+<li>判定传入的值不符合，但是创建个符合要求的新值进行替换。这种情况下，方法返回YES，且把传入的值的指针指向此新值（一定不要直接修改传入的值，就算是个mutable类对象也不行），并且不用处理错误信息。</li>
+</ol>
+<p>举例来说：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">#import &lt;Foundation/Foundation.h&gt;</div><div class="line"></div><div class="line">@interface Transaction : NSObject</div><div class="line"></div><div class="line">/** 工作内容类型（这里用于验证属性） */</div><div class="line">@property (copy, nonatomic) NSString *work;</div><div class="line"></div><div class="line">/** 收款人数组 一对多 */</div><div class="line">@property (nonatomic) NSArray&lt;NSString *&gt; *payee;</div><div class="line">/** 钱数 */</div><div class="line">@property (nonatomic) NSInteger money;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">#import &quot;Transaction.h&quot;</div><div class="line"></div><div class="line">@implementation Transaction</div><div class="line"></div><div class="line">- (BOOL)validateWork:(id * _Nullable)workValue error:(out NSError * _Nullable *)error &#123;</div><div class="line">    if (![*workValue isKindOfClass:[NSString class]]) &#123;</div><div class="line">//        // 不修改，直接返回错误</div><div class="line">//        if (error) &#123;</div><div class="line">//            *error = [NSError errorWithDomain:@&quot;validate error&quot; code:9999 userInfo:@&#123;@&quot;reason&quot;: @&quot;invalid type&quot;&#125;];</div><div class="line">//        &#125;</div><div class="line">//        return NO;</div><div class="line">        // 将值修改为符合要求的值</div><div class="line">        *workValue = [NSString stringWithFormat:@&quot;%@&quot;, *workValue];</div><div class="line">        return YES;</div><div class="line">    &#125;</div><div class="line">    return YES;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">/** 外部调用 */</div><div class="line"></div><div class="line">// -----------测试属性验证</div><div class="line">// 对应类中如果没有自己实现validate&lt;Key&gt;:error:方法，则验证无效，都返回YES</div><div class="line">// validate&lt;Key&gt;:error:方法中可以对数据进行合法性判断，返回错误；或将不合法数据转化为合法数据（创建个新数据），返回成功。</div><div class="line">NSError *error = nil;</div><div class="line">id targetValue = @123;	// 这里错误传入了NSNumber对象，用以进行验证</div><div class="line">BOOL isValid = [targetTransaction validateValue:&amp;targetValue forKey:@&quot;work&quot; error:&amp;error];</div><div class="line">NSLog(@&quot;%d&quot;, isValid);</div></pre></td></tr></table></figure>
 <h3 id="参考内容："><a href="#参考内容：" class="headerlink" title="参考内容："></a>参考内容：</h3><ul>
 <li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueCoding/BasicPrinciples.html#//apple_ref/doc/uid/20002170-BAJEAIEE" target="_blank" rel="external">Key-Value Coding Fundamentals</a></li>
 </ul>
