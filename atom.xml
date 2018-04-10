@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-04-09T23:10:01.000Z</updated>
+  <updated>2018-04-10T03:15:53.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2018/04/04/KVC%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/"/>
     <id>http://yoursite.com/2018/04/04/KVC基础学习总结/</id>
     <published>2018-04-04T06:16:30.000Z</published>
-    <updated>2018-04-09T23:10:01.000Z</updated>
+    <updated>2018-04-10T03:15:53.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <ul>
@@ -114,8 +114,8 @@
 </ul>
 <ol>
 <li><strong>首先依次查找访问方法set[Key]、[key]、is[Key]、_[key]。</strong>找到则跳到【5】中处理结果，否则进入下一步。</li>
-<li><strong>若没有找到访问器方法，则搜索匹配名为countOf[Key]和objectIn[Key]AtIndex:的实例方法（与NSArray中定义的原方法一致），还有[key]AtIndexes:方法（与NSArray中的objectsAtIndexes:一致）。如果找到了第一个方法和后两者之一，则创建一个集合代理对象来响应所有的NSArray方法并返回。</strong>不满足则进入下一步【3】。<br> 代理对象会把收到的所有的NSArray的消息（即API调用）转化成给新创建的KVC兼容对象发送countOf[Key]、objectIn[Key]AtIndex:和[key]AtIndexes:消息。如果原类中额外实现了get[Key]:range:方法，此代理对象也会适时使用。实际上，代理对象和生成的KVC兼容对象一起工作，让它看起来就像是一个NSArray对象（虽然不是）。</li>
-<li><strong>当没有找到访问器方法和数组的访问方法时，系统再继续查找一组三个名为countOf[Key]、enumeratorOf[Key]和memberOf[Key]:的实例方法(都是NSSet类中的方法)。三个方法都找到，则创建一个集合代理对象来响应所有的NSSet方法并返回。</strong>不满足则进入下一步【4】。<br> 与NSArray的兼容对象一样，系统会根据实现的方法生成一个NSSet的兼容对象，与代理集合对象一起工作，来使其看起来像是一个NSSet对象（与上面一样，给返回的代理集合对象调用你实现的countOf[Key]、enumeratorOf[Key]和memberOf[Key]:方法，使看起来像是返回了NSSet对象一样。）。</li>
+<li><strong>若没有找到访问器方法，则搜索匹配名为countOf[Key]和objectIn[Key]AtIndex:的实例方法（与NSArray中定义的原方法一致），还有[key]AtIndexes:方法（与NSArray中的objectsAtIndexes:一致）。如果找到了第一个方法和后两者之一，则创建并返回一个集合代理对象来响应所有的NSArray的方法（给代理对象发送NSArray方法时会自动组合调用以上实现的方法）。</strong>不满足则进入下一步【3】。<br> 代理对象会把收到的所有的NSArray的消息（即API调用）转化成给KVC相关对象（即类实例对象）组合发送countOf[Key]、objectIn[Key]AtIndex:和[key]AtIndexes:消息。如果原类中额外实现了get[Key]:range:方法，此代理对象也会适时使用，以提高性能。实际上，代理对象会和原实例对象一起工作，让它看起来就像是一个NSArray对象（虽然不是）。</li>
+<li><strong>当没有找到访问器方法和数组的访问方法时，系统再继续查找一组三个名为countOf[Key]、enumeratorOf[Key]和memberOf[Key]:的实例方法(都是NSSet类中的方法)。三个方法都找到，则创建一个集合代理对象来响应所有的NSSet方法并返回。</strong>不满足则进入下一步【4】。<br> 与NSArray的情况一样，系统会根据实现的方法生成并返回一个NSSet的代理对象，与原对象一起工作，来使其看起来像是一个NSSet对象（与上面一样，给返回的代理集合对象调用NSSet的api，你实现的countOf[Key]、enumeratorOf[Key]和memberOf[Key]:方法就会被组合调用。）。</li>
 <li><strong>访问器方法和集合访问方法组都没有找到，系统会查看类中是否实现了accessInstanceVariablesDirectly，如果该方法返回YES，则进入成员列表中进行进一步查找。依次查找名为_[key]、_is[Key]、[key]和is[Key]的成员变量。</strong>找到则跳到【5】中处理结果，否则进入下一步。</li>
 <li>如果得到的属性值是对象指针，直接返回结果。如果值是一个支持NSNumber转换的基本数据类型值，则封包成NSNumber对象返回。如果是一个不支持NSNumber转换的基本数据类型值（如结构体），则封包成NSValue对象返回。</li>
 <li>若以上查找均失败，则触发valueForUndefinedKey:方法，默认抛出异常。子类可以覆盖此方法。</li>
@@ -132,19 +132,26 @@
 <ul>
 <li><strong>可变数组的搜索模式：</strong></li>
 </ul>
-<p>mutableArrayValueForKey:方法默认实现是输入key，返回调用对象的以key命名的属性。此访问器的调用程序如下：</p>
+<p>mutableArrayValueForKey:方法默认实现是输入key，返回调用对象的以key命名的属性（要求此属性是数组或可变数组类型，不可变数组无法实现步骤【1】）。此访问器的调用程序如下：</p>
 <ol>
-<li>查找一组方法命名如insertObject:in[Key]AtIndex:和removeObjectFrom[Key]AtIndex:（与NSMutableArray中的insertObject:atIndex和removeObjectAtIndex:一致），或者名为insert[Key]:atIndexed:和removeObjectsAtIndexes:（与NSMutableArray的insertObjects:atIndexes:和removeObjectsAtIndexesL:一致）。<br> 如果调用对象至少包含一个插入方法和一个删除方法，就返回一个可变代理对象来响应NSMutableArray的所有消息：通过给原调用mutableArrayValueForKey:的对象直接发送insertObject:in[Key]AtIndex:、removeObjectFrom[Key]AtIndex:、insert[Key]:atIndexed:和removeObjectsAtIndexes:消息。<br> 如果这个返回的对象还实现了可选的替换方法，如replaceObjectIn[Key]AtIndex:withObject:或replace[Key]AtIndexes:with[Key]:，代理对象也会适时调用此方法来提高效率。</li>
-<li><p>如果对象没有这些可变的数组方法，就查找名字如set[Key]:的访问方法进行匹配。在这种情况下，通过给调用mutableArrayValueForKey:方法的对象发送set[Key]:消息，返回一个可以响应NSMutableArray消息的代理对象。</p>
+<li>查找一组方法命名如insertObject:in[Key]AtIndex:和removeObjectFrom[Key]AtIndex:（与NSMutableArray中的insertObject:atIndex和removeObjectAtIndex:一致），或者名为insert[Key]:atIndexed:和removeObjectsAtIndexes:（与NSMutableArray的insertObjects:atIndexes:和removeObjectsAtIndexesL:一致）。<br> 如果调用对象至少包含一个插入方法和一个删除方法，就返回一个可变代理对象。以后通过给此代理对象发送NSMutableArray的所有消息，都会通过组合调用insertObject:in[Key]AtIndex:、removeObjectFrom[Key]AtIndex:、insert[Key]:atIndexed:和removeObjectsAtIndexes:方法的形式来进行响应（或者可以直接将这些方法声明在.h文件中，外部类实例直接调用此方法也可以直接触发KVO机制）。<br> 如果原类的对象还实现了可选的替换方法，如replaceObjectIn[Key]AtIndex:withObject:或replace[Key]AtIndexes:with[Key]:，代理对象也会适时调用此方法来提高效率。</li>
+<li><p>如果类的实例对象没有这些可变的数组方法，就查找名字如set[Key]:的访问方法进行匹配。在这种情况下，返回的代理对象都是通过调用原始对象的set[Key]:方法来间接响应NSMutableArray的消息。</p>
 <blockquote>
-<p>注意：<br>步骤【2】中的机制由于需要多次创建新的集合对象（不是修改已存在的对象），导致性能要比步骤【1】中要差了不少。所以自己设计KVC相关对象时要避免这种代码。</p>
+<p>注意：<br>步骤【2】中的机制由于需要每次创建新的集合对象（set[Key]:，setter方法设置，而不是修改已存在的对象），导致性能要比步骤【1】中要差了不少。所以自己设计KVC相关对象时要避免这种代码。</p>
 </blockquote>
 </li>
-<li><p>啥的</p>
+<li><p>既没有找到可变数组方法，也没有找到访问器，查看类的accessInstanceVariablesDirectly方法是否返回YES，是则依次去类的成员变量中查询是否存在如_[key]或[key]。若存在，则返回一个代理对象，系统会把代理对象收到的每个NSMutableArray的消息都转发给这个成员变量，这个变量的类型需要是NSMutableArray或其子类。</p>
 </li>
+<li>如果上面所有的步骤都失败了，就返回一个可变的集合代理对象，作为参数，来触发setValue:forUndefinedKey:方法。默认在内部抛出NSUndefinedKeyException异常，子类可以覆盖进行其他处理。</li>
 </ol>
+<blockquote>
+<p>查了好多东西，发现只有在KVO时，使用此可变容器的api进行KVC属性设置。由于调用此api返回的是可变集合对象，且是系统在运行时动态生成的，内部已经包含了KVO使用的isa指针等。当对此代理对象调用NSMutableArray方法时，会自动触发KVO机制。</p>
+</blockquote>
+<p>其他如可变无序集合和可变有序集合的搜索模式与此类似，不再细说。</p>
 <h3 id="参考内容："><a href="#参考内容：" class="headerlink" title="参考内容："></a>参考内容：</h3><ul>
 <li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueCoding/BasicPrinciples.html#//apple_ref/doc/uid/20002170-BAJEAIEE" target="_blank" rel="external">Key-Value Coding Fundamentals</a></li>
+<li><a href="https://www.jianshu.com/p/45cbd324ea65" target="_blank" rel="external">iOS开发技巧系列—详解KVC(我告诉你KVC的一切)</a></li>
+<li><a href="http://liumh.com/2015/08/22/ios-nsmutablearray-kvo/" target="_blank" rel="external">iOS如何为NSMutableArray添加KVO</a></li>
 </ul>
 ]]></content>
     
