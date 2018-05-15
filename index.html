@@ -156,6 +156,69 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-使用代码初始化StoryBoard中的ViewController" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/05/15/使用代码初始化StoryBoard中的ViewController/">使用代码初始化StoryBoard中的ViewController</a>
+    </h1>
+  
+
+        
+        <a href="/2018/05/15/使用代码初始化StoryBoard中的ViewController/" class="archive-article-date">
+  	<time datetime="2018-05-15T01:49:33.088Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取StoryBoard对象（这里使用的是默认的主bundle中的文件）</span></div><div class="line">UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@<span class="string">"Main"</span> bundle:nil];</div><div class="line"><span class="comment">// 使用ID在StoryBoard对象中获取并初始化新的ViewController</span></div><div class="line">BasicKVO_ViewController *vc1 = [storyBoard instantiateViewControllerWithIdentifier:@<span class="string">"BasicKVO_VC"</span>];</div></pre></td></tr></table></figure>
+<p>代码如上面所示，其中，BasicKVO_VC是在StoryBoard文件中对应的UIViewController的“Identity inspector”面板中的“Storyboard ID”。</p>
+<h3 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h3><ul>
+<li><a href="https://blog.csdn.net/u012449749/article/details/50495202" target="_blank" rel="external">代码获取Storyboard中的ViewController</a></li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/05/15/使用代码初始化StoryBoard中的ViewController/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-KVC基础学习总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1270,157 +1333,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/08/07/四维矩阵学习记录/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-SceneKit学习记录1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/18/SceneKit学习记录1/">SceneKit学习记录1_物理身体</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/18/SceneKit学习记录1/" class="archive-article-date">
-  	<time datetime="2017-07-18T05:34:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-18</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://developer.apple.com/documentation/scenekit/scnphysicsbody?language=objc" target="_blank" rel="external">原文档</a></p>
-<h1 id="物理身体类型（SCNPhysicsBodyType）"><a href="#物理身体类型（SCNPhysicsBodyType）" class="headerlink" title="物理身体类型（SCNPhysicsBodyType）"></a>物理身体类型（SCNPhysicsBodyType）</h1><blockquote>
-<p>分为三类：</p>
-<ul>
-<li>静态身体：SCNPhysicsBodyTypeStatic</li>
-<li>动态身体：SCNPhysicsBodyTypeDynamic</li>
-<li>运动身体：SCNPhysicsBodyTypeKinematic</li>
-</ul>
-</blockquote>
-<p><strong>作用</strong>：</p>
-<ul>
-<li>静态身体：不会被力或碰撞影响，不能移动</li>
-<li>动态身体：可以被其他类型的身体碰撞或施加力</li>
-<li>运动身体：不会被力或碰撞影响，但是可以直接移动他们去碰撞动态身体</li>
-</ul>
-<h4 id="Static（静态身体）"><a href="#Static（静态身体）" class="headerlink" title="Static（静态身体）"></a>Static（静态身体）</h4><table>
-<thead>
-<tr>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">影响</th>
-<th style="text-align:center">被影响</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Static</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Dynamic</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Kinematic</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-</tbody>
-</table>
-<h4 id="Dynamic（动态身体）"><a href="#Dynamic（动态身体）" class="headerlink" title="Dynamic（动态身体）"></a>Dynamic（动态身体）</h4><table>
-<thead>
-<tr>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">影响</th>
-<th style="text-align:center">被影响</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Static</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Dynamic</td>
-<td style="text-align:center">√</td>
-<td style="text-align:center">√</td>
-</tr>
-<tr>
-<td style="text-align:center">Kinematic</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">√</td>
-</tr>
-</tbody>
-</table>
-<h4 id="KineMatic（运动身体）"><a href="#KineMatic（运动身体）" class="headerlink" title="KineMatic（运动身体）"></a>KineMatic（运动身体）</h4><table>
-<thead>
-<tr>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">影响</th>
-<th style="text-align:center">被影响</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Static</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Dynamic</td>
-<td style="text-align:center">√</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Kinematic</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-</tbody>
-</table>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/18/SceneKit学习记录1/">展开全文 >></a>
         </p>
       
 
