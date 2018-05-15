@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Objective-C 2.0 方法调用中的动态绑定和消息转发 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="OC方法调用的实质 动态绑定和消息转发的流程 动态绑定实例（添加实例方法、添加类方法） 消息转发实例 消息转发模拟“多继承”以及二者的区别 使用消息转发代替继承   OC方法调用的实质我们都知道，OC是C语言的超集，赋予了C强大的动态特性，其功劳主要归功于OC的运行时系统（runtime）。OC调用方法的实质是发送消息（即objc_msgSend函数）。在编译期，对象理论上可以调用任何方法，即">
+  <meta name="description" content="OC方法调用的实质 动态绑定和消息转发的流程 动态绑定实例（添加实例方法、添加类方法） 消息转发实例 消息转发模拟“多继承”以及二者的区别 使用消息转发代替继承">
 <meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Objective-C 2.0 方法调用中的动态绑定和消息转发">
 <meta property="og:url" content="http://yoursite.com/2018/03/30/Objective-C 2.0 动态绑定和消息转发/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="OC方法调用的实质 动态绑定和消息转发的流程 动态绑定实例（添加实例方法、添加类方法） 消息转发实例 消息转发模拟“多继承”以及二者的区别 使用消息转发代替继承   OC方法调用的实质我们都知道，OC是C语言的超集，赋予了C强大的动态特性，其功劳主要归功于OC的运行时系统（runtime）。OC调用方法的实质是发送消息（即objc_msgSend函数）。在编译期，对象理论上可以调用任何方法，即">
+<meta property="og:description" content="OC方法调用的实质 动态绑定和消息转发的流程 动态绑定实例（添加实例方法、添加类方法） 消息转发实例 消息转发模拟“多继承”以及二者的区别 使用消息转发代替继承">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1457495-8ee6afef466e6177.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700">
-<meta property="og:updated_time" content="2018-05-15T02:11:35.307Z">
+<meta property="og:updated_time" content="2018-05-15T02:19:01.521Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Objective-C 2.0 方法调用中的动态绑定和消息转发">
-<meta name="twitter:description" content="OC方法调用的实质 动态绑定和消息转发的流程 动态绑定实例（添加实例方法、添加类方法） 消息转发实例 消息转发模拟“多继承”以及二者的区别 使用消息转发代替继承   OC方法调用的实质我们都知道，OC是C语言的超集，赋予了C强大的动态特性，其功劳主要归功于OC的运行时系统（runtime）。OC调用方法的实质是发送消息（即objc_msgSend函数）。在编译期，对象理论上可以调用任何方法，即">
+<meta name="twitter:description" content="OC方法调用的实质 动态绑定和消息转发的流程 动态绑定实例（添加实例方法、添加类方法） 消息转发实例 消息转发模拟“多继承”以及二者的区别 使用消息转发代替继承">
 <meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/1457495-8ee6afef466e6177.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
@@ -95,6 +95,8 @@
 		        
 					<a class="weibo" target="_blank" href="http://www.weibo.com/u/1167729174?from=hissimilar_home&refer_flag=1005050003_&is_all=1" title="weibo"><i class="icon-weibo"></i></a>
 		        
+					<a class="jianshu" target="_blank" href="https://www.jianshu.com/u/c4d99e187e9f" title="jianshu"><i class="icon-jianshu"></i></a>
+		        
 					<a class="mail" target="_blank" href="mailto:1018857334@qq.com" title="mail"><i class="icon-mail"></i></a>
 		        
 			</div>
@@ -145,6 +147,8 @@
 						<a class="github" target="_blank" href="https://github.com/Choujiji" title="github"><i class="icon-github"></i></a>
 			        
 						<a class="weibo" target="_blank" href="http://www.weibo.com/u/1167729174?from=hissimilar_home&refer_flag=1005050003_&is_all=1" title="weibo"><i class="icon-weibo"></i></a>
+			        
+						<a class="jianshu" target="_blank" href="https://www.jianshu.com/u/c4d99e187e9f" title="jianshu"><i class="icon-jianshu"></i></a>
 			        
 						<a class="mail" target="_blank" href="mailto:1018857334@qq.com" title="mail"><i class="icon-mail"></i></a>
 			        
@@ -212,6 +216,7 @@
 <li><strong>使用消息转发代替继承</strong></li>
 </ul>
 </blockquote>
+<a id="more"></a>
 <h3 id="OC方法调用的实质"><a href="#OC方法调用的实质" class="headerlink" title="OC方法调用的实质"></a>OC方法调用的实质</h3><p>我们都知道，OC是C语言的超集，赋予了C强大的动态特性，其功劳主要归功于OC的运行时系统（runtime）。OC调用方法的实质是发送消息（即objc_msgSend函数）。在编译期，对象理论上可以调用任何方法，即使此方法并没有实现。直到运行期，系统才会根据方法名（SEL）去class的数据结构中查找对应方法进行方法调用。</p>
 <h3 id="动态绑定和消息转发的流程"><a href="#动态绑定和消息转发的流程" class="headerlink" title="动态绑定和消息转发的流程"></a>动态绑定和消息转发的流程</h3><p>给对象（类的实例）发送消息（即调用方法）的大致流程如下：</p>
 <ol>
@@ -451,6 +456,10 @@ return o(t,i(n),arguments.length<3?void 0:u(arguments[2]))}})},function(t,n,r){v
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">react-native</a>
               </li>
             
             <div class="clearfix"></div>

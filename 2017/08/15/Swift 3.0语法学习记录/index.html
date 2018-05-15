@@ -8,17 +8,17 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Swift 3.0语法学习记录 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="重载运算符时，前置运算符需要在“func”关键字前添加“prefix”关键字：   1234567891011121314151617struct Vector2D &amp;#123;    var x = 0.0    var y = 0.0&amp;#125;func +(left: Vector2D, right: Vector2D) -&amp;gt; Vector2D &amp;#123;    return Ve">
+  <meta name="description" content="学习swift时的小随笔记录">
 <meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Swift 3.0语法学习记录">
 <meta property="og:url" content="http://yoursite.com/2017/08/15/Swift 3.0语法学习记录/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="重载运算符时，前置运算符需要在“func”关键字前添加“prefix”关键字：   1234567891011121314151617struct Vector2D &amp;#123;    var x = 0.0    var y = 0.0&amp;#125;func +(left: Vector2D, right: Vector2D) -&amp;gt; Vector2D &amp;#123;    return Ve">
-<meta property="og:updated_time" content="2018-05-15T02:11:35.307Z">
+<meta property="og:description" content="学习swift时的小随笔记录">
+<meta property="og:updated_time" content="2018-05-15T02:19:51.720Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Swift 3.0语法学习记录">
-<meta name="twitter:description" content="重载运算符时，前置运算符需要在“func”关键字前添加“prefix”关键字：   1234567891011121314151617struct Vector2D &amp;#123;    var x = 0.0    var y = 0.0&amp;#125;func +(left: Vector2D, right: Vector2D) -&amp;gt; Vector2D &amp;#123;    return Ve">
+<meta name="twitter:description" content="学习swift时的小随笔记录">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -93,6 +93,8 @@
 		        
 					<a class="weibo" target="_blank" href="http://www.weibo.com/u/1167729174?from=hissimilar_home&refer_flag=1005050003_&is_all=1" title="weibo"><i class="icon-weibo"></i></a>
 		        
+					<a class="jianshu" target="_blank" href="https://www.jianshu.com/u/c4d99e187e9f" title="jianshu"><i class="icon-jianshu"></i></a>
+		        
 					<a class="mail" target="_blank" href="mailto:1018857334@qq.com" title="mail"><i class="icon-mail"></i></a>
 		        
 			</div>
@@ -143,6 +145,8 @@
 						<a class="github" target="_blank" href="https://github.com/Choujiji" title="github"><i class="icon-github"></i></a>
 			        
 						<a class="weibo" target="_blank" href="http://www.weibo.com/u/1167729174?from=hissimilar_home&refer_flag=1005050003_&is_all=1" title="weibo"><i class="icon-weibo"></i></a>
+			        
+						<a class="jianshu" target="_blank" href="https://www.jianshu.com/u/c4d99e187e9f" title="jianshu"><i class="icon-jianshu"></i></a>
 			        
 						<a class="mail" target="_blank" href="mailto:1018857334@qq.com" title="mail"><i class="icon-mail"></i></a>
 			        
@@ -200,7 +204,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ul>
+        <a id="more"></a>
+<ul>
 <li><p>重载运算符时，前置运算符需要在“func”关键字前添加<strong>“<em>prefix</em>”</strong>关键字：</p>
   <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Vector2D</span> </span>&#123;</div><div class="line">    <span class="keyword">var</span> x = <span class="number">0.0</span></div><div class="line">    <span class="keyword">var</span> y = <span class="number">0.0</span></div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">func</span> +<span class="params">(<span class="keyword">left</span>: Vector2D, <span class="keyword">right</span>: Vector2D)</span></span> -&gt; <span class="type">Vector2D</span> &#123;</div><div class="line">    <span class="keyword">return</span> <span class="type">Vector2D</span>(x: <span class="keyword">left</span>.x + <span class="keyword">right</span>.x, y: <span class="keyword">left</span>.y + <span class="keyword">right</span>.y)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 这里是前置运算符重载，需要添加“prefix”标识</span></div><div class="line"><span class="keyword">prefix</span> <span class="function"><span class="keyword">func</span> -<span class="params">(origin: Vector2D)</span></span> -&gt; <span class="type">Vector2D</span> &#123;</div><div class="line">    <span class="keyword">return</span> <span class="type">Vector2D</span>(x: -origin.x, y: -origin.y)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">let</span> vec1 = <span class="type">Vector2D</span>(x: <span class="number">2</span>, y: <span class="number">3</span>)</div><div class="line"><span class="keyword">let</span> vec2 = <span class="type">Vector2D</span>(x: <span class="number">1</span>, y: <span class="number">4</span>)</div><div class="line"><span class="keyword">let</span> vec3 = vec1 + vec2</div><div class="line"><span class="keyword">let</span> vec4 = -vec1</div></pre></td></tr></table></figure>
 </li>
@@ -405,6 +410,10 @@ return o(t,i(n),arguments.length<3?void 0:u(arguments[2]))}})},function(t,n,r){v
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">react-native</a>
               </li>
             
             <div class="clearfix"></div>
