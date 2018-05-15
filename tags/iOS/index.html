@@ -6,19 +6,17 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>SceneKit学习记录1_物理身体 | 臭吉吉的瞎记空间</title>
+  <title>Tag: iOS | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="原文档 物理身体类型（SCNPhysicsBodyType） 分为三类：  静态身体：SCNPhysicsBodyTypeStatic 动态身体：SCNPhysicsBodyTypeDynamic 运动身体：SCNPhysicsBodyTypeKinematic   作用：  静态身体：不会被力或碰撞影响，不能移动 动态身体：可以被其他类型的身体碰撞或施加力 运动身体：不会被力或碰撞影响，但是可以">
-<meta name="keywords" content="iOS">
-<meta property="og:type" content="article">
-<meta property="og:title" content="SceneKit学习记录1_物理身体">
-<meta property="og:url" content="http://yoursite.com/2017/07/18/SceneKit学习记录1/index.html">
+  <meta name="description" content="督促自己好好学习哦~">
+<meta property="og:type" content="website">
+<meta property="og:title" content="臭吉吉的瞎记空间">
+<meta property="og:url" content="http://yoursite.com/tags/iOS/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="原文档 物理身体类型（SCNPhysicsBodyType） 分为三类：  静态身体：SCNPhysicsBodyTypeStatic 动态身体：SCNPhysicsBodyTypeDynamic 运动身体：SCNPhysicsBodyTypeKinematic   作用：  静态身体：不会被力或碰撞影响，不能移动 动态身体：可以被其他类型的身体碰撞或施加力 运动身体：不会被力或碰撞影响，但是可以">
-<meta property="og:updated_time" content="2018-05-15T02:11:35.357Z">
+<meta property="og:description" content="督促自己好好学习哦~">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SceneKit学习记录1_物理身体">
-<meta name="twitter:description" content="原文档 物理身体类型（SCNPhysicsBodyType） 分为三类：  静态身体：SCNPhysicsBodyTypeStatic 动态身体：SCNPhysicsBodyTypeDynamic 运动身体：SCNPhysicsBodyTypeKinematic   作用：  静态身体：不会被力或碰撞影响，不能移动 动态身体：可以被其他类型的身体碰撞或施加力 运动身体：不会被力或碰撞影响，但是可以">
+<meta name="twitter:title" content="臭吉吉的瞎记空间">
+<meta name="twitter:description" content="督促自己好好学习哦~">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -180,127 +178,36 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-SceneKit学习记录1" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      SceneKit学习记录1_物理身体
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2018" class="archive-year">2018</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2018/05/15/使用代码初始化StoryBoard中的ViewController/" class="archive-article-date">
+  	<time datetime="2018-05-15T01:49:33.088Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-15</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2018/05/15/使用代码初始化StoryBoard中的ViewController/">使用代码初始化StoryBoard中的ViewController</a>
     </h1>
   
 
-        
-        <a href="/2017/07/18/SceneKit学习记录1/" class="archive-article-date">
-  	<time datetime="2017-07-18T05:34:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-18</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://developer.apple.com/documentation/scenekit/scnphysicsbody?language=objc" target="_blank" rel="external">原文档</a></p>
-<h1 id="物理身体类型（SCNPhysicsBodyType）"><a href="#物理身体类型（SCNPhysicsBodyType）" class="headerlink" title="物理身体类型（SCNPhysicsBodyType）"></a>物理身体类型（SCNPhysicsBodyType）</h1><blockquote>
-<p>分为三类：</p>
-<ul>
-<li>静态身体：SCNPhysicsBodyTypeStatic</li>
-<li>动态身体：SCNPhysicsBodyTypeDynamic</li>
-<li>运动身体：SCNPhysicsBodyTypeKinematic</li>
-</ul>
-</blockquote>
-<p><strong>作用</strong>：</p>
-<ul>
-<li>静态身体：不会被力或碰撞影响，不能移动</li>
-<li>动态身体：可以被其他类型的身体碰撞或施加力</li>
-<li>运动身体：不会被力或碰撞影响，但是可以直接移动他们去碰撞动态身体</li>
-</ul>
-<h4 id="Static（静态身体）"><a href="#Static（静态身体）" class="headerlink" title="Static（静态身体）"></a>Static（静态身体）</h4><table>
-<thead>
-<tr>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">影响</th>
-<th style="text-align:center">被影响</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Static</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Dynamic</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Kinematic</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-</tbody>
-</table>
-<h4 id="Dynamic（动态身体）"><a href="#Dynamic（动态身体）" class="headerlink" title="Dynamic（动态身体）"></a>Dynamic（动态身体）</h4><table>
-<thead>
-<tr>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">影响</th>
-<th style="text-align:center">被影响</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Static</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Dynamic</td>
-<td style="text-align:center">√</td>
-<td style="text-align:center">√</td>
-</tr>
-<tr>
-<td style="text-align:center">Kinematic</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">√</td>
-</tr>
-</tbody>
-</table>
-<h4 id="KineMatic（运动身体）"><a href="#KineMatic（运动身体）" class="headerlink" title="KineMatic（运动身体）"></a>KineMatic（运动身体）</h4><table>
-<thead>
-<tr>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">影响</th>
-<th style="text-align:center">被影响</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Static</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Dynamic</td>
-<td style="text-align:center">√</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Kinematic</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-</tbody>
-</table>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -312,97 +219,374 @@
 		</ul>
 	</div>
 
-      
+          
 
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/07/18/SceneKit学习记录1/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
   
-<nav id="article-nav">
+    
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2018/04/04/KVC基础学习总结/" class="archive-article-date">
+  	<time datetime="2018-04-04T06:16:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-04</time>
+</a>
+        </div>
+    	 
   
-    <a href="/2017/08/07/四维矩阵学习记录/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          四维矩阵？？？
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2017/07/04/ARKit_doc_9/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">ARKit文档瞎翻译（9）</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-
-
-
-
-  
-  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2018/04/04/KVC基础学习总结/">KVC基础学习总结</a>
+    </h1>
   
 
+        <div class="article-info info-on-right">
+          
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+          
+
+        </div>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+    
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2018/04/03/iOS Protocol（协议）的简单总结/" class="archive-article-date">
+  	<time datetime="2018-04-03T02:50:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-03</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2018/04/03/iOS Protocol（协议）的简单总结/">iOS Protocol（协议）的简单总结</a>
+    </h1>
   
 
+        <div class="article-info info-on-right">
+          
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+          
+
+        </div>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+    
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2018/03/30/Objective-C 2.0 动态绑定和消息转发/" class="archive-article-date">
+  	<time datetime="2018-03-30T06:06:41.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-30</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2018/03/30/Objective-C 2.0 动态绑定和消息转发/">Objective-C 2.0 方法调用中的动态绑定和消息转发</a>
+    </h1>
+  
+
+        <div class="article-info info-on-right">
+          
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+          
+
+        </div>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+    
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2018/03/26/Objective-C 2.0 category/" class="archive-article-date">
+  	<time datetime="2018-03-26T14:40:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-26</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2018/03/26/Objective-C 2.0 category/">Objective-C 2.0的category</a>
+    </h1>
+  
+
+        <div class="article-info info-on-right">
+          
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+          
+
+        </div>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+    
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2018/03/14/iOS runtime学习/" class="archive-article-date">
+  	<time datetime="2018-03-14T03:33:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-14</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2018/03/14/iOS runtime学习/">iOS runtime学习</a>
+    </h1>
+  
+
+        <div class="article-info info-on-right">
+          
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+          
+
+        </div>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+    
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2018/03/07/iOS RunLoop学习/" class="archive-article-date">
+  	<time datetime="2018-03-07T06:21:53.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-07</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2018/03/07/iOS RunLoop学习/">iOS RunLoop学习</a>
+    </h1>
+  
+
+        <div class="article-info info-on-right">
+          
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+          
+
+        </div>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+    
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2018/03/05/ios_GCD_learning/" class="archive-article-date">
+  	<time datetime="2018-03-05T03:20:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-05</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2018/03/05/ios_GCD_learning/">iOS GCD学习总结</a>
+    </h1>
+  
+
+        <div class="article-info info-on-right">
+          
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+          
+
+        </div>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+    
+    
+      
+        </div></section>
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2017" class="archive-year">2017</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2017/08/15/Swift 3.0语法学习记录/" class="archive-article-date">
+  	<time datetime="2017-08-15T15:51:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-15</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2017/08/15/Swift 3.0语法学习记录/">Swift 3.0语法学习记录</a>
+    </h1>
+  
+
+        <div class="article-info info-on-right">
+          
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+          
+
+        </div>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+    
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2017/08/07/四维矩阵学习记录/" class="archive-article-date">
+  	<time datetime="2017-08-07T08:29:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-07</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2017/08/07/四维矩阵学习记录/">四维矩阵？？？</a>
+    </h1>
+  
+
+        <div class="article-info info-on-right">
+          
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+          
+
+        </div>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+  
+    </div></section>
+  
+
+    
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/tags/iOS/page/2/">2</a><a class="extend next" rel="next" href="/tags/iOS/page/2/">Next &raquo;</a>
+    </nav>
   
 
 
@@ -426,9 +610,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
+		isPost: false,
 		isArchive: false,
-		isTag: false,
+		isTag: true,
 		isCategory: false,
 		open_in_new: true,
 		root: "/",

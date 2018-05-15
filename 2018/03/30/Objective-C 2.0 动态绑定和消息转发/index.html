@@ -9,14 +9,14 @@
   <title>Objective-C 2.0 方法调用中的动态绑定和消息转发 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="OC方法调用的实质 动态绑定和消息转发的流程 动态绑定实例（添加实例方法、添加类方法） 消息转发实例 消息转发模拟“多继承”以及二者的区别 使用消息转发代替继承   OC方法调用的实质我们都知道，OC是C语言的超集，赋予了C强大的动态特性，其功劳主要归功于OC的运行时系统（runtime）。OC调用方法的实质是发送消息（即objc_msgSend函数）。在编译期，对象理论上可以调用任何方法，即">
-<meta name="keywords" content="学习笔记">
+<meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Objective-C 2.0 方法调用中的动态绑定和消息转发">
 <meta property="og:url" content="http://yoursite.com/2018/03/30/Objective-C 2.0 动态绑定和消息转发/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
 <meta property="og:description" content="OC方法调用的实质 动态绑定和消息转发的流程 动态绑定实例（添加实例方法、添加类方法） 消息转发实例 消息转发模拟“多继承”以及二者的区别 使用消息转发代替继承   OC方法调用的实质我们都知道，OC是C语言的超集，赋予了C强大的动态特性，其功劳主要归功于OC的运行时系统（runtime）。OC调用方法的实质是发送消息（即objc_msgSend函数）。在编译期，对象理论上可以调用任何方法，即">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1457495-8ee6afef466e6177.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700">
-<meta property="og:updated_time" content="2018-03-30T09:16:37.000Z">
+<meta property="og:updated_time" content="2018-05-15T02:11:35.307Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Objective-C 2.0 方法调用中的动态绑定和消息转发">
 <meta name="twitter:description" content="OC方法调用的实质 动态绑定和消息转发的流程 动态绑定实例（添加实例方法、添加类方法） 消息转发实例 消息转发模拟“多继承”以及二者的区别 使用消息转发代替继承   OC方法调用的实质我们都知道，OC是C语言的超集，赋予了C强大的动态特性，其功劳主要归功于OC的运行时系统（runtime）。OC调用方法的实质是发送消息（即objc_msgSend函数）。在编译期，对象理论上可以调用任何方法，即">
@@ -65,7 +65,15 @@
 	        
 				<li><a href="/tags/随笔/">随笔</a></li>
 	        
-				<li><a href="/tags/学习笔记/">学习笔记</a></li>
+				<li><a href="/tags/iOS/">iOS</a></li>
+	        
+				<li><a href="/tags/react-native/">react-native</a></li>
+	        
+				<li><a href="/tags/Vue/">Vue.js</a></li>
+	        
+				<li><a href="/tags/Python/">Python</a></li>
+	        
+				<li><a href="/tags/Javascript/">Javascript</a></li>
 	        
 			</ul>
 		</nav>
@@ -121,6 +129,14 @@
 			
 				
 			
+				
+			
+				
+			
+				
+			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -139,11 +155,19 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">主页</a></li>
+					<li style="width: 14.285714285714286%"><a href="/">主页</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/随笔/">随笔</a></li>
+					<li style="width: 14.285714285714286%"><a href="/tags/随笔/">随笔</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/学习笔记/">学习笔记</a></li>
+					<li style="width: 14.285714285714286%"><a href="/tags/iOS/">iOS</a></li>
+		        
+					<li style="width: 14.285714285714286%"><a href="/tags/react-native/">react-native</a></li>
+		        
+					<li style="width: 14.285714285714286%"><a href="/tags/Vue/">Vue.js</a></li>
+		        
+					<li style="width: 14.285714285714286%"><a href="/tags/Python/">Python</a></li>
+		        
+					<li style="width: 14.285714285714286%"><a href="/tags/Javascript/">Javascript</a></li>
 		        
 				</ul>
 			</nav>
@@ -241,7 +265,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习笔记</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
         		</li>
       		
 		</ul>
@@ -422,7 +446,7 @@ return o(t,i(n),arguments.length<3?void 0:u(arguments[2]))}})},function(t,n,r){v
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">学习笔记</a>
+                <a href="javascript:void(0)" class="js-tag color4">iOS</a>
               </li>
              
               <li class="article-tag-list-item">
