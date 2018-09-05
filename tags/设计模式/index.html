@@ -6,12 +6,12 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>臭吉吉的瞎记空间</title>
+  <title>Tag: 设计模式 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="督促自己好好学习哦~">
 <meta property="og:type" content="website">
 <meta property="og:title" content="臭吉吉的瞎记空间">
-<meta property="og:url" content="http://yoursite.com/page/2/index.html">
+<meta property="og:url" content="http://yoursite.com/tags/设计模式/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
 <meta property="og:description" content="督促自己好好学习哦~">
 <meta name="twitter:card" content="summary">
@@ -190,633 +190,58 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Swift 3.0语法学习记录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
+  
     
-      <header class="article-header">
-        
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2018" class="archive-year">2018</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2018/09/05/设计模式之建造者模式/" class="archive-article-date">
+  	<time datetime="2018-09-05T04:03:27.472Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-05</time>
+</a>
+        </div>
+    	 
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/15/Swift 3.0语法学习记录/">Swift 3.0语法学习记录</a>
+      <a class="archive-article-title" href="/2018/09/05/设计模式之建造者模式/">设计模式之生成器模式</a>
     </h1>
   
 
-        
-        <a href="/2017/08/15/Swift 3.0语法学习记录/" class="archive-article-date">
-  	<time datetime="2017-08-15T15:51:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <a id="more"></a>
-<ul>
-<li><p>重载运算符时，前置运算符需要在“func”关键字前添加<strong>“<em>prefix</em>”</strong>关键字：</p>
-  <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Vector2D</span> </span>&#123;</div><div class="line">    <span class="keyword">var</span> x = <span class="number">0.0</span></div><div class="line">    <span class="keyword">var</span> y = <span class="number">0.0</span></div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">func</span> +<span class="params">(<span class="keyword">left</span>: Vector2D, <span class="keyword">right</span>: Vector2D)</span></span> -&gt; <span class="type">Vector2D</span> &#123;</div><div class="line">    <span class="keyword">return</span> <span class="type">Vector2D</span>(x: <span class="keyword">left</span>.x + <span class="keyword">right</span>.x, y: <span class="keyword">left</span>.y + <span class="keyword">right</span>.y)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 这里是前置运算符重载，需要添加“prefix”标识</span></div><div class="line"><span class="keyword">prefix</span> <span class="function"><span class="keyword">func</span> -<span class="params">(origin: Vector2D)</span></span> -&gt; <span class="type">Vector2D</span> &#123;</div><div class="line">    <span class="keyword">return</span> <span class="type">Vector2D</span>(x: -origin.x, y: -origin.y)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">let</span> vec1 = <span class="type">Vector2D</span>(x: <span class="number">2</span>, y: <span class="number">3</span>)</div><div class="line"><span class="keyword">let</span> vec2 = <span class="type">Vector2D</span>(x: <span class="number">1</span>, y: <span class="number">4</span>)</div><div class="line"><span class="keyword">let</span> vec3 = vec1 + vec2</div><div class="line"><span class="keyword">let</span> vec4 = -vec1</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<pre><code>&gt; 此外，“infix”为中置操作符（如+、-、*、/等两边都需要操作数的）；“postfix”为后置操作符；当然，“prefix”为前置操作符。
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
         		</li>
       		
 		</ul>
 	</div>
 
-      
+          
 
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/08/15/Swift 3.0语法学习记录/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
+        </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-
-
-
-
   
-    <article id="post-四维矩阵学习记录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
+  
+    </div></section>
+  
+
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/07/四维矩阵学习记录/">四维矩阵？？？</a>
-    </h1>
-  
-
-        
-        <a href="/2017/08/07/四维矩阵学习记录/" class="archive-article-date">
-  	<time datetime="2017-08-07T08:29:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>看了个好东西，<a href="http://www.cnblogs.com/graphics/archive/2012/08/02/2616017.html" target="_blank" rel="external">矩阵-DirectX与OpenGL的不同</a>，原帖讲的很清楚</p>
-        
-          <a class="article-more-a" href="/2017/08/07/四维矩阵学习记录/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/08/07/四维矩阵学习记录/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-SceneKit学习记录1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/18/SceneKit学习记录1/">SceneKit学习记录1_物理身体</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/18/SceneKit学习记录1/" class="archive-article-date">
-  	<time datetime="2017-07-18T05:34:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-18</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://developer.apple.com/documentation/scenekit/scnphysicsbody?language=objc" target="_blank" rel="external">原文档</a></p>
-<h1 id="物理身体类型（SCNPhysicsBodyType）"><a href="#物理身体类型（SCNPhysicsBodyType）" class="headerlink" title="物理身体类型（SCNPhysicsBodyType）"></a>物理身体类型（SCNPhysicsBodyType）</h1><blockquote>
-<p>分为三类：</p>
-<ul>
-<li>静态身体：SCNPhysicsBodyTypeStatic</li>
-<li>动态身体：SCNPhysicsBodyTypeDynamic</li>
-<li>运动身体：SCNPhysicsBodyTypeKinematic</li>
-</ul>
-</blockquote>
-        
-          <a class="article-more-a" href="/2017/07/18/SceneKit学习记录1/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/18/SceneKit学习记录1/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-ARKit_doc_9" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/04/ARKit_doc_9/">ARKit文档瞎翻译（9）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/04/ARKit_doc_9/" class="archive-article-date">
-  	<time datetime="2017-07-04T07:19:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://developer.apple.com/documentation/arkit/arscnview/providing_3d_virtual_content_with_scenekit" target="_blank" rel="external">原文请戳</a></p>
-        
-          <a class="article-more-a" href="/2017/07/04/ARKit_doc_9/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/04/ARKit_doc_9/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-ARKit_doc_8" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/04/ARKit_doc_8/">ARKit文档瞎翻译（8）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/04/ARKit_doc_8/" class="archive-article-date">
-  	<time datetime="2017-07-04T06:05:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">原文请戳</a></p>
-        
-          <a class="article-more-a" href="/2017/07/04/ARKit_doc_8/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/04/ARKit_doc_8/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-ARKit_doc_7" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/04/ARKit_doc_7/">ARKit文档瞎翻译（7）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/04/ARKit_doc_7/" class="archive-article-date">
-  	<time datetime="2017-07-04T03:28:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">原文请戳</a></p>
-        
-          <a class="article-more-a" href="/2017/07/04/ARKit_doc_7/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/04/ARKit_doc_7/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-ARKit_doc_6" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/03/ARKit_doc_6/">ARKit文档瞎翻译（6）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/03/ARKit_doc_6/" class="archive-article-date">
-  	<time datetime="2017-07-03T14:06:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://developer.apple.com/documentation/arkit/arskview/providing_2d_virtual_content_with_spritekit?language=objc" target="_blank" rel="external">原文请戳</a></p>
-        
-          <a class="article-more-a" href="/2017/07/03/ARKit_doc_6/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/03/ARKit_doc_6/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-ARKit_doc_5" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/03/ARKit_doc_5/">ARKit文档瞎翻译（5）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/03/ARKit_doc_5/" class="archive-article-date">
-  	<time datetime="2017-07-03T08:27:40.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">原文请戳</a></p>
-        
-          <a class="article-more-a" href="/2017/07/03/ARKit_doc_5/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/03/ARKit_doc_5/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-ARKit_doc_4" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/03/ARKit_doc_4/">ARKit文档瞎翻译（4）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/03/ARKit_doc_4/" class="archive-article-date">
-  	<time datetime="2017-07-03T06:49:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="ARKit文档瞎翻译（4）"><a href="#ARKit文档瞎翻译（4）" class="headerlink" title="ARKit文档瞎翻译（4）"></a>ARKit文档瞎翻译（4）</h1><p><a href="https://developer.apple.com/documentation/arkit/arsession?language=objc" target="_blank" rel="external">原文请戳</a></p>
-        
-          <a class="article-more-a" href="/2017/07/03/ARKit_doc_4/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/03/ARKit_doc_4/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-ARKit_doc_3" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/03/ARKit_doc_3/">ARKit文档瞎翻译（3）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/03/ARKit_doc_3/" class="archive-article-date">
-  	<time datetime="2017-07-03T03:41:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="ARKit文档瞎翻译（3）"><a href="#ARKit文档瞎翻译（3）" class="headerlink" title="ARKit文档瞎翻译（3）"></a>ARKit文档瞎翻译（3）</h1><p><a href="https://developer.apple.com/documentation/arkit/understanding_augmented_reality" target="_blank" rel="external">原文请戳</a></p>
-        
-          <a class="article-more-a" href="/2017/07/03/ARKit_doc_3/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/03/ARKit_doc_3/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-  
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
-    </nav>
-  
 
 
           </div>
@@ -838,10 +263,10 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
+		isHome: false,
 		isPost: false,
 		isArchive: false,
-		isTag: false,
+		isTag: true,
 		isCategory: false,
 		open_in_new: true,
 		root: "/",

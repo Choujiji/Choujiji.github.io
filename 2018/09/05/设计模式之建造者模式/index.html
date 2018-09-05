@@ -6,18 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>臭吉吉的瞎记空间</title>
+  <title>设计模式之生成器模式 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="–title: 设计模式之生成器模式 tags: 设计模式举个例子，个人看来，生成器模式的“Client - Director - Builder”相当于小的软件开发公司的“老板 - 产品经理 - 程序员”的模式。 老板（Client）：   决定了公司员工的生死去留（管理其他二者角色的生命周期，负责创建、保留和释放） 提需求，公司要做什么项目（调用Director并传递产品需求） 验收项目（获取">
+  <meta name="description" content="举个例子，个人看来，生成器模式的“Client - Director - Builder”相当于小的软件开发公司的“老板 - 产品经理 - 程序员”的模式。 老板（Client）：   决定了公司员工的生死去留（管理其他二者角色的生命周期，负责创建、保留和释放） 提需求，公司要做什么项目（调用Director并传递产品需求） 验收项目（获取产品）   产品经理（Director）：   知道要做什">
+<meta name="keywords" content="设计模式">
 <meta property="og:type" content="article">
-<meta property="og:title" content="臭吉吉的瞎记空间">
+<meta property="og:title" content="设计模式之生成器模式">
 <meta property="og:url" content="http://yoursite.com/2018/09/05/设计模式之建造者模式/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="–title: 设计模式之生成器模式 tags: 设计模式举个例子，个人看来，生成器模式的“Client - Director - Builder”相当于小的软件开发公司的“老板 - 产品经理 - 程序员”的模式。 老板（Client）：   决定了公司员工的生死去留（管理其他二者角色的生命周期，负责创建、保留和释放） 提需求，公司要做什么项目（调用Director并传递产品需求） 验收项目（获取">
-<meta property="og:updated_time" content="2018-09-05T04:35:39.176Z">
+<meta property="og:description" content="举个例子，个人看来，生成器模式的“Client - Director - Builder”相当于小的软件开发公司的“老板 - 产品经理 - 程序员”的模式。 老板（Client）：   决定了公司员工的生死去留（管理其他二者角色的生命周期，负责创建、保留和释放） 提需求，公司要做什么项目（调用Director并传递产品需求） 验收项目（获取产品）   产品经理（Director）：   知道要做什">
+<meta property="og:updated_time" content="2018-09-05T04:37:40.220Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="臭吉吉的瞎记空间">
-<meta name="twitter:description" content="–title: 设计模式之生成器模式 tags: 设计模式举个例子，个人看来，生成器模式的“Client - Director - Builder”相当于小的软件开发公司的“老板 - 产品经理 - 程序员”的模式。 老板（Client）：   决定了公司员工的生死去留（管理其他二者角色的生命周期，负责创建、保留和释放） 提需求，公司要做什么项目（调用Director并传递产品需求） 验收项目（获取">
+<meta name="twitter:title" content="设计模式之生成器模式">
+<meta name="twitter:description" content="举个例子，个人看来，生成器模式的“Client - Director - Builder”相当于小的软件开发公司的“老板 - 产品经理 - 程序员”的模式。 老板（Client）：   决定了公司员工的生死去留（管理其他二者角色的生命周期，负责创建、保留和释放） 提需求，公司要做什么项目（调用Director并传递产品需求） 验收项目（获取产品）   产品经理（Director）：   知道要做什">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -192,10 +193,24 @@
             <article id="post-设计模式之建造者模式" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      设计模式之生成器模式
+    </h1>
+  
+
+        
+        <a href="/2018/09/05/设计模式之建造者模式/" class="archive-article-date">
+  	<time datetime="2018-09-05T04:03:27.472Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-05</time>
+</a>
+        
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
-        <p>–<br>title: 设计模式之生成器模式</p>
-<h2 id="tags-设计模式"><a href="#tags-设计模式" class="headerlink" title="tags: 设计模式"></a>tags: 设计模式</h2><h3 id="举个例子，个人看来，生成器模式的“Client-Director-Builder”相当于小的软件开发公司的“老板-产品经理-程序员”的模式。"><a href="#举个例子，个人看来，生成器模式的“Client-Director-Builder”相当于小的软件开发公司的“老板-产品经理-程序员”的模式。" class="headerlink" title="举个例子，个人看来，生成器模式的“Client - Director - Builder”相当于小的软件开发公司的“老板 - 产品经理 - 程序员”的模式。"></a>举个例子，个人看来，生成器模式的<em>“Client - Director - Builder”</em>相当于小的软件开发公司的<em>“老板 - 产品经理 - 程序员”</em>的模式。</h3><ul>
+        <h3 id="举个例子，个人看来，生成器模式的“Client-Director-Builder”相当于小的软件开发公司的“老板-产品经理-程序员”的模式。"><a href="#举个例子，个人看来，生成器模式的“Client-Director-Builder”相当于小的软件开发公司的“老板-产品经理-程序员”的模式。" class="headerlink" title="举个例子，个人看来，生成器模式的“Client - Director - Builder”相当于小的软件开发公司的“老板 - 产品经理 - 程序员”的模式。"></a>举个例子，个人看来，生成器模式的<em>“Client - Director - Builder”</em>相当于小的软件开发公司的<em>“老板 - 产品经理 - 程序员”</em>的模式。</h3><ul>
 <li>老板（<em>Client</em>）：</li>
 </ul>
 <ol>
@@ -227,6 +242,17 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -402,6 +428,10 @@ return o(t,i(n),arguments.length<3?void 0:u(arguments[2]))}})},function(t,n,r){v
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">react-native</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
             
             <div class="clearfix"></div>
