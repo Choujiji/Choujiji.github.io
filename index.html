@@ -210,77 +210,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="图示："><a href="#图示：" class="headerlink" title="图示："></a>图示：</h3><p>以下分别是类图与时序图<br><img src="http://p8r3sk4om.bkt.clouddn.com/374636-20170808225735589-1433194842.jpg" alt="img"><br><img src="http://p8r3sk4om.bkt.clouddn.com/20170503144820580.png" alt="img"></p>
-<h3 id="先举个例子，个人看来，生成器模式的“Client-Director-Builder”相当于小的软件开发公司的“老板-产品经理-程序员”的模式。"><a href="#先举个例子，个人看来，生成器模式的“Client-Director-Builder”相当于小的软件开发公司的“老板-产品经理-程序员”的模式。" class="headerlink" title="先举个例子，个人看来，生成器模式的“Client - Director - Builder”相当于小的软件开发公司的“老板 - 产品经理 - 程序员”的模式。"></a>先举个例子，个人看来，生成器模式的<em>“Client - Director - Builder”</em>相当于小的软件开发公司的<em>“老板 - 产品经理 - 程序员”</em>的模式。</h3><ul>
-<li>老板（<em>Client</em>）：</li>
-</ul>
-<ol>
-<li>决定了公司员工的生死去留（管理其他二者角色的生命周期，负责创建、保留和释放）</li>
-<li>提需求，公司要做什么项目（调用Director并传递产品需求）</li>
-<li>验收项目（获取产品）</li>
-</ol>
-<ul>
-<li>产品经理（<em>Director</em>）：</li>
-</ul>
-<ol>
-<li>知道要做什么项目，依照自定顺序分解成开发模块（从Client获取到产品需求并分解）</li>
-<li>管理着程序员（Director中包含Builder成员）</li>
-<li>命令程序员按照模块进行开发（按照顺序调用builder的建造方法进行产品生产）</li>
-</ol>
-<ul>
-<li>程序员（<em>Builder</em>）:</li>
-</ul>
-<ol>
-<li>新建工程（初始化产品对象）</li>
-<li>按照需求开发编码（根据Director的调用执行各种生产函数，给产品赋值）</li>
-<li>开发完毕后提交程序（根据外部调用返回创建完成的产品对象）</li>
-</ol>
-<h3 id="示例代码："><a href="#示例代码：" class="headerlink" title="示例代码："></a>示例代码：</h3><p>使用获取并生产电脑作为示例。稍作解释：<br>Computer类为Product；ComputerMaker为抽象Builder，AppleComputerMaker和LenovoComputerMaker为实体Builder；ComputerSeller为Director。</p>
-<blockquote>
-<p>代码地址：<a href="https://github.com/Choujiji/DesignPatterns_Learning/tree/master/%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA/%E7%94%9F%E6%88%90%E5%99%A8%E6%A8%A1%E5%BC%8F" target="_blank" rel="external">ComputerMaker</a></p>
-</blockquote>
-<h3 id="优缺点："><a href="#优缺点：" class="headerlink" title="优缺点："></a>优缺点：</h3><ul>
-<li>优点：</li>
-</ul>
-<ol>
-<li><em>拆分模块，解耦合</em>：</li>
-</ol>
-<blockquote>
-<ol>
-<li>把创建复杂对象的过程拆分为多个子过程，且由Builder模块独立负责；</li>
-<li>Director只负责创建顺序等业务逻辑，并调用Builder进行生产，稳定性好；</li>
-<li>Client只负责将制定Builder提供给Director，并向Director提出生产要求并获取产品，隐藏了整个生产过程。</li>
-</ol>
-</blockquote>
-<ol>
-<li><em>易扩展</em>：</li>
-</ol>
-<blockquote>
-<p>Builder的抽象父类（或协议）制定所有的子过程，并对外提供获取产品接口，子类Builder实现生产过程。所以，添加新产品时，只要子类化Builder并覆盖创建自己的生产过程即可。Director无需修改。</p>
-</blockquote>
-<ul>
-<li>缺点：</li>
-</ul>
-<ol>
-<li><em>使用场景少</em>：</li>
-</ol>
-<blockquote>
-<ol>
-<li>所有的Builder都是由统一的抽象Builder类继承而来，只能生产一种类型产品，不同产品之间的差异少。</li>
-<li>生产的产品结构复杂，否则没必要引入此模式。</li>
-</ol>
-</blockquote>
-<ol>
-<li><em>类结构容易庞大</em>：</li>
-</ol>
-<blockquote>
-<p>生产多个产品时，需要创建多个Builder类，类个数易变多。</p>
-</blockquote>
-<h3 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h3><ul>
-<li><a href="https://www.cnblogs.com/xcsn/p/7309761.html" target="_blank" rel="external">Head First设计模式之生成器模式</a></li>
-<li><a href="https://blog.csdn.net/free1985/article/details/71123618#commentBox" target="_blank" rel="external">设计模式讲解与代码实践（二）——生成器</a></li>
-</ul>
-
+        <h3 id="图示："><a href="#图示：" class="headerlink" title="图示："></a>图示：</h3><p>以下分别是类图与时序图<br><img src="http://p8r3sk4om.bkt.clouddn.com/374636-20170808225735589-1433194842.jpg" alt="img"><br><img src="http://p8r3sk4om.bkt.clouddn.com/20170503144820580.png" alt="img"><br>
+        
+          <a class="article-more-a" href="/2018/09/05/设计模式之建造者模式/#more">more >></a>
+        
       
 
       
@@ -989,11 +922,11 @@ return o(t,i(n),arguments.length<3?void 0:u(arguments[2]))}})},function(t,n,r){v
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+                <a href="javascript:void(0)" class="js-tag color3">react-native</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">react-native</a>
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
