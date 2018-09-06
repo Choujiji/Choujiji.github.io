@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-09-06T05:02:50.940Z</updated>
+  <updated>2018-09-06T05:07:49.251Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2018/09/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/"/>
     <id>http://yoursite.com/2018/09/05/设计模式之建造者模式/</id>
     <published>2018-09-05T04:03:27.472Z</published>
-    <updated>2018-09-06T05:02:50.940Z</updated>
+    <updated>2018-09-06T05:07:49.251Z</updated>
     
     <content type="html"><![CDATA[<h3 id="图示："><a href="#图示：" class="headerlink" title="图示："></a>图示：</h3><p>以下分别是类图与时序图<br><img src="http://p8r3sk4om.bkt.clouddn.com/374636-20170808225735589-1433194842.jpg" alt="img"><br><img src="http://p8r3sk4om.bkt.clouddn.com/20170503144820580.png" alt="img"><br><a id="more"></a></p>
 <h3 id="先举个例子，个人看来，生成器模式的“Client-Director-Builder”相当于小的软件开发公司的“老板-产品经理-程序员”的模式。"><a href="#先举个例子，个人看来，生成器模式的“Client-Director-Builder”相当于小的软件开发公司的“老板-产品经理-程序员”的模式。" class="headerlink" title="先举个例子，个人看来，生成器模式的“Client - Director - Builder”相当于小的软件开发公司的“老板 - 产品经理 - 程序员”的模式。"></a>先举个例子，个人看来，生成器模式的<em>“Client - Director - Builder”</em>相当于小的软件开发公司的<em>“老板 - 产品经理 - 程序员”</em>的模式。</h3><ul>
