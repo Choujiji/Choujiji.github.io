@@ -190,6 +190,81 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-单例模式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/07/单例模式/">iOS中“严谨”的单例模式</a>
+    </h1>
+  
+
+        
+        <a href="/2018/09/07/单例模式/" class="archive-article-date">
+  	<time datetime="2018-09-07T07:34:18.943Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-07</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>由于OC中的方法天生就是public的（就算只写到.m中，在运行时也可以调用到。。。），平时使用的单例方法也未必严谨，所以，看了书，受教了~（还好一般老老实实使用类方法创建单例的无所谓）。</p>
+</blockquote>
+<h4 id="实现一个“严谨”的单例类"><a href="#实现一个“严谨”的单例类" class="headerlink" title="实现一个“严谨”的单例类"></a>实现一个“严谨”的单例类</h4><p>一般来说，提供一个类方法入口，使用dispatch_once_t保护，使用静态类变量保存，即可成功一个创建线程安全的单例对象。</p>
+<p>但是，当调用者在不知情的情况下，调用传统的二段式创建、new或者allocWithZone方法分配内存，甚至是调用copy或multableCopy方法时，都可以创建新的实例对象。所以，为了避免，就需要我们对这些方法依次堵住，重写时，直接在方法内部调用单例方法即可。并且，单例方法的实例化对象时，使用[[super allocWithZone:nil] init]来替代默认（自身的方法已经被重写了）。即可得到“严谨”的单例类。</p>
+<h4 id="关于单例类的继承"><a href="#关于单例类的继承" class="headerlink" title="关于单例类的继承"></a>关于单例类的继承</h4><p>平时都不这么用啊。。。确实是。。。不过既然书中提到了，也查阅了一下，说一说哇。。。（当前的示例代码中无法实现此功能）</p>
+<p>书中说，使用NSAllocateObject()函数手动分配内存，可以实现子类创建自己的单例对象，但是由于现在是ARC环境，此函数早已不可用，需要对单例类单独“-fno-objc-arc”来开后门才行。另一篇博文<a href="https://www.jianshu.com/p/e1a3a5525452" target="_blank" rel="external">IOS单例模式下多线程和继承写法总结</a>里面，也有讨论过，通过查找源码的方式（alloc -&gt; allocWithZone: -&gt; class_createInstance() 的过程），直接使用runtime中的创建实例方法也能达到同样的效果（前提也是MRC环境下），d=====(￣▽￣*)b厉害。</p>
+<p>所以，平时不这么用。。。</p>
+<blockquote>
+<p>示例代码地址：<a href="https://github.com/Choujiji/DesignPatterns_Learning/tree/master/%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA/%E5%8D%95%E4%BE%8B" target="_blank" rel="external">Singleton</a></p>
+</blockquote>
+<h4 id="其他资料："><a href="#其他资料：" class="headerlink" title="其他资料："></a>其他资料：</h4><ul>
+<li><a href="https://www.jianshu.com/p/d2d33f519764?utm_source=desktop&amp;utm_medium=timeline" target="_blank" rel="external">iOS中的单例模式</a></li>
+<li><a href="https://www.jianshu.com/p/a92c0283f243" target="_blank" rel="external">iOS 单例模式</a></li>
+<li><a href="https://www.jianshu.com/p/e1a3a5525452" target="_blank" rel="external">IOS单例模式下多线程和继承写法总结</a></li>
+<li><a href="http://justinyan.me/post/1306" target="_blank" rel="external">从 Objective-C 里的 Alloc 和 AllocWithZone 谈起</a></li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/09/07/单例模式/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-设计模式之建造者模式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -769,67 +844,6 @@
 
 
   
-    <article id="post-ios_GCD_learning" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/05/ios_GCD_learning/">iOS GCD学习总结</a>
-    </h1>
-  
-
-        
-        <a href="/2018/03/05/ios_GCD_learning/" class="archive-article-date">
-  	<time datetime="2018-03-05T03:20:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）"><a href="#GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）" class="headerlink" title="GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）"></a>GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）</h2>
-        
-          <a class="article-more-a" href="/2018/03/05/ios_GCD_learning/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/05/ios_GCD_learning/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -926,11 +940,11 @@ return o(t,i(n),arguments.length<3?void 0:u(arguments[2]))}})},function(t,n,r){v
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color3">react-native</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">react-native</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
             
             <div class="clearfix"></div>
