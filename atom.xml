@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-09-07T08:01:57.468Z</updated>
+  <updated>2018-09-29T09:43:54.908Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,54 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>NSInvocation的莫名crash</title>
+    <link href="http://yoursite.com/2018/09/29/NSInvocation%E7%9A%84%E8%8E%AB%E5%90%8Dcrash/"/>
+    <id>http://yoursite.com/2018/09/29/NSInvocation的莫名crash/</id>
+    <published>2018-09-29T09:06:39.676Z</published>
+    <updated>2018-09-29T09:43:54.908Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="NSInvocation是iOS框架中对命令模式的一种OC封装，使用起来非常方便。在方法调用，或者消息转发中都可以使用到。以下是学着别人demo使用时，封装的多参数调用函数："><a href="#NSInvocation是iOS框架中对命令模式的一种OC封装，使用起来非常方便。在方法调用，或者消息转发中都可以使用到。以下是学着别人demo使用时，封装的多参数调用函数：" class="headerlink" title="NSInvocation是iOS框架中对命令模式的一种OC封装，使用起来非常方便。在方法调用，或者消息转发中都可以使用到。以下是学着别人demo使用时，封装的多参数调用函数："></a>NSInvocation是iOS框架中对命令模式的一种OC封装，使用起来非常方便。在方法调用，或者消息转发中都可以使用到。以下是学着别人demo使用时，封装的多参数调用函数：</h4><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line">#import &lt;Foundation/Foundation.h&gt;</div><div class="line"></div><div class="line">@interface NSObject (PerformSelector)</div><div class="line"></div><div class="line">- (id)performSelector:(SEL)aSelector</div><div class="line">        withArguments:(NSArray *)arguments;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">#import "NSObject+PerformSelector.h"</div><div class="line"></div><div class="line">@implementation NSObject (PerformSelector)</div><div class="line"></div><div class="line">- (id)performSelector:(SEL)aSelector</div><div class="line">        withArguments:(NSArray *)arguments &#123;</div><div class="line">    if (!aSelector) &#123;</div><div class="line">        return nil;</div><div class="line">    &#125;</div><div class="line">    NSMethodSignature *signature = [[self class] instanceMethodSignatureForSelector:aSelector];</div><div class="line">    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];</div><div class="line">    invocation.target = self;</div><div class="line">    invocation.selector = aSelector;</div><div class="line">    </div><div class="line">    if ([arguments isKindOfClass:[NSArray class]]) &#123;</div><div class="line">        // 减2是因为signature的参数包含固定的self和_cmd</div><div class="line">        NSInteger count = MIN(arguments.count, signature.numberOfArguments - 2);</div><div class="line">        for (int i = 0; i &lt; count; i++) &#123;</div><div class="line">            // 返回指定index的参数类型</div><div class="line">            const char *type = [signature getArgumentTypeAtIndex:(i + 2)];</div><div class="line">            // 类型是OC对象（本函数的参数为NSArray，所以都是对象）</div><div class="line">            if (strcmp(type, "@") == 0) &#123;</div><div class="line">                // 取出参数</div><div class="line">                id argument = arguments[i];</div><div class="line">                // 设置参数（copy到invocation上）</div><div class="line">                // 【同样，invocation的参数列表中前两个也是self和_cmd】</div><div class="line">                [invocation setArgument:&amp;argument atIndex:(i + 2)];</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    // 调用函数（此时会动态配置返回值）</div><div class="line">    [invocation invoke];</div><div class="line">    </div><div class="line">    // 取回返回值    </div><div class="line">    id returnValue = @1;</div><div class="line">    if (strcmp(signature.methodReturnType, "@") == 0) &#123;</div><div class="line">        // 返回值是OC对象，取回赋值到指针（这里是给野指针赋值，使其存在内容）</div><div class="line">        [invocation getReturnValue:&amp;returnValue];</div><div class="line">    &#125;</div><div class="line">    return returnValue;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure>
+<p>示例类如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line">@interface TestClass : NSObject</div><div class="line"></div><div class="line">- (NSString *)saySomething:(NSString *)a</div><div class="line">                         b:(NSString *)b</div><div class="line">                         c:(NSString *)c;</div><div class="line">@end</div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">"TestClass.h"</span></span></div><div class="line"></div><div class="line">@implementation TestClass</div><div class="line"></div><div class="line">- (instancetype)init &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (NSDictionary *)saySomething:(NSString *)a</div><div class="line">                             b:(NSString *)b</div><div class="line">                             c:(NSString *)c &#123;</div><div class="line">    <span class="keyword">return</span> @&#123;</div><div class="line">             @<span class="string">"a"</span>: a,</div><div class="line">             @<span class="string">"b"</span>: b,</div><div class="line">             @<span class="string">"c"</span>: c</div><div class="line">             &#125;;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure>
+<p>调用如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">TestClass *tc = [[TestClass alloc] init];</div><div class="line">        result = [tc performSelector:@selector(saySomething:b:c:) withArguments:@[@<span class="string">"Tom"</span>, @<span class="string">"Jim"</span>, @<span class="string">"Li Lei"</span>]];</div><div class="line">        NSLog(@<span class="string">"result = %@"</span>, result);</div></pre></td></tr></table></figure>
+<p>以上，解决了使用performSelector调用时只能传递单个参数的尴尬问题。但是，问题来了~~</p>
+<p>运行时，会发生crash。try-catch也无法捕获异常，觉得颇为诡异。之后，再打开zombie检测后，发现如下输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">2018-09-29 17:15:18.926491+0800 InvocationTest1[37029:49376429] *** -[__NSDictionaryI release]: message sent to deallocated instance 0x60000086aec0</div></pre></td></tr></table></figure>
+<p>原来是返回值被过渡释放导致。</p>
+<p>究其原因，可以在NSInvocation的类文档中查到，主要就一句：</p>
+<blockquote>
+<p>This class does not retain the arguments for the contained invocation by default. </p>
+</blockquote>
+<p>即为，本类默认不对参数进行保留操作。</p>
+<p>实质上，不仅如此，通过调用<em>getReturnValue:</em>方法并查阅说明可以知道，此方法只是根据给定的指针，创建buffer并将返回值写入其中。并未对其进行内存管理。</p>
+<p>现在回到代码。由于performSelector函数中，只是使用了临时变量指向并返回，导致NSInvocation的返回值对象的引用计数实际上是0，即创建完就要被释放。所以，当performSelector函数执行完成后，实际上返回值已经被释放。由于外侧调用者也没有对其进行保留等其他操作，导致调用者的作用域结束后，返回值会再次收到release操作，即发生crash。</p>
+<p>那么，如何解决此问题呢？<br>两种方式：</p>
+<ol>
+<li><strong>在调用NSInvocation对象的<em>getReturnValue:</em>方法时，不要传入OC对象指针，使用C指针（void *），并在最终桥接转换为OC对象。</strong>这种是本人比较推荐的方式，由于此实质上是往buffer内写入内容，使用C指针会更加严谨，而且避免了ARC内存释放导致的crash，返回时桥接转换为对象即可（这种情况也兼容所有数据类型）。</li>
+</ol>
+<p>将performSelector的代码修正为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> *returnValue = <span class="literal">NULL</span>;</div><div class="line"><span class="keyword">if</span> (<span class="built_in">strcmp</span>(signature.methodReturnType, <span class="string">"@"</span>) == <span class="number">0</span>) &#123;</div><div class="line">    <span class="comment">// 返回值是OC对象，取回赋值到指针（这里是给野指针赋值，使其存在内容）</span></div><div class="line">    [invocation getReturnValue:&amp;returnValue];</div><div class="line">&#125;</div><div class="line"><span class="keyword">return</span> (__bridge id)returnValue;</div></pre></td></tr></table></figure>
+<ol>
+<li><strong>使用__unsafe_unretained修饰OC指针，避免ARC对返回值进行内存管理。</strong>使用__weak同样可以达到效果，不过感觉上有点懵，需要继续深入查看内存管理相关的内容了。。。</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">id __unsafe_unretained returnValue = @<span class="number">1</span>;</div><div class="line"><span class="keyword">if</span> (<span class="built_in">strcmp</span>(signature.methodReturnType, <span class="string">"@"</span>) == <span class="number">0</span>) &#123;</div><div class="line">    <span class="comment">// 返回值是OC对象，取回赋值到指针（这里是给野指针赋值，使其存在内容）</span></div><div class="line">    [invocation getReturnValue:&amp;returnValue];</div><div class="line">&#125;</div><div class="line"><span class="keyword">return</span> returnValue;</div></pre></td></tr></table></figure>
+<p>问题解决。。。</p>
+<p>测试程序代码：<a href="https://github.com/Choujiji/NSInvocationTest" target="_blank" rel="external">测试NSInvocation调用</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;NSInvocation是iOS框架中对命令模式的一种OC封装，使用起来非常方便。在方法调用，或者消息转发中都可以使用到。以下是学着别人demo使用时，封装的多参数调用函数：&quot;&gt;&lt;a href=&quot;#NSInvocation是iOS框架中对命令模式的一种OC封装，使
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>iOS中“严谨”的单例模式</title>
@@ -1331,46 +1379,6 @@
     <summary type="html">
     
       &lt;p&gt;&lt;a href=&quot;https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;原文请戳&lt;/a&gt;&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ARKit文档瞎翻译（4）</title>
-    <link href="http://yoursite.com/2017/07/03/ARKit_doc_4/"/>
-    <id>http://yoursite.com/2017/07/03/ARKit_doc_4/</id>
-    <published>2017-07-03T06:49:35.000Z</published>
-    <updated>2018-05-15T02:20:26.102Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="ARKit文档瞎翻译（4）"><a href="#ARKit文档瞎翻译（4）" class="headerlink" title="ARKit文档瞎翻译（4）"></a>ARKit文档瞎翻译（4）</h1><p><a href="https://developer.apple.com/documentation/arkit/arsession?language=objc" target="_blank" rel="external">原文请戳</a></p>
-<a id="more"></a>
-<h2 id="ARSession"><a href="#ARSession" class="headerlink" title="ARSession"></a>ARSession</h2><p>一个处理AR中设备相机和运动过程的共享对象。</p>
-<hr>
-<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>一个ARSession对象整合了在ARKit中以你自己的方式创建AR的主要过程。这个过程包括从设备运动传感器读取数据、控制设备相机和在截取的相机图片中进行图像识别。这个会话整合了所有这些结果来创建一个在设备所在的真实世界和你模拟AR内容的虚拟空间所组成的镜像世界。</p>
-<p>使用ARKit创建的每一个AR体验都需要一个单独的ARSession对象。如果你使用一个<a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a>或<a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a>对象来简易地创建AR中的视觉部分，那么视图对象便已经包含了一个ARSession实例。如果你用自己的渲染器来创建AR内容，你就需要自己实例化并维护一个ARSession对象了。</p>
-<p>运行一个会话需要一个会话配置：<a href="https://developer.apple.com/documentation/arkit/arsessionconfiguration?language=objc" target="_blank" rel="external">ARSessionConfiguration</a>类或其子类<a href="https://developer.apple.com/documentation/arkit/arworldtrackingsessionconfiguration?language=objc" target="_blank" rel="external">ARWorldTrackingSessionConfiguration</a>类的实例。这些类决定了ARKit如何追踪一个设备相对真实世界的位置和运动，并且影响了你能创建的AR体验的种类。</p>
-<h3 id="话题"><a href="#话题" class="headerlink" title="话题"></a>话题</h3><h4 id="配置并运行一个会话"><a href="#配置并运行一个会话" class="headerlink" title="配置并运行一个会话"></a>配置并运行一个会话</h4><h6 id="runWithConfiguration-options"><a href="#runWithConfiguration-options" class="headerlink" title="- runWithConfiguration:options:"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2875735-runwithconfiguration?language=objc" target="_blank" rel="external">- runWithConfiguration:options:</a></h6><pre><code>为会话使用指定配置和设置来启动一个AR过程
-</code></pre><blockquote>
-<p><a href="https://developer.apple.com/documentation/arkit/arsessionrunoptions?language=objc" target="_blank" rel="external">ARSessionRunOptions</a><br>当你改变配置时，此选项影响了如何改变一个ARSession当前状态。</p>
-<p><a href="https://developer.apple.com/documentation/arkit/arsession/2865609-configuration?language=objc" target="_blank" rel="external">configuration</a><br>会话中一个定义了运动和场景追踪行为的对象。</p>
-</blockquote>
-<h6 id="pause"><a href="#pause" class="headerlink" title="- pause"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865619-pause?language=objc" target="_blank" rel="external">- pause</a></h6><pre><code>暂停处理会话
-</code></pre><h4 id="负责AR更新"><a href="#负责AR更新" class="headerlink" title="负责AR更新"></a>负责AR更新</h4><h6 id="delegate"><a href="#delegate" class="headerlink" title="delegate"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865614-delegate?language=objc" target="_blank" rel="external">delegate</a></h6><pre><code>一个你提供的对象来接收捕获的视频图像和追踪信息，或者为会话中的状态改变进行回应处理。
-</code></pre><h6 id="delegateQueue"><a href="#delegateQueue" class="headerlink" title="delegateQueue"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2875726-delegatequeue?language=objc" target="_blank" rel="external">delegateQueue</a></h6><pre><code>会话调用你的一系列代理方法的派发队列
-</code></pre><h6 id="ARSessionDelegate"><a href="#ARSessionDelegate" class="headerlink" title="ARSessionDelegate"></a><a href="https://developer.apple.com/documentation/arkit/arsessiondelegate?language=objc" target="_blank" rel="external">ARSessionDelegate</a></h6><pre><code>在AR会话中你可以实现的一些方法来接收捕获的视频帧图像和处理追踪状态。
-</code></pre><h6 id="ARSessionObserver"><a href="#ARSessionObserver" class="headerlink" title="ARSessionObserver"></a><a href="https://developer.apple.com/documentation/arkit/arsessionobserver?language=objc" target="_blank" rel="external">ARSessionObserver</a></h6><pre><code>在AR会话中你可以实现的一些方法来对状态的改变进行回应。
-</code></pre><h3 id="显示并与AR内容进行交互"><a href="#显示并与AR内容进行交互" class="headerlink" title="显示并与AR内容进行交互"></a>显示并与AR内容进行交互</h3><h6 id="currentFrame"><a href="#currentFrame" class="headerlink" title="currentFrame"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865621-currentframe?language=objc" target="_blank" rel="external">currentFrame</a></h6><pre><code>视频帧图像，带有相关的AR场景信息，是会话对象最近捕获的
-</code></pre><h6 id="addAnchor"><a href="#addAnchor" class="headerlink" title="- addAnchor:"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865612-addanchor?language=objc" target="_blank" rel="external">- addAnchor:</a></h6><pre><code>添加可以被会话对象追踪的指定锚点
-</code></pre><h6 id="removeAnchor"><a href="#removeAnchor" class="headerlink" title="- removeAnchor:"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865607-removeanchor?language=objc" target="_blank" rel="external">- removeAnchor:</a></h6><pre><code>移除可以被会话对象追踪的指定锚点
-</code></pre><h3 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h3><h6 id="runWithConfiguration"><a href="#runWithConfiguration" class="headerlink" title="- runWithConfiguration:"></a><a href="https://developer.apple.com/documentation/arkit/arsession/2865608-runwithconfiguration?language=objc" target="_blank" rel="external">- runWithConfiguration:</a></h6><h2 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h2><h6 id="继承自-NSObject"><a href="#继承自-NSObject" class="headerlink" title="继承自        NSObject"></a>继承自        <a href="https://developer.apple.com/documentation/objectivec/nsobject?language=objc" target="_blank" rel="external">NSObject</a></h6>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;ARKit文档瞎翻译（4）&quot;&gt;&lt;a href=&quot;#ARKit文档瞎翻译（4）&quot; class=&quot;headerlink&quot; title=&quot;ARKit文档瞎翻译（4）&quot;&gt;&lt;/a&gt;ARKit文档瞎翻译（4）&lt;/h1&gt;&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/documentation/arkit/arsession?language=objc&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;原文请戳&lt;/a&gt;&lt;/p&gt;
     
     </summary>
     
