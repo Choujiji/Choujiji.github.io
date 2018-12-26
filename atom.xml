@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-12-25T02:49:27.624Z</updated>
+  <updated>2018-12-26T09:08:20.566Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2018/12/25/%E3%80%8AEffective%20Objective-C%2020%20%E7%BC%96%E5%86%99%E9%AB%98%E8%B4%A8%E9%87%8FiOS%E4%B8%8EOS%20X%E4%BB%A3%E7%A0%81%E7%9A%8452%E4%B8%AA%E6%9C%89%E6%95%88%E6%96%B9%E6%B3%95%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     <id>http://yoursite.com/2018/12/25/《Effective Objective-C 20 编写高质量iOS与OS X代码的52个有效方法》读书笔记/</id>
     <published>2018-12-25T02:49:27.623Z</published>
-    <updated>2018-12-25T02:49:27.624Z</updated>
+    <updated>2018-12-26T09:08:20.566Z</updated>
     
     <content type="html"><![CDATA[<h2 id="第1章：熟悉Objective-C"><a href="#第1章：熟悉Objective-C" class="headerlink" title="第1章：熟悉Objective-C"></a>第1章：熟悉Objective-C</h2><h3 id="第4条：多用类型常量，少用-define预处理指令"><a href="#第4条：多用类型常量，少用-define预处理指令" class="headerlink" title="第4条：多用类型常量，少用#define预处理指令"></a>第4条：多用类型常量，少用#define预处理指令</h3><ul>
 <li>声明类型常量好处是，编译器可以知道此变量的类型，且可以防止外部随意修改</li>
@@ -110,7 +110,7 @@
 <li><p>协议分类及数据流向</p>
 <ol>
 <li><em>若某类实例需要让其他对象代替实现某些逻辑功能，则可以把需要实现逻辑的方法抽象为协议，让“其他对象”成为其“委托对象”，实现协议的方法</em>。此模式即为“<strong>委托模式</strong>”，数据流向为“Class -&gt; Delegate”。如：UITableViewDelegate，tableView实例将处理列表点击等行为委托给代理对象（如UIViewController实例）。 </li>
-<li><em>若某类实例需要通过一些方法获取数据，则可以把这些方法抽象为协议，让“其他对象”成为其“委托对象”，实现协议的方法</em>。这种委托模式也称为“<strong>数据源模式</strong>”，数据流向为“Data Source -&gt; Class”。如：UITableViewDataSource，tableView实例从代理对象（如UIViewController实例）中获取列表的数据等。<br><img src="evernotecid://09EBED2B-03BB-4E09-ADF5-7C5646D2434B/appyinxiangcom/11003783/ENResource/p1981" alt="d02b63c2607696c4da91ec37d124db8e.jpeg"></li>
+<li><em>若某类实例需要通过一些方法获取数据，则可以把这些方法抽象为协议，让“其他对象”成为其“委托对象”，实现协议的方法</em>。这种委托模式也称为“<strong>数据源模式</strong>”，数据流向为“Data Source -&gt; Class”。如：UITableViewDataSource，tableView实例从代理对象（如UIViewController实例）中获取列表的数据等。<br><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/%E5%A7%94%E6%89%98%E6%A8%A1%E5%BC%8F.jpg" alt="img"></li>
 </ol>
 </li>
 <li><p>提高协议方法的调用效率</p>
