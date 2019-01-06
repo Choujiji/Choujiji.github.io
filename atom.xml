@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-12-26T09:08:20.566Z</updated>
+  <updated>2019-01-06T07:54:34.109Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,11 +16,553 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》9</title>
+    <link href="http://yoursite.com/2019/01/06/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%AF%87%EF%BC%9A9.ARC%E5%AE%9E%E7%8E%B0%E4%B9%8B__autoreleasing/"/>
+    <id>http://yoursite.com/2019/01/06/内存管理篇：9.ARC实现之__autoreleasing/</id>
+    <published>2019-01-06T07:54:34.109Z</published>
+    <updated>2019-01-06T07:54:34.109Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="内存管理篇：9-ARC实现之-autoreleasing"><a href="#内存管理篇：9-ARC实现之-autoreleasing" class="headerlink" title="内存管理篇：9.ARC实现之__autoreleasing"></a>内存管理篇：9.ARC实现之__autoreleasing</h2><ol>
+<li>__autoreleasing修饰的变量与在非ARC环境下，对对象调用autorelease方法效果一致：</li>
+</ol>
+<a id="more"></a>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">@autoreleasePool &#123;</div><div class="line">    id __autoreleasing obj = [[NSObject alloc] init];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>转换后的模拟代码为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 创建pool</span></div><div class="line">id pool = objc_autoreleasePoolPush();</div><div class="line"></div><div class="line"><span class="comment">// 创建对象</span></div><div class="line">id obj = objc_msgSend(NSObject, @selector(alloc));</div><div class="line">objc_msgSend(obj, @selector(init));</div><div class="line"></div><div class="line"><span class="comment">// 加入到pool中</span></div><div class="line">objc_autorelease(obj);</div><div class="line"></div><div class="line"><span class="comment">// 释放pool中的对象</span></div><div class="line">objc_autoreleasePoolPop(pool);</div></pre></td></tr></table></figure>
+<ol>
+<li>对于将非调用方创建的对象，加入到autoreleasePool中的情况，生成的代码如下：</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">@autoreleasePool &#123;</div><div class="line">    id __autoreleasing obj = [NSMutableArray <span class="built_in">array</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>转换后的模拟代码为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 创建pool</span></div><div class="line">id pool = objc_autoreleasePoolPush();</div><div class="line"></div><div class="line"><span class="comment">// 创建对象</span></div><div class="line">id obj = objc_msgSend(NSMutableArray, @selector(<span class="built_in">array</span>));</div><div class="line"><span class="comment">// 保留返回的自动释放对象（autorelease优化）</span></div><div class="line">objc_retainAutoreleasedReturnValue(obj);</div><div class="line"></div><div class="line"><span class="comment">// 加入到pool中</span></div><div class="line">objc_autorelease(obj);</div><div class="line"></div><div class="line"><span class="comment">// 释放pool中的对象</span></div><div class="line">objc_autoreleasePoolPop(pool);</div></pre></td></tr></table></figure>
+<p>这里在前面<strong>strong的情况中有说过，<strong>对于函数的返回值，ARC使用objc_autoreleaseReturnValue和objc_retainAutoreleasedReturnValue方法进行优化，避免了将生成的对象在pool中进行进入和取出操作</strong>。但是由于接收变量是使用</strong>autoreleasing修饰的，故直接将其加入到pool中。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;内存管理篇：9-ARC实现之-autoreleasing&quot;&gt;&lt;a href=&quot;#内存管理篇：9-ARC实现之-autoreleasing&quot; class=&quot;headerlink&quot; title=&quot;内存管理篇：9.ARC实现之__autoreleasing&quot;&gt;&lt;/a&gt;内存管理篇：9.ARC实现之__autoreleasing&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;__autoreleasing修饰的变量与在非ARC环境下，对对象调用autorelease方法效果一致：&lt;/li&gt;
+&lt;/ol&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》8</title>
+    <link href="http://yoursite.com/2019/01/06/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%AF%87%EF%BC%9A8.ARC%E5%AE%9E%E7%8E%B0%E4%B9%8B__weak/"/>
+    <id>http://yoursite.com/2019/01/06/内存管理篇：8.ARC实现之__weak/</id>
+    <published>2019-01-06T07:53:26.381Z</published>
+    <updated>2019-01-06T07:53:34.144Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="内存管理篇：8-ARC实现之-weak"><a href="#内存管理篇：8-ARC实现之-weak" class="headerlink" title="内存管理篇：8.ARC实现之__weak"></a>内存管理篇：8.ARC实现之__weak</h2><blockquote>
+<p>我们知道，weak修饰的变量，其地址是被存储在一个专用的散列表中，此散列表的键值为原内存的散列值（即对象地址的hash值）。</p>
+</blockquote>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1546747255-weak%E8%A1%A8.jpg" alt="img"></p>
+<p>__weak修饰的变量，其主要存在两大功能：</p>
+<ol>
+<li><strong>当其引用的对象被释放时，此变量自动被赋值为nil</strong>；</li>
+<li><strong>使用__weak修饰的变量时，实际上使用的是添加到autoreleasePool中的对象</strong>。</li>
+</ol>
+<a id="more"></a>
+<h4 id="当-weak变量引用的对象被释放时，其自动被赋值为nil"><a href="#当-weak变量引用的对象被释放时，其自动被赋值为nil" class="headerlink" title="当__weak变量引用的对象被释放时，其自动被赋值为nil"></a>当__weak变量引用的对象被释放时，其自动被赋值为nil</h4><p>先看示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="comment">// obj为强引用变量且已经被赋值</span></div><div class="line">    id __weak obj1 = obj;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>编译后的模拟代码为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">id obj1;</div><div class="line">objc_initWeak(&amp;obj1, obj);</div><div class="line">objc_destroyWeak(&amp;obj1);</div></pre></td></tr></table></figure>
+<p>objc_initWeak方法，即为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">obj1 = <span class="number">0</span>;</div><div class="line">objc_storeWeak(&amp;obj1, obj);</div></pre></td></tr></table></figure>
+<p>objc_destroyWeak方法，即为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">objc_storeWeak(&amp;obj1, <span class="number">0</span>);</div></pre></td></tr></table></figure>
+<p>由此可以看出，</p>
+<ol>
+<li><strong>对于初始化的weak变量：为变量赋值为0，并将其地址存储到weak表中，对象内存的散列值所在的地址中</strong>。</li>
+<li><strong>释放weak变量时：则是在weak表中，将对象内存散列值所在地址存储的数据中，将存储的变量清空</strong>。</li>
+</ol>
+<blockquote>
+<p>由于可以使用多个weak变量指向同一对象，所以在weak表中，一个键值的散列地址中可以存储多个weak变量地址。</p>
+</blockquote>
+<p><em>结论：<br>weak对象释放时，自动置为nil的原因</em>：</p>
+<ul>
+<li><strong>在系统调用dealloc释放对象时（最后的objc_clear_deallocating方法），ARC会根据对象的引用状态，去weak表中查询对应的weak变量，将变量地址赋值为nil，并将其记录删除。最后将此键值记录一并删除。</strong></li>
+<li>注意：此过程需要消耗CPU资源，故不要滥用，需要时再使用（如避免delegate和block导致的引用循环）。</li>
+</ul>
+<h4 id="使用-weak修饰的变量时，实际上使用的是添加到autoreleasePool中的对象"><a href="#使用-weak修饰的变量时，实际上使用的是添加到autoreleasePool中的对象" class="headerlink" title="使用__weak修饰的变量时，实际上使用的是添加到autoreleasePool中的对象"></a>使用__weak修饰的变量时，实际上使用的是添加到autoreleasePool中的对象</h4><p>还是先看实例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="comment">// obj为强引用变量，且已被赋值</span></div><div class="line">    id __weak obj1 = obj;</div><div class="line">    NSLog(@<span class="string">"%@"</span>, obj1);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>编译后的模拟代码为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 初始化weak变量并赋值</span></div><div class="line">id obj1;</div><div class="line">objc_initWeak(&amp;obj1, obj);</div><div class="line"><span class="comment">// ？？？</span></div><div class="line">id tmp = objc_loadWeakRetained(&amp;obj1);</div><div class="line"><span class="comment">// ？？？</span></div><div class="line">objc_autorelease(tmp);</div><div class="line">NSLog(@<span class="string">"%@"</span>, tmp);</div><div class="line"><span class="comment">// 释放weak变量</span></div><div class="line">objc_destroyWeak(&amp;obj1);</div></pre></td></tr></table></figure>
+<p>其中：</p>
+<ol>
+<li><strong>先通过objc_loadWeakRetained方法，将weak变量对应引用的对象取出，并进行retain操作。</strong></li>
+<li><strong>使用objc_autorelease方法，将生成的临时对象加入到autoreleasePool中，即可保证对象的生存期，以便正常使用。</strong></li>
+</ol>
+<p>注意：</p>
+<ul>
+<li>大量使用weak变量，会在autoreleasePool中插入大量临时变量，增加内存开销，并对CPU进行过多无畏的损耗。</li>
+<li>正确的使用方法，是使用strong变量指向weak变量后，再进行使用。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">id __weak obj1 = obj;</div><div class="line">id tmp = obj1;</div><div class="line">NSLog(@<span class="string">"1.%@"</span>, tmp);</div><div class="line">NSLog(@<span class="string">"2.%@"</span>, tmp);</div><div class="line">NSLog(@<span class="string">"3.%@"</span>, tmp);</div><div class="line">NSLog(@<span class="string">"4.%@"</span>, tmp);</div><div class="line">NSLog(@<span class="string">"5.%@"</span>, tmp);</div><div class="line"><span class="comment">// 这样，autoreleasePool只会将obj1插入一次</span></div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;内存管理篇：8-ARC实现之-weak&quot;&gt;&lt;a href=&quot;#内存管理篇：8-ARC实现之-weak&quot; class=&quot;headerlink&quot; title=&quot;内存管理篇：8.ARC实现之__weak&quot;&gt;&lt;/a&gt;内存管理篇：8.ARC实现之__weak&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;我们知道，weak修饰的变量，其地址是被存储在一个专用的散列表中，此散列表的键值为原内存的散列值（即对象地址的hash值）。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1546747255-weak%E8%A1%A8.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+&lt;p&gt;__weak修饰的变量，其主要存在两大功能：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;当其引用的对象被释放时，此变量自动被赋值为nil&lt;/strong&gt;；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用__weak修饰的变量时，实际上使用的是添加到autoreleasePool中的对象&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》7</title>
+    <link href="http://yoursite.com/2019/01/06/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%AF%87%EF%BC%9A7.ARC%E5%AE%9E%E7%8E%B0%E4%B9%8B__strong%E5%8F%8Aautorelease%E4%BC%98%E5%8C%96/"/>
+    <id>http://yoursite.com/2019/01/06/内存管理篇：7.ARC实现之__strong及autorelease优化/</id>
+    <published>2019-01-06T07:52:21.263Z</published>
+    <updated>2019-01-06T07:52:21.263Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="内存管理篇：7-ARC实现之-strong及autorelease优化"><a href="#内存管理篇：7-ARC实现之-strong及autorelease优化" class="headerlink" title="内存管理篇：7.ARC实现之__strong及autorelease优化"></a>内存管理篇：7.ARC实现之__strong及autorelease优化</h2><blockquote>
+<p>对于持有非自己创建的对象的情况，我们知道，这种情况是指对于非“alloc、new、copy和mutableCopy”开头的并返回对象实例的方法，接收方不负责内存管理。<br>ARC会在方法实现中将返回值加入到autoreleasePool中，待接收方从中取出使用，延迟释放时机。</p>
+</blockquote>
+<a id="more"></a>
+<p>但是实际上，代码并不会都如我们想象的那样，因为会有更优化的执行。先看代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    id __strong obj = [NSMutableArray <span class="built_in">array</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>编译后的模拟代码为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 发消息创建对象</span></div><div class="line">id obj = objc_msgSend(NSMutableArray, @selector(<span class="built_in">array</span>));</div><div class="line"><span class="comment">// ???</span></div><div class="line">objc_retainAutoreleasedReturnValue(obj);</div><div class="line"><span class="comment">// 正常释放对象</span></div><div class="line">objc_release(obj);</div></pre></td></tr></table></figure>
+<p>而对于NSMutableArray的array方法，编译后的模拟代码为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">+ (id)<span class="built_in">array</span> &#123;</div><div class="line">    <span class="comment">// 正常的二段式创建</span></div><div class="line">    id obj = objc_msgSend(NSMutableArray, @selector(alloc));</div><div class="line">    objc_msgSend(obj, @selector(init));</div><div class="line">    <span class="comment">// ???</span></div><div class="line">    <span class="keyword">return</span> objc_autoreleaseReturnValue(obj);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在以上代码中可以看到，在这种情况下，ARC使用了<em>objc_autoreleaseReturnValue</em>替代了autorelease操作，而调用方则使用<em>objc_retainAutoreleasedReturnValue</em>替代了传统的retain操作。作用是什么呢？</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1546692024-AutoRelease%E4%BC%98%E5%8C%96.jpg" alt="img"></p>
+<blockquote>
+<p>使用这对方法（创建对象的方法返回使用objc_autoreleaseReturnValue返回的对象，而接收方使用objc_retainAutoreleasedReturnValue接收返回的对象）时，编译器实际上并没有将生成的对象加入到autoreleasePool中，而是直接将对象传递给接收方。避免了频繁地将对象在autoreleasePool中进行加入、取出操作，以达到最优效率。</p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;内存管理篇：7-ARC实现之-strong及autorelease优化&quot;&gt;&lt;a href=&quot;#内存管理篇：7-ARC实现之-strong及autorelease优化&quot; class=&quot;headerlink&quot; title=&quot;内存管理篇：7.ARC实现之__strong及autorelease优化&quot;&gt;&lt;/a&gt;内存管理篇：7.ARC实现之__strong及autorelease优化&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;对于持有非自己创建的对象的情况，我们知道，这种情况是指对于非“alloc、new、copy和mutableCopy”开头的并返回对象实例的方法，接收方不负责内存管理。&lt;br&gt;ARC会在方法实现中将返回值加入到autoreleasePool中，待接收方从中取出使用，延迟释放时机。&lt;/p&gt;
+&lt;/blockquote&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》6</title>
+    <link href="http://yoursite.com/2019/01/06/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%AF%87%EF%BC%9A%206.%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E9%9D%99%E6%80%81%E5%92%8C%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84%EF%BC%88%E9%9D%9EOC%E9%9B%86%E5%90%88%E5%AF%B9%E8%B1%A1%EF%BC%89/"/>
+    <id>http://yoursite.com/2019/01/06/内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）/</id>
+    <published>2019-01-06T07:51:20.446Z</published>
+    <updated>2019-01-06T07:51:20.446Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="内存管理篇：-6-不要使用静态和动态数组（非OC集合对象）"><a href="#内存管理篇：-6-不要使用静态和动态数组（非OC集合对象）" class="headerlink" title="内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）"></a>内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）</h2><h4 id="静态数组（类似于c数组，非OC的集合对象）："><a href="#静态数组（类似于c数组，非OC的集合对象）：" class="headerlink" title="静态数组（类似于c数组，非OC的集合对象）："></a>静态数组（类似于c数组，非OC的集合对象）：</h4><ul>
+<li>使用<strong>strong、</strong>weak和__autoreleasing修饰的静态数组（如：id objs[10]），其初始值也会自动赋值为nil，且当其释放时，子元素也会自动被释放；</li>
+</ul>
+<a id="more"></a>
+<h4 id="动态数组（对象指针实现）："><a href="#动态数组（对象指针实现）：" class="headerlink" title="动态数组（对象指针实现）："></a>动态数组（对象指针实现）：</h4><ol>
+<li>声明：</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 声明，指向id的指针：</span></div><div class="line">id __strong *<span class="built_in">array</span> = nil;</div><div class="line"><span class="comment">// 或 指向对象的指针</span></div><div class="line"><span class="comment">// NSObject * __strong *array = nil;</span></div></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>动态数组用对象指针表示；</li>
+<li>由于对象指针默认为“<strong>autoreleasing”修饰符，所以需要显示指定为“</strong>strong”；</li>
+<li>对象指针不会被ARC自动置为nil，需要显示指定。</li>
+</ul>
+</blockquote>
+<ol>
+<li>初始化：</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 初始化：</span></div><div class="line"><span class="built_in">array</span> = (id __strong *)<span class="built_in">calloc</span>(entries, <span class="keyword">sizeof</span>(id)); </div><div class="line"><span class="comment">// calloc方法会自动将内存空间写入0数据，比malloc配合memset更为安全且简洁</span></div><div class="line"></div><div class="line"><span class="comment">// 使用malloc和memset的错误方式</span></div><div class="line"><span class="built_in">array</span> = (id __strong *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(id) * entries);</div><div class="line"><span class="keyword">for</span> (NSUInteger i = <span class="number">0</span>; i &lt; entries; ++i) &#123;</div><div class="line">    <span class="built_in">array</span>[i] = nil; <span class="comment">// 错误：在ARC下相当于直接释放</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>使用：(与静态数组一致，同样不能放入nil)</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">array</span>[<span class="number">0</span>] = [[NSObject alloc] init];</div></pre></td></tr></table></figure>
+<ol>
+<li>释放：</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 1.依次释放子元素</span></div><div class="line"><span class="keyword">for</span> (NSUInteger i = <span class="number">0</span>; i &lt; entries; ++i) &#123;</div><div class="line">    <span class="built_in">array</span>[i] = nil; <span class="comment">// 在ARC下相当于直接释放对象</span></div><div class="line">&#125;</div><div class="line"><span class="comment">// 2.释放动态数组本身</span></div><div class="line"><span class="built_in">free</span>(<span class="built_in">array</span>);</div></pre></td></tr></table></figure>
+<blockquote>
+<p>原因：由于动态数组是在运行期确定，ARC无法在编译器对其进行内存管理，直接释放数组本身会让子元素发生内存泄漏。</p>
+</blockquote>
+<h4 id="补充："><a href="#补充：" class="headerlink" title="补充："></a>补充：</h4><p>使用memcpy拷贝数组中的元素和realloc重新分配内存，都可能导致对象内存泄漏或过度释放，所以ARC下也被禁止使用。</p>
+<hr>
+<h4 id="结论："><a href="#结论：" class="headerlink" title="结论："></a>结论：</h4><blockquote>
+<p>直接使用Foundation的集合对象就好了，不要用这种东西。</p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;内存管理篇：-6-不要使用静态和动态数组（非OC集合对象）&quot;&gt;&lt;a href=&quot;#内存管理篇：-6-不要使用静态和动态数组（非OC集合对象）&quot; class=&quot;headerlink&quot; title=&quot;内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）&quot;&gt;&lt;/a&gt;内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）&lt;/h2&gt;&lt;h4 id=&quot;静态数组（类似于c数组，非OC的集合对象）：&quot;&gt;&lt;a href=&quot;#静态数组（类似于c数组，非OC的集合对象）：&quot; class=&quot;headerlink&quot; title=&quot;静态数组（类似于c数组，非OC的集合对象）：&quot;&gt;&lt;/a&gt;静态数组（类似于c数组，非OC的集合对象）：&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;使用&lt;strong&gt;strong、&lt;/strong&gt;weak和__autoreleasing修饰的静态数组（如：id objs[10]），其初始值也会自动赋值为nil，且当其释放时，子元素也会自动被释放；&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》5</title>
+    <link href="http://yoursite.com/2019/01/06/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%AF%87%EF%BC%9A%205.ARC%E7%9A%84%E8%A7%84%E5%88%99%E8%A1%A5%E5%85%85/"/>
+    <id>http://yoursite.com/2019/01/06/内存管理篇： 5.ARC的规则补充/</id>
+    <published>2019-01-06T07:49:49.390Z</published>
+    <updated>2019-01-06T07:49:49.390Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="内存管理篇：-5-ARC的规则补充"><a href="#内存管理篇：-5-ARC的规则补充" class="headerlink" title="内存管理篇： 5.ARC的规则补充"></a>内存管理篇： 5.ARC的规则补充</h2><ol>
+<li>ARC的方法命名</li>
+</ol>
+<blockquote>
+<p>我们都知道，在内存管理的思考方式中，当方法命名以“alloc、new、copy、mutableCopy”开头或直接命名时，返回对象（必须返回对象）的内存由接收方进行管理。这种方式在ARC中同样适用。</p>
+</blockquote>
+<p>在ARC环境下，以init或init开头的方法，也需要遵循此规则。且init的方法规定更为严格：</p>
+<ul>
+<li>必须返回id或类型的对象</li>
+<li>必须是实例方法</li>
+</ul>
+<a id="more"></a>
+<hr>
+<ol>
+<li><strong>OC对象（这里代指Foundation框架中类的对象）不能直接作为C数据结构的成员。</strong><blockquote>
+<p>原因：ARC为OC语言编译器特性，不支持对C语言进行内存管理（最新的iOS 12中，好像已经支持此特性了，LLVM真强大。。。）</p>
+</blockquote>
+</li>
+</ol>
+<p>对于需要作为成员的OC对象，解决方法：</p>
+<ul>
+<li>使用“__unsafe_unretained”进行所有权修饰，显示声明并告知编译器不要对其进行内存管理；</li>
+<li>通过“__bridge”将OC对象转换为（void *）指针。</li>
+</ul>
+<hr>
+<ol>
+<li>显示转换“id”与“void *”</li>
+</ol>
+<p>对象与C指针之间是通过“__bridge”关键字进行转换，主要分为三种方式：</p>
+<blockquote>
+<ul>
+<li>__bridge</li>
+<li>__bridge_retained</li>
+<li>__bridge_transfer</li>
+</ul>
+</blockquote>
+<ul>
+<li>__bridge:</li>
+</ul>
+<p>直接转换，忽略ARC内存管理，与添加__unsafe_unretained效果类似：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">id obj = [[NSObject alloc] init];</div><div class="line"><span class="comment">// 转换为c指针</span></div><div class="line"><span class="keyword">void</span> *p = (__bridge <span class="keyword">void</span> *)obj;</div><div class="line"><span class="comment">// 转换为OC对象</span></div><div class="line">id obj2 = (__bridge id)p;</div></pre></td></tr></table></figure>
+<ul>
+<li>__bridge_retained:</li>
+</ul>
+<p>意为“转换后进行保留”，接收方对其自动强引用（同时掌握所有权），与__strong的retain效果类似：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> *p = <span class="number">0</span>;</div><div class="line">&#123;</div><div class="line">    id obj = [[NSObject alloc] init];</div><div class="line">    <span class="comment">// 转换为c指针</span></div><div class="line">    p = (__bridge_retained <span class="keyword">void</span> *)obj;</div><div class="line">&#125;</div><div class="line"><span class="comment">// 出作用域后，obj强引用消失</span></div><div class="line"><span class="comment">// 由于__bridge_retained，p同时也是强引用，对象得以继续生存</span></div><div class="line">NSLog(<span class="string">"%@"</span>, [(__bridge id)p class]);</div></pre></td></tr></table></figure>
+<ul>
+<li>__bridge_transfer:</li>
+</ul>
+<p>意为“转换后释放”，原创建方在转换后自动释放自身引用，只由接收方进行内存管理（转换了所有权），与release效果类似：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> *p = xxx;</div><div class="line">id obj = (__bridge_transfer id)p;</div><div class="line"><span class="comment">// 转换后相当于p进行了release操作，只有obj持有对象</span></div></pre></td></tr></table></figure>
+<p><strong>OC（Foundation）对象与CF（Core Foundation）对象间的转换</strong>：</p>
+<ul>
+<li>由于二者基本是等效框架（只是实现语言不同），对象间的转换无需消耗CPU资源，是“免费桥接”（“toll-free bridge”）。</li>
+<li>一般转换规则：<ul>
+<li>OC -&gt; CF，使用“__bridge_retained”或“CFBridgingRetain”</li>
+<li>CF -&gt; OC，使用“__bridge_transfer”或“CFBridgingRelease”（因为一般转换为OC对象后，ARC可以自动介入，防止忘记使用CFRelease手动释放内存）</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>总结：<strong>尽量不要直接使用__bridge进行转换</strong>，使用时需再三考虑内存管理情况。</p>
+</blockquote>
+<hr>
+<ol>
+<li>使用<strong>strong、</strong>weak和__autoreleasing修饰的变量，其初始值会自动赋值为nil</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;内存管理篇：-5-ARC的规则补充&quot;&gt;&lt;a href=&quot;#内存管理篇：-5-ARC的规则补充&quot; class=&quot;headerlink&quot; title=&quot;内存管理篇： 5.ARC的规则补充&quot;&gt;&lt;/a&gt;内存管理篇： 5.ARC的规则补充&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;ARC的方法命名&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;我们都知道，在内存管理的思考方式中，当方法命名以“alloc、new、copy、mutableCopy”开头或直接命名时，返回对象（必须返回对象）的内存由接收方进行管理。这种方式在ARC中同样适用。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;在ARC环境下，以init或init开头的方法，也需要遵循此规则。且init的方法规定更为严格：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;必须返回id或类型的对象&lt;/li&gt;
+&lt;li&gt;必须是实例方法&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》4</title>
+    <link href="http://yoursite.com/2019/01/06/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%AF%87%EF%BC%9A%204.ARC%E7%9A%84%E6%89%80%E6%9C%89%E6%9D%83%E4%BF%AE%E9%A5%B0%E7%AC%A6/"/>
+    <id>http://yoursite.com/2019/01/06/内存管理篇： 4.ARC的所有权修饰符/</id>
+    <published>2019-01-06T07:47:20.057Z</published>
+    <updated>2019-01-06T07:48:00.295Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="内存管理篇：-4-ARC的所有权修饰符"><a href="#内存管理篇：-4-ARC的所有权修饰符" class="headerlink" title="内存管理篇： 4.ARC的所有权修饰符"></a>内存管理篇： 4.ARC的所有权修饰符</h2><h3 id="所有权修饰符"><a href="#所有权修饰符" class="headerlink" title="所有权修饰符"></a>所有权修饰符</h3><blockquote>
+<ul>
+<li>在ARC下，对象必须通过所有权修饰符进行修饰，系统会根据不同的所有权修饰符对对象进行相应的内存管理。</li>
+<li>所有权修饰符包括：<strong>strong、</strong>weak、<strong>unsafe_unretained、</strong>autoreleasing。</li>
+</ul>
+</blockquote>
+<a id="more"></a>
+<h4 id="strong修饰符"><a href="#strong修饰符" class="headerlink" title="__strong修饰符"></a>__strong修饰符</h4><blockquote>
+<ul>
+<li>__strong作为默认的所有权修饰符，使用时可以直接省略；</li>
+<li>__strong将修饰对象的指针变量声明为强引用（对象的引用计数+1）</li>
+</ul>
+</blockquote>
+<p>__strong修饰的对象，依然符合内存管理的4条思考方式：</p>
+<ul>
+<li>自己创建的对象，自己持有：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="comment">// 作用域内，object负责内存管理</span></div><div class="line">    id __strong object = [[NSObject alloc] init];</div><div class="line">&#125;   <span class="comment">// 出作用域，对象的强引用失效，内存释放</span></div></pre></td></tr></table></figure>
+<ul>
+<li>非自己创建的对象，自己也能持有：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    id __strong object1 = [[NSObject alloc] init];</div><div class="line">    <span class="comment">// 通过赋值方式，持有别人创建的对象</span></div><div class="line">    id __strong object2 = object1</div><div class="line">&#125;   </div><div class="line"><span class="comment">// 出作用域，object2强引用失效，对象收到release消息；object1强引用也失效，对象收到release消息；最终内存释放</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="comment">// 持有非自己创建的对象</span></div><div class="line">    id __strong object = [NSMutableArray <span class="built_in">array</span>];</div><div class="line">&#125;   <span class="comment">// 出作用域，对象的强引用失效，内存释放</span></div></pre></td></tr></table></figure>
+<ul>
+<li>当不再需要时，可以释放自己创建的对象</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    id __strong object = [[NSObject alloc] init];</div><div class="line">    <span class="comment">// 不需要时，直接置为nil或指向其他对象时，原对象收到release消息</span></div><div class="line">    object = nil;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>无法释放非自己创建的对象<ul>
+<li>由于无法调用release方法，无需担心释放问题。</li>
+</ul>
+</li>
+</ul>
+<h4 id="weak修饰符"><a href="#weak修饰符" class="headerlink" title="__weak修饰符"></a>__weak修饰符</h4><blockquote>
+<ul>
+<li>与<strong>strong相对，</strong>weak为弱引用，不持有对象；</li>
+<li>出作用域后，修饰的指针变量自动置为nil，访问安全；</li>
+<li><strong>解决“引用循环”问题；</strong></li>
+<li>iOS5以上适用（自动置nil是在运行期实现，故ARC不全是编译器特性）</li>
+</ul>
+</blockquote>
+<h4 id="unsafe-unretained修饰符"><a href="#unsafe-unretained修饰符" class="headerlink" title="__unsafe_unretained修饰符"></a>__unsafe_unretained修饰符</h4><blockquote>
+<ul>
+<li>作为iOS5以前“__weak”的版本，编译器不对其内存进行管理；</li>
+<li>出作用域后，指针变量不会置为nil，访问极其危险</li>
+</ul>
+</blockquote>
+<p><strong>不建议使用。</strong></p>
+<h4 id="autoreleasing修饰符"><a href="#autoreleasing修饰符" class="headerlink" title="__autoreleasing修饰符"></a>__autoreleasing修饰符</h4><blockquote>
+<p>在ARC下，NSAutoreleasePool类的创建使用需要使用@autoreleasepool块来代替，且不能手动调用autorelease方法。</p>
+</blockquote>
+<ul>
+<li>非显示使用的情况（编译器自动将对象标记为__autoreleasing）：</li>
+</ul>
+<ol>
+<li><strong>在@autoreleasepool块中直接使用：</strong></li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">@autoreleasepool &#123;</div><div class="line">    id obj = [[NSObject alloc] init];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li><strong>作为函数返回值：</strong></li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">+ (MyClass *)myObject &#123;</div><div class="line">    <span class="keyword">return</span> [[MyClass alloc] init];</div><div class="line">    <span class="comment">/** </span></div><div class="line">    * 相当于</div><div class="line">    *   id obj = [[MyClass alloc] init];</div><div class="line">    *   return obj;</div><div class="line">    */</div><div class="line">&#125;</div><div class="line">``` </div><div class="line"></div><div class="line">隐含创建的obj变量会被赋值__strong修饰符，出作用域后会被释放，但由于对象作为函数返回值，编译器会将其标记为__autoreleasing，加入到最近的autoreleasepool对象中。</div><div class="line">&gt; 注意：对于此种情况，方法命名时需要遵循内存管理规则：即不得使用“alloc、<span class="keyword">new</span>、copy和mutableCopy”作为方法名开头（会将返回对象标记为__strong）。</div><div class="line"></div><div class="line"><span class="number">3.</span> **指向id的指针或指向对象的指针：**</div><div class="line"></div><div class="line">``` c</div><div class="line"><span class="comment">// 指向id的指针</span></div><div class="line">id __autoreleasing *obj;</div><div class="line"><span class="comment">// 指向NSObject对象的指针</span></div><div class="line">NSObject * __autoreleasing *obj;</div></pre></td></tr></table></figure>
+<p>举例，API中的error参数，如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// NSError ** 等同于 NSError * __autoreleasing *</span></div><div class="line">- (BOOL)performTaskWithError:(NSError **)error &#123;</div><div class="line">    <span class="keyword">if</span> (出现错误) &#123;</div><div class="line">        &amp;error = [NSError errorWithxxx];</div><div class="line">        <span class="keyword">return</span> NO;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> YES;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 使用时：</span></div><div class="line">NSError *error; <span class="comment">// 相当于NSError __strong *error，值为nil（由于对象指针赋值时，二者的所有权修饰符必须一致。实际上这里error在下面赋值时，隐含地生成了__autoreleasing修饰的临时变量）</span></div><div class="line">[obj performTaskWithError:&amp;error];</div></pre></td></tr></table></figure>
+<blockquote>
+<p>原因：<br>这里其实也遵循了内存管理法则所述的方法命名规范，由于方法名不是由“alloc、new、copy和mutableCopy”开头，error作为返回对象与函数的返回值一样，且接收方相当于持有非自己创建的对象。所以会被编译器自动加入到autoreleasepool中。<br>所以指向对象的指针，会被自动标记为“__autoreleasing”。</p>
+</blockquote>
+<ul>
+<li><strong>对象指针赋值时，二者的所有权修饰符必须一致</strong>。如：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">NSError *error = nil; <span class="comment">// 默认为__strong</span></div><div class="line"><span class="comment">// 由于默认指向对象的指针为__autoreleasing，所以这里需要显示指定为__strong</span></div><div class="line">NSError * __strong *pError = &amp;error;</div></pre></td></tr></table></figure>
+<ul>
+<li><strong>在访问使用__weak修饰符的变量时，实际上该对象必定会被加到autoreleasepool中</strong>：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">id __weak obj1 = obj0;</div><div class="line">NSLog(@<span class="string">"class = %@"</span>, [obj1 class]);</div></pre></td></tr></table></figure>
+<p>与以下代码等效：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">id __weak obj1 = obj0;</div><div class="line">id __autoreleasing tmp = obj1;</div><div class="line">NSLog(@<span class="string">"class = %@"</span>, [tmp class]);</div></pre></td></tr></table></figure>
+<blockquote>
+<p>原因：<br><strong>weak修饰的变量只是弱引用，其指向的对象随时可能被释放而变为nil；<br>为了保证使用过程中对象的持续存在，ARC会将生成</strong>autorelease修饰的临时变量指向该对象，从而将其加入到autoreleasepool中。</p>
+</blockquote>
+<ul>
+<li>注意：<strong>使用__autoreleasing修饰的变量，必须为自动变量（局部变量、函数或方法参数），不能是其他。</strong></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;内存管理篇：-4-ARC的所有权修饰符&quot;&gt;&lt;a href=&quot;#内存管理篇：-4-ARC的所有权修饰符&quot; class=&quot;headerlink&quot; title=&quot;内存管理篇： 4.ARC的所有权修饰符&quot;&gt;&lt;/a&gt;内存管理篇： 4.ARC的所有权修饰符&lt;/h2&gt;&lt;h3 id=&quot;所有权修饰符&quot;&gt;&lt;a href=&quot;#所有权修饰符&quot; class=&quot;headerlink&quot; title=&quot;所有权修饰符&quot;&gt;&lt;/a&gt;所有权修饰符&lt;/h3&gt;&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;在ARC下，对象必须通过所有权修饰符进行修饰，系统会根据不同的所有权修饰符对对象进行相应的内存管理。&lt;/li&gt;
+&lt;li&gt;所有权修饰符包括：&lt;strong&gt;strong、&lt;/strong&gt;weak、&lt;strong&gt;unsafe_unretained、&lt;/strong&gt;autoreleasing。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》3</title>
+    <link href="http://yoursite.com/2019/01/06/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%AF%87%EF%BC%9A%203.autorelease/"/>
+    <id>http://yoursite.com/2019/01/06/内存管理篇： 3.autorelease/</id>
+    <published>2019-01-06T07:43:19.318Z</published>
+    <updated>2019-01-06T07:44:11.504Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="内存管理篇：-3-autorelease"><a href="#内存管理篇：-3-autorelease" class="headerlink" title="内存管理篇： 3.autorelease"></a>内存管理篇： 3.autorelease</h2><blockquote>
+<p><strong>autorelease的实质：</strong><br><em>将创建的对象加入到NSAutoreleasePool管理“数组”中，并告知ARC系统暂时不要对此对象进行处理。待pool对象在其所属的NSRunLoop循环一次完成，准备释放（drain）时，对“数组”中的所有对象依次调用release方法。此时ARC再对对象进行内存管理。</em></p>
+</blockquote>
+<a id="more"></a>
+<h3 id="GNUstep的实现"><a href="#GNUstep的实现" class="headerlink" title="GNUstep的实现"></a>GNUstep的实现</h3><p>GNUstep的版本使用了同NSMutableArray一样的连接列表，将被标记的对象加入到“正在使用中的”autoreleasePool对象中。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// NSObject.m中：</span></div><div class="line">- (id)autorelease &#123;</div><div class="line">    [NSAutoreleasePool addObject:self];</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// NSAutoreleasePool.m中：</span></div><div class="line">+ (<span class="keyword">void</span>)addObject:(id)anObj &#123;</div><div class="line">    NSAutoreleasePool *pool = 获取正在使用中的pool；</div><div class="line">    <span class="keyword">if</span> (pool != nil) &#123;</div><div class="line">        [pool addObject:anObj];</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)addObject:(id)anObj &#123;</div><div class="line">    <span class="comment">// 加入到内部管理的数组中</span></div><div class="line">    [<span class="built_in">array</span> addObject:anObj];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="方法调用优化：在GNUstep实现的版本中，为了提高autorelease方法执行的速度，使用了“IMP-Caching”的方式，及将函数指针提前缓存，需要时跳过了“objc-msgSend”的过程，直接调用："><a href="#方法调用优化：在GNUstep实现的版本中，为了提高autorelease方法执行的速度，使用了“IMP-Caching”的方式，及将函数指针提前缓存，需要时跳过了“objc-msgSend”的过程，直接调用：" class="headerlink" title="方法调用优化：在GNUstep实现的版本中，为了提高autorelease方法执行的速度，使用了“IMP Caching”的方式，及将函数指针提前缓存，需要时跳过了“objc_msgSend”的过程，直接调用："></a>方法调用优化：在GNUstep实现的版本中，为了提高autorelease方法执行的速度，使用了“IMP Caching”的方式，及将函数指针提前缓存，需要时跳过了“objc_msgSend”的过程，直接调用：</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// NSObject.m中：</span></div><div class="line"></div><div class="line"><span class="comment">// 缓存类名</span></div><div class="line">id autorelease_class = [NSAutoreleasePool class];</div><div class="line"><span class="comment">// 缓存方法名</span></div><div class="line">SEL autorelease_sel = @selector(<span class="string">"addObject:"</span>);</div><div class="line"><span class="comment">// 缓存方法实现（函数指针）</span></div><div class="line">IMP autorelease_imp = [autorelease_class methodForSelector:autorelease_sel];</div><div class="line"></div><div class="line">- (id)autorelease &#123;</div><div class="line">    <span class="comment">// 直接调用</span></div><div class="line">    (*autorelease_imp)(autorelease_class, autorelease_sel, self);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：<br>由于NSAutoreleasePool覆盖了autorelease的方法实现（其他对象执行的是NSObject的实现），对pool对象发送autorelease消息会抛出异常。<br>即<strong>不能对NSAutoreleasePool对象调用autorelease方法。</strong></p>
+</blockquote>
+<ul>
+<li>补充：<strong>无论编译环境是否为ARC有效，都推荐使用@autoreleasepool块作为替代</strong>，以提高代码可读性。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;内存管理篇：-3-autorelease&quot;&gt;&lt;a href=&quot;#内存管理篇：-3-autorelease&quot; class=&quot;headerlink&quot; title=&quot;内存管理篇： 3.autorelease&quot;&gt;&lt;/a&gt;内存管理篇： 3.autorelease&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;autorelease的实质：&lt;/strong&gt;&lt;br&gt;&lt;em&gt;将创建的对象加入到NSAutoreleasePool管理“数组”中，并告知ARC系统暂时不要对此对象进行处理。待pool对象在其所属的NSRunLoop循环一次完成，准备释放（drain）时，对“数组”中的所有对象依次调用release方法。此时ARC再对对象进行内存管理。&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》2</title>
+    <link href="http://yoursite.com/2019/01/06/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%AF%87%EF%BC%9A%202.alloc-retain-release-dealloc%E7%9A%84%E5%AE%9E%E7%8E%B0/"/>
+    <id>http://yoursite.com/2019/01/06/内存管理篇： 2.alloc-retain-release-dealloc的实现/</id>
+    <published>2019-01-06T07:42:32.544Z</published>
+    <updated>2019-01-06T07:42:32.544Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="内存管理篇：-2-alloc-retain-release-dealloc的实现"><a href="#内存管理篇：-2-alloc-retain-release-dealloc的实现" class="headerlink" title="内存管理篇： 2.alloc/retain/release/dealloc的实现"></a>内存管理篇： 2.alloc/retain/release/dealloc的实现</h2><h3 id="GNUstep的实现方式"><a href="#GNUstep的实现方式" class="headerlink" title="GNUstep的实现方式"></a>GNUstep的实现方式</h3><p><strong>GNUstep的版本将引用计数与对象的内存组合在一起，方便读写存取。</strong><br><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1546151436-GNUstep%E7%9A%84%E5%AF%B9%E8%B1%A1%E7%BB%93%E6%9E%84.jpg" alt="img"><br>如图所示，使用了一个objc_layout结构体来表示引用计数，其大体结构及alloc的简化代码为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_layout</span> &#123;</span></div><div class="line">    <span class="comment">// 引用计数</span></div><div class="line">    NSUInteger retained;</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (id)alloc &#123;</div><div class="line">    <span class="keyword">int</span> size = <span class="keyword">sizeof</span>(struct objc_layout) + 对象大小；</div><div class="line">    <span class="comment">// 创建一段大小为size的连续内存，并写入0</span></div><div class="line">    <span class="comment">// 使用结构体指针指向此地址</span></div><div class="line">    struct objc_layout *p = <span class="built_in">calloc</span>(<span class="number">1</span>, size);</div><div class="line">    <span class="comment">// 返回id类型对象（地址+1即为对象的地址）</span></div><div class="line">    <span class="keyword">return</span> (id)(p + <span class="number">1</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>由此可知，retainCount即返回结构体中retained成员的值即可：</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">- (NSUinteger)retainCount &#123;</div><div class="line">    <span class="keyword">return</span> NSExtraRefCount(self) + <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">inline</span> NSUInteger</span></div><div class="line"><span class="title">NSExtraRefCount</span><span class="params">(id anObject)</span> &#123;</div><div class="line">    <span class="comment">// 由于对象指向的是+1的地址，故-1即为结构体实例的地址</span></div><div class="line">    <span class="keyword">return</span> ((struct objc_layout *)anObject)[<span class="number">-1</span>].retained;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>由于初始化的内存中填充数据为0，故新对象的引用计数为1（0+1）。</p>
+<p><strong>而对于retain和release操作，即对retained变量进行+1和-1操作即可。而且，在release操作时，当retained为0时，运行时系统即调用dealloc方法，将对象的内存释放。</strong></p>
+<h3 id="苹果的实现方式"><a href="#苹果的实现方式" class="headerlink" title="苹果的实现方式"></a>苹果的实现方式</h3><p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1546151340-Apple%E7%9A%84%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0%E8%A1%A8.jpg" alt="img"></p>
+<p>直接看图，<strong>苹果使用了单独的引用计数表来存储所有对象的引用计数。且使用了对象内存地址的hash值作为key，将引用计数作为内容进行保存</strong>。简单的实现代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- (NSUInteger)retainCount &#123;</div><div class="line">    <span class="keyword">return</span> (NSUInteger)__CFDoExternRefOperation(OPERATION_retainCount, self);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (id)retain &#123;</div><div class="line">    <span class="keyword">return</span> (id)__CFDoExternRefOperation(OPERATION_retain, self);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)release &#123;</div><div class="line">    <span class="keyword">return</span> (id)__CFDoExternRefOperation(OPERATION_release, self);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>所调用的方法如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> __CFDoExternRefOperation(<span class="keyword">unitptr_t</span> op, id obj) &#123;</div><div class="line">    <span class="comment">// 获取引用计数表</span></div><div class="line">    CFBasicHashRef table = 取得对象对应的散列表(obj);</div><div class="line">    <span class="keyword">int</span> count;</div><div class="line">    </div><div class="line">    <span class="comment">// 根据操作分发给不同函数</span></div><div class="line">    <span class="keyword">switch</span> (op) &#123;</div><div class="line">    <span class="keyword">case</span> OPERATION_retainCount:</div><div class="line">        <span class="comment">// retainCount</span></div><div class="line">        count = CFBasicHashGetCountOfKey(table, obj);</div><div class="line">        <span class="keyword">return</span> count;</div><div class="line">    <span class="keyword">case</span> OPERATION_retain:</div><div class="line">        <span class="comment">// retain</span></div><div class="line">        CFBasicHashAddValue(table, obj);</div><div class="line">        <span class="keyword">return</span> obj;</div><div class="line">    <span class="keyword">case</span> OPERATION_release:</div><div class="line">        <span class="comment">// release</span></div><div class="line">        count = CFBasicHashRemoveValue(table, obj);</div><div class="line">        <span class="keyword">return</span> (<span class="number">0</span> == count);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>苹果的实现虽然看似没有GNUstep的方式简单，实际上其优点也是显而易见：</p>
+<ul>
+<li>对象创建时，其内存分配无需考虑引用计数相关逻辑，结构纯粹。</li>
+<li>引用计数表中，可以根据内存块的地址追溯对象的原始内存，方便调试及内存泄露检测等功能。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;内存管理篇：-2-alloc-retain-release-dealloc的实现&quot;&gt;&lt;a href=&quot;#内存管理篇：-2-alloc-retain-release-dealloc的实现&quot; class=&quot;headerlink&quot; title=&quot;内存管理篇： 2.all
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》1</title>
+    <link href="http://yoursite.com/2019/01/06/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%AF%87%EF%BC%9A1.%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0%E7%9A%84%E6%80%9D%E8%80%83%E6%96%B9%E5%BC%8F/"/>
+    <id>http://yoursite.com/2019/01/06/内存管理篇：1.引用计数的思考方式/</id>
+    <published>2019-01-06T07:40:57.232Z</published>
+    <updated>2019-01-06T07:44:02.313Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="内存管理篇：1-引用计数的思考方式"><a href="#内存管理篇：1-引用计数的思考方式" class="headerlink" title="内存管理篇：1.引用计数的思考方式"></a>内存管理篇：1.引用计数的思考方式</h2><h3 id="自动引用计数"><a href="#自动引用计数" class="headerlink" title="自动引用计数"></a>自动引用计数</h3><blockquote>
+<p>支持条件：</p>
+<ul>
+<li>clang（LLVM编译器）3.0版本以上</li>
+<li>objc4 OC运行时库 493.9版本以上</li>
+<li>编译器设置中置为“ARC有效”</li>
+<li>Xcode 4.2版本以上</li>
+</ul>
+</blockquote>
+<a id="more"></a>
+<p><strong>简单来说，ARC作为编译器特性（运行时库帮助解决weak自动置nil及autorelease优化等功能），系统在编译期根据情况，为代码自动添加retain、release等内存管理代码</strong>。开发者只需要集中精力在业务实现上即可，无需过多考虑内存问题。</p>
+<h3 id="内存管理的思考方式"><a href="#内存管理的思考方式" class="headerlink" title="内存管理的思考方式"></a>内存管理的思考方式</h3><p>实际上，<strong>无需过多考虑“引用计数”这个数字</strong>，编码时只需遵循如下四种规则：</p>
+<ol>
+<li>自己生成的对象，自己持有（alloc/new/copy/mutableCopy）</li>
+<li>非自己生成的对象，自己也能持有（retain）</li>
+<li>自己不再需要持有的对象，自己释放（release）</li>
+<li>非自己持有的对象，自己无法释放（系统自动dealloc）</li>
+</ol>
+<h4 id="自己生成的对象，自己持有"><a href="#自己生成的对象，自己持有" class="headerlink" title="自己生成的对象，自己持有"></a>自己生成的对象，自己持有</h4><p>除了默认的四种创建对象方法，这里还需注意一点：<br>对于自定义的class，在编写API时，需要遵循“命名法则”：即将创建对象的方法，声明为：</p>
+<ul>
+<li>allocXXX…</li>
+<li>newXXX…</li>
+<li>copyXXX…</li>
+<li>mutableCopyXXX…</li>
+</ul>
+<p>ARC环境下，系统会根据方法命名，自动将返回的对象使用__strong修饰，即新对象的内存由创建方负责管理，也就是“自己持有创建的对象”。</p>
+<h4 id="非自己生成的对象，自己也能持有"><a href="#非自己生成的对象，自己也能持有" class="headerlink" title="非自己生成的对象，自己也能持有"></a>非自己生成的对象，自己也能持有</h4><ul>
+<li>对于其他对象（非自己创建的），如果需要正常使用的话，需要对新对象进行“retain”操作。</li>
+<li>对于类方法创建对象的API（如NSMutableArray的array方法），一般来说，内部返回的都是“autorelease”修饰的对象，内存是无需接收方管理的。直接使用即可。</li>
+</ul>
+<h4 id="自己不再需要持有的对象，自己释放"><a href="#自己不再需要持有的对象，自己释放" class="headerlink" title="自己不再需要持有的对象，自己释放"></a>自己不再需要持有的对象，自己释放</h4><ul>
+<li>使用完毕后的对象，无论是否为自己创建，需要持有方对其调用“release”操作，放弃持有。</li>
+<li>类方法创建得到的对象，无需释放。</li>
+</ul>
+<h4 id="非自己持有的对象，自己无法释放"><a href="#非自己持有的对象，自己无法释放" class="headerlink" title="非自己持有的对象，自己无法释放"></a>非自己持有的对象，自己无法释放</h4><p>dealloc为系统在运行期根据对象的引用情况自动调用。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;内存管理篇：1-引用计数的思考方式&quot;&gt;&lt;a href=&quot;#内存管理篇：1-引用计数的思考方式&quot; class=&quot;headerlink&quot; title=&quot;内存管理篇：1.引用计数的思考方式&quot;&gt;&lt;/a&gt;内存管理篇：1.引用计数的思考方式&lt;/h2&gt;&lt;h3 id=&quot;自动引用计数&quot;&gt;&lt;a href=&quot;#自动引用计数&quot; class=&quot;headerlink&quot; title=&quot;自动引用计数&quot;&gt;&lt;/a&gt;自动引用计数&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;支持条件：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;clang（LLVM编译器）3.0版本以上&lt;/li&gt;
+&lt;li&gt;objc4 OC运行时库 493.9版本以上&lt;/li&gt;
+&lt;li&gt;编译器设置中置为“ARC有效”&lt;/li&gt;
+&lt;li&gt;Xcode 4.2版本以上&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
     <title>《Effective Objective-C 20 编写高质量iOS与OS X代码的52个有效方法》读书笔记</title>
     <link href="http://yoursite.com/2018/12/25/%E3%80%8AEffective%20Objective-C%2020%20%E7%BC%96%E5%86%99%E9%AB%98%E8%B4%A8%E9%87%8FiOS%E4%B8%8EOS%20X%E4%BB%A3%E7%A0%81%E7%9A%8452%E4%B8%AA%E6%9C%89%E6%95%88%E6%96%B9%E6%B3%95%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     <id>http://yoursite.com/2018/12/25/《Effective Objective-C 20 编写高质量iOS与OS X代码的52个有效方法》读书笔记/</id>
     <published>2018-12-25T02:49:27.623Z</published>
-    <updated>2018-12-26T09:08:20.566Z</updated>
+    <updated>2019-01-06T07:41:16.291Z</updated>
     
     <content type="html"><![CDATA[<h2 id="第1章：熟悉Objective-C"><a href="#第1章：熟悉Objective-C" class="headerlink" title="第1章：熟悉Objective-C"></a>第1章：熟悉Objective-C</h2><h3 id="第4条：多用类型常量，少用-define预处理指令"><a href="#第4条：多用类型常量，少用-define预处理指令" class="headerlink" title="第4条：多用类型常量，少用#define预处理指令"></a>第4条：多用类型常量，少用#define预处理指令</h3><ul>
 <li>声明类型常量好处是，编译器可以知道此变量的类型，且可以防止外部随意修改</li>
@@ -422,7 +964,7 @@
     </summary>
     
     
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
@@ -1102,674 +1644,6 @@
 &lt;li&gt;&lt;strong&gt;关联对象和其他补充&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/blockquote&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>iOS runtime学习</title>
-    <link href="http://yoursite.com/2018/03/14/iOS%20runtime%E5%AD%A6%E4%B9%A0/"/>
-    <id>http://yoursite.com/2018/03/14/iOS runtime学习/</id>
-    <published>2018-03-14T03:33:33.000Z</published>
-    <updated>2018-05-15T02:11:35.307Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="开坑，待补-，学习总结"><a href="#开坑，待补-，学习总结" class="headerlink" title="开坑，待补~，学习总结~"></a>开坑，待补~，学习总结~</h3><h3 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h3><ul>
-<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048-CH1-SW1" target="_blank" rel="external">Objective-C Runtime Programming Guide</a></li>
-<li><a href="https://www.jianshu.com/p/0e6eb2f9ed5d" target="_blank" rel="external">iOS-runtime通篇详解-上</a></li>
-<li><a href="https://www.jianshu.com/p/f1544b27d007" target="_blank" rel="external">iOS-runtime通篇详解-下</a></li>
-<li><a href="https://www.jianshu.com/p/efeb33712445#" target="_blank" rel="external">Runtime全方位装逼指南
-</a></li>
-<li><a href="https://www.jianshu.com/p/19f280afcb24" target="_blank" rel="external">iOS 模块详解—「Runtime面试、工作」看我就 🐒 了 ^_^.</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;开坑，待补-，学习总结&quot;&gt;&lt;a href=&quot;#开坑，待补-，学习总结&quot; class=&quot;headerlink&quot; title=&quot;开坑，待补~，学习总结~&quot;&gt;&lt;/a&gt;开坑，待补~，学习总结~&lt;/h3&gt;&lt;h3 id=&quot;参考资料：&quot;&gt;&lt;a href=&quot;#参考资料：&quot; cla
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>iOS RunLoop学习</title>
-    <link href="http://yoursite.com/2018/03/07/iOS%20RunLoop%E5%AD%A6%E4%B9%A0/"/>
-    <id>http://yoursite.com/2018/03/07/iOS RunLoop学习/</id>
-    <published>2018-03-07T06:21:53.000Z</published>
-    <updated>2018-05-15T02:18:43.256Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="RunLoop简介及与线程的关系："><a href="#RunLoop简介及与线程的关系：" class="headerlink" title="RunLoop简介及与线程的关系："></a>RunLoop简介及与线程的关系：</h3><p>简而言之，RunLoop就是一个“do-while”循环–一个事件队列循环。循环时，系统会依次从事件队列中取出事件并执行；没有事件处理时，RunLoop会进入休眠，等待事件唤醒处理，以节省系统资源，即“休眠-&gt;事件唤醒-&gt;处理事件-&gt;休眠…”的逻辑。</p>
-<p>在iOS中，RunLoop存在的类为CFRunLoopRef和NSRunLoop。前者为CoreFoundation框架，C语言编写，线程安全；后者是OC封装，线程不安全。</p>
-<a id="more"></a>
-<p><strong>RunLoop与线程是一一对应的</strong>。根据源代码（苹果的官方文档或下面的参考资料中可以看到）可知，RunLoop对象存在于底层的一个全局字典中，key为线程（线程指针），value为RunLoop对象。</p>
-<p><strong>应用初始化时，系统自动创建此全局字典，并自动创建主线程的RunLoop，以保证APP在运行时不退出。子线程的RunLoop不会自动创建。</strong>由于系统没有直接提供创建RunLoop的API，在子线程中只能通过CFRunLoopGetCurrent()或[NSRunLoop currentRunLoop]来间接获取Runloop（子线程中首次访问RunLoop时，系统会创建RunLoop对象并保存到全局字典中）。获取主线程的RunLoop的方式是CFRunLoopGetMain()和[NSRunLoop mainRunLoop]。</p>
-<h3 id="RunLoop的组成结构："><a href="#RunLoop的组成结构：" class="headerlink" title="RunLoop的组成结构："></a>RunLoop的组成结构：</h3><p>先看图（摘自<a href="https://blog.ibireme.com/2015/05/18/runloop/" target="_blank" rel="external">深入理解RunLoop</a>）</p>
-<p><img src="https://blog.ibireme.com/wp-content/uploads/2015/05/RunLoop_0.png" alt="img"></p>
-<p>如图所示，RunLoop对象包含了若干个Mode对象（CFRunLoopModeRef），一个Mode对象中包含了若干个Item（Item为Source、Observer或Timer的一种或几种）。</p>
-<p>其中<strong>CFRunLoopSourceRef</strong>分为Source0和Source1两种：source0对象只有一个Call_Out回调函数指针，不能主动唤醒RunLoop，处理事件时只能依照RunLoop的执行顺序被动执行或外界手动唤醒；source1对象则不同，除了带有Call_Out回调外，还包含一个Mach_Port端口参数（每个Source1唯一），外部可以通过这个端口与其进行线程间通信，且source1事件可以主动唤醒RunLoop进行处理。</p>
-<p><strong>CFRunLoopObserverRef</strong>即为监听者，带有Call_Out函数回调函数指针，外部可以监听对应Observer来识别当前RunLoop的活动状态，RunLoop的活动状态包括:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">CF_OPTIONS</span><span class="params">(CFOptionFlags, CFRunLoopActivity)</span> </span>&#123;</div><div class="line">	<span class="comment">// 即将进入RunLoop</span></div><div class="line">	kCFRunLoopEntry = (<span class="number">1U</span>L &lt;&lt; <span class="number">0</span>), </div><div class="line">	<span class="comment">// 即将处理Timer</span></div><div class="line">	kCFRunLoopBeforeTimers = (<span class="number">1U</span>L &lt;&lt; <span class="number">1</span>),</div><div class="line">	<span class="comment">// 即将处理Source</span></div><div class="line">	kCFRunLoopBeforeSources = (<span class="number">1U</span>L &lt;&lt; <span class="number">2</span>),</div><div class="line">	<span class="comment">// 即将进入休眠</span></div><div class="line">	kCFRunLoopBeforeWaiting = (<span class="number">1U</span>L &lt;&lt; <span class="number">5</span>),</div><div class="line">	<span class="comment">// 刚刚从睡眠中唤醒</span></div><div class="line">	kCFRunLoopAfterWaiting = (<span class="number">1U</span>L &lt;&lt; <span class="number">6</span>),</div><div class="line">	<span class="comment">// 即将退出RunLoop</span></div><div class="line">	kCFRunLoopExit = (<span class="number">1U</span>L &lt;&lt; <span class="number">7</span>)</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p><strong>CFRunLoopTimerRef</strong>是基于时间的触发器，也包含一个Call_Out回调函数指针（还有RunLoop上所有timer对象共享的的Mach_Port端口），与上层的NSTimer相同（toll-free bridged），添加到系统后，RunLoop会提前计算好触发时间并添加到RunLoop中，等待到时间时自动执行回调。</p>
-<p><strong>Timer、Source0（1）、Observer同城为mode item。一个item可以添加到多个item中（下面的common item会说明）。而且，只有当至少包含一个item的mode存在时，对应的RunLoop对象才会持续运行且不退出（线程“保活”的原因）。</strong></p>
-<h3 id="RunLoop-Mode的结构："><a href="#RunLoop-Mode的结构：" class="headerlink" title="RunLoop Mode的结构："></a>RunLoop Mode的结构：</h3><p>大致结构如下（摘自<a href="https://blog.ibireme.com/2015/05/18/runloop/" target="_blank" rel="external">深入理解RunLoop</a>），可以在APP启动后打印[NSRunLoop currentRunloop]自行查看完整RunLoop对象的结构：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">CFRunLoopMode</span> &#123;</span></div><div class="line">	CFStringRef _name;	<span class="comment">// mode的名称（如“kCFRunLoopDefaultMode”）</span></div><div class="line">	CFMutableSetRef _source0;</div><div class="line">	CFMutableSetRef _source1;</div><div class="line">	CFMutableArrayRef _observers;</div><div class="line">	CFMutableArrayRef _timers;</div><div class="line">	...</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">CFRunLoop</span> &#123;</span></div><div class="line">	CFMutableSetRef _commonModes;</div><div class="line">	CFMutableSetRef _commonModeItems;</div><div class="line">	CFRunLoopModeRef _currentMode;	<span class="comment">// 当前所处mode（即mode的name）</span></div><div class="line">	CFMutableSetRef _modes;		<span class="comment">// 包含所有支持的mode</span></div><div class="line">	...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>上面中的<strong>commonModes即为“标记为Common的mode对象集合”。对应的共享item即为commonModeItems集合。每当RunLoop内容变化时，_commonModeItems里面的所有item（observer、timer和source）都会同步到所有的commonModes的mode中。</strong></p>
-<p>例如，对主线程的RunLoop来说，commonModes即包含两个：kCFRunLoopDefaultMode（NSDefaultRunLoopMode）和UITrackingRunLoopMode。其中当app处于列表滑动状态时，主线程处于trackingMode；其余时候处于defaultMode。</p>
-<p><strong>同一时间，RunLoop只能处于一个mode模式下工作，切换mode时需要退出并重新指定mode。</strong></p>
-<h3 id="RunLoop的内部逻辑："><a href="#RunLoop的内部逻辑：" class="headerlink" title="RunLoop的内部逻辑："></a>RunLoop的内部逻辑：</h3><p>就是“do-while”，看图（摘自<a href="https://blog.ibireme.com/2015/05/18/runloop/" target="_blank" rel="external">深入理解RunLoop</a>）：</p>
-<p><img src="https://blog.ibireme.com/wp-content/uploads/2015/05/RunLoop_1.png" alt="img"></p>
-<p>主要的运行循环为2~9步，这部分实现了“do-while”的逻辑；<br>核心为第7步，在没有事件待处理时，进行休眠，等待事件唤醒。</p>
-<h3 id="RunLoop“休眠”机制："><a href="#RunLoop“休眠”机制：" class="headerlink" title="RunLoop“休眠”机制："></a>RunLoop“休眠”机制：</h3><p><strong>休眠时，RunLoop执行的核心函数为：mach_msg();</strong><br>此函数为XNU内核的Mach层的基本函数。Mach对象间使用“消息”在端口（“port”）之间进行进程间通信。<br>mach_msg()函数实际调用了函数mach_msg_trap()，即Mach陷阱函数。调用后，系统会切换至内核态，内核态中的mach_msg()函数完成真正的工作（休眠等待、唤醒等）。</p>
-<p>看图（摘自<a href="https://blog.ibireme.com/2015/05/18/runloop/" target="_blank" rel="external">深入理解RunLoop</a>）：<br><img src="https://blog.ibireme.com/wp-content/uploads/2015/05/RunLoop_5.png" alt="img"></p>
-<h3 id="RunLoop在APP中的功能："><a href="#RunLoop在APP中的功能：" class="headerlink" title="RunLoop在APP中的功能："></a>RunLoop在APP中的功能：</h3><ul>
-<li>AutoReleasePool:</li>
-</ul>
-<p>App启动后，iOS在主线程的RunLoop中注册了两个Observer，回调都是_wrapRunLoopWithAutoreleasePoolHandler()，其中一个优先级为最高（-2147483647），一个为最低（2147483647），这保证了创建自动释放池在所有代码运行之前，且释放池在所有任务之后，使整个app的代码运行在自动释放池中，防止了内存泄漏。</p>
-<ul>
-<li>事件响应：</li>
-</ul>
-<p><strong>iOS注册的用于接收系统硬件事件的Source1对象，回调为__IOHIDEventSystemClientCallback()，用于处理触摸、按键、传感器等事件。</strong></p>
-<p>处理逻辑为：SpringBoard接收到转化后的IOHIDEvent事件，通过mach_port转发给需要的App进程，之后source1的回调会主动触发，调用<strong>UIApplicationHandleEventQueue()进行应用内分发。
-</strong>UIApplicationHandleEventQueue()会将事件包装成UIEvent进行处理或分发。其中，手势、屏幕旋转等转发给UIWindow进行处理，通常的UIButton点击、touchBegin等触摸事件直接在这个回调中进行处理。</p>
-<ul>
-<li>手势识别：</li>
-</ul>
-<p>识别手势时，系统会先调用cancel将touchBegin等事件进行打断，随后会将对应的UIGestureRecognizer标记为待处理。<br>iOS注册的beforeWaiting的observer所对应的回调即为集中处理手势识别的函数：_UIGestureRecognizerUpdateObserver()。其内部会检测所有已标记的手势对象，并调用手势的回调函数。</p>
-<ul>
-<li>界面更新：</li>
-</ul>
-<p>当我们设置了view的frame，更新了view或者layer的层次后，甚至手动调用setNeedsDisplay或setNeedsLayout后，系统并不是立即渲染页面，而是将所有的界面更新请求添加到一个整体的容器中，等待下个RunLoop事件运行时，才进行统一更新。</p>
-<p>iOS会在RunLoop中注册一个Observer，分别监听beforeWaiting和Exit状态，对应的回调为_ZN2CA11Transaction17observer_callbackEP19__CFRunLoopObservermPv()。在这两个状态中，系统会遍历容器中所有的UI更新请求，并统一渲染更新。</p>
-<ul>
-<li>定时器：</li>
-</ul>
-<p>NSTimer即为CFRunLoopTimerRef（timer对象）。注册NSTimer后，系统会在指定的触发时间在RunLoop中添加好timer事件及回调（由于有tolerance时间，不会特别准确，而且若回调timer时，线程正在执行繁重的任务，可能会导致此次调用被错过）。<br>CADisplayLink，是一个与屏幕刷新率相同的定时器（与NSTimer不同，内部为source对象）。功能上与timer相同，且仍然会被长任务卡住。</p>
-<ul>
-<li>PerformSelector：</li>
-</ul>
-<p>调用NSObject的performSelector:afterDelay:时，系统即创建一个timer并添加到线程的RunLoop中（与timer相同）。若此时线程没有RunLoop，则此方法无效（子线程需调用[[NSRunLoop currentRunLoop] run]才可）。</p>
-<ul>
-<li>GCD：</li>
-</ul>
-<p>主要是在dispatch_async(dispatch_get_main_queue(), block)中，libDispatch会发消息主动唤醒主线程的RunLoop，RunLoop即获取block并在<strong>CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE</strong>()中执行这个block。但是在子线程的GCD异步函数中，还是直接由libDispatch进行处理。</p>
-<ul>
-<li>网络请求：</li>
-</ul>
-<p>iOS的网络请求此下而上分为：</p>
-<blockquote>
-<p>CFSocket    -&gt; 负责基本的socket通信<br>CFNetwork    -&gt; socket的封装（ASIHTTPRequest在这工作）<br>NSURLConnection    -&gt; AFNetworking 1.x<br>NSURLSession        -&gt; AFNetworking 2.x，Alamofire</p>
-</blockquote>
-<p>这里解释一下NSURLConnection的delegate不断被调用的原因，NSURLConnection的主要工作过程，看图先（摘自<a href="https://blog.ibireme.com/2015/05/18/runloop/" target="_blank" rel="external">深入理解RunLoop</a>）：</p>
-<p><img src="https://blog.ibireme.com/wp-content/uploads/2015/05/RunLoop_network.png" alt="img"></p>
-<p>NSURLConcentration在调用start开始请求后，delegate会获取请求线程的RunLoop对象，在其中的defaultMode中添加4个source0对象。其中CFMultiplexerSource负责delegate的各种回调，CFHTTPCookieStorage负责各种Cookie。<br>开始网络传输时，NSURLConcentration创建了两个新线程（上图中的CFSocket线程和ConnectionLoader线程），ConnectionLoader线程的RunLoop会接受底层socket线程的source1传递的消息，并通过请求线程的source0事件，唤醒请求线程并调用相应的delegate回调。</p>
-<h3 id="实际应用举例："><a href="#实际应用举例：" class="headerlink" title="实际应用举例："></a>实际应用举例：</h3><ul>
-<li>监听RunLoop的运行状态（添加observer到RunLoop）：</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">CFAllocatorRef allocator = CFAllocatorGetDefault(); <span class="comment">// 内存开辟方式</span></div><div class="line">CFOptionFlags activites = kCFRunLoopAllActivities; <span class="comment">// 监控活动类型（这里是所有类型）</span></div><div class="line">Boolean repeats = <span class="literal">true</span>; <span class="comment">// 重复监听</span></div><div class="line">CFIndex order = <span class="number">0</span>; <span class="comment">// 优先级</span></div><div class="line"><span class="comment">// 给主线程的runloop添加observer</span></div><div class="line">CFRunLoopObserverRef observer = CFRunLoopObserverCreateWithHandler(allocator, activites, repeats, order, ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) &#123;</div><div class="line">    <span class="keyword">switch</span> (activity) &#123;</div><div class="line">        <span class="keyword">case</span> kCFRunLoopEntry:</div><div class="line">            NSLog(@<span class="string">"runloop进入了~"</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> kCFRunLoopBeforeTimers:</div><div class="line">            NSLog(@<span class="string">"准备执行timer了~"</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> kCFRunLoopBeforeSources:</div><div class="line">            NSLog(@<span class="string">"准备执行source了~"</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> kCFRunLoopBeforeWaiting:</div><div class="line">            NSLog(@<span class="string">"准备休眠了~"</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> kCFRunLoopAfterWaiting:</div><div class="line">            NSLog(@<span class="string">"刚刚唤醒~"</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> kCFRunLoopExit:</div><div class="line">            NSLog(@<span class="string">"退出了runloop~"</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// 添加observer到主runloop的defaultMode上</span></div><div class="line">CFRunLoopRef mainRunLoop = CFRunLoopGetMain();</div><div class="line">CFRunLoopMode runLoopMode = kCFRunLoopDefaultMode;</div><div class="line">CFRunLoopAddObserver(mainRunLoop, observer, runLoopMode);</div></pre></td></tr></table></figure>
-<ul>
-<li>设置定时器（添加timer到RunLoop）：</li>
-</ul>
-<ol>
-<li>使用NSTimer在子线程创建：</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line">    [NSTimer scheduledTimerWithTimeInterval:<span class="number">5</span> repeats:YES block:^(NSTimer * _Nonnull timer) &#123;</div><div class="line">        NSLog(@<span class="string">"hahahah~"</span>);</div><div class="line">    &#125;];</div><div class="line">    <span class="comment">// 默认在子线程是不存在RunLoop的，必须告知系统创建</span></div><div class="line">    <span class="comment">// 且保持RunLoop不退出的前提是，存在一个item（timer、observer或source）</span></div><div class="line">    [[NSRunLoop currentRunLoop] run];</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>如上所示，不调用RunLoop的run方法，timer在子线程不会执行。</p>
-<ol>
-<li>使用GCD的dispatch的资源对象创建：</li>
-</ol>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">@interface ViewController ()</div><div class="line"></div><div class="line">/** 使用GCD添加的timer */</div><div class="line">@property (strong, nonatomic) dispatch_source_t timer;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation ViewController</div><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    </div><div class="line">    [self addTimerToRunLoop];</div><div class="line">&#125;</div><div class="line"></div><div class="line">/** 向runloop上添加timer（这里是GCD方式） */</div><div class="line">- (void)addTimerToRunLoop &#123;</div><div class="line">//    dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">    dispatch_queue_t myQueue = dispatch_queue_create("com.jiji.my_queue", DISPATCH_QUEUE_CONCURRENT);</div><div class="line">    </div><div class="line">//    dispatch_queue_t mainQueue = dispatch_get_main_queue();</div><div class="line">    </div><div class="line">    // 在队列中创建timer资源对象</div><div class="line">    dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, myQueue);</div><div class="line">    // 保留timer（GCD不会保留timer资源对象）</div><div class="line">    self.timer = timer;</div><div class="line">    </div><div class="line">    </div><div class="line">    // 设置timer资源的间隔和宽容度</div><div class="line">    dispatch_source_set_timer(timer, DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC, 0 * NSEC_PER_SEC);</div><div class="line">    // 设置timer资源的事件回调</div><div class="line">    dispatch_source_set_event_handler(timer, ^&#123;</div><div class="line">        NSLog(@"==%@==", [NSThread currentThread]);</div><div class="line">    &#125;);</div><div class="line">    // 启动timer资源</div><div class="line">    dispatch_resume(timer);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)cancelTimer &#123;</div><div class="line">    dispatch_cancel(self.timer);</div><div class="line">    self.timer = nil;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure>
-<p>注意，使用GCD的方式创建timer，系统不会保留dispatch_source_t对象，需要自己保留，否则创建后会直接释放。取消时使用dispatch_cancel()。</p>
-<ul>
-<li>performSelector测试：</li>
-</ul>
-<p>在子线程中调用performSelector：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// backgroundThread</span></div><div class="line">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line">    <span class="comment">// 相当于直接调用（没有通过runloop直接同步执行）</span></div><div class="line">    [self performSelector:@selector(performTask) withObject:nil];</div><div class="line"></div><div class="line">    NSLog(@<span class="string">"before ---- %@"</span>, [NSRunLoop currentRunLoop]);</div><div class="line"></div><div class="line">    <span class="comment">// 直接调用不执行（runloop没有启动）</span></div><div class="line">    <span class="comment">// 实际上是在runloop的mode中加入了source0和source1两个事件</span></div><div class="line">    [self performSelector:@selector(performTask) onThread:[NSThread currentThread] withObject:nil waitUntilDone:NO];</div><div class="line"></div><div class="line">    NSLog(@<span class="string">"after ==== %@"</span>, [NSRunLoop currentRunLoop]);</div><div class="line"></div><div class="line">    <span class="comment">// 启动runloop</span></div><div class="line">    [[NSRunLoop currentRunLoop] run];</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<ul>
-<li>线程“保活”：</li>
-</ul>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">@interface ViewController ()</div><div class="line"></div><div class="line">/** 保证不结束的自定义线程 */</div><div class="line">@property (strong, nonatomic) NSThread *liveThread;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation ViewController</div><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    </div><div class="line">    // 保活线程测试</div><div class="line">    [self liveThreadTest];    </div><div class="line">&#125;</div><div class="line"></div><div class="line">/** 长时间存活的线程 */</div><div class="line">- (void)liveThreadTest &#123;</div><div class="line">    self.liveThread = [[NSThread alloc] initWithTarget:self selector:@selector(startLiveThread) object:nil];</div><div class="line">    [self.liveThread start];</div><div class="line">    // 点击一次屏幕，执行一次线程的任务</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)startLiveThread &#123;</div><div class="line">    NSLog(@"%@", NSStringFromSelector(_cmd));</div><div class="line">    // 在自定义线程中添加一个source1对象（这里是NSPort对象）到runloop中</div><div class="line">    // 并启动runloop</div><div class="line">    // 以保证runloop一直有任务而不退出</div><div class="line">    [[NSRunLoop currentRunLoop] addPort:[NSPort port] forMode:NSDefaultRunLoopMode];</div><div class="line">    [[NSRunLoop currentRunLoop] run];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)liveThreadTask &#123;</div><div class="line">    NSLog(@"%@", NSStringFromSelector(_cmd));</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event &#123;    </div><div class="line">    // 在自定义线程中执行任务</div><div class="line">    [self performSelector:@selector(liveThreadTask) onThread:self.liveThread withObject:nil waitUntilDone:NO];</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
-<ul>
-<li>在scrollView滑动时，也可以执行主线程的定时器：</li>
-</ul>
-<p>将timer添加到主线程RunLoop的commonMode中：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:<span class="number">0.5</span> repeats:YES block:^(NSTimer * _Nonnull timer) &#123;</div><div class="line">    NSLog(@<span class="string">"timer---"</span>);</div><div class="line">&#125;];</div><div class="line">[[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];</div></pre></td></tr></table></figure>
-<h3 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h3><ul>
-<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW23" target="_blank" rel="external">Run Loops</a></li>
-<li><a href="https://blog.ibireme.com/2015/05/18/runloop/" target="_blank" rel="external">深入理解RunLoop</a></li>
-<li><a href="http://www.cnblogs.com/kenshincui/p/6823841.html" target="_blank" rel="external">iOS刨根问底-深入理解RunLoop</a></li>
-<li><a href="http://www.imlifengfeng.com/blog/?p=487" target="_blank" rel="external">iOS RunLoop详解</a></li>
-<li><a href="http://www.jb51.net/article/123505.htm" target="_blank" rel="external">Dispatch Source Timer的使用及注意事项介绍</a></li>
-<li><a href="https://www.jianshu.com/p/536184bfd163" target="_blank" rel="external">IOS—实例化讲解RunLoop
-</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;RunLoop简介及与线程的关系：&quot;&gt;&lt;a href=&quot;#RunLoop简介及与线程的关系：&quot; class=&quot;headerlink&quot; title=&quot;RunLoop简介及与线程的关系：&quot;&gt;&lt;/a&gt;RunLoop简介及与线程的关系：&lt;/h3&gt;&lt;p&gt;简而言之，RunLoop就是一个“do-while”循环–一个事件队列循环。循环时，系统会依次从事件队列中取出事件并执行；没有事件处理时，RunLoop会进入休眠，等待事件唤醒处理，以节省系统资源，即“休眠-&amp;gt;事件唤醒-&amp;gt;处理事件-&amp;gt;休眠…”的逻辑。&lt;/p&gt;
-&lt;p&gt;在iOS中，RunLoop存在的类为CFRunLoopRef和NSRunLoop。前者为CoreFoundation框架，C语言编写，线程安全；后者是OC封装，线程不安全。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>iOS GCD学习总结</title>
-    <link href="http://yoursite.com/2018/03/05/ios_GCD_learning/"/>
-    <id>http://yoursite.com/2018/03/05/ios_GCD_learning/</id>
-    <published>2018-03-05T03:20:48.000Z</published>
-    <updated>2018-05-15T02:17:32.568Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）"><a href="#GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）" class="headerlink" title="GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）"></a>GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）</h2><a id="more"></a>
-<h3 id="主要组成："><a href="#主要组成：" class="headerlink" title="主要组成："></a>主要组成：</h3><ul>
-<li>队列：主要分为<strong>串行队列</strong>和<strong>并发队列</strong>两种。在iOS系统中，系统预先提供了两个现成可以直接使用的队列，分别是<strong>主队列</strong>和<strong>全局队列</strong>，其中<strong>主队列</strong>即我们常说的APP主线程。</li>
-<li>任务：在OC中以<strong>block</strong>作为单位，分为<strong>“同步任务”</strong>和<strong>“异步任务”</strong>。</li>
-</ul>
-<p>其中，队列和任务可以根据需要随意组合使用。</p>
-<h3 id="主要功能："><a href="#主要功能：" class="headerlink" title="主要功能："></a>主要功能：</h3><h4 id="创建和获取队列："><a href="#创建和获取队列：" class="headerlink" title="创建和获取队列："></a>创建和获取队列：</h4><ul>
-<li>创建串行队列：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t myQueue = dispatch_queue)create(&quot;com.jiji.my_queue&quot;, DISPATCH_QUEUE_SERIAL);</div></pre></td></tr></table></figure>
-<p>串行队列即为单任务队列，任务只能按加入顺序执行。</p>
-<ul>
-<li>创建并发队列：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t myQueue = dispatch_queue)create(&quot;com.jiji.my_queue&quot;, DISPATCH_QUEUE_CONCURRENT);</div></pre></td></tr></table></figure>
-<p>并发队列，同时可以执行多个任务。</p>
-<ul>
-<li>获取主队列：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t mainQueue = dispatch_get_main_queue();</div></pre></td></tr></table></figure>
-<p>主队列，UI操作都在这个队列上进行。</p>
-<ul>
-<li>获取全局队列：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div></pre></td></tr></table></figure>
-<p>其中，全局队列的第一参数为优先级，这里默认为default，第二个参数为预留参数。我们一般可以在这个队列中处理一些耗时任务，如网络请求、IO等。</p>
-<h4 id="向队列中派发任务并执行任务："><a href="#向队列中派发任务并执行任务：" class="headerlink" title="向队列中派发任务并执行任务："></a>向队列中派发任务并执行任务：</h4><p>创建同步或异步任务时，都需要指定派发到的队列。</p>
-<ul>
-<li>串行队列 + 同步任务：</li>
-</ul>
-<p>本质上是在派发任务所在的线程中（不创建新线程），依次执行任务，完成一个后执行下一个。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">NSLog(@&quot;current thread = %@&quot;, [NSThread currentThread]);</div><div class="line">dispatch_queue_t myQueue = dispatch_queue_create(&quot;com.jiji.my_queue&quot;, DISPATCH_QUEUE_SERIAL);</div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;block 1---- %@&quot;, [NSThread currentThread]);</div><div class="line">&#125;);</div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;block 2---- %@&quot;, [NSThread currentThread]);</div><div class="line">&#125;);</div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;block 3---- %@&quot;, [NSThread currentThread]);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 14:00:56.434341+0800 Thread_Test2[5813:216673] current thread = <nsthread: 0x600000068f00="">{number = 1, name = main}<br>2018-03-05 14:00:58.435759+0800 Thread_Test2[5813:216673] block 1—- <nsthread: 0x600000068f00="">{number = 1, name = main}<br>2018-03-05 14:01:00.437177+0800 Thread_Test2[5813:216673] block 2—- <nsthread: 0x600000068f00="">{number = 1, name = main}<br>2018-03-05 14:01:02.438452+0800 Thread_Test2[5813:216673] block 3—- <nsthread: 0x600000068f00="">{number = 1, name = main}</nsthread:></nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<p>从上面的例子可以看出，向串行队列中派发的同步任务，执行时并没有开启新的线程，只是在当前线程中直接执行（这里是在主线程向队列派发任务，所以直接在主线程执行）。</p>
-<ul>
-<li>串行队列 + 异步任务：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">NSLog(@&quot;current thread = %@&quot;, [NSThread currentThread]);</div><div class="line">dispatch_queue_t myQueue = dispatch_queue_create(&quot;com.jiji.my_queue&quot;, DISPATCH_QUEUE_SERIAL);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;block 1---- %@&quot;, [NSThread currentThread]);</div><div class="line">&#125;);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;block 2---- %@&quot;, [NSThread currentThread]);</div><div class="line">&#125;);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;block 3---- %@&quot;, [NSThread currentThread]);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 14:08:13.786385+0800 Thread_Test2[5952:225569] current thread = <nsthread: 0x60400007c340="">{number = 1, name = main}<br>2018-03-05 14:08:15.787681+0800 Thread_Test2[5952:225858] block 1—- <nsthread: 0x60000027d680="">{number = 3, name = (null)}<br>2018-03-05 14:08:17.788864+0800 Thread_Test2[5952:225858] block 2—- <nsthread: 0x60000027d680="">{number = 3, name = (null)}<br>2018-03-05 14:08:19.790784+0800 Thread_Test2[5952:225858] block 3—- <nsthread: 0x60000027d680="">{number = 3, name = (null)}</nsthread:></nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<p>可以看到，向串行队列中派发异步任务，任务会在新线程中执行依次执行（系统单独创建了新线程）。</p>
-<ul>
-<li>并发队列 + 同步任务：</li>
-</ul>
-<p>这个要与“串行队列+同步”对比着来看：<br>直接在同一队列中向并发队列派发同步任务时（如都在主线程直接往队列中派发同步任务），结果是相同的，都是依次执行任务，如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">// 创建并发队列</div><div class="line">dispatch_queue_t myQueue = dispatch_queue_create(&quot;com.jiji.myQueue1&quot;, DISPATCH_QUEUE_CONCURRENT);</div><div class="line"></div><div class="line">// 添加同步任务</div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block0---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:5];</div><div class="line">    NSLog(@&quot;finished block0!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block1---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block1!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block2---------%@&quot;, [NSThread currentThread]);</div><div class="line">    sleep(2);</div><div class="line">    NSLog(@&quot;finished block2!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block3---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block3!!!!!!!!&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 14:53:14.154154+0800 Thread_Test2[6775:272681] start block0———<nsthread: 0x6000000641c0="">{number = 1, name = main}<br>2018-03-05 14:53:19.156046+0800 Thread_Test2[6775:272681] finished block0!!!!!!!!<br>2018-03-05 14:53:19.156402+0800 Thread_Test2[6775:272681] start block1———<nsthread: 0x6000000641c0="">{number = 1, name = main}<br>2018-03-05 14:53:21.157883+0800 Thread_Test2[6775:272681] finished block1!!!!!!!!<br>2018-03-05 14:53:21.158132+0800 Thread_Test2[6775:272681] start block2———<nsthread: 0x6000000641c0="">{number = 1, name = main}<br>2018-03-05 14:53:23.159384+0800 Thread_Test2[6775:272681] finished block2!!!!!!!!<br>2018-03-05 14:53:23.159621+0800 Thread_Test2[6775:272681] start block3———<nsthread: 0x6000000641c0="">{number = 1, name = main}<br>2018-03-05 14:53:25.160953+0800 Thread_Test2[6775:272681] finished block3!!!!!!!!</nsthread:></nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<p>看起来与“串行队列+同步”没有什么区别，这是由于派发任务（可以看做从上到下执行代码，将block加入）都在同一队列（这里是主线程）中执行。</p>
-<p>但是，当我们在不同的队列（即不同线程）中同时向你的并发队列中派发同步任务时，结果就不同了（这里才真正体现出了并发队列的并发性，即同时执行任务）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">// 创建并发队列</div><div class="line">dispatch_queue_t myQueue = dispatch_queue_create(&quot;com.jiji.myQueue1&quot;, DISPATCH_QUEUE_CONCURRENT);</div><div class="line"></div><div class="line">// 添加同步任务</div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block0---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:5];</div><div class="line">    NSLog(@&quot;finished block0!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">// 在全局队列中向自定义队列中派发同步任务</div><div class="line">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^&#123;</div><div class="line">//        NSLog(@&quot;current thread = %@&quot;, [NSThread currentThread]);</div><div class="line"></div><div class="line">    // 添加同步任务</div><div class="line">    dispatch_sync(myQueue, ^&#123;</div><div class="line">        NSLog(@&quot;start block1---------%@&quot;, [NSThread currentThread]);</div><div class="line">        [NSThread sleepForTimeInterval:2];</div><div class="line">        NSLog(@&quot;finished block1!!!!!!!!&quot;);</div><div class="line">    &#125;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block2---------%@&quot;, [NSThread currentThread]);</div><div class="line">    sleep(2);</div><div class="line">    NSLog(@&quot;finished block2!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_sync(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block3---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block3!!!!!!!!&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 14:59:05.769961+0800 Thread_Test2[6879:280233] start block0———<nsthread: 0x600000069080="">{number = 1, name = main}<br>2018-03-05 14:59:10.770410+0800 Thread_Test2[6879:280233] finished block0!!!!!!!!<br>2018-03-05 14:59:10.770848+0800 Thread_Test2[6879:280233] start block2———<nsthread: 0x600000069080="">{number = 1, name = main}<br>2018-03-05 14:59:10.770956+0800 Thread_Test2[6879:280344] start block1———<nsthread: 0x600000273880="">{number = 3, name = (null)}<br>2018-03-05 14:59:12.771788+0800 Thread_Test2[6879:280233] finished block2!!!!!!!!<br>2018-03-05 14:59:12.772043+0800 Thread_Test2[6879:280233] start block3———<nsthread: 0x600000069080="">{number = 1, name = main}<br>2018-03-05 14:59:12.772084+0800 Thread_Test2[6879:280344] finished block1!!!!!!!!<br>2018-03-05 14:59:14.772608+0800 Thread_Test2[6879:280233] finished block3!!!!!!!!</nsthread:></nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<p>可以看到，执行任务的顺序为“0-2-1-3”（这里是由于block1是在其他线程中派发所致），但是执行时，仔细观察，在同一线程中执行的任务，都是依次执行并完成（与串行队列相同），<strong>但是在不同线程中（block1和block2所在线程），block是并行执行的，这里体现了并发队列的并发性</strong>。所以不能武断地认定“并发队列+同步”与“串行队列+同步”效果相同。这里需要尤其注意！（作为对比，“串行队列+同步”的情况下，在不同线程中派发同步任务，虽然派发顺序可能不同，但任务依然是串行执行，童鞋们请自行验证~）</p>
-<ul>
-<li>并发队列 + 异步任务：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">dispatch_async(globalQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block1---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block1!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_async(globalQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block2---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block2!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_async(globalQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block3---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block3!!!!!!!!&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 15:14:22.892746+0800 Thread_Test2[7097:295593] start block1———<nsthread: 0x604000465fc0="">{number = 3, name = (null)}<br>2018-03-05 15:14:22.892746+0800 Thread_Test2[7097:295584] start block2———<nsthread: 0x600000271cc0="">{number = 4, name = (null)}<br>2018-03-05 15:14:22.892756+0800 Thread_Test2[7097:295582] start block3———<nsthread: 0x6000002718c0="">{number = 5, name = (null)}<br>2018-03-05 15:14:24.897942+0800 Thread_Test2[7097:295584] finished block2!!!!!!!!<br>2018-03-05 15:14:24.897947+0800 Thread_Test2[7097:295582] finished block3!!!!!!!!<br>2018-03-05 15:14:24.897942+0800 Thread_Test2[7097:295593] finished block1!!!!!!!!</nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<p>可以看到，系统开启了三个新线程，同时执行了任务，即“并发+异步”。</p>
-<blockquote>
-<p>综上所述，</p>
-<p><em>“同步”</em>与<em>“异步”</em>的关键是<strong>是否开启新线程</strong>；</p>
-<p><em>“串行”</em>与<em>“并发”</em>的关键是<strong>是否可以同时执行任务</strong>。</p>
-</blockquote>
-<p><em>特别情况–“主队列”</em>：</p>
-<ul>
-<li>主队列 + 同步任务：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t mainQueue = dispatch_get_main_queue();</div><div class="line">dispatch_sync(mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block1---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block1!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_sync(mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block2---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block2!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_sync(mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block3---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block3!!!!!!!!&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：直接死锁。</p>
-<p>死锁原因：由于同步任务的执行顺序是“派发任务1-&gt;执行任务1-&gt;派发任务2-&gt;执行任务2…”，即下一个任务的派发要在上一个任务完成之后才能继续。然而，在主队列中，被派发的任务（block对象）会添加到主队列的末端。此时，<strong>派发任务函数没有返回（没有执行完成），会给主队列的线程加锁；新添加的任务由于在末端，前面的任务没有完成，就没有机会执行，也就不能返回；派发任务函数就不可能再继续往下执行（互相依赖），从而造成死锁</strong>。</p>
-<p>解决方案：在其他队列（非主线程）中向主队列派发同步任务，或在主队列中派发异步任务。</p>
-<p>同样，在串行队列自身内部派发同步任务（“异步任务嵌套同步”或“同步任务嵌套同步”），同样会导致死锁。</p>
-<ul>
-<li>主队列 + 异步任务：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t mainQueue = dispatch_get_main_queue();</div><div class="line">dispatch_async(mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block1---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block1!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_async(mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block2---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block2!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_async(mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block3---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block3!!!!!!!!&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 15:57:48.249706+0800 Thread_Test2[7880:347161] start block1———<nsthread: 0x604000065d00="">{number = 1, name = main}<br>2018-03-05 15:57:50.250190+0800 Thread_Test2[7880:347161] finished block1!!!!!!!!<br>2018-03-05 15:57:50.250654+0800 Thread_Test2[7880:347161] start block2———<nsthread: 0x604000065d00="">{number = 1, name = main}<br>2018-03-05 15:57:52.251663+0800 Thread_Test2[7880:347161] finished block2!!!!!!!!<br>2018-03-05 15:57:52.252088+0800 Thread_Test2[7880:347161] start block3———<nsthread: 0x604000065d00="">{number = 1, name = main}<br>2018-03-05 15:57:54.253489+0800 Thread_Test2[7880:347161] finished block3!!!!!!!!</nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<p>可见，在主队列派发异步任务，是在主线程同步执行（<strong>主队列中执行异步任务不会开启新线程</strong>）。</p>
-<h4 id="延迟执行任务："><a href="#延迟执行任务：" class="headerlink" title="延迟执行任务："></a>延迟执行任务：</h4><p>使用Dispatch_after函数和dispatch_time_t变量，向指定队列添加延迟指定时间执行的异步任务：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">NSLog(@&quot;start-----&quot;);</div><div class="line">dispatch_queue_t mainQueue = dispatch_get_main_queue();</div><div class="line">dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, (int64_t)3.0 * NSEC_PER_SEC);</div><div class="line">dispatch_after(time, mainQueue, ^&#123;</div><div class="line">    NSLog(@&quot;executing block!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">NSLog(@&quot;end======&quot;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 16:34:15.672982+0800 Thread_Test2[8449:389175] start—–<br>2018-03-05 16:34:15.673193+0800 Thread_Test2[8449:389175] end======<br>2018-03-05 16:34:18.673343+0800 Thread_Test2[8449:389175] executing block!!!!!!!!</p>
-</blockquote>
-<h4 id="只执行一次的任务（线程安全）："><a href="#只执行一次的任务（线程安全）：" class="headerlink" title="只执行一次的任务（线程安全）："></a>只执行一次的任务（线程安全）：</h4><p>使用Dispatch_once函数和静态的dispatch_once_t变量实现：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">static dispatch_once_t onceToken;</div><div class="line">dispatch_once(&amp;onceToken, ^&#123;</div><div class="line">    NSLog(@&quot;正在执行~~ %ld&quot;, onceToken);</div><div class="line">&#125;);</div><div class="line">NSLog(@&quot;%ld&quot;, onceToken);</div></pre></td></tr></table></figure>
-<p>连续执行两次，执行结果：</p>
-<blockquote>
-<p>2018-03-05 17:14:38.877559+0800 Thread_Test2[9012:424274] 正在执行~~ 1024<br>2018-03-05 17:14:38.877732+0800 Thread_Test2[9012:424274] -1<br>2018-03-05 17:14:41.878217+0800 Thread_Test2[9012:424274] -1</p>
-</blockquote>
-<p>由于onceToken变量为静态或全局变量，执行一次后会赋值为-1，以后即不会执行，dispatch_once函数可以保证在整个app运行期间只执行一次，且多线程安全（多线程同时调用时会同步执行，block执行完毕后才返回）。常用于单例设计中。</p>
-<h4 id="栅栏任务（任务分隔）："><a href="#栅栏任务（任务分隔）：" class="headerlink" title="栅栏任务（任务分隔）："></a>栅栏任务（任务分隔）：</h4><ul>
-<li>dispatch_barrier_async:</li>
-</ul>
-<p>使用dispatch_barrier_async函数派发的任务将队列中之前和之后的异步任务分隔开（执行完此栅栏任务才执行后面的）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t myQueue = dispatch_queue_create(&quot;com.jiji.myQueue&quot;, DISPATCH_QUEUE_CONCURRENT);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block1---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block1!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block2---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block2!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_barrier_async(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start barrier block---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished barrier block-=-=-=-=&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block3---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block3!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block4---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block4!!!!!!!!&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 17:50:53.017995+0800 Thread_Test2[9520:461498] start block1———<nsthread: 0x604000470ac0="">{number = 3, name = (null)}<br>2018-03-05 17:50:53.017995+0800 Thread_Test2[9520:461499] start block2———<nsthread: 0x604000470b00="">{number = 4, name = (null)}<br>2018-03-05 17:50:55.019075+0800 Thread_Test2[9520:461498] finished block1!!!!!!!!<br>2018-03-05 17:50:55.019075+0800 Thread_Test2[9520:461499] finished block2!!!!!!!!<br>2018-03-05 17:50:55.019459+0800 Thread_Test2[9520:461499] start barrier block———<nsthread: 0x604000470b00="">{number = 4, name = (null)}<br>2018-03-05 17:50:57.021234+0800 Thread_Test2[9520:461499] finished barrier block-=-=-=-=<br>2018-03-05 17:50:57.021626+0800 Thread_Test2[9520:461499] start block3———<nsthread: 0x604000470b00="">{number = 4, name = (null)}<br>2018-03-05 17:50:57.021644+0800 Thread_Test2[9520:461498] start block4———<nsthread: 0x604000470ac0="">{number = 3, name = (null)}<br>2018-03-05 17:50:59.025274+0800 Thread_Test2[9520:461499] finished block3!!!!!!!!<br>2018-03-05 17:50:59.025250+0800 Thread_Test2[9520:461498] finished block4!!!!!!!!</nsthread:></nsthread:></nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<p>注意：dispatch_barrier_async所派发到的队列<strong>必须是自己创建的并发队列</strong>，才会起到分隔作用，<strong>在串行或自带的全局队列中派发相当于普通的dispatch_async异步函数</strong>。</p>
-<ul>
-<li>dispatch_barrier_sync:</li>
-</ul>
-<p>与async版本大致作用相同，都是在自己的异步队列中起到分隔任务执行的作用：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t myQueue = dispatch_queue_create(&quot;com.jiji.myQueue&quot;, DISPATCH_QUEUE_CONCURRENT);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block1---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block1!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block2---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block2!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_barrier_sync(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start barrier block---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished barrier block-=-=-=-=&quot;);</div><div class="line">&#125;);</div><div class="line">NSLog(@&quot;aaa----&quot;);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block3---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block3!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line">NSLog(@&quot;bbb===&quot;);</div><div class="line">dispatch_async(myQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block4---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block4!!!!!!!!&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 18:20:42.129155+0800 Thread_Test2[9940:497853] start block2———<nsthread: 0x60400026e280="">{number = 4, name = (null)}<br>2018-03-05 18:20:42.129156+0800 Thread_Test2[9940:497854] start block1———<nsthread: 0x600000274180="">{number = 3, name = (null)}<br>2018-03-05 18:20:44.133480+0800 Thread_Test2[9940:497853] finished block2!!!!!!!!<br>2018-03-05 18:20:44.133480+0800 Thread_Test2[9940:497854] finished block1!!!!!!!!<br>2018-03-05 18:20:44.134002+0800 Thread_Test2[9940:497766] start barrier block———<nsthread: 0x6000000698c0="">{number = 1, name = main}<br>2018-03-05 18:20:46.134747+0800 Thread_Test2[9940:497766] finished barrier block-=-=-=-=<br>2018-03-05 18:20:46.136687+0800 Thread_Test2[9940:497766] aaa—-<br>2018-03-05 18:20:46.138866+0800 Thread_Test2[9940:497766] bbb===<br>2018-03-05 18:20:46.138930+0800 Thread_Test2[9940:497853] start block3———<nsthread: 0x60400026e280="">{number = 4, name = (null)}<br>2018-03-05 18:20:46.144088+0800 Thread_Test2[9940:497851] start block4———<nsthread: 0x600000273c80="">{number = 5, name = (null)}<br>2018-03-05 18:20:48.150834+0800 Thread_Test2[9940:497853] finished block3!!!!!!!!<br>2018-03-05 18:20:48.151900+0800 Thread_Test2[9940:497851] finished block4!!!!!!!!</nsthread:></nsthread:></nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<p>可见，与async作用大体一致，都是分隔两组任务的执行。区别是：“aaa”和“bbb”的输出是在barrier的任务完成之后。也就是说，<strong>dispatch_barrier_sync派发任务会阻碍当前线程运行，直到barrier的任务完成返回后再继续执行后面的代码</strong>（主线程任务和后面的派发）；而async的版本不会阻碍当前线程执行（会直接先输出“aaa”和“bbb”）。此外，<strong>在串行队列或自带的全局队列中派发barrier任务，相当于dispatch_sync</strong>。</p>
-<h4 id="迭代派发任务："><a href="#迭代派发任务：" class="headerlink" title="迭代派发任务："></a>迭代派发任务：</h4><p>使用dispatch_apply函数可以向队列中迭代派发多个任务，相当于GCD版本的for循环：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//    dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">//    dispatch_queue_t serialQueue = dispatch_queue_create(&quot;com.jiji.my_serial_queue&quot;, DISPATCH_QUEUE_SERIAL);</div><div class="line">dispatch_queue_t concurrentQueue = dispatch_queue_create(&quot;com.jiji.my_concurrent_queue&quot;, DISPATCH_QUEUE_CONCURRENT);</div><div class="line">dispatch_apply((size_t)5, concurrentQueue, ^(size_t index) &#123;</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;apply -- %ld, thread = %@&quot;, index, [NSThread currentThread]);</div><div class="line">&#125;);</div><div class="line">NSLog(@&quot;finished---&quot;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 21:26:02.462338+0800 Thread_Test2[11015:575150] apply – 0, thread = <nsthread: 0x60400007b040="">{number = 1, name = main}<br>2018-03-05 21:26:02.464843+0800 Thread_Test2[11015:575416] apply – 1, thread = <nsthread: 0x60000046ed80="">{number = 5, name = (null)}<br>2018-03-05 21:26:02.464840+0800 Thread_Test2[11015:575417] apply – 2, thread = <nsthread: 0x6040002763c0="">{number = 3, name = (null)}<br>2018-03-05 21:26:02.464854+0800 Thread_Test2[11015:575418] apply – 3, thread = <nsthread: 0x604000276280="">{number = 4, name = (null)}<br>2018-03-05 21:26:04.463205+0800 Thread_Test2[11015:575150] apply – 4, thread = <nsthread: 0x60400007b040="">{number = 1, name = main}<br>2018-03-05 21:26:04.463406+0800 Thread_Test2[11015:575150] finished—</nsthread:></nsthread:></nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<p>如上所示：</p>
-<ul>
-<li>在并发队列或全局队列中，dispatch_apply会派发size_t数量的异步任务，同时阻塞派发线程，待迭代的所有任务全部完成后继续向下执行（并发队列里是并发执行）。同时，系统会动态创建并分配任务的执行线程，防止线程的大量创建，优化多线程执行效率。</li>
-<li>在串行队列中，直接按照dispatch_sync同步任务，在派发线程中串行执行。</li>
-<li>在主队列中，死锁（主线程派发同步任务导致）。</li>
-</ul>
-<blockquote>
-<p>应用场景：<br>以像素为单位的image处理（防止线程爆炸）；<br>字典转模型（并发队列，异步处理后，回到主线程）</p>
-</blockquote>
-<h4 id="队列组："><a href="#队列组：" class="headerlink" title="队列组："></a>队列组：</h4><p>以组的形式管理多个队列执行任务：</p>
-<ul>
-<li>支持以dispatch_group_async的方式派发异步任务到组中；（dispatch_group_enter和dispatch_group_leave与dispatch_async配合使用效果相同）</li>
-<li>支持以dispatch_group_wait的方式阻塞当前队列组，直到执行完成所有派发的任务或到达超时时间后再继续向下执行（完成和超时后，队列组会清空）；</li>
-<li>dispatch_group_notify派发的任务在所有组任务完成后执行。</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">// 创建组</div><div class="line">dispatch_group_t group = dispatch_group_create();</div><div class="line"></div><div class="line">// 派发到全局队列中的异步任务，添加到组中</div><div class="line">dispatch_group_async(group, globalQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block1---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block1!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">// 以dispatch_group_enter的方式添加异步任务到组中</div><div class="line">dispatch_group_enter(group);</div><div class="line">dispatch_async(globalQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block2---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block2!!!!!!!!&quot;);</div><div class="line">    </div><div class="line">    // dispatch_group_leave从组中移除任务</div><div class="line">    dispatch_group_leave(group);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">// 等待任务（这里是等待组中的任务全部完成）</div><div class="line">dispatch_group_wait(group, DISPATCH_TIME_FOREVER);</div><div class="line"></div><div class="line">// 派发到全局队列中的异步任务，添加到组中</div><div class="line">dispatch_group_async(group, globalQueue, ^&#123;</div><div class="line">    NSLog(@&quot;start block3---------%@&quot;, [NSThread currentThread]);</div><div class="line">    [NSThread sleepForTimeInterval:2];</div><div class="line">    NSLog(@&quot;finished block3!!!!!!!!&quot;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">// 全部执行完毕，切换回主线程执行</div><div class="line">dispatch_group_notify(group, dispatch_get_main_queue(), ^&#123;</div><div class="line">    NSLog(@&quot;finished all!!!&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 22:25:57.183194+0800 Thread_Test2[11842:630278] start block2———<nsthread: 0x60400027f800="">{number = 5, name = (null)}<br>2018-03-05 22:25:57.183195+0800 Thread_Test2[11842:630275] start block1———<nsthread: 0x6000004765c0="">{number = 4, name = (null)}<br>2018-03-05 22:25:59.184596+0800 Thread_Test2[11842:630275] finished block1!!!!!!!!<br>2018-03-05 22:25:59.184662+0800 Thread_Test2[11842:630278] finished block2!!!!!!!!<br>2018-03-05 22:25:59.185201+0800 Thread_Test2[11842:630278] start block3———<nsthread: 0x60400027f800="">{number = 5, name = (null)}<br>2018-03-05 22:26:01.189667+0800 Thread_Test2[11842:630278] finished block3!!!!!!!!<br>2018-03-05 22:26:01.189929+0800 Thread_Test2[11842:630025] finished all!!!</nsthread:></nsthread:></nsthread:></p>
-</blockquote>
-<h4 id="信号量："><a href="#信号量：" class="headerlink" title="信号量："></a>信号量：</h4><p><strong>信号量是一种基于计数器的多线程同步机制，用来管理对资源的并发访问。</strong></p>
-<p>计数器为原子性的值，可以保证多线程安全，使用时，分为两种情况：</p>
-<ol>
-<li>初始值为0时，可以把两个线程的异步任务变为同步任务（控制先后执行顺序，线程同步）；</li>
-<li>初始值大于0时，可以限制队列中的并发任务数（是几则同时可以有几个任务并发执行）；</li>
-</ol>
-<p>相关函数：</p>
-<ul>
-<li>dispatch_semaphore_create(value)：创建信号量（参数为并发数）</li>
-<li>dispatch_semaphore_wait(semaphore)：抢占资源，信号量值-1</li>
-<li>dispatch_semaphore_signal(semaphore)：释放资源，信号量值+1</li>
-</ul>
-<p>相关实例：</p>
-<ul>
-<li>“异步”变“同步”：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);</div><div class="line"></div><div class="line">__block int number = 0;</div><div class="line"></div><div class="line">dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">dispatch_async(globalQueue, ^&#123;</div><div class="line">    number = 100;</div><div class="line">    // 信号值+1，恢复派发线程继续执行</div><div class="line">    dispatch_semaphore_signal(semaphore);</div><div class="line">&#125;);</div><div class="line">// 初值是0，即为阻塞当前线程，一直等待</div><div class="line">dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</div><div class="line">NSLog(@&quot;number = %d&quot;, number);</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 23:02:29.855585+0800 Thread_Test2[12363:659768] number = 100</p>
-</blockquote>
-<ul>
-<li>控制并发线程数：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">// 同时只允许一个线程执行任务</div><div class="line">dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);</div><div class="line">for (int i = 0; i &lt; 10; i++) &#123;</div><div class="line">    dispatch_async(globalQueue, ^&#123;</div><div class="line">        // 抢占资源（-1）</div><div class="line">        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</div><div class="line">        NSLog(@&quot;index = %d, semaphore = %@&quot;, i, semaphore);</div><div class="line">        // 释放资源（+1）</div><div class="line">        dispatch_semaphore_signal(semaphore);</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>执行结果：</p>
-<blockquote>
-<p>2018-03-05 23:20:34.300704+0800 Thread_Test2[12777:682814] index = 0, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.300918+0800 Thread_Test2[12777:682816] index = 1, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.301175+0800 Thread_Test2[12777:682815] index = 2, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.302360+0800 Thread_Test2[12777:682813] index = 3, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.303131+0800 Thread_Test2[12777:682814] index = 5, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.304928+0800 Thread_Test2[12777:682826] index = 4, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.305489+0800 Thread_Test2[12777:682816] index = 6, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.306229+0800 Thread_Test2[12777:682827] index = 7, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.306518+0800 Thread_Test2[12777:682829] index = 8, semaphore = <os_dispatch_semaphore: 0x604000291b70=""><br>2018-03-05 23:20:34.306642+0800 Thread_Test2[12777:682828] index = 9, semaphore = <os_dispatch_semaphore: 0x604000291b70=""></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></os_dispatch_semaphore:></p>
-</blockquote>
-<p><strong>信号量初值为1时，即为线程加锁</strong>（前一个任务抢占资源后，下一个异步任务执行时，由于信号量值为0，线程进入等待状态，知道前一任务释放资源后继续执行）。</p>
-<ul>
-<li>保证数据的线程安全：</li>
-</ul>
-<p>实例：两个窗口的卖票问题（多线程间的数据共享与一致性）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line">@interface ViewController ()</div><div class="line">&#123;</div><div class="line">    /** 同步卖票系统的信号量 */</div><div class="line">    dispatch_semaphore_t _ticketSemaphore;</div><div class="line">    /** 余票总数 */</div><div class="line">    int _surplusTicketsCount;</div><div class="line">&#125;</div><div class="line">@end</div><div class="line"></div><div class="line">@implementation ViewController</div><div class="line">- (void)viewDidLoad &#123;</div><div class="line">	[self initTicketStatus];</div><div class="line">&#125;</div><div class="line">/** 初始化票及窗口信息 */</div><div class="line">- (void)initTicketStatus &#123;</div><div class="line">    // 每个售票口都是按顺序卖票，所以是串行队列</div><div class="line">    dispatch_queue_t queue1 = dispatch_queue_create(&quot;com.my_queue1&quot;, DISPATCH_QUEUE_SERIAL);</div><div class="line">    dispatch_queue_t queue2 = dispatch_queue_create(&quot;com.my_queue2&quot;, DISPATCH_QUEUE_SERIAL);</div><div class="line">    </div><div class="line">    // 共50张票</div><div class="line">    _surplusTicketsCount = 50;</div><div class="line">    </div><div class="line">    // 信号量同步两个窗口（同时只能一个窗口操作）</div><div class="line">    _ticketSemaphore = dispatch_semaphore_create(1);</div><div class="line">    </div><div class="line">    // 两个窗口同时开卖（每个队列异步执行卖票任务）</div><div class="line">    __weak typeof(self) weakSelf = self;</div><div class="line">    dispatch_async(queue1, ^&#123;</div><div class="line">        [weakSelf saleTicket];</div><div class="line">    &#125;);</div><div class="line">    dispatch_async(queue2, ^&#123;</div><div class="line">        [weakSelf saleTicket];</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)saleTicket &#123;</div><div class="line">    while (1) &#123;</div><div class="line">        // 获取资源（-1），此时信号量值为0，加锁</div><div class="line">        dispatch_semaphore_wait(_ticketSemaphore, DISPATCH_TIME_FOREVER);</div><div class="line">        </div><div class="line">        if (_surplusTicketsCount &gt; 0) &#123;</div><div class="line">            _surplusTicketsCount -= 1;</div><div class="line">            NSLog(@&quot;剩余票数：%d，窗口为：%@&quot;,</div><div class="line">                  _surplusTicketsCount,</div><div class="line">                  [NSThread currentThread]</div><div class="line">            );</div><div class="line">//            [NSThread sleepForTimeInterval:0.2];  // 不加延时时，多线程访问的顺序和值都有问题</div><div class="line">            </div><div class="line">            // 解锁(+1)，恢复资源</div><div class="line">            dispatch_semaphore_signal(_ticketSemaphore);</div><div class="line">        &#125; else &#123;</div><div class="line">            NSLog(@&quot;票已卖完，剩余票数：%d&quot;, _surplusTicketsCount);</div><div class="line">            </div><div class="line">            // 解锁(+1)，恢复资源</div><div class="line">            dispatch_semaphore_signal(_ticketSemaphore);</div><div class="line">            break;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure></p>
-<p>执行结果：两个队列任务依次执行，且执行时，余票信息正常输出。</p>
-<h3 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h3><ul>
-<li><a href="https://www.jianshu.com/p/2d57c72016c6" target="_blank" rel="external">iOS多线程：『GCD』详尽总结</a></li>
-<li><a href="http://blog.csdn.net/liuyang11908/article/details/70757534" target="_blank" rel="external"> iOS GCD之dispatch_semaphore（信号量）</a></li>
-<li><a href="http://blog.csdn.net/u013046795/article/details/47057585" target="_blank" rel="external">通过GCD中的dispatch<em>barrier</em>(a)sync加强对sync中所谓等待的理解</a></li>
-<li><a href="http://www.cocoachina.com/bbs/read.php?tid=1482884" target="_blank" rel="external">GCD中在主线程中用同步函数分派任务到串行队列中会产生死锁是什么原因？</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）&quot;&gt;&lt;a href=&quot;#GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）&quot; class=&quot;headerlink&quot; title=&quot;GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）&quot;&gt;&lt;/a&gt;GCD是苹果以C语言编写、从队列和任务的角度设计的多线程编程框架。避免了开发者直接操作线程，降低了因操作不当导致的多线程性能下降、死锁等情况的可能性。使用GCD，可以降低多线程开发的门槛，最大限度地提升APP性能，开发人员可以专注于业务的开发。（注：在swift中，苹果重写了GCD，api均为swift接口，保持了开发语言的一致性。）&lt;/h2&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Swift 3.0语法学习记录</title>
-    <link href="http://yoursite.com/2017/08/15/Swift%203.0%E8%AF%AD%E6%B3%95%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"/>
-    <id>http://yoursite.com/2017/08/15/Swift 3.0语法学习记录/</id>
-    <published>2017-08-15T15:51:51.000Z</published>
-    <updated>2018-05-15T02:19:51.720Z</updated>
-    
-    <content type="html"><![CDATA[<a id="more"></a>
-<ul>
-<li><p>重载运算符时，前置运算符需要在“func”关键字前添加<strong>“<em>prefix</em>”</strong>关键字：</p>
-  <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Vector2D</span> </span>&#123;</div><div class="line">    <span class="keyword">var</span> x = <span class="number">0.0</span></div><div class="line">    <span class="keyword">var</span> y = <span class="number">0.0</span></div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">func</span> +<span class="params">(<span class="keyword">left</span>: Vector2D, <span class="keyword">right</span>: Vector2D)</span></span> -&gt; <span class="type">Vector2D</span> &#123;</div><div class="line">    <span class="keyword">return</span> <span class="type">Vector2D</span>(x: <span class="keyword">left</span>.x + <span class="keyword">right</span>.x, y: <span class="keyword">left</span>.y + <span class="keyword">right</span>.y)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 这里是前置运算符重载，需要添加“prefix”标识</span></div><div class="line"><span class="keyword">prefix</span> <span class="function"><span class="keyword">func</span> -<span class="params">(origin: Vector2D)</span></span> -&gt; <span class="type">Vector2D</span> &#123;</div><div class="line">    <span class="keyword">return</span> <span class="type">Vector2D</span>(x: -origin.x, y: -origin.y)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">let</span> vec1 = <span class="type">Vector2D</span>(x: <span class="number">2</span>, y: <span class="number">3</span>)</div><div class="line"><span class="keyword">let</span> vec2 = <span class="type">Vector2D</span>(x: <span class="number">1</span>, y: <span class="number">4</span>)</div><div class="line"><span class="keyword">let</span> vec3 = vec1 + vec2</div><div class="line"><span class="keyword">let</span> vec4 = -vec1</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<pre><code>&gt; 此外，“infix”为中置操作符（如+、-、*、/等两边都需要操作数的）；“postfix”为后置操作符；当然，“prefix”为前置操作符。
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      学习swift时的小随笔记录
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>四维矩阵？？？</title>
-    <link href="http://yoursite.com/2017/08/07/%E5%9B%9B%E7%BB%B4%E7%9F%A9%E9%98%B5%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"/>
-    <id>http://yoursite.com/2017/08/07/四维矩阵学习记录/</id>
-    <published>2017-08-07T08:29:38.000Z</published>
-    <updated>2018-05-15T02:17:55.144Z</updated>
-    
-    <content type="html"><![CDATA[<p>看了个好东西，<a href="http://www.cnblogs.com/graphics/archive/2012/08/02/2616017.html" target="_blank" rel="external">矩阵-DirectX与OpenGL的不同</a>，原帖讲的很清楚</p>
-<a id="more"></a>
-<blockquote>
-<p>一直不明白iOS为啥用四维矩阵来表示三维的东西（其他平台可能也如此吧~）</p>
-<p>iOS平台上，使用OpenGL的四维矩阵表示空间</p>
-</blockquote>
-<p><img src="http://pic002.cnblogs.com/images/2012/64257/2012073120462521.gif" alt=""></p>
-<p>上面这个是标准的四维矩阵（这个是DirectX的，与OpenGL的互为转置矩阵，即ios的为竖着的“m11, m12, m13, m14”）</p>
-<p><img src="http://pic002.cnblogs.com/images/2012/64257/2012073121020368.gif" alt=""></p>
-<p>其中，(Tx，Ty，Tz)为平移分量（对应iOS的“m41, m42, m43”）</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;看了个好东西，&lt;a href=&quot;http://www.cnblogs.com/graphics/archive/2012/08/02/2616017.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;矩阵-DirectX与OpenGL的不同&lt;/a&gt;，原帖讲的很清楚&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>SceneKit学习记录1_物理身体</title>
-    <link href="http://yoursite.com/2017/07/18/SceneKit%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%951/"/>
-    <id>http://yoursite.com/2017/07/18/SceneKit学习记录1/</id>
-    <published>2017-07-18T05:34:31.000Z</published>
-    <updated>2018-05-15T02:19:15.587Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href="https://developer.apple.com/documentation/scenekit/scnphysicsbody?language=objc" target="_blank" rel="external">原文档</a></p>
-<h1 id="物理身体类型（SCNPhysicsBodyType）"><a href="#物理身体类型（SCNPhysicsBodyType）" class="headerlink" title="物理身体类型（SCNPhysicsBodyType）"></a>物理身体类型（SCNPhysicsBodyType）</h1><blockquote>
-<p>分为三类：</p>
-<ul>
-<li>静态身体：SCNPhysicsBodyTypeStatic</li>
-<li>动态身体：SCNPhysicsBodyTypeDynamic</li>
-<li>运动身体：SCNPhysicsBodyTypeKinematic</li>
-</ul>
-</blockquote>
-<a id="more"></a>
-<p><strong>作用</strong>：</p>
-<ul>
-<li>静态身体：不会被力或碰撞影响，不能移动</li>
-<li>动态身体：可以被其他类型的身体碰撞或施加力</li>
-<li>运动身体：不会被力或碰撞影响，但是可以直接移动他们去碰撞动态身体</li>
-</ul>
-<h4 id="Static（静态身体）"><a href="#Static（静态身体）" class="headerlink" title="Static（静态身体）"></a>Static（静态身体）</h4><table>
-<thead>
-<tr>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">影响</th>
-<th style="text-align:center">被影响</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Static</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Dynamic</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Kinematic</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-</tbody>
-</table>
-<h4 id="Dynamic（动态身体）"><a href="#Dynamic（动态身体）" class="headerlink" title="Dynamic（动态身体）"></a>Dynamic（动态身体）</h4><table>
-<thead>
-<tr>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">影响</th>
-<th style="text-align:center">被影响</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Static</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Dynamic</td>
-<td style="text-align:center">√</td>
-<td style="text-align:center">√</td>
-</tr>
-<tr>
-<td style="text-align:center">Kinematic</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">√</td>
-</tr>
-</tbody>
-</table>
-<h4 id="KineMatic（运动身体）"><a href="#KineMatic（运动身体）" class="headerlink" title="KineMatic（运动身体）"></a>KineMatic（运动身体）</h4><table>
-<thead>
-<tr>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">影响</th>
-<th style="text-align:center">被影响</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Static</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Dynamic</td>
-<td style="text-align:center">√</td>
-<td style="text-align:center">×</td>
-</tr>
-<tr>
-<td style="text-align:center">Kinematic</td>
-<td style="text-align:center">×</td>
-<td style="text-align:center">×</td>
-</tr>
-</tbody>
-</table>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;&lt;a href=&quot;https://developer.apple.com/documentation/scenekit/scnphysicsbody?language=objc&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;原文档&lt;/a&gt;&lt;/p&gt;
-&lt;h1 id=&quot;物理身体类型（SCNPhysicsBodyType）&quot;&gt;&lt;a href=&quot;#物理身体类型（SCNPhysicsBodyType）&quot; class=&quot;headerlink&quot; title=&quot;物理身体类型（SCNPhysicsBodyType）&quot;&gt;&lt;/a&gt;物理身体类型（SCNPhysicsBodyType）&lt;/h1&gt;&lt;blockquote&gt;
-&lt;p&gt;分为三类：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;静态身体：SCNPhysicsBodyTypeStatic&lt;/li&gt;
-&lt;li&gt;动态身体：SCNPhysicsBodyTypeDynamic&lt;/li&gt;
-&lt;li&gt;运动身体：SCNPhysicsBodyTypeKinematic&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ARKit文档瞎翻译（9）</title>
-    <link href="http://yoursite.com/2017/07/04/ARKit_doc_9/"/>
-    <id>http://yoursite.com/2017/07/04/ARKit_doc_9/</id>
-    <published>2017-07-04T07:19:48.000Z</published>
-    <updated>2018-05-15T02:20:12.289Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href="https://developer.apple.com/documentation/arkit/arscnview/providing_3d_virtual_content_with_scenekit" target="_blank" rel="external">原文请戳</a></p>
-<a id="more"></a>
-<h1 id="使用SceneKit提供3D内容"><a href="#使用SceneKit提供3D内容" class="headerlink" title="使用SceneKit提供3D内容"></a>使用SceneKit提供3D内容</h1><p>使用SceneKit来添加逼真的3D对象到你的AR体验中</p>
-<hr>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在AR中放置SpriteKit内容，你首先需要一个运行中的AR会话对象（参考<a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">创建一个基本的AR体验</a>）。</p>
-<p>因为ARKit可以自动匹配SceneKit空间到现实空间中，所以放置一个虚拟对象以便可以维持真实世界中的位置，只需要适当地设置这个对象的SceneKit位置就可以。举例来说，在一个默认配置中，下面的代码放置一个10cm的立方体，初始位置在相机前方20厘米处：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> cubeNode = <span class="type">SCNNode</span>(geometry: <span class="type">SCNBox</span>(width: <span class="number">0.1</span>, height: <span class="number">0.1</span>, length: <span class="number">0.1</span>, chamferRadius: <span class="number">0</span>))</div><div class="line">cubeNode.posotion = <span class="type">SCNVector3</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">0.2</span>)<span class="comment">// SceneKit/AR坐标系以“米”为单位</span></div><div class="line">sceneView.scene.rootNode.addChildNode(cubeNode)</div></pre></td></tr></table></figure>
-<p>以上代码直接在视图的SceneKit场景中放置了一个物体，由于ARKit匹配了SceneKit空间到现实空间中，该物体会自动追踪其在现实世界的位置。</p>
-<p>追踪现实位置，你不仅可以使用<a href="https://developer.apple.com/documentation/arkit/aranchor" target="_blank" rel="external">ARAnchor</a>类，或通过创建你自己的锚点并把他们添加到会话对象中，还可以监听ARKit自动创建的锚点。比如，当物体检测功能已打开，ARKit会为<br>每一个检测到的物体添加并更新锚点。要为这些锚点添加可见内容，可以向下面这样实现<a href="https://developer.apple.com/documentation/arkit/arscnviewdelegate" target="_blank" rel="external">ARSCNViewDelegate</a>的方法：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">renderer</span><span class="params">(<span class="number">_</span> renderer: SCNSceneRenderer, didAdd node: SCNNode, <span class="keyword">for</span> anchor: ARAnchor)</span></span> &#123;</div><div class="line">	<span class="comment">// 这个可视物体只允许已检测到的物体</span></div><div class="line">	<span class="keyword">guard</span> <span class="keyword">let</span> planeAnchor = anchor <span class="keyword">as</span>? <span class="type">ARPlaneAnchor</span> <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</div><div class="line">	</div><div class="line">	<span class="comment">// 使用它的位置和大小创建一个SceneKit物体来使节点可见</span></div><div class="line">	<span class="keyword">let</span> plane = <span class="type">SCNPlane</span>(width: <span class="type">SCFloat</span>(planeAnchor.extent.x), height: <span class="type">CGFloat</span>(planeAnchor.extent.z))</div><div class="line">	<span class="keyword">let</span> planeNode = <span class="type">SCNNode</span>(geometry: plane)</div><div class="line">	planeNode.position = <span class="type">SCNVector3Make</span>(planeAnchor.center.x, <span class="number">0</span>, planeAnchor.center.z)</div><div class="line">	</div><div class="line">	<span class="comment">// SCNPlanes在他们自己的坐标空间中式垂直朝向的</span></div><div class="line">	<span class="comment">// 旋转它来匹配水平朝向的ARPlaneAnchor</span></div><div class="line">	planeNode.transform = <span class="type">SCNMatrix4MakeRotation</span>(-<span class="type">Float</span>.pi / <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>)</div><div class="line">	</div><div class="line">	<span class="comment">// 像锚点一样，ARKit拥有这个节点，所以把这个物体添加为一个子节点。</span></div><div class="line">	node.addChildNode(planeNode)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="设计3D资源遵循的最好实践"><a href="#设计3D资源遵循的最好实践" class="headerlink" title="设计3D资源遵循的最好实践"></a>设计3D资源遵循的最好实践</h2><ul>
-<li>使用SceneKit自身的光照模型创建资源以便可以有更逼真的外观。（查看<a href="https://developer.apple.com/documentation/scenekit/scnmaterial" target="_blank" rel="external">SCNMaterial</a>类和<a href="https://developer.apple.com/library/content/samplecode/Badger/Introduction/Intro.html#//apple_ref/doc/uid/TP40017309" target="_blank" rel="external">獾：SceneKit高级渲染</a>示例代码工程）</li>
-<li>烤周围的遮罩阴影以便所有物体都可以在大场景的光照条件下都有合适的光照。</li>
-<li>在AR中如果你想要创建一个虚拟物体并把它放置到外界的水平面上，你需要在3D资源中包含一个带有温和的阴影纹理的透明物体，并把它放到虚拟物体下面。</li>
-</ul>
-<h2 id="另请参阅"><a href="#另请参阅" class="headerlink" title="另请参阅"></a>另请参阅</h2><h6 id="session"><a href="#session" class="headerlink" title="session"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2865589-session?language=objc" target="_blank" rel="external">session</a></h6><pre><code>在视图内容中管理着运动追踪和相机图像处理的AR会话对象
-</code></pre><h6 id="scene"><a href="#scene" class="headerlink" title="scene"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2875547-scene?language=objc" target="_blank" rel="external">scene</a></h6><pre><code>视图中显示的SceneKit场景
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;&lt;a href=&quot;https://developer.apple.com/documentation/arkit/arscnview/providing_3d_virtual_content_with_scenekit&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;原文请戳&lt;/a&gt;&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ARKit文档瞎翻译（8）</title>
-    <link href="http://yoursite.com/2017/07/04/ARKit_doc_8/"/>
-    <id>http://yoursite.com/2017/07/04/ARKit_doc_8/</id>
-    <published>2017-07-04T06:05:03.000Z</published>
-    <updated>2018-05-15T02:20:15.595Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">原文请戳</a></p>
-<a id="more"></a>
-<h1 id="ARSCNView"><a href="#ARSCNView" class="headerlink" title="ARSCNView"></a>ARSCNView</h1><p>使用3D的SceneKit内容进而增强相机来显示AR体验的一种视图。</p>
-<hr>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>ARSCNView提供了一种最简单的方式来创建AR体验，即混合了虚拟的3D内容到相机捕捉的真实世界的视图中。当你运行视图提供的<a href="https://developer.apple.com/documentation/arkit/arsession?language=objc" target="_blank" rel="external">ARSession</a>对象时：</p>
-<ul>
-<li>该视图会自动渲染从相机拍摄到的实时视频并将其作为背景。</li>
-<li>该视图的SceneKit场景坐标系可以直接响应通过会话配置的AR坐标系。</li>
-<li>该视图会自动移动它的SceneKit相机来匹配设备在现实世界中的移动。</li>
-</ul>
-<p>因为ARKit可以自动匹配SceneKit空间到真实世界中，所以放置一个虚拟物体以便可以维持在现实中的位置，只需要适当地设置这个对象的SceneKit位置就可以。</p>
-<p>你无需必须使用<a href="https://developer.apple.com/documentation/arkit/aranchor?language=objc" target="_blank" rel="external">ARAnchor</a>类来追踪添加到场景中的物体位置，但是通过实现<a href="https://developer.apple.com/documentation/arkit/arscnviewdelegate?language=objc" target="_blank" rel="external">ARSCNViewDelegate</a>中的方法，你可以添加SceneKit内容到任何被ARKit自动识别出的锚点上。</p>
-<h2 id="话题"><a href="#话题" class="headerlink" title="话题"></a>话题</h2><h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><h6 id="使用SceneKit提供3D的虚拟内容"><a href="#使用SceneKit提供3D的虚拟内容" class="headerlink" title="使用SceneKit提供3D的虚拟内容"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/providing_3d_virtual_content_with_scenekit?language=objc" target="_blank" rel="external">使用SceneKit提供3D的虚拟内容</a></h6><pre><code>使用SceneKit来添加逼真的3D对象到你的AR体验中
-</code></pre><h6 id="session"><a href="#session" class="headerlink" title="session"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2865796-session?language=objc" target="_blank" rel="external">session</a></h6><pre><code>管理着视图内容中的运动追踪和相机视图处理的AR会话对象
-</code></pre><h6 id="scene"><a href="#scene" class="headerlink" title="scene"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2875547-scene?language=objc" target="_blank" rel="external">scene</a></h6><pre><code>显示在视图中的SceneKit场景
-</code></pre><h3 id="负责AR更新"><a href="#负责AR更新" class="headerlink" title="负责AR更新"></a>负责AR更新</h3><h6 id="delegate"><a href="#delegate" class="headerlink" title="delegate"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2865797-delegate?language=objc" target="_blank" rel="external">delegate</a></h6><pre><code>你提供的一个对象，用于使用SceneKit内容来同步处理视图的AR场景信息。
-</code></pre><h6 id="ARSCNViewDelegate"><a href="#ARSCNViewDelegate" class="headerlink" title="ARSCNViewDelegate"></a><a href="https://developer.apple.com/documentation/arkit/arscnviewdelegate?language=objc" target="_blank" rel="external">ARSCNViewDelegate</a></h6><pre><code>可以实现的一系列方法，你可以用他们使用AR会话对象来同步处理SceneKit内容。
-</code></pre><h3 id="真实世界表面的碰撞检测"><a href="#真实世界表面的碰撞检测" class="headerlink" title="真实世界表面的碰撞检测"></a>真实世界表面的碰撞检测</h3><h6 id="hitTest-types"><a href="#hitTest-types" class="headerlink" title="- hitTest:types:"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2875544-hittest?language=objc" target="_blank" rel="external">- hitTest:types:</a></h6><pre><code>在截取的相机图像中搜索真实世界的物体或AR锚点，与SceneKit视图中的一个点相对应。
-</code></pre><h3 id="映射内容到现实世界的位置中"><a href="#映射内容到现实世界的位置中" class="headerlink" title="映射内容到现实世界的位置中"></a>映射内容到现实世界的位置中</h3><h6 id="anchorForNode"><a href="#anchorForNode" class="headerlink" title="- anchorForNode:"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2875546-anchorfornode?language=objc" target="_blank" rel="external">- anchorForNode:</a></h6><pre><code>如果存在，返回与指定SceneKit节点相关的AR锚点
-</code></pre><h6 id="nodeForAnchor"><a href="#nodeForAnchor" class="headerlink" title="- nodeForAnchor:"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2874122-nodeforanchor?language=objc" target="_blank" rel="external">- nodeForAnchor:</a></h6><pre><code>如果存在，返回与指定AR锚点相关的SceneKit节点
-</code></pre><h3 id="处理场景光照"><a href="#处理场景光照" class="headerlink" title="处理场景光照"></a>处理场景光照</h3><h6 id="automaticallyUpdatesLighting"><a href="#automaticallyUpdatesLighting" class="headerlink" title="automaticallyUpdatesLighting"></a><a href="https://developer.apple.com/documentation/arkit/arscnview/2887446-automaticallyupdateslighting?language=objc" target="_blank" rel="external">automaticallyUpdatesLighting</a></h6><pre><code>一个布尔值，指定了在视图的场景中，是否需要ARKit创建并更新SceneKit光照。
-</code></pre><h3 id="调试AR显示"><a href="#调试AR显示" class="headerlink" title="调试AR显示"></a>调试AR显示</h3><h6 id="ARSCNDebugOptions"><a href="#ARSCNDebugOptions" class="headerlink" title="ARSCNDebugOptions"></a><a href="https://developer.apple.com/documentation/arkit/arscndebugoptions?language=objc" target="_blank" rel="external">ARSCNDebugOptions</a></h6><pre><code>绘制遮罩内容的一些设置项来帮助调试在SceneKit视图中的AR追踪功能。
-</code></pre><h2 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h2><h3 id="继承自"><a href="#继承自" class="headerlink" title="继承自"></a>继承自</h3><p><a href="https://developer.apple.com/documentation/scenekit/scnview?language=objc" target="_blank" rel="external">SCNView</a></p>
-<h2 id="另请参阅"><a href="#另请参阅" class="headerlink" title="另请参阅"></a>另请参阅</h2><h3 id="基本视图"><a href="#基本视图" class="headerlink" title="基本视图"></a>基本视图</h3><h6 id="创建一个基本的AR体验"><a href="#创建一个基本的AR体验" class="headerlink" title="创建一个基本的AR体验"></a><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">创建一个基本的AR体验</a></h6><pre><code>配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容
-</code></pre><h6 id="ARSKView"><a href="#ARSKView" class="headerlink" title="ARSKView"></a><a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">ARSKView</a></h6><pre><code>使用2D的SpriteKit内容进而增强相机来显示AR体验的一种视图。
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;&lt;a href=&quot;https://developer.apple.com/documentation/arkit/arscnview?language=objc&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;原文请戳&lt;/a&gt;&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ARKit文档瞎翻译（7）</title>
-    <link href="http://yoursite.com/2017/07/04/ARKit_doc_7/"/>
-    <id>http://yoursite.com/2017/07/04/ARKit_doc_7/</id>
-    <published>2017-07-04T03:28:14.000Z</published>
-    <updated>2018-05-15T02:20:18.159Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">原文请戳</a></p>
-<a id="more"></a>
-<h1 id="ARSKView"><a href="#ARSKView" class="headerlink" title="ARSKView"></a>ARSKView</h1><p>使用2D的SpriteKit内容进而增强相机来显示AR体验的一种视图。</p>
-<hr>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>使用ARSKView类，可以在设备相机拍摄的真实世界视图的3D空间中放置2D元素来创建AR体验。当你运行这个视图提供的<a href="https://developer.apple.com/documentation/arkit/arsession?language=objc" target="_blank" rel="external">ARSession</a>对象时：</p>
-<ul>
-<li>该视图会自动渲染从相机拍摄到的实时视频并将其作为背景。</li>
-<li>当你实现了<a href="https://developer.apple.com/documentation/arkit/arskviewdelegate?language=objc" target="_blank" rel="external">ARSKViewDelegate</a>的方法把SpriteKit内容和真实世界的位置联系在一起时，该视图会自动缩放并旋转SpriteKit节点，以便他们在相机中看起来就像可以在真实世界中追踪到一样。</li>
-</ul>
-<h2 id="话题"><a href="#话题" class="headerlink" title="话题"></a>话题</h2><h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><h6 id="使用SpriteKit提供2D虚拟内容"><a href="#使用SpriteKit提供2D虚拟内容" class="headerlink" title="使用SpriteKit提供2D虚拟内容"></a><a href="https://developer.apple.com/documentation/arkit/arskview/providing_2d_virtual_content_with_spritekit?language=objc" target="_blank" rel="external">使用SpriteKit提供2D虚拟内容</a></h6><pre><code>在AR体验中，使用SpriteKit在3D空间中放置2D图片
-</code></pre><h6 id="session"><a href="#session" class="headerlink" title="session"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2865589-session?language=objc" target="_blank" rel="external">session</a></h6><pre><code>管理着视图内容中的运动追踪和相机视图处理的AR会话对象
-</code></pre><h3 id="负责AR更新"><a href="#负责AR更新" class="headerlink" title="负责AR更新"></a>负责AR更新</h3><h6 id="delegate"><a href="#delegate" class="headerlink" title="delegate"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2865597-delegate?language=objc" target="_blank" rel="external">delegate</a></h6><pre><code>你提供的一个对象，用于使用SpriteKit内容来同步处理视图中的AR场景信息。
-</code></pre><h6 id="ARSKViewDelegate"><a href="#ARSKViewDelegate" class="headerlink" title="ARSKViewDelegate"></a><a href="https://developer.apple.com/documentation/arkit/arskviewdelegate?language=objc" target="_blank" rel="external">ARSKViewDelegate</a></h6><pre><code>可以实现的一系列方法，你可以用他们使用AR会话对象来同步处理SpriteKit内容。
-</code></pre><h3 id="真实世界表面的碰撞检测"><a href="#真实世界表面的碰撞检测" class="headerlink" title="真实世界表面的碰撞检测"></a>真实世界表面的碰撞检测</h3><h6 id="hitTest-types"><a href="#hitTest-types" class="headerlink" title="- hitTest:types:"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2875733-hittest?language=objc" target="_blank" rel="external">- hitTest:types:</a></h6><pre><code>在截取的相机图像中搜索真实世界的物体或AR锚点，与SpriteKit视图中的一个点相对应。
-</code></pre><h3 id="映射内容到真实世界的位置中"><a href="#映射内容到真实世界的位置中" class="headerlink" title="映射内容到真实世界的位置中"></a>映射内容到真实世界的位置中</h3><h6 id="anchorForNode"><a href="#anchorForNode" class="headerlink" title="- anchorForNode:"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2875729-anchorfornode?language=objc" target="_blank" rel="external">- anchorForNode:</a></h6><pre><code>如果存在，返回与指定SpriteKit节点相关的AR锚点
-</code></pre><h6 id="nodeForAnchor"><a href="#nodeForAnchor" class="headerlink" title="- nodeForAnchor:"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2873513-nodeforanchor?language=objc" target="_blank" rel="external">- nodeForAnchor:</a></h6><pre><code>如果存在，返回与指定AR锚点相关的SpriteKit节点
-</code></pre><h2 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h2><h3 id="继承自"><a href="#继承自" class="headerlink" title="继承自"></a>继承自</h3><p><a href="https://developer.apple.com/documentation/spritekit/skview?language=objc" target="_blank" rel="external">SKView</a></p>
-<h2 id="另请参阅"><a href="#另请参阅" class="headerlink" title="另请参阅"></a>另请参阅</h2><h3 id="基本视图"><a href="#基本视图" class="headerlink" title="基本视图"></a>基本视图</h3><h6 id="创建一个基本的AR体验"><a href="#创建一个基本的AR体验" class="headerlink" title="创建一个基本的AR体验"></a><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">创建一个基本的AR体验</a></h6><pre><code>配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容
-</code></pre><h6 id="ARSCNView"><a href="#ARSCNView" class="headerlink" title="ARSCNView"></a><a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a></h6><pre><code>使用3D的SceneKit内容进而增强相机来显示AR体验的一种视图。
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;&lt;a href=&quot;https://developer.apple.com/documentation/arkit/arskview?language=objc&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;原文请戳&lt;/a&gt;&lt;/p&gt;
     
     </summary>
     
