@@ -8,19 +8,19 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》2 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="内存管理篇： 2.alloc/retain/release/dealloc的实现GNUstep的实现方式GNUstep的版本将引用计数与对象的内存组合在一起，方便读写存取。如图所示，使用了一个objc_layout结构体来表示引用计数，其大体结构及alloc的简化代码为： 12345678910111213struct objc_layout &amp;#123;    // 引用计数    NSUInt">
+  <meta name="description" content="内存管理篇： 2.alloc/retain/release/dealloc的实现GNUstep的实现方式GNUstep的版本将引用计数与对象的内存组合在一起，方便读写存取。如图所示，使用了一个objc_layout结构体来表示引用计数，其大体结构及alloc的简化代码为：">
 <meta name="keywords" content="读书笔记">
 <meta property="og:type" content="article">
 <meta property="og:title" content="《Objective-C高级编程 iOS与OS X多线程与内存管理》2">
 <meta property="og:url" content="http://yoursite.com/2019/01/06/内存管理篇： 2.alloc-retain-release-dealloc的实现/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="内存管理篇： 2.alloc/retain/release/dealloc的实现GNUstep的实现方式GNUstep的版本将引用计数与对象的内存组合在一起，方便读写存取。如图所示，使用了一个objc_layout结构体来表示引用计数，其大体结构及alloc的简化代码为： 12345678910111213struct objc_layout &amp;#123;    // 引用计数    NSUInt">
+<meta property="og:description" content="内存管理篇： 2.alloc/retain/release/dealloc的实现GNUstep的实现方式GNUstep的版本将引用计数与对象的内存组合在一起，方便读写存取。如图所示，使用了一个objc_layout结构体来表示引用计数，其大体结构及alloc的简化代码为：">
 <meta property="og:image" content="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1546151436-GNUstep%E7%9A%84%E5%AF%B9%E8%B1%A1%E7%BB%93%E6%9E%84.jpg">
 <meta property="og:image" content="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1546151340-Apple%E7%9A%84%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0%E8%A1%A8.jpg">
-<meta property="og:updated_time" content="2019-01-06T07:42:32.544Z">
+<meta property="og:updated_time" content="2019-01-06T07:59:00.288Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《Objective-C高级编程 iOS与OS X多线程与内存管理》2">
-<meta name="twitter:description" content="内存管理篇： 2.alloc/retain/release/dealloc的实现GNUstep的实现方式GNUstep的版本将引用计数与对象的内存组合在一起，方便读写存取。如图所示，使用了一个objc_layout结构体来表示引用计数，其大体结构及alloc的简化代码为： 12345678910111213struct objc_layout &amp;#123;    // 引用计数    NSUInt">
+<meta name="twitter:description" content="内存管理篇： 2.alloc/retain/release/dealloc的实现GNUstep的实现方式GNUstep的版本将引用计数与对象的内存组合在一起，方便读写存取。如图所示，使用了一个objc_layout结构体来表示引用计数，其大体结构及alloc的简化代码为：">
 <meta name="twitter:image" content="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1546151436-GNUstep%E7%9A%84%E5%AF%B9%E8%B1%A1%E7%BB%93%E6%9E%84.jpg">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
@@ -202,6 +202,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="内存管理篇：-2-alloc-retain-release-dealloc的实现"><a href="#内存管理篇：-2-alloc-retain-release-dealloc的实现" class="headerlink" title="内存管理篇： 2.alloc/retain/release/dealloc的实现"></a>内存管理篇： 2.alloc/retain/release/dealloc的实现</h2><h3 id="GNUstep的实现方式"><a href="#GNUstep的实现方式" class="headerlink" title="GNUstep的实现方式"></a>GNUstep的实现方式</h3><p><strong>GNUstep的版本将引用计数与对象的内存组合在一起，方便读写存取。</strong><br><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1546151436-GNUstep%E7%9A%84%E5%AF%B9%E8%B1%A1%E7%BB%93%E6%9E%84.jpg" alt="img"><br>如图所示，使用了一个objc_layout结构体来表示引用计数，其大体结构及alloc的简化代码为：</p>
+<a id="more"></a>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_layout</span> &#123;</span></div><div class="line">    <span class="comment">// 引用计数</span></div><div class="line">    NSUInteger retained;</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (id)alloc &#123;</div><div class="line">    <span class="keyword">int</span> size = <span class="keyword">sizeof</span>(struct objc_layout) + 对象大小；</div><div class="line">    <span class="comment">// 创建一段大小为size的连续内存，并写入0</span></div><div class="line">    <span class="comment">// 使用结构体指针指向此地址</span></div><div class="line">    struct objc_layout *p = <span class="built_in">calloc</span>(<span class="number">1</span>, size);</div><div class="line">    <span class="comment">// 返回id类型对象（地址+1即为对象的地址）</span></div><div class="line">    <span class="keyword">return</span> (id)(p + <span class="number">1</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p><strong>由此可知，retainCount即返回结构体中retained成员的值即可：</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">- (NSUinteger)retainCount &#123;</div><div class="line">    <span class="keyword">return</span> NSExtraRefCount(self) + <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">inline</span> NSUInteger</span></div><div class="line"><span class="title">NSExtraRefCount</span><span class="params">(id anObject)</span> &#123;</div><div class="line">    <span class="comment">// 由于对象指向的是+1的地址，故-1即为结构体实例的地址</span></div><div class="line">    <span class="keyword">return</span> ((struct objc_layout *)anObject)[<span class="number">-1</span>].retained;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>由于初始化的内存中填充数据为0，故新对象的引用计数为1（0+1）。</p>
@@ -422,11 +423,11 @@ return o(t,i(n),arguments.length<3?void 0:u(arguments[2]))}})},function(t,n,r){v
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
