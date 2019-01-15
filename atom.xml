@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-01-06T07:54:34.109Z</updated>
+  <updated>2019-01-15T04:12:59.642Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,558 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》16</title>
+    <link href="http://yoursite.com/2019/01/15/Blocks%E7%AF%87%EF%BC%9A7.%E5%BE%AA%E7%8E%AF%E5%BC%95%E7%94%A8%E9%97%AE%E9%A2%98/"/>
+    <id>http://yoursite.com/2019/01/15/Blocks篇：7.循环引用问题/</id>
+    <published>2019-01-15T04:12:59.642Z</published>
+    <updated>2019-01-15T04:12:59.642Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Blocks篇：7-循环引用问题"><a href="#Blocks篇：7-循环引用问题" class="headerlink" title="Blocks篇：7.循环引用问题"></a>Blocks篇：7.循环引用问题</h2><h4 id="1-ARC下的Block循环引用"><a href="#1-ARC下的Block循环引用" class="headerlink" title="1.ARC下的Block循环引用"></a>1.ARC下的Block循环引用</h4><h5 id="1-1-使用weak或unsafe-unretained避免循环引用"><a href="#1-1-使用weak或unsafe-unretained避免循环引用" class="headerlink" title="1.1 使用weak或unsafe_unretained避免循环引用"></a>1.1 使用<strong>weak或</strong>unsafe_unretained避免循环引用</h5><p>一般来说，最简单的这种情况即：<em>block对象作为OC对象的成员，而在block函数体内部直接或间接捕获了该OC对象，造成互相强引用</em>。举例来说：<br><a id="more"></a><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(^MyBlock)</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">@interface TestObject : NSObject &#123;</div><div class="line">    <span class="comment">// block成员</span></div><div class="line">    MyBlock myBlock;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation TestObject</div><div class="line"></div><div class="line">- (instancetype)init &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        <span class="comment">// 初始化block成员</span></div><div class="line">        myBlock = ^&#123;</div><div class="line">            NSLog(@<span class="string">"%@"</span>, self);</div><div class="line">        &#125;;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
+<p>产生循环引用的过程：</p>
+<blockquote>
+<ul>
+<li>由于myBlock对象捕获了OC对象（self），myBlock被自动拷贝到堆上，并自动对self产生强引用；</li>
+<li>myBlock是self的成员，当myBlock分配到堆内存后，self负责对其进行内存管理，自动对myBlock对象产生强引用；</li>
+<li>互相保留，引用循环产生</li>
+</ul>
+</blockquote>
+<p>不过这种情况，编译器可以直接识别并给出引用循环警告。我们可以通过所有权修饰符<strong>weak或</strong>unsafe_unretained，使myBlock对象通过保留弱引用或不安全的对象指针，来避免对self产生强引用：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (instancetype)init &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        <span class="comment">// 初始化block成员</span></div><div class="line">        </div><div class="line">        __weak TestObject *weakSelf = self;</div><div class="line"><span class="comment">//        __unsafe_unretained TestObject *unsafeSelf = self;</span></div><div class="line">        myBlock = ^&#123;</div><div class="line">            NSLog(@<span class="string">"%@"</span>, weakSelf);</div><div class="line">        &#125;;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>由于在init方法中不比担心self对象释放的问题，可以安心使用__unsafe_unretained修饰符。</p>
+<h5 id="1-2-通过-block变量，并适时将其释放来解除循环引用"><a href="#1-2-通过-block变量，并适时将其释放来解除循环引用" class="headerlink" title="1.2 通过__block变量，并适时将其释放来解除循环引用"></a>1.2 通过__block变量，并适时将其释放来解除循环引用</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">@implementation TestObject</div><div class="line"></div><div class="line">- (instancetype)init &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        <span class="comment">// 初始化block成员</span></div><div class="line">        </div><div class="line">        __block TestObject *blockSelf = self;</div><div class="line">        myBlock = ^&#123;</div><div class="line">            NSLog(@<span class="string">"blockSelf - %@"</span>, blockSelf);</div><div class="line">            </div><div class="line">            <span class="comment">// 释放__block变量，其释放对self的强引用</span></div><div class="line">            blockSelf = nil;</div><div class="line">        &#125;;</div><div class="line">        <span class="comment">// 通过执行block对象，在内部解除循环引用</span></div><div class="line">        myBlock();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)dealloc &#123;</div><div class="line">    NSLog(@<span class="string">"%@"</span>, NSStringFromSelector(_cmd));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>由于在ARC下，复制到堆内存中的<strong>block对象会对内部的OC对象进行强引用，故可以让block对象捕获</strong>block对象，并在需要时释放__block对象（一般都是执行block时），以间接解除对self的强引用。</strong></p>
+<p>补充：</p>
+<blockquote>
+<p>调用block后，直接将block对象释放也可以解除循环引用。</p>
+</blockquote>
+<p>缺点：</p>
+<blockquote>
+<p>一般来说，<strong>必须执行block后，引用循环才可以被解除</strong>，容易出现遗漏的情况。</p>
+</blockquote>
+<h4 id="2-非ARC下的Block内存控制"><a href="#2-非ARC下的Block内存控制" class="headerlink" title="2.非ARC下的Block内存控制"></a>2.非ARC下的Block内存控制</h4><h5 id="2-1-非ARC下的Block引用循环"><a href="#2-1-非ARC下的Block引用循环" class="headerlink" title="2.1 非ARC下的Block引用循环"></a>2.1 非ARC下的Block引用循环</h5><p>由于<strong>非ARC环境下</strong>，无法使用所有权修饰符，故<strong>只能通过__block变量的方式来解决引用循环问题</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- (instancetype)init &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        <span class="comment">// 初始化block成员</span></div><div class="line">        </div><div class="line">        __block TestObject *blockSelf = self;</div><div class="line">        myBlock = ^&#123;</div><div class="line">            NSLog(@<span class="string">"blockSelf - %@"</span>, blockSelf);</div><div class="line">        &#125;;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在上述代码中，直接使用__block对象即可，无需释放，即可避免生成引用循环。</p>
+<p>原因：</p>
+<blockquote>
+<p><strong>非ARC环境下，__block变量被分配到堆内存时，不会对内部的OC对象进行强引用</strong>；<br>因此，在block对象函数内部，不会对OC对象发生强引用，相当于ARC下的<strong>weak和</strong>unsafe_unretained的情况。</p>
+</blockquote>
+<h5 id="2-2-非ARC环境下的Block内存使用规则补充"><a href="#2-2-非ARC环境下的Block内存使用规则补充" class="headerlink" title="2.2 非ARC环境下的Block内存使用规则补充"></a>2.2 非ARC环境下的Block内存使用规则补充</h5><ul>
+<li>对不同内存区域的block执行retain和copy操作的结果：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>block对象所在的内存区域</th>
+<th>执行操作</th>
+<th>效果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>栈</td>
+<td>retain</td>
+<td>无效</td>
+</tr>
+<tr>
+<td>栈</td>
+<td>copy</td>
+<td>复制到堆内存</td>
+</tr>
+<tr>
+<td>堆</td>
+<td>retain</td>
+<td>产生强引用</td>
+</tr>
+<tr>
+<td>堆</td>
+<td>copy</td>
+<td>产生强引用</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>在C语言环境下，可以使用Block_copy()和Block_release()对堆内存的block对象进行内存管理。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Blocks篇：7-循环引用问题&quot;&gt;&lt;a href=&quot;#Blocks篇：7-循环引用问题&quot; class=&quot;headerlink&quot; title=&quot;Blocks篇：7.循环引用问题&quot;&gt;&lt;/a&gt;Blocks篇：7.循环引用问题&lt;/h2&gt;&lt;h4 id=&quot;1-ARC下的Block循环引用&quot;&gt;&lt;a href=&quot;#1-ARC下的Block循环引用&quot; class=&quot;headerlink&quot; title=&quot;1.ARC下的Block循环引用&quot;&gt;&lt;/a&gt;1.ARC下的Block循环引用&lt;/h4&gt;&lt;h5 id=&quot;1-1-使用weak或unsafe-unretained避免循环引用&quot;&gt;&lt;a href=&quot;#1-1-使用weak或unsafe-unretained避免循环引用&quot; class=&quot;headerlink&quot; title=&quot;1.1 使用weak或unsafe_unretained避免循环引用&quot;&gt;&lt;/a&gt;1.1 使用&lt;strong&gt;weak或&lt;/strong&gt;unsafe_unretained避免循环引用&lt;/h5&gt;&lt;p&gt;一般来说，最简单的这种情况即：&lt;em&gt;block对象作为OC对象的成员，而在block函数体内部直接或间接捕获了该OC对象，造成互相强引用&lt;/em&gt;。举例来说：&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》15</title>
+    <link href="http://yoursite.com/2019/01/15/Blocks%E7%AF%87%EF%BC%9A6.Blocks%E6%8D%95%E8%8E%B7%E7%9A%84OC%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/"/>
+    <id>http://yoursite.com/2019/01/15/Blocks篇：6.Blocks捕获的OC对象及其内存管理/</id>
+    <published>2019-01-15T04:12:24.974Z</published>
+    <updated>2019-01-15T04:12:24.974Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Blocks篇：6-Blocks捕获的OC对象及其内存管理"><a href="#Blocks篇：6-Blocks捕获的OC对象及其内存管理" class="headerlink" title="Blocks篇：6.Blocks捕获的OC对象及其内存管理"></a>Blocks篇：6.Blocks捕获的OC对象及其内存管理</h2><blockquote>
+<p>之前所说的，都是Block对象捕获基本数据类型变量时的处理方式。现在我们看一下对于OC对象被Block捕获时的情况。<br><a id="more"></a></p>
+<h4 id="1-Block对象捕获OC对象"><a href="#1-Block对象捕获OC对象" class="headerlink" title="1.Block对象捕获OC对象"></a>1.Block对象捕获OC对象</h4></blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.m</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(^MyBlock)</span><span class="params">(id obj)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">        </div><div class="line">        MyBlock myBlock;</div><div class="line">        </div><div class="line">        &#123;</div><div class="line">            <span class="comment">// 声明数组作为被捕获变量</span></div><div class="line">            NSMutableArray *<span class="built_in">array</span> = [[NSMutableArray alloc] init];</div><div class="line">        </div><div class="line">            <span class="comment">// 声明block</span></div><div class="line">            myBlock = ^(id obj)&#123;</div><div class="line">                <span class="comment">// 向捕获的数组中添加对象</span></div><div class="line">                [<span class="built_in">array</span> addObject:obj];</div><div class="line">                <span class="built_in">printf</span>(<span class="string">"个数：%ld\n"</span>, <span class="built_in">array</span>.count);</div><div class="line">            &#125;;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// 执行block</span></div><div class="line">        myBlock([NSObject <span class="keyword">new</span>]);</div><div class="line">        myBlock([NSObject <span class="keyword">new</span>]);</div><div class="line">        myBlock([NSObject <span class="keyword">new</span>]);</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>此代码运行正常无误。这也直接证明了<strong>Block对象对该数组对象进行了强引用，使被捕获对象的生存周期超过了原始作用域</strong>。究其原因，查看部分转换后的代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.cpp</span></div><div class="line"></div><div class="line"><span class="comment">/** Block的完整结构体 */</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">main_block_impl_0</span> &#123;</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">block_impl</span> <span class="title">impl</span>;</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">main_block_desc_0</span>* <span class="title">Desc</span>;</span></div><div class="line">    <span class="comment">// 声明捕获的OC对象（ARC下为__strong修饰，强引用）</span></div><div class="line">    NSMutableArray *<span class="built_in">array</span>;</div><div class="line">    __main_block_impl_0(<span class="keyword">void</span> *fp, struct __main_block_desc_0 *desc, NSMutableArray *_array, <span class="keyword">int</span> flags=<span class="number">0</span>) : <span class="built_in">array</span>(_array) &#123;</div><div class="line">        impl.isa = &amp;_NSConcreteStackBlock;</div><div class="line">        impl.Flags = flags;</div><div class="line">        impl.FuncPtr = fp;</div><div class="line">        Desc = desc;</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">/** Block的执行函数 */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_func_0(struct __main_block_impl_0 *__cself, id obj) &#123;</div><div class="line">    NSMutableArray *<span class="built_in">array</span> = __cself-&gt;<span class="built_in">array</span>; <span class="comment">// bound by copy</span></div><div class="line">    </div><div class="line">    ((<span class="keyword">void</span> (*)(id, SEL, ObjectType _Nonnull))(<span class="keyword">void</span> *)objc_msgSend)((id)<span class="built_in">array</span>, sel_registerName(<span class="string">"addObject:"</span>), (id)obj);</div><div class="line"></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"个数：%ld\n"</span>, ((NSUInteger (*)(id, SEL))(<span class="keyword">void</span> *)objc_msgSend)((id)<span class="built_in">array</span>, sel_registerName(<span class="string">"count"</span>)));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** Block复制到堆时附带执行的函数 */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_copy_0(struct __main_block_impl_0*dst, struct __main_block_impl_0*src) &#123;</div><div class="line">    <span class="comment">// _Block_object_assign相当于retain；BLOCK_FIELD_IS_OBJECT标明捕获对象为OC对象</span></div><div class="line">    _Block_object_assign((<span class="keyword">void</span>*)&amp;dst-&gt;<span class="built_in">array</span>, (<span class="keyword">void</span>*)src-&gt;<span class="built_in">array</span>, <span class="number">3</span><span class="comment">/*BLOCK_FIELD_IS_OBJECT*/</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** Block复制从堆中释放时附带执行的函数 */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_dispose_0(struct __main_block_impl_0*src) &#123;</div><div class="line">    <span class="comment">// _Block_object_dispose相当于release；BLOCK_FIELD_IS_OBJECT标明捕获对象为OC对象</span></div><div class="line">    _Block_object_dispose((<span class="keyword">void</span>*)src-&gt;<span class="built_in">array</span>, <span class="number">3</span><span class="comment">/*BLOCK_FIELD_IS_OBJECT*/</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** Block描述信息结构体 */</span></div><div class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> __<span class="title">main_block_desc_0</span> &#123;</span></div><div class="line">  <span class="keyword">size_t</span> reserved;</div><div class="line">  <span class="keyword">size_t</span> Block_size;</div><div class="line">  <span class="keyword">void</span> (*copy)(struct __main_block_impl_0*, struct __main_block_impl_0*);</div><div class="line">  <span class="keyword">void</span> (*dispose)(struct __main_block_impl_0*);</div><div class="line">&#125; __main_block_desc_0_DATA = &#123; <span class="number">0</span>, <span class="keyword">sizeof</span>(struct __main_block_impl_0), __main_block_copy_0, __main_block_dispose_0&#125;;</div></pre></td></tr></table></figure>
+<p>在转换代码中显而易见，Block将捕获的OC对象以强引用的方式（ARC下隐含为__strong），作为结构体的成员变量。并在Block的描述信息对象中提供了copy和dispose方法，在适当时机调用以配合内存管理。</p>
+<p>注意：</p>
+<blockquote>
+<ul>
+<li><strong>由于编译器支持Block结构的类引用计数的内存管理方式，即ARC下，系统可以在适当时机分配和释放Block对象的内存。故在Block的相关结构体中可以直接存入带有所有权修饰符的OC对象。</strong></li>
+<li><strong>由于OC对象本身分配在堆内存中，Block对象只需通过指针传递即可完成捕获</strong>。</li>
+<li>由于捕获后，<strong>Block对象也参与了OC对象的内存管理，故需要提供保留和释放相关函数</strong>，以备系统在堆内存中创建（copy操作）和释放Block对象（dispose操作）时进行调用。这里则与__block变量时一样，使用了<em>_Block_object_assign</em>和<em>_Block_object_dispose</em>函数对OC对象进行保留和释放操作。</li>
+</ul>
+</blockquote>
+<p>补充：</p>
+<p>在<em>_Block_object_assign</em>以及<em>_Block_object_dispose</em>中，用于区分捕获变量类型的标识：</p>
+<table>
+<thead>
+<tr>
+<th>捕获的对象</th>
+<th>标识值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OC对象</td>
+<td>BLOCK_FIELD_IS_OBJECT</td>
+</tr>
+<tr>
+<td>__block修饰的变量或对象</td>
+<td>BLOCK_FIELD_IS_BYREF</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4 id="2-block修饰的OC对象"><a href="#2-block修饰的OC对象" class="headerlink" title="2.__block修饰的OC对象"></a>2.__block修饰的OC对象</h4><h5 id="2-1-block修饰的强引用对象（strong所有权）"><a href="#2-1-block修饰的强引用对象（strong所有权）" class="headerlink" title="2.1 block修饰的强引用对象（strong所有权）"></a>2.1 <strong>block修饰的强引用对象（</strong>strong所有权）</h5><p>还是先看实例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.m</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">        <span class="comment">// 声明__block修饰的OC对象</span></div><div class="line">        __block NSObject *myObj = [[NSObject alloc] init];</div><div class="line">        </div><div class="line">        </div><div class="line">        <span class="keyword">void</span> (^myBlock)(<span class="keyword">void</span>) = ^&#123;</div><div class="line">            <span class="comment">// 修改捕获对象</span></div><div class="line">            myObj = [[NSArray alloc] init];</div><div class="line">        &#125;;</div><div class="line">        </div><div class="line">        <span class="comment">// 执行Block</span></div><div class="line">        myBlock();</div><div class="line">        </div><div class="line">        <span class="built_in">printf</span>(<span class="string">"%p\n"</span>, (__bridge <span class="keyword">void</span> *)myObj);</div><div class="line">        </div><div class="line">        <span class="comment">// 修改__block对象</span></div><div class="line">        myObj = [[NSObject alloc] init];</div><div class="line">        </div><div class="line">        <span class="built_in">printf</span>(<span class="string">"%p\n"</span>, (__bridge <span class="keyword">void</span> *)myObj);</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到，当Block执行后，在外部读取捕获的OC对象，可以发现仍然指向同一地址。这与__block修饰基本变量的情况一致，也是需要通过生成特定捕获变量的结构体实例，在拷贝到堆内存后，最终访问均指向相同的对象。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.cpp</span></div><div class="line"></div><div class="line"><span class="comment">/** 捕获对象的结构体 */</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">Block_byref_myObj_0</span> &#123;</span></div><div class="line">    <span class="keyword">void</span> *__isa;</div><div class="line">    <span class="comment">/** 指向自身结构体实例的指针 */</span></div><div class="line">    __Block_byref_myObj_0 *__forwarding;</div><div class="line">    <span class="keyword">int</span> __flags;</div><div class="line">    <span class="keyword">int</span> __size;</div><div class="line">    <span class="comment">/** 分配到堆内存时的执行函数 */</span></div><div class="line">    <span class="keyword">void</span> (*__Block_byref_id_object_copy)(<span class="keyword">void</span>*, <span class="keyword">void</span>*);</div><div class="line">    <span class="comment">/** 在堆内存中释放时的执行函数 */</span></div><div class="line">    <span class="keyword">void</span> (*__Block_byref_id_object_dispose)(<span class="keyword">void</span>*);</div><div class="line">    <span class="comment">/** 真正的值（OC对象），在ARC下默认为__strong修饰 */</span></div><div class="line">    NSObject *myObj;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __Block_byref_id_object_copy_131(<span class="keyword">void</span> *dst, <span class="keyword">void</span> *src) &#123;</div><div class="line">    <span class="comment">// 赋值并保留对象</span></div><div class="line">    _Block_object_assign((<span class="keyword">char</span>*)dst + <span class="number">40</span>, *(<span class="keyword">void</span> * *) ((<span class="keyword">char</span>*)src + <span class="number">40</span>), <span class="number">131</span>);</div><div class="line">&#125;</div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __Block_byref_id_object_dispose_131(<span class="keyword">void</span> *src) &#123;</div><div class="line">    <span class="comment">// 释放对象</span></div><div class="line">    _Block_object_dispose(*(<span class="keyword">void</span> * *) ((<span class="keyword">char</span>*)src + <span class="number">40</span>), <span class="number">131</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">main_block_impl_0</span> &#123;</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">block_impl</span> <span class="title">impl</span>;</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">main_block_desc_0</span>* <span class="title">Desc</span>;</span></div><div class="line">    <span class="comment">/** 捕获对象的结构体实例 */</span></div><div class="line">    __Block_byref_myObj_0 *myObj; <span class="comment">// by ref</span></div><div class="line">    <span class="comment">/** 构造函数，其中捕获变量传递的是__forwarding指向的对象 */</span></div><div class="line">    __main_block_impl_0(<span class="keyword">void</span> *fp, struct __main_block_desc_0 *desc, __Block_byref_myObj_0 *_myObj, <span class="keyword">int</span> flags=<span class="number">0</span>) : myObj(_myObj-&gt;__forwarding) &#123;</div><div class="line">        impl.isa = &amp;_NSConcreteStackBlock;</div><div class="line">        impl.Flags = flags;</div><div class="line">        impl.FuncPtr = fp;</div><div class="line">        Desc = desc;</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_func_0(struct __main_block_impl_0 *__cself) &#123;</div><div class="line">    </div><div class="line">    __Block_byref_myObj_0 *myObj = __cself-&gt;myObj; <span class="comment">// bound by ref</span></div><div class="line">    </div><div class="line">    <span class="comment">// 对堆中的__block对象（__forwarding实例中的OC对象）进行修改</span></div><div class="line">    (myObj-&gt;__forwarding-&gt;myObj) = ((NSArray *(*)(id, SEL))(<span class="keyword">void</span> *)objc_msgSend)((id)((NSArray *(*)(id, SEL))(<span class="keyword">void</span> *)objc_msgSend)((id)objc_getClass(<span class="string">"NSArray"</span>), sel_registerName(<span class="string">"alloc"</span>)), sel_registerName(<span class="string">"init"</span>));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** 在堆内存上生成时的回调函数 */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_copy_0(struct __main_block_impl_0*dst, struct __main_block_impl_0*src) &#123;</div><div class="line">    <span class="comment">// 对捕获生成的__block对象进行赋值并保留</span></div><div class="line">    _Block_object_assign((<span class="keyword">void</span>*)&amp;dst-&gt;myObj, (<span class="keyword">void</span>*)src-&gt;myObj, <span class="number">8</span><span class="comment">/*BLOCK_FIELD_IS_BYREF*/</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_dispose_0(struct __main_block_impl_0*src) &#123;</div><div class="line">    <span class="comment">// 对捕获生成的__block对象进行释放</span></div><div class="line">    _Block_object_dispose((<span class="keyword">void</span>*)src-&gt;myObj, <span class="number">8</span><span class="comment">/*BLOCK_FIELD_IS_BYREF*/</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> __<span class="title">main_block_desc_0</span> &#123;</span></div><div class="line">    <span class="keyword">size_t</span> reserved;</div><div class="line">    <span class="keyword">size_t</span> Block_size;</div><div class="line">    <span class="keyword">void</span> (*copy)(struct __main_block_impl_0*, struct __main_block_impl_0*);</div><div class="line">    <span class="keyword">void</span> (*dispose)(struct __main_block_impl_0*);</div><div class="line">&#125; __main_block_desc_0_DATA = &#123; </div><div class="line">    <span class="number">0</span>, </div><div class="line">    <span class="keyword">sizeof</span>(struct __main_block_impl_0), </div><div class="line">    __main_block_copy_0, </div><div class="line">    __main_block_dispose_0</div><div class="line">&#125;;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    <span class="comment">/* @autoreleasepool */</span> </div><div class="line">    &#123; </div><div class="line">        __AtAutoreleasePool __autoreleasepool; </div><div class="line">        </div><div class="line">        <span class="comment">// 生成__block修饰的对象</span></div><div class="line">        __attribute__((__blocks__(byref))) __Block_byref_myObj_0 myObj = &#123;</div><div class="line">            (<span class="keyword">void</span>*)<span class="number">0</span>,</div><div class="line">            (__Block_byref_myObj_0 *)&amp;myObj, </div><div class="line">            <span class="number">33554432</span>, </div><div class="line">            <span class="keyword">sizeof</span>(__Block_byref_myObj_0),</div><div class="line">            <span class="comment">// 赋值OC对象的内存保留函数</span></div><div class="line">            __Block_byref_id_object_copy_131, </div><div class="line">            <span class="comment">// 赋值OC对象的内存释放函数</span></div><div class="line">            __Block_byref_id_object_dispose_131, </div><div class="line">            <span class="comment">// 创建真正的OC对象</span></div><div class="line">            ((NSObject *(*)(id, SEL))(<span class="keyword">void</span> *)objc_msgSend)((id)((NSObject *(*)(id, SEL))(<span class="keyword">void</span> *)objc_msgSend)((id)objc_getClass(<span class="string">"NSObject"</span>), sel_registerName(<span class="string">"alloc"</span>)), sel_registerName(<span class="string">"init"</span>))</div><div class="line">        &#125;;</div><div class="line">        </div><div class="line">        <span class="comment">// 声明并创建Block对象</span></div><div class="line">        <span class="keyword">void</span> (*myBlock)(<span class="keyword">void</span>) = ((<span class="keyword">void</span> (*)())&amp;__main_block_impl_0((<span class="keyword">void</span> *)__main_block_func_0, &amp;__main_block_desc_0_DATA, (__Block_byref_myObj_0 *)&amp;myObj, <span class="number">570425344</span>));</div><div class="line">        </div><div class="line">        <span class="comment">// 调用Block并传入本身指针</span></div><div class="line">        ((<span class="keyword">void</span> (*)(__block_impl *))((__block_impl *)myBlock)-&gt;FuncPtr)((__block_impl *)myBlock);</div><div class="line">        </div><div class="line">        <span class="comment">// 访问栈上的__block对象</span></div><div class="line">        <span class="built_in">printf</span>(<span class="string">"%p\n"</span>, (__bridge <span class="keyword">void</span> *)(myObj.__forwarding-&gt;myObj));</div><div class="line">        </div><div class="line">        <span class="comment">// 修改栈上的__block对象</span></div><div class="line">        (myObj.__forwarding-&gt;myObj) = ((NSObject *(*)(id, SEL))(<span class="keyword">void</span> *)objc_msgSend)((id)((NSObject *(*)(id, SEL))(<span class="keyword">void</span> *)objc_msgSend)((id)objc_getClass(<span class="string">"NSObject"</span>), sel_registerName(<span class="string">"alloc"</span>)), sel_registerName(<span class="string">"init"</span>));</div><div class="line">        </div><div class="line">        <span class="comment">// 访问栈上的__block对象</span></div><div class="line">        <span class="built_in">printf</span>(<span class="string">"%p\n"</span>, (__bridge <span class="keyword">void</span> *)(myObj.__forwarding-&gt;myObj));</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>注意，这里相比较普通的<strong>block变量时，**在</strong>block变量结构体中，新增了对于__block变量在堆内存中进行分配和释放时的函数指针成员**：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 分配到堆内存时的执行函数 */</span></div><div class="line"><span class="keyword">void</span> (*__Block_byref_id_object_copy)(<span class="keyword">void</span>*, <span class="keyword">void</span>*);</div><div class="line"><span class="comment">/** 在堆内存中释放时的执行函数 */</span></div><div class="line"><span class="keyword">void</span> (*__Block_byref_id_object_dispose)(<span class="keyword">void</span>*);</div></pre></td></tr></table></figure>
+<p>这是<strong>由于__block修饰的是OC对象，其结构体实例赋值此OC对象的内存管理，故需要提供保留和释放操作。</strong></p>
+<ul>
+<li>同样的，<strong>在栈中（声明<strong>block对象所在的地方）或是堆中（Block对象执行的函数体中），都可以通过</strong>forwarding指针访问到相同的OC对象</strong>：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取堆内存中的__block对象【栈__block对象的__forwarding依然指向的是堆中的__block对象】</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">Block_byref_myObj_0</span> __<span class="title">blockVar_onHeap</span> = <span class="title">myObj</span>.__<span class="title">forwarding</span>;</span></div><div class="line"><span class="comment">// 得到真正的OC对象</span></div><div class="line">NSObject realObj = __blockVar_onStack-&gt;myObj;</div></pre></td></tr></table></figure>
+<h4 id="2-2-block修饰的其他OC对象"><a href="#2-2-block修饰的其他OC对象" class="headerlink" title="2.2 __block修饰的其他OC对象"></a>2.2 __block修饰的其他OC对象</h4><ul>
+<li>当__block修饰的OC对象为弱对象时，我们以最开始的例子进行修改验证：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.m</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(^MyBlock)</span><span class="params">(id obj)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">        </div><div class="line">        MyBlock myBlock;</div><div class="line"></div><div class="line">        &#123;</div><div class="line">            <span class="comment">// 声明数组</span></div><div class="line">            NSMutableArray *<span class="built_in">array</span> = [[NSMutableArray alloc] init];</div><div class="line">            </div><div class="line">            <span class="comment">// 将待捕获对象声明为弱对象</span></div><div class="line">            __block __weak NSMutableArray *weakArray = <span class="built_in">array</span>;</div><div class="line"></div><div class="line">            <span class="comment">// 声明block</span></div><div class="line">            myBlock = ^(id obj)&#123;</div><div class="line">                [weakArray addObject:obj];</div><div class="line"></div><div class="line">                <span class="built_in">printf</span>(<span class="string">"个数：%ld\n"</span>, weakArray.count);</div><div class="line">            &#125;;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 执行block（向数组中添加对象）</span></div><div class="line">        myBlock([NSObject <span class="keyword">new</span>]);</div><div class="line">        myBlock([NSObject <span class="keyword">new</span>]);</div><div class="line">        myBlock([NSObject <span class="keyword">new</span>]);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>执行情况为：</p>
+<blockquote>
+<p>个数：0<br>个数：0<br>个数：0<br>Program ended with exit code: 0</p>
+</blockquote>
+<p><strong>在<strong>block对象中保留的是数组的弱引用，当原数组对象释放后，</strong>block对象中的OC对象自动置为nil，故结果为0。</strong></p>
+<ul>
+<li>当<strong>block修饰的OC对象为</strong>unsafe_unretained修饰的对象时，与弱引用情况相同，只是需要保证不要访问野指针。</li>
+<li><strong>block修饰的OC对象不允许标记为</strong>autoreleasing。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Blocks篇：6-Blocks捕获的OC对象及其内存管理&quot;&gt;&lt;a href=&quot;#Blocks篇：6-Blocks捕获的OC对象及其内存管理&quot; class=&quot;headerlink&quot; title=&quot;Blocks篇：6.Blocks捕获的OC对象及其内存管理&quot;&gt;&lt;/a&gt;Blocks篇：6.Blocks捕获的OC对象及其内存管理&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;之前所说的，都是Block对象捕获基本数据类型变量时的处理方式。现在我们看一下对于OC对象被Block捕获时的情况。&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》14</title>
+    <link href="http://yoursite.com/2019/01/15/Blocks%E7%AF%87%EF%BC%9A5.Blocks%E4%BF%AE%E6%94%B9%E6%8D%95%E8%8E%B7%E5%88%B0%E7%9A%84%E5%8F%98%E9%87%8F%EF%BC%88__block%E4%BF%AE%E9%A5%B0%E7%AC%A6%EF%BC%89/"/>
+    <id>http://yoursite.com/2019/01/15/Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）/</id>
+    <published>2019-01-15T04:11:24.722Z</published>
+    <updated>2019-01-15T04:11:24.722Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Blocks篇：5-Blocks修改捕获到的变量（-block修饰符）"><a href="#Blocks篇：5-Blocks修改捕获到的变量（-block修饰符）" class="headerlink" title="Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）"></a>Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）</h2><blockquote>
+<p>我们知道，在Block中，修改捕获变量的方式：</p>
+<ul>
+<li>对于全局变量，由于实质上Block并未对其进行捕获，故可以直接在Block函数体内部进行变量修改；</li>
+<li>对于局部的静态变量，由于Block捕获的是其指针，故可以通过指针对原变量进行修改；</li>
+<li>对于普通的局部变量，由于在Block函数体内使用的版本已经不是之前的变量了（是Block结构体中保存的成员），故编译器不支持直接修改。这种情况下，只能通过“__block”修饰变量进行处理。<a id="more"></a>
+<h4 id="1-block修饰符带来的变化"><a href="#1-block修饰符带来的变化" class="headerlink" title="1.__block修饰符带来的变化"></a>1.__block修饰符带来的变化</h4></li>
+</ul>
+</blockquote>
+<p>由于需修改局部变量，我们将栗子变成这个：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.m</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">        <span class="comment">// 声明__block修饰的局部变量</span></div><div class="line">        __block <span class="keyword">int</span> val = <span class="number">2</span>;</div><div class="line">        </div><div class="line">        <span class="keyword">void</span> (^myBlock)(<span class="keyword">void</span>) = ^&#123;</div><div class="line">            <span class="comment">// 捕获后修改变量的值</span></div><div class="line">            val = <span class="number">3</span>;</div><div class="line">        &#125;;</div><div class="line">        myBlock();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用clang转换后，代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.cpp</span></div><div class="line"></div><div class="line"><span class="comment">/** Block数据结构体（没变） */</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">block_impl</span> &#123;</span></div><div class="line">    <span class="keyword">void</span> *isa;</div><div class="line">    <span class="keyword">int</span> Flags;</div><div class="line">    <span class="keyword">int</span> Reserved;</div><div class="line">    <span class="keyword">void</span> *FuncPtr;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">/** __block修饰的变量对应的结构体 */</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">Block_byref_val_0</span> &#123;</span></div><div class="line">    <span class="comment">/** 类型 */</span></div><div class="line">    <span class="keyword">void</span> *__isa;</div><div class="line">    <span class="comment">/** 指向自身结构体实例的指针 */</span></div><div class="line">    __Block_byref_val_0 *__forwarding;</div><div class="line">    <span class="keyword">int</span> __flags;</div><div class="line">    <span class="keyword">int</span> __size;</div><div class="line">    <span class="comment">/** 变量真正的值 */</span></div><div class="line">    <span class="keyword">int</span> val;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">/** Block完整结构体 */</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">main_block_impl_0</span> &#123;</span></div><div class="line">    <span class="comment">/** Block数据实例 */</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">block_impl</span> <span class="title">impl</span>;</span></div><div class="line">    <span class="comment">/** Block描述信息实例的指针 */</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">main_block_desc_0</span>* <span class="title">Desc</span>;</span></div><div class="line">    <span class="comment">/** __Block_byref_val_0实例的指针 */</span></div><div class="line">    __Block_byref_val_0 *val; <span class="comment">// by ref</span></div><div class="line">    <span class="comment">// 构造函数</span></div><div class="line">    __main_block_impl_0(<span class="keyword">void</span> *fp, struct __main_block_desc_0 *desc, __Block_byref_val_0 *_val, <span class="keyword">int</span> flags=<span class="number">0</span>) : val(_val-&gt;__forwarding) &#123;</div><div class="line">        impl.isa = &amp;_NSConcreteStackBlock;</div><div class="line">        impl.Flags = flags;</div><div class="line">        impl.FuncPtr = fp;</div><div class="line">        Desc = desc;</div><div class="line">  &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">/** Block的函数体 */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_func_0(struct __main_block_impl_0 *__cself) &#123;</div><div class="line">    <span class="comment">// 取出保存的实例</span></div><div class="line">    __Block_byref_val_0 *val = __cself-&gt;val; <span class="comment">// bound by ref</span></div><div class="line">    <span class="comment">// 取出对应的变量真实值？？？</span></div><div class="line">    (val-&gt;__forwarding-&gt;val) = <span class="number">3</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** __block变量对应的copy函数（复制Block对象时调用） */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_copy_0(struct __main_block_impl_0*dst, struct __main_block_impl_0*src) &#123;</div><div class="line">    _Block_object_assign((<span class="keyword">void</span>*)&amp;dst-&gt;val, (<span class="keyword">void</span>*)src-&gt;val, <span class="number">8</span><span class="comment">/*BLOCK_FIELD_IS_BYREF*/</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** __block变量对应的dispose函数（释放Block对象时调用） */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_dispose_0(struct __main_block_impl_0*src) &#123;</div><div class="line">    _Block_object_dispose((<span class="keyword">void</span>*)src-&gt;val, <span class="number">8</span><span class="comment">/*BLOCK_FIELD_IS_BYREF*/</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** Block描述信息结构体实例 */</span></div><div class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> __<span class="title">main_block_desc_0</span> &#123;</span></div><div class="line">    <span class="keyword">size_t</span> reserved;</div><div class="line">    <span class="keyword">size_t</span> Block_size;</div><div class="line">    <span class="comment">/** copy函数指针 */</span></div><div class="line">    <span class="keyword">void</span> (*copy)(struct __main_block_impl_0*, struct __main_block_impl_0*);</div><div class="line">    <span class="comment">/** dispose函数指针 */</span></div><div class="line">    <span class="keyword">void</span> (*dispose)(struct __main_block_impl_0*);</div><div class="line">&#125; __main_block_desc_0_DATA = &#123; </div><div class="line">    <span class="number">0</span>, </div><div class="line">    <span class="keyword">sizeof</span>(struct __main_block_impl_0), </div><div class="line">    __main_block_copy_0, <span class="comment">// 赋值函数</span></div><div class="line">    __main_block_dispose_0 <span class="comment">// 赋值函数</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// main函数</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    <span class="comment">/* @autoreleasepool */</span> </div><div class="line">    &#123; </div><div class="line">        __AtAutoreleasePool __autoreleasepool; </div><div class="line">        </div><div class="line">        <span class="comment">// 创建__block变量对应的__Block_byref_val_0结构体实例</span></div><div class="line">        <span class="comment">// （__attribute__部分表示需要变量为栈上的变量？？？）</span></div><div class="line">        __attribute__((__blocks__(byref))) __Block_byref_val_0 val = &#123;</div><div class="line">            (<span class="keyword">void</span>*)<span class="number">0</span>,</div><div class="line">            (__Block_byref_val_0 *)&amp;val, <span class="comment">// 指向自身实例</span></div><div class="line">            <span class="number">0</span>, </div><div class="line">            <span class="keyword">sizeof</span>(__Block_byref_val_0), </div><div class="line">            <span class="number">2</span> <span class="comment">// 真正的值</span></div><div class="line">        &#125;;</div><div class="line">        </div><div class="line">        <span class="comment">// 创建Block对象，并使用函数指针指向它</span></div><div class="line">        <span class="keyword">void</span> (*myBlock)(<span class="keyword">void</span>) = (</div><div class="line">            (<span class="keyword">void</span> (*)())&amp;__main_block_impl_0(</div><div class="line">                (<span class="keyword">void</span> *)__main_block_func_0, <span class="comment">// 函数指针</span></div><div class="line">                &amp;__main_block_desc_0_DATA, <span class="comment">// 描述信息实例指针</span></div><div class="line">                (__Block_byref_val_0 *)&amp;val, <span class="comment">// 变量实例指针</span></div><div class="line">                <span class="number">570425344</span></div><div class="line">            )</div><div class="line">        );</div><div class="line">        </div><div class="line">        <span class="comment">// 调用Block中的函数</span></div><div class="line">        ((<span class="keyword">void</span> (*)(__block_impl *))((__block_impl *)myBlock)-&gt;FuncPtr)((__block_impl *)myBlock);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在代码中可以看到，</p>
+<ol>
+<li>使用__block修饰的变量，由基本变量转变成了结构体实例；</li>
+<li>当Block使用时，Block需要在其结构中保存此结构体实例的指针；</li>
+<li>提供了copy和dispose函数用于管理捕获的__block变量的内存。</li>
+</ol>
+<h4 id="2-block变量的存储规则"><a href="#2-block变量的存储规则" class="headerlink" title="2.__block变量的存储规则"></a>2.__block变量的存储规则</h4><p>我们知道，当Block对象捕获变量后，ARC会自动将其复制到堆内存中。此时，被捕获的__block变量又会如何变化呢？</p>
+<table>
+<thead>
+<tr>
+<th>__block变量本身的存储域</th>
+<th>Block从栈复制到堆时的影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>栈</td>
+<td>复制到堆内存中</td>
+</tr>
+<tr>
+<td>堆</td>
+<td>被该Block持有</td>
+</tr>
+</tbody>
+</table>
+<p>由上表可得出结论：</p>
+<blockquote>
+<ol>
+<li>在Block捕获了__block变量的情况下，当Block在堆内存中生成后，该变量也会被自动拷贝到堆内存中，并继续被Block对象所持有。</li>
+<li>__block变量的内存管理非常类似于引用计数的管理方式：被_NSConcreteMallocBlock对象持有时，变量存在；当没有被任何Block持有后，被系统释放。</li>
+</ol>
+</blockquote>
+<p>现在，我们就可以来解释一下之前的疑问：为何<strong>block变量内部存在指向自身结构实例的</strong>forwarding指针；且取值或修改时，需要通过此指针取出val的值？</p>
+<h5 id="2-1-block变量可以在Block内或外部随意修改"><a href="#2-1-block变量可以在Block内或外部随意修改" class="headerlink" title="2.1 __block变量可以在Block内或外部随意修改"></a>2.1 __block变量可以在Block内或外部随意修改</h5><p>开门见山，直接给出原因：</p>
+<blockquote>
+<p><strong><strong>block变量通过</strong>forwarding可以从任意内存区域访问同一块内存。</strong></p>
+</blockquote>
+<p>我们先来回顾一下__block变量在栈中的大体结构：</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1547444843-%E5%AD%98%E5%82%A8%E5%9C%A8%E6%A0%88%E4%B8%AD%E7%9A%84__block%E5%8F%98%E9%87%8F%E7%BB%93%E6%9E%84.jpg" alt="存储在栈中的__block变量结构.jpg"></p>
+<ol>
+<li>我们知道，在普通情况下，Block函数体中的捕获变量是通过值传递复制进去的，其执行时，原变量早已释放；若需要同时可以访问或修改，必然需要该变量为同一块内存。</li>
+<li>故<strong>block变量能够同时修改的原因，必然是在栈和堆中同时存在相同的变量指针，指向同一块内存。所以，根据存储规则，**当栈</strong>block变量被复制到堆内存时，原变量的__forwarding指针必然需要指向堆变量**，以满足此目的。</li>
+</ol>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1547445309-%E5%A4%8D%E5%88%B6%E5%88%B0%E5%A0%86%E5%90%8E__block%E5%8F%98%E9%87%8F%E7%9A%84%E7%BB%93%E6%9E%84.jpg" alt="复制到堆后__block变量的结构.jpg"></p>
+<p>此时，<strong>无论是从栈中或是堆中访问<strong>block变量，均可以通过</strong>forwarding指针来访问到真正的变量值</strong>。如之前的Block函数体：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_func_0(struct __main_block_impl_0 *__cself) &#123;</div><div class="line">    <span class="comment">// 取出保存的实例</span></div><div class="line">    __Block_byref_val_0 *val = __cself-&gt;val; <span class="comment">// bound by ref</span></div><div class="line">    <span class="comment">// 通过__forwarding获取真正的变量实例，并取值</span></div><div class="line">    (val-&gt;__forwarding-&gt;val) = <span class="number">3</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在Block函数体中，由于val已经是<strong>堆<strong>block变量，故其</strong>forwarding指针指向自身</strong>，可以成功取到变量值。</p>
+<p>而在Block外，直接访问或修改val的值：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">val += <span class="number">1</span>;</div></pre></td></tr></table></figure>
+<p>其转换后的代码为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">val-&gt;__forwarding-&gt;val += <span class="number">1</span>;</div></pre></td></tr></table></figure>
+<p>此时，<strong>栈变量val的__forwarding指针指向堆变量val</strong>，故其val与在堆中直接访问相同，均指向同一个val的地址。</p>
+<h4 id="3-Block对象对捕获到的-block变量进行内存管理"><a href="#3-Block对象对捕获到的-block变量进行内存管理" class="headerlink" title="3.Block对象对捕获到的__block变量进行内存管理"></a>3.Block对象对捕获到的__block变量进行内存管理</h4><p>在上述实例中，Block对象的描述结构指定了copy和dispose两个函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** copy函数 */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_copy_0(struct __main_block_impl_0*dst, struct __main_block_impl_0*src) &#123;</div><div class="line">    _Block_object_assign((<span class="keyword">void</span>*)&amp;dst-&gt;val, (<span class="keyword">void</span>*)src-&gt;val, <span class="number">8</span><span class="comment">/*BLOCK_FIELD_IS_BYREF*/</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** dispose函数 */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_dispose_0(struct __main_block_impl_0*src) &#123;</div><div class="line">    _Block_object_dispose((<span class="keyword">void</span>*)src-&gt;val, <span class="number">8</span><span class="comment">/*BLOCK_FIELD_IS_BYREF*/</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> __<span class="title">main_block_desc_0</span> &#123;</span></div><div class="line">    <span class="keyword">size_t</span> reserved;</div><div class="line">    <span class="keyword">size_t</span> Block_size;</div><div class="line">    <span class="comment">/** copy指针 */</span></div><div class="line">    <span class="keyword">void</span> (*copy)(struct __main_block_impl_0*, struct __main_block_impl_0*);</div><div class="line">    <span class="comment">/** dispose指针 */</span></div><div class="line">    <span class="keyword">void</span> (*dispose)(struct __main_block_impl_0*);</div><div class="line">&#125; __main_block_desc_0_DATA = &#123; </div><div class="line">    <span class="number">0</span>, </div><div class="line">    <span class="keyword">sizeof</span>(struct __main_block_impl_0),</div><div class="line">    <span class="comment">/** copy指针 */</span></div><div class="line">    __main_block_copy_0, </div><div class="line">    <span class="comment">/** dispose指针 */</span></div><div class="line">    __main_block_dispose_0</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>其中，</p>
+<ul>
+<li><strong>copy方法即为由_NSConcreteStackBlock对象copy生成_NSConcreteMallocBlock对象过程中进行的函数调用</strong>。这里即对捕获的__block变量进行指针复制（传递引用）。</li>
+<li><strong>dispose方法为堆_NSConcreteMallocBlock对象释放时进行调用</strong>，内部即对捕获的__block变量进行释放操作，不再保留。</li>
+</ul>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1547446878-%E6%A0%88Block%E5%A4%8D%E5%88%B6%E4%B8%BA%E5%A0%86Block%E7%9A%84%E8%BF%87%E7%A8%8B.jpg" alt="栈Block复制为堆Block的过程.jpg"></p>
+<p>因此，经过此过程，<strong>堆内存中的Block对象强引用着同样处于堆内存中的<strong>block变量；当自身释放时，被保留的</strong>block变量的强引用失效</strong>。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Blocks篇：5-Blocks修改捕获到的变量（-block修饰符）&quot;&gt;&lt;a href=&quot;#Blocks篇：5-Blocks修改捕获到的变量（-block修饰符）&quot; class=&quot;headerlink&quot; title=&quot;Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）&quot;&gt;&lt;/a&gt;Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;我们知道，在Block中，修改捕获变量的方式：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;对于全局变量，由于实质上Block并未对其进行捕获，故可以直接在Block函数体内部进行变量修改；&lt;/li&gt;
+&lt;li&gt;对于局部的静态变量，由于Block捕获的是其指针，故可以通过指针对原变量进行修改；&lt;/li&gt;
+&lt;li&gt;对于普通的局部变量，由于在Block函数体内使用的版本已经不是之前的变量了（是Block结构体中保存的成员），故编译器不支持直接修改。这种情况下，只能通过“__block”修饰变量进行处理。
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》13</title>
+    <link href="http://yoursite.com/2019/01/15/Blocks%E7%AF%87%EF%BC%9A4.Blocks%E7%9A%84%E5%AD%98%E5%82%A8%E5%9F%9F%EF%BC%88ARC%E4%B8%8B_NSConcreteBlock%E7%9A%84%E9%99%B7%E9%98%B1%EF%BC%89/"/>
+    <id>http://yoursite.com/2019/01/15/Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）/</id>
+    <published>2019-01-15T04:10:25.966Z</published>
+    <updated>2019-01-15T04:10:25.966Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Blocks篇：4-Blocks的存储域（ARC下-NSConcreteBlock的陷阱）"><a href="#Blocks篇：4-Blocks的存储域（ARC下-NSConcreteBlock的陷阱）" class="headerlink" title="Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）"></a>Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）</h2><blockquote>
+<p>在上一节中我们知道，在Block捕获不同种类的变量时，生成的Block对象的类型(isa指针)分为三种：</p>
+<ul>
+<li>_NSConcreteStackBlock</li>
+<li>_NSConcreteGlobalBlock</li>
+<li>_NSConcreteMallocBlock</li>
+</ul>
+<p>此三种类型的Block对象分别存储在栈区、全局（数据区）和堆区<br><a id="more"></a><br>我们知道，<strong>由于Block对象的函数体定义在Block实例化的生命周期外部，故其执行时早已不在原作用域内</strong>。况且，由于在函数中，定义的Block对象也是局部变量，超出作用域也会被自动回收。所以，<strong>要保证Block超出原作用域仍然可以存在的方式，就是将其转化为全局Block，或者复制到堆内存中</strong>，这样才可以保证其内存可控并正确执行Block的函数。在ARC环境下，LLVM在编译期已经可以在绝大多数情况下正确处理这种情况。通过测试，编码时定义的局部Block变量（即_NSConcreteStackBlock对象），在运行时可以得到如下结果：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>捕获变量情况</th>
+<th>运行期生成的Block对象</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>无</td>
+<td>_NSConcreteGlobalBlock</td>
+</tr>
+<tr>
+<td>全局或静态变量</td>
+<td>_NSConcreteGlobalBlock</td>
+</tr>
+<tr>
+<td>普通局部变量</td>
+<td>_NSConcreteMallocBlock</td>
+</tr>
+</tbody>
+</table>
+<p>但是，发现在一种情况下，ARC不会自动处理，需要我们对Block对象进行手动转换。</p>
+<h4 id="1-ARC下的Blocks陷阱"><a href="#1-ARC下的Blocks陷阱" class="headerlink" title="1.ARC下的Blocks陷阱"></a>1.ARC下的Blocks陷阱</h4><p>先看代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.m</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span><span class="params">(^VoidBlock)</span><span class="params">(<span class="keyword">void</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">/** 返回包含Block对象的集合的函数 */</span></div><div class="line"><span class="function">NSArray *<span class="title">getBlocksArray</span> <span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> myVal = <span class="number">2</span>;</div><div class="line">    <span class="comment">// 内部的Block对象均为__NSConcreteStackBlock对象</span></div><div class="line">    <span class="keyword">return</span> [[NSArray alloc] initWithObjects:</div><div class="line">            ^&#123;NSLog(@<span class="string">"block1~%d"</span>, myVal);&#125;,</div><div class="line">            ^&#123;NSLog(@<span class="string">"block2~%d"</span>, myVal);&#125;,</div><div class="line">            nil</div><div class="line">            ];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">        <span class="comment">// 获取该数组</span></div><div class="line">        NSArray *blocksArray = getBlocksArray();</div><div class="line">        <span class="comment">// 取出Block对象</span></div><div class="line">        VoidBlock voidBlock = blocksArray[<span class="number">0</span>];</div><div class="line">        <span class="comment">// 执行</span></div><div class="line">        voidBlock();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>执行情况，我们可以直接得到个漂亮的“EXC_BAD_ACCESS”。</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1547286721-Block%E5%9C%A8%E9%9B%86%E5%90%88%E4%B8%AD%E7%9A%84%E5%9D%91.jpg" alt="Block在集合中的坑"></p>
+<blockquote>
+<p>在图中已经看出，这种情况下，编译器并没有将捕获有变量的Block拷贝至堆中。故在准备执行时，Block对象已经被释放（第一个被转成__NSConcreteMallocBlock的原因是由于NSArray的init方法会自动保留对象，进而发生了Block的copy操作）。当执行完毕后，由于数组对象的释放，在对其内部元素依次释放时访问了野指针，导致崩溃。</p>
+</blockquote>
+<p>所以，在集合中使用Block对象时，为了保证其安全性，我们可以有两种方式：</p>
+<ol>
+<li>手动将Block复制到堆中：</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function">NSArray *<span class="title">getBlocksArray</span> <span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> myVal = <span class="number">2</span>;</div><div class="line">    <span class="keyword">return</span> [[NSArray alloc] initWithObjects:</div><div class="line">            [^&#123;NSLog(@<span class="string">"block1~%d"</span>, myVal);&#125; copy],</div><div class="line">            [^&#123;NSLog(@<span class="string">"block2~%d"</span>, myVal);&#125; copy],</div><div class="line">            nil</div><div class="line">            ];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>由于Block是OC对象，故对其发送copy消息可以直接将其转换为__NSConcreteMallocBlock对象。</strong></p>
+<ol>
+<li>在初始化Block时，利用ARC的特性，<strong>对Block进行显式声明，以获取“<strong>strong”修饰的Block，自动生成</strong>NSConcreteMallocBlock对象</strong>：</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function">NSArray *<span class="title">getBlocksArray</span> <span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> myVal = <span class="number">2</span>;</div><div class="line">    </div><div class="line">    <span class="comment">// 生成了强引用Block变量，自动分配到了堆内存中</span></div><div class="line">    VoidBlock block1 = ^&#123;NSLog(@<span class="string">"block1~%d"</span>, myVal);&#125;;</div><div class="line">    VoidBlock block2 = ^&#123;NSLog(@<span class="string">"block2~%d"</span>, myVal);&#125;;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> [[NSArray alloc] initWithObjects:</div><div class="line">            block1,</div><div class="line">            block2,</div><div class="line">            nil</div><div class="line">            ];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>注意：例外情况</strong></p>
+<blockquote>
+<p>在系统带有Block参数的API中（如GCD或是Animation相关等等），无需手动对Block进行复制（其内部实现已经包含了复制操作）。</p>
+</blockquote>
+<h4 id="2-Blocks的保留操作"><a href="#2-Blocks的保留操作" class="headerlink" title="2.Blocks的保留操作"></a>2.Blocks的保留操作</h4><h5 id="2-1-Blocks的保留解析"><a href="#2-1-Blocks的保留解析" class="headerlink" title="2.1 Blocks的保留解析"></a>2.1 Blocks的保留解析</h5><p>我们知道，在生成__strong修饰的Block对象时，其实隐含的对生成的对象进行了retain操作。此操作实际为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">VoidBlock blockObj = ...;</div><div class="line"><span class="comment">// 对Block进行保留操作</span></div><div class="line">objc_retainBlock(blockObj);</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>在NSObject.mm中，我们找到了此方法的实现：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// NSObject.mm</span></div><div class="line"></div><div class="line"><span class="function">id <span class="title">objc_retainBlock</span><span class="params">(id x)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> (id)_Block_copy(x);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>因此，<strong>对Block进行retain其实也就是进行了copy操作，进而在堆上生成了Block</strong>。</p>
+<h5 id="2-2-Blocks的copy操作"><a href="#2-2-Blocks的copy操作" class="headerlink" title="2.2 Blocks的copy操作"></a>2.2 Blocks的copy操作</h5><p>现在，我们知道了对栈中的Block进行复制或保留操作，会在堆内存上生成对应的Block对象。但对于其他两者呢？</p>
+<table>
+<thead>
+<tr>
+<th>copy对应Block</th>
+<th>效果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>_NSConcreteGlobalBlock</td>
+<td>无作用</td>
+</tr>
+<tr>
+<td>_NSConcreteMallocBlock</td>
+<td>引用计数 + 1</td>
+</tr>
+</tbody>
+</table>
+<p>对于堆内存中的Block对象，其实是遵循了引用计数的内存管理方式。因此，在使用Block对象时，也要注意引用循环问题。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Blocks篇：4-Blocks的存储域（ARC下-NSConcreteBlock的陷阱）&quot;&gt;&lt;a href=&quot;#Blocks篇：4-Blocks的存储域（ARC下-NSConcreteBlock的陷阱）&quot; class=&quot;headerlink&quot; title=&quot;Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）&quot;&gt;&lt;/a&gt;Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;在上一节中我们知道，在Block捕获不同种类的变量时，生成的Block对象的类型(isa指针)分为三种：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;_NSConcreteStackBlock&lt;/li&gt;
+&lt;li&gt;_NSConcreteGlobalBlock&lt;/li&gt;
+&lt;li&gt;_NSConcreteMallocBlock&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;此三种类型的Block对象分别存储在栈区、全局（数据区）和堆区&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》12</title>
+    <link href="http://yoursite.com/2019/01/15/Blocks%E7%AF%87%EF%BC%9A3.Blocks%E4%BD%BF%E7%94%A8%E6%8D%95%E8%8E%B7%E5%88%B0%E7%9A%84%E5%8F%98%E9%87%8F/"/>
+    <id>http://yoursite.com/2019/01/15/Blocks篇：3.Blocks使用捕获到的变量/</id>
+    <published>2019-01-15T04:09:21.983Z</published>
+    <updated>2019-01-15T04:09:33.818Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Blocks篇：3-Blocks使用捕获到的变量"><a href="#Blocks篇：3-Blocks使用捕获到的变量" class="headerlink" title="Blocks篇：3.Blocks使用捕获到的变量"></a>Blocks篇：3.Blocks使用捕获到的变量</h2><blockquote>
+<p>所谓Blocks捕获变量，即在Block函数体内使用外部声明的变量。</p>
+</blockquote>
+<h4 id="1-捕获局部变量（自动变量）和静态局部变量"><a href="#1-捕获局部变量（自动变量）和静态局部变量" class="headerlink" title="1. 捕获局部变量（自动变量）和静态局部变量"></a>1. 捕获局部变量（自动变量）和静态局部变量</h4><a id="more"></a>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.m</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">        <span class="keyword">int</span> uselessVal = <span class="number">1</span>;</div><div class="line">        <span class="comment">// 局部变量</span></div><div class="line">        <span class="keyword">int</span> val = <span class="number">3</span>;</div><div class="line">        <span class="comment">// 静态局部变量</span></div><div class="line">        <span class="keyword">static</span> <span class="keyword">int</span> staticVal = <span class="number">4</span>;</div><div class="line">        </div><div class="line">        <span class="keyword">void</span> (^myBlock)(<span class="keyword">void</span>) = ^&#123;</div><div class="line">            <span class="comment">// 捕获val和staticVal使用</span></div><div class="line">            <span class="built_in">printf</span>(<span class="string">"val = %d\n"</span>, val);</div><div class="line">            <span class="built_in">printf</span>(<span class="string">"staticVal = %d\n"</span>, staticVal);</div><div class="line">        &#125;;</div><div class="line">        myBlock();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>转换后的C++代码部分如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.cpp</span></div><div class="line"></div><div class="line"><span class="comment">/** Block的完整结构体声明 */</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">main_block_impl_0</span> &#123;</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">block_impl</span> <span class="title">impl</span>;</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">main_block_desc_0</span>* <span class="title">Desc</span>;</span></div><div class="line">    <span class="keyword">int</span> val; <span class="comment">// 内部捕获的局部变量</span></div><div class="line">    <span class="keyword">int</span> *staticVal; <span class="comment">// 内部捕获的静态局部变量</span></div><div class="line">    __main_block_impl_0(<span class="keyword">void</span> *fp, struct __main_block_desc_0 *desc, <span class="keyword">int</span> _val, <span class="keyword">int</span> *_staticVal, <span class="keyword">int</span> flags=<span class="number">0</span>) : val(_val), staticVal(_staticVal) &#123;</div><div class="line">        impl.isa = &amp;_NSConcreteStackBlock; <span class="comment">// 这里只按照MRC编译确定，ARC则不同</span></div><div class="line">        impl.Flags = flags;</div><div class="line">        impl.FuncPtr = fp;</div><div class="line">        Desc = desc;</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">/** Block中函数体转换生成的C函数 */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_func_0(struct __main_block_impl_0 *__cself) &#123;</div><div class="line">    <span class="comment">// 获取Block结构体实例中捕获的变量</span></div><div class="line">    <span class="keyword">int</span> val = __cself-&gt;val; <span class="comment">// bound by copy</span></div><div class="line">    <span class="keyword">int</span> *staticVal = __cself-&gt;staticVal; <span class="comment">// bound by copy</span></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"val = %d\n"</span>, val);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"staticVal = %d\n"</span>, (*staticVal));</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// main函数</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    <span class="comment">/* @autoreleasepool */</span> &#123; __AtAutoreleasePool __autoreleasepool; </div><div class="line">        <span class="keyword">int</span> uselessVal = <span class="number">1</span>;</div><div class="line">        <span class="keyword">int</span> val = <span class="number">3</span>;</div><div class="line">        <span class="keyword">static</span> <span class="keyword">int</span> staticVal = <span class="number">4</span>;</div><div class="line"></div><div class="line">        <span class="keyword">void</span> (*myBlock)(<span class="keyword">void</span>) = ((<span class="keyword">void</span> (*)())&amp;__main_block_impl_0((<span class="keyword">void</span> *)__main_block_func_0, &amp;__main_block_desc_0_DATA, val, &amp;staticVal)); <span class="comment">// 初始化时赋值，将要捕获的变量传递进去</span></div><div class="line">        ((<span class="keyword">void</span> (*)(__block_impl *))((__block_impl *)myBlock)-&gt;FuncPtr)((__block_impl *)myBlock);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以上可以看出：</p>
+<ol>
+<li><strong>只有Block内部使用的变量才会被捕获；</strong></li>
+<li><strong>普通的局部变量是通过值传递方式进行捕获，静态局部变量是通过指针传递方式进行的；</strong><ul>
+<li>原因：<ol>
+<li><em>由于C函数的声明和实现是在原局部变量的生命周期之外（这里是main函数外部），使用时原变量早已被释放，故需要直接将值保存到Block结构体实例中；</em></li>
+<li><em>对于静态局部变量，由于静态变量是存储在专门的数据区（也就可以理解为全局），在C函数中也可以直接访问，故只需将其指针保存在Block结构体实例中即可。</em></li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>C函数内部使用时，通过传递进去的Block指针取出被捕获的变量值。</strong></li>
+<li>补充：<strong>在ARC环境下，对于Block的类型（isa）</strong>，<ul>
+<li><strong>捕获普通局部变量后，在运行时，系统会将Block拷贝到堆上，变为_NSConcreteMallocBlock</strong></li>
+<li><strong>捕获静态局部变量，虽然使用，实际也只是记录该变量的指针，Block为_NSConcreteGlobalBlock</strong></li>
+<li><strong>没有捕获任何变量的Block为_NSConcreteGlobalBlock类型</strong></li>
+</ul>
+</li>
+</ol>
+<h4 id="2-捕获全局变量和全局静态变量"><a href="#2-捕获全局变量和全局静态变量" class="headerlink" title="2. 捕获全局变量和全局静态变量"></a>2. 捕获全局变量和全局静态变量</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.m</span></div><div class="line"></div><div class="line"><span class="keyword">int</span> globalVal = <span class="number">3</span>;</div><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> globalStaticVal = <span class="number">4</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">        <span class="keyword">void</span> (^myBlock)(<span class="keyword">void</span>) = ^&#123;</div><div class="line">            <span class="built_in">printf</span>(<span class="string">"globalVal = %d\n"</span>, globalVal);</div><div class="line">            <span class="built_in">printf</span>(<span class="string">"globalStaticVal = %d\n"</span>, globalStaticVal);</div><div class="line">        &#125;;</div><div class="line">        myBlock();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>转换后的C++部分代码为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.cpp</span></div><div class="line"></div><div class="line"><span class="keyword">int</span> globalVal = <span class="number">3</span>;</div><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> globalStaticVal = <span class="number">4</span>;</div><div class="line"></div><div class="line"><span class="comment">/** Block完整结构体声明 */</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">main_block_impl_0</span> &#123;</span></div><div class="line">    <span class="comment">// 没有保存全局变量</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">block_impl</span> <span class="title">impl</span>;</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">main_block_desc_0</span>* <span class="title">Desc</span>;</span></div><div class="line">    __main_block_impl_0(<span class="keyword">void</span> *fp, struct __main_block_desc_0 *desc, <span class="keyword">int</span> flags=<span class="number">0</span>) &#123;</div><div class="line">        impl.isa = &amp;_NSConcreteStackBlock;</div><div class="line">        impl.Flags = flags;</div><div class="line">        impl.FuncPtr = fp;</div><div class="line">        Desc = desc;</div><div class="line">  &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_func_0(struct __main_block_impl_0 *__cself) &#123;</div><div class="line">    <span class="comment">// 直接使用</span></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"globalVal = %d\n"</span>, globalVal);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"globalStaticVal = %d\n"</span>, globalStaticVal);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到，</p>
+<ol>
+<li><strong>对于全局变量（包含静态全局变量），由于在Block的C函数中可以直接访问，故无需在Block结构中对其进行额外的保存工作</strong>。</li>
+<li><strong>在ARC环境下，Block的类型（isa）为_NSConcreteGlobalBlock</strong></li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Blocks篇：3-Blocks使用捕获到的变量&quot;&gt;&lt;a href=&quot;#Blocks篇：3-Blocks使用捕获到的变量&quot; class=&quot;headerlink&quot; title=&quot;Blocks篇：3.Blocks使用捕获到的变量&quot;&gt;&lt;/a&gt;Blocks篇：3.Blocks使用捕获到的变量&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;所谓Blocks捕获变量，即在Block函数体内使用外部声明的变量。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;1-捕获局部变量（自动变量）和静态局部变量&quot;&gt;&lt;a href=&quot;#1-捕获局部变量（自动变量）和静态局部变量&quot; class=&quot;headerlink&quot; title=&quot;1. 捕获局部变量（自动变量）和静态局部变量&quot;&gt;&lt;/a&gt;1. 捕获局部变量（自动变量）和静态局部变量&lt;/h4&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》11</title>
+    <link href="http://yoursite.com/2019/01/15/Blocks%E7%AF%87%EF%BC%9A2.Blocks%E7%9A%84%E8%B0%83%E7%94%A8%E8%BF%87%E7%A8%8B%E5%8F%8A%E5%85%B6%E5%AF%B9%E8%B1%A1%E6%9C%AC%E8%B4%A8/"/>
+    <id>http://yoursite.com/2019/01/15/Blocks篇：2.Blocks的调用过程及其对象本质/</id>
+    <published>2019-01-15T04:06:05.910Z</published>
+    <updated>2019-01-15T04:06:17.824Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Blocks篇：2-Blocks的调用过程及其对象本质"><a href="#Blocks篇：2-Blocks的调用过程及其对象本质" class="headerlink" title="Blocks篇：2.Blocks的调用过程及其对象本质"></a>Blocks篇：2.Blocks的调用过程及其对象本质</h2><blockquote>
+<ul>
+<li>Blocks实际上是通过支持Block的编译器，将其转换为标准的C代码进行编译。</li>
+<li>我们可以使用clang的“-rewrite-objc”命令，将包含Block的源代码转换为C++代码，帮助理解。<a id="more"></a>
+<h4 id="1-Blocks的调用过程"><a href="#1-Blocks的调用过程" class="headerlink" title="1. Blocks的调用过程"></a>1. Blocks的调用过程</h4>多说无用，来个最简单的栗子说明吧：</li>
+</ul>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.m</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">        <span class="comment">// 声明并赋值myBlock</span></div><div class="line">        <span class="keyword">void</span> (^myBlock)(<span class="keyword">void</span>) = ^&#123;</div><div class="line">            <span class="built_in">printf</span>(<span class="string">"Hello Block~\n"</span>);</div><div class="line">        &#125;;</div><div class="line">        <span class="comment">// 调用myBlock</span></div><div class="line">        myBlock();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>使用”<em>clang -rewrite-objc main.m</em>“转换后的代码为：</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.cpp</span></div><div class="line"></div><div class="line"><span class="comment">/** Block结构体 */</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">block_impl</span> &#123;</span></div><div class="line">  <span class="comment">/** 类型指针 */</span></div><div class="line">  <span class="keyword">void</span> *isa;</div><div class="line">  <span class="keyword">int</span> Flags;</div><div class="line">  <span class="keyword">int</span> Reserved;</div><div class="line">  <span class="comment">/** 函数指针 */</span></div><div class="line">  <span class="keyword">void</span> *FuncPtr;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">/** Block变量完整结构体声明 */</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">main_block_impl_0</span> &#123;</span></div><div class="line">    <span class="comment">/** Block结构体实例 */</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">block_impl</span> <span class="title">impl</span>;</span></div><div class="line">    <span class="comment">/** 描述信息对象指针 */</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">main_block_desc_0</span>* <span class="title">Desc</span>;</span></div><div class="line">    </div><div class="line">    <span class="comment">/** 本结构体的构造函数 */</span></div><div class="line">    __main_block_impl_0(<span class="keyword">void</span> *fp, struct __main_block_desc_0 *desc, <span class="keyword">int</span> flags=<span class="number">0</span>) &#123;</div><div class="line">        impl.isa = &amp;_NSConcreteStackBlock; <span class="comment">// isa指针赋值，即证明了Block是“对象”（由于默认clang没有开启ARC，ARC下这里是__NSGlobalBlock__，即_NSConcreteGlobalBlock）</span></div><div class="line">        impl.Flags = flags;</div><div class="line">        impl.FuncPtr = fp; <span class="comment">// 函数指针赋值</span></div><div class="line">        Desc = desc; <span class="comment">// 描述信息指针赋值</span></div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">/** Block中真正的函数体 */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_func_0(struct __main_block_impl_0 *__cself) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Hello Block~\n"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** Block描述结构体声明，并实例化 */</span></div><div class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> __<span class="title">main_block_desc_0</span> &#123;</span></div><div class="line">    <span class="keyword">size_t</span> reserved;</div><div class="line">    <span class="keyword">size_t</span> Block_size;</div><div class="line">&#125; __main_block_desc_0_DATA = &#123; <span class="number">0</span>, <span class="keyword">sizeof</span>(struct __main_block_impl_0)&#125;;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// 原main函数</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    <span class="comment">/* @autoreleasepool */</span> </div><div class="line">    &#123; </div><div class="line">        __AtAutoreleasePool __autoreleasepool; </div><div class="line">        </div><div class="line">        <span class="comment">// 声明了myBlock的C函数指针</span></div><div class="line">        <span class="comment">// 指向了__main_block_impl_0的结构体实例</span></div><div class="line">        <span class="keyword">void</span> (*myBlock)(<span class="keyword">void</span>) = ((<span class="keyword">void</span> (*)())&amp;__main_block_impl_0((<span class="keyword">void</span> *)__main_block_func_0, &amp;__main_block_desc_0_DATA));</div><div class="line">        </div><div class="line">        <span class="comment">// 使用__block_impl实例中的函数指针FuncPtr进行函数调用（传入__block_impl实例的指针作为参数）</span></div><div class="line">        <span class="comment">// 即为原 myBlock()</span></div><div class="line">        ((<span class="keyword">void</span> (*)(__block_impl *))((__block_impl *)myBlock)-&gt;FuncPtr)((__block_impl *)myBlock);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>以上代码中，在main函数中，简化后的myBlock声明为：</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 创建 __main_block_impl_0结构体实例</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">main_block_impl_0</span> <span class="title">tmp</span> = __<span class="title">main_block_impl_0</span>(__<span class="title">main_block_func_0</span>, &amp;__<span class="title">main_block_desc_0_DATA</span>);</span></div><div class="line"><span class="comment">// 赋值给__main_block_impl_0结构体的指针</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">main_block_impl_0</span> *<span class="title">myBlock</span> = &amp;<span class="title">tmp</span>;</span></div></pre></td></tr></table></figure>
+<ol>
+<li>简化后的myBlock调用为：</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取结构体实例中的myImpl成员</span></div><div class="line"> __block_impl myImpl = (*myBlock).impl;</div><div class="line"> <span class="comment">// myImpl的FuncPtr成员即为真正的函数指针，直接进行调用并传参</span></div><div class="line"> (myImpl.FuncPtr)(*myBlock);</div></pre></td></tr></table></figure>
+<p>由此，在编译期间，我们了解了<strong>Blocks的声明和整个调用过程</strong>：</p>
+<blockquote>
+<ol>
+<li>系统在原声明Block的生命周期外，生成静态的相关Block结构体、描述信息结构体和执行函数等。</li>
+<li>在原声明Block的生命周期内部，使用相关结构体创建并生成Block的实例。</li>
+<li>根据生成的Block实例，找到其中的C函数指针，进行调用。</li>
+</ol>
+</blockquote>
+<h4 id="2-Blocks是对象"><a href="#2-Blocks是对象" class="headerlink" title="2.Blocks是对象"></a>2.Blocks是对象</h4><p>对于Block变量的本质，上面代码中可以看出：</p>
+<blockquote>
+<ol>
+<li>在Block的结构体__block_impl中，包含了isa成员变量，是（void *）类型；</li>
+<li>isa变量在初始化Block时，赋值的是_NSConcreteStackBlock的地址；</li>
+</ol>
+</blockquote>
+<h5 id="2-1-isa"><a href="#2-1-isa" class="headerlink" title="2.1 isa"></a>2.1 isa</h5><p>我们知道，isa标识的是OC对象的类型。在<em>objc-private.h</em>中可以找到声明：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// objc_object</span></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_object</span> &#123;</span></div><div class="line"><span class="keyword">private</span>:</div><div class="line">    <span class="keyword">isa_t</span> isa;</div><div class="line"></div><div class="line"><span class="keyword">public</span>:</div><div class="line">    ...</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// isa_t</span></div><div class="line"><span class="keyword">union</span> <span class="keyword">isa_t</span> &#123;</div><div class="line">    ...</div><div class="line">    </div><div class="line">    <span class="comment">// 指向的是对应的Class</span></div><div class="line">    Class cls;</div><div class="line">    ...</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** id是objc_object结构体指针（id即为OC对象）*/</span></div><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_object</span> *<span class="title">id</span>;</span></div><div class="line"></div><div class="line"><span class="comment">/** Class是objc_class结构体指针 */</span></div><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> *<span class="title">Class</span>;</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// objc_class</span></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> :</span> objc_object &#123;</div><div class="line">    <span class="comment">// Class ISA;</span></div><div class="line">    Class superclass;</div><div class="line">    </div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在以上代码中可以看到：</p>
+<blockquote>
+<ol>
+<li>id（我们说的OC对象），即objc_object结构体指针，其类型的实质，就是isa联合体的cls成员，也就是指向的Class；</li>
+<li>由于objc_class“继承”了objc_object结构体，故其中也包含了isa成员，即“类”也标识了自己所属的类（metaclass，说多了…）。</li>
+</ol>
+</blockquote>
+<h4 id="2-2-NSConcreteStackBlock类型"><a href="#2-2-NSConcreteStackBlock类型" class="headerlink" title="2.2 _NSConcreteStackBlock类型"></a>2.2 _NSConcreteStackBlock类型</h4><ol>
+<li>对于_NSConcreteStackBlock，我们可以在main.cpp中找到其声明：</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Runtime copy/destroy helper functions (from Block_private.h)</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __OBJC_EXPORT_BLOCKS</span></div><div class="line">...</div><div class="line"><span class="keyword">extern</span> <span class="string">"C"</span> __declspec(dllexport) <span class="keyword">void</span> *_NSConcreteGlobalBlock[<span class="number">32</span>];</div><div class="line"><span class="keyword">extern</span> <span class="string">"C"</span> __declspec(dllexport) <span class="keyword">void</span> *_NSConcreteStackBlock[<span class="number">32</span>];</div><div class="line"><span class="meta">#<span class="meta-keyword">else</span></span></div><div class="line">...</div><div class="line">__OBJC_RW_DLLIMPORT <span class="keyword">void</span> *_NSConcreteGlobalBlock[<span class="number">32</span>];</div><div class="line">__OBJC_RW_DLLIMPORT <span class="keyword">void</span> *_NSConcreteStackBlock[<span class="number">32</span>];</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<p>可以看到，_NSConcreteStackBlock声明的是一个数组的指针。</p>
+<ol>
+<li>而在GNUStep的开源版本中，我们找到了直接支持”Block是对象“的证据：</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> _<span class="title">NSConcreteGlobalBlock</span>;</span></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> _<span class="title">NSConcreteStackBlock</span>;</span></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> _<span class="title">NSConcreteMallocBlock</span>;</span></div></pre></td></tr></table></figure>
+<p>故我们可以将Block看做是OC对象。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Blocks篇：2-Blocks的调用过程及其对象本质&quot;&gt;&lt;a href=&quot;#Blocks篇：2-Blocks的调用过程及其对象本质&quot; class=&quot;headerlink&quot; title=&quot;Blocks篇：2.Blocks的调用过程及其对象本质&quot;&gt;&lt;/a&gt;Blocks篇：2.Blocks的调用过程及其对象本质&lt;/h2&gt;&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;Blocks实际上是通过支持Block的编译器，将其转换为标准的C代码进行编译。&lt;/li&gt;
+&lt;li&gt;我们可以使用clang的“-rewrite-objc”命令，将包含Block的源代码转换为C++代码，帮助理解。
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》10</title>
+    <link href="http://yoursite.com/2019/01/15/Blocks%E7%AF%87%EF%BC%9A1.Blocks%E7%9A%84%E5%A3%B0%E6%98%8E/"/>
+    <id>http://yoursite.com/2019/01/15/Blocks篇：1.Blocks的声明/</id>
+    <published>2019-01-15T04:05:21.255Z</published>
+    <updated>2019-01-15T04:05:21.255Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Blocks篇：1-Blocks的声明"><a href="#Blocks篇：1-Blocks的声明" class="headerlink" title="Blocks篇：1.Blocks的声明"></a>Blocks篇：1.Blocks的声明</h2><blockquote>
+<p><strong>Blocks是带有自动变量值的匿名函数。</strong></p>
+</blockquote>
+<p>写法：</p>
+<ul>
+<li>Blocks变量声明：与C函数指针声明基本相似，将指针符号”*”替换为“^”。</li>
+<li>Blocks主体声明：省略了名称的C函数，在原函数名前添加“^”。<ul>
+<li>无参数Blocks，可以省略参数列表</li>
+<li>无返回值Blocks，可以省略返回值</li>
+</ul>
+</li>
+</ul>
+<a id="more"></a>
+<p>举例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 完整声明</span></div><div class="line"><span class="keyword">void</span> (^myBlock)(<span class="keyword">int</span> a) = <span class="keyword">void</span> ^(<span class="keyword">int</span> a) &#123;</div><div class="line">    ...</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 无参数，无返回值</span></div><div class="line"><span class="keyword">void</span> (^myBlock2)(<span class="keyword">void</span>) = ^&#123;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Blocks篇：1-Blocks的声明&quot;&gt;&lt;a href=&quot;#Blocks篇：1-Blocks的声明&quot; class=&quot;headerlink&quot; title=&quot;Blocks篇：1.Blocks的声明&quot;&gt;&lt;/a&gt;Blocks篇：1.Blocks的声明&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Blocks是带有自动变量值的匿名函数。&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;写法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Blocks变量声明：与C函数指针声明基本相似，将指针符号”*”替换为“^”。&lt;/li&gt;
+&lt;li&gt;Blocks主体声明：省略了名称的C函数，在原函数名前添加“^”。&lt;ul&gt;
+&lt;li&gt;无参数Blocks，可以省略参数列表&lt;/li&gt;
+&lt;li&gt;无返回值Blocks，可以省略返回值&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》9</title>
@@ -1118,538 +1670,6 @@
     
     
       <category term="设计模式" scheme="http://yoursite.com/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>生成器模式</title>
-    <link href="http://yoursite.com/2018/09/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/"/>
-    <id>http://yoursite.com/2018/09/05/设计模式之建造者模式/</id>
-    <published>2018-09-05T04:03:27.472Z</published>
-    <updated>2018-09-06T05:07:49.251Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="图示："><a href="#图示：" class="headerlink" title="图示："></a>图示：</h3><p>以下分别是类图与时序图<br><img src="http://p8r3sk4om.bkt.clouddn.com/374636-20170808225735589-1433194842.jpg" alt="img"><br><img src="http://p8r3sk4om.bkt.clouddn.com/20170503144820580.png" alt="img"><br><a id="more"></a></p>
-<h3 id="先举个例子，个人看来，生成器模式的“Client-Director-Builder”相当于小的软件开发公司的“老板-产品经理-程序员”的模式。"><a href="#先举个例子，个人看来，生成器模式的“Client-Director-Builder”相当于小的软件开发公司的“老板-产品经理-程序员”的模式。" class="headerlink" title="先举个例子，个人看来，生成器模式的“Client - Director - Builder”相当于小的软件开发公司的“老板 - 产品经理 - 程序员”的模式。"></a>先举个例子，个人看来，生成器模式的<em>“Client - Director - Builder”</em>相当于小的软件开发公司的<em>“老板 - 产品经理 - 程序员”</em>的模式。</h3><ul>
-<li>老板（<em>Client</em>）：</li>
-</ul>
-<ol>
-<li>决定了公司员工的生死去留（管理其他二者角色的生命周期，负责创建、保留和释放）</li>
-<li>提需求，公司要做什么项目（调用Director并传递产品需求）</li>
-<li>验收项目（获取产品）</li>
-</ol>
-<ul>
-<li>产品经理（<em>Director</em>）：</li>
-</ul>
-<ol>
-<li>知道要做什么项目，依照自定顺序分解成开发模块（从Client获取到产品需求并分解）</li>
-<li>管理着程序员（Director中包含Builder成员）</li>
-<li>命令程序员按照模块进行开发（按照顺序调用builder的建造方法进行产品生产）</li>
-</ol>
-<ul>
-<li>程序员（<em>Builder</em>）:</li>
-</ul>
-<ol>
-<li>新建工程（初始化产品对象）</li>
-<li>按照需求开发编码（根据Director的调用执行各种生产函数，给产品赋值）</li>
-<li>开发完毕后提交程序（根据外部调用返回创建完成的产品对象）</li>
-</ol>
-<h3 id="示例代码："><a href="#示例代码：" class="headerlink" title="示例代码："></a>示例代码：</h3><p>使用获取并生产电脑作为示例。稍作解释：<br>Computer类为Product；ComputerMaker为抽象Builder，AppleComputerMaker和LenovoComputerMaker为实体Builder；ComputerSeller为Director。</p>
-<blockquote>
-<p>代码地址：<a href="https://github.com/Choujiji/DesignPatterns_Learning/tree/master/%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA/%E7%94%9F%E6%88%90%E5%99%A8%E6%A8%A1%E5%BC%8F" target="_blank" rel="external">ComputerMaker</a></p>
-</blockquote>
-<h3 id="优缺点："><a href="#优缺点：" class="headerlink" title="优缺点："></a>优缺点：</h3><ul>
-<li>优点：</li>
-</ul>
-<ol>
-<li><em>拆分模块，解耦合</em>：</li>
-</ol>
-<blockquote>
-<ol>
-<li>把创建复杂对象的过程拆分为多个子过程，且由Builder模块独立负责；</li>
-<li>Director只负责创建顺序等业务逻辑，并调用Builder进行生产，稳定性好；</li>
-<li>Client只负责将制定Builder提供给Director，并向Director提出生产要求并获取产品，隐藏了整个生产过程。</li>
-</ol>
-</blockquote>
-<ol>
-<li><em>易扩展</em>：</li>
-</ol>
-<blockquote>
-<p>Builder的抽象父类（或协议）制定所有的子过程，并对外提供获取产品接口，子类Builder实现生产过程。所以，添加新产品时，只要子类化Builder并覆盖创建自己的生产过程即可。Director无需修改。</p>
-</blockquote>
-<ul>
-<li>缺点：</li>
-</ul>
-<ol>
-<li><em>使用场景少</em>：</li>
-</ol>
-<blockquote>
-<ol>
-<li>所有的Builder都是由统一的抽象Builder类继承而来，只能生产一种类型产品，不同产品之间的差异少。</li>
-<li>生产的产品结构复杂，否则没必要引入此模式。</li>
-</ol>
-</blockquote>
-<ol>
-<li><em>类结构容易庞大</em>：</li>
-</ol>
-<blockquote>
-<p>生产多个产品时，需要创建多个Builder类，类个数易变多。</p>
-</blockquote>
-<h3 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h3><ul>
-<li><a href="https://www.cnblogs.com/xcsn/p/7309761.html" target="_blank" rel="external">Head First设计模式之生成器模式</a></li>
-<li><a href="https://blog.csdn.net/free1985/article/details/71123618#commentBox" target="_blank" rel="external">设计模式讲解与代码实践（二）——生成器</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;图示：&quot;&gt;&lt;a href=&quot;#图示：&quot; class=&quot;headerlink&quot; title=&quot;图示：&quot;&gt;&lt;/a&gt;图示：&lt;/h3&gt;&lt;p&gt;以下分别是类图与时序图&lt;br&gt;&lt;img src=&quot;http://p8r3sk4om.bkt.clouddn.com/374636-20170808225735589-1433194842.jpg&quot; alt=&quot;img&quot;&gt;&lt;br&gt;&lt;img src=&quot;http://p8r3sk4om.bkt.clouddn.com/20170503144820580.png&quot; alt=&quot;img&quot;&gt;&lt;br&gt;
-    
-    </summary>
-    
-    
-      <category term="设计模式" scheme="http://yoursite.com/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>这只是测试，新的小家（其实是tag）</title>
-    <link href="http://yoursite.com/2018/05/15/%E6%B5%8B%E8%AF%95%E4%BA%8C%E4%B8%8B/"/>
-    <id>http://yoursite.com/2018/05/15/测试二下/</id>
-    <published>2018-05-15T02:24:06.602Z</published>
-    <updated>2018-05-15T02:24:06.602Z</updated>
-    
-    <summary type="html">
-    
-      真的，里面没有内容
-    
-    </summary>
-    
-    
-      <category term="react-native" scheme="http://yoursite.com/tags/react-native/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>使用代码初始化StoryBoard中的ViewController</title>
-    <link href="http://yoursite.com/2018/05/15/%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%A0%81%E5%88%9D%E5%A7%8B%E5%8C%96StoryBoard%E4%B8%AD%E7%9A%84ViewController/"/>
-    <id>http://yoursite.com/2018/05/15/使用代码初始化StoryBoard中的ViewController/</id>
-    <published>2018-05-15T01:49:33.088Z</published>
-    <updated>2018-05-15T03:49:55.025Z</updated>
-    
-    <content type="html"><![CDATA[<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取StoryBoard对象（这里使用的是默认的主bundle中的文件）</span></div><div class="line">UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@<span class="string">"Main"</span> bundle:nil];</div><div class="line"><span class="comment">// 使用ID在StoryBoard对象中获取并初始化新的ViewController</span></div><div class="line">BasicKVO_ViewController *vc1 = [storyBoard instantiateViewControllerWithIdentifier:@<span class="string">"BasicKVO_VC"</span>];</div></pre></td></tr></table></figure>
-<a id="more"></a>
-<p>代码如上面所示，其中，BasicKVO_VC是在StoryBoard文件中对应的UIViewController的“Identity inspector”面板中的“Storyboard ID”。</p>
-<p><img src="http://p8r3sk4om.bkt.clouddn.com/blog-image1.png" alt="image"></p>
-<h3 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h3><ul>
-<li><a href="https://blog.csdn.net/u012449749/article/details/50495202" target="_blank" rel="external">代码获取Storyboard中的ViewController</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 获取StoryBoard对象（这里使用的是默认的主bundle中的文件）&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@&lt;span class=&quot;string&quot;&gt;&quot;Main&quot;&lt;/span&gt; bundle:nil];&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 使用ID在StoryBoard对象中获取并初始化新的ViewController&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;BasicKVO_ViewController *vc1 = [storyBoard instantiateViewControllerWithIdentifier:@&lt;span class=&quot;string&quot;&gt;&quot;BasicKVO_VC&quot;&lt;/span&gt;];&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>KVC基础学习总结</title>
-    <link href="http://yoursite.com/2018/04/04/KVC%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/"/>
-    <id>http://yoursite.com/2018/04/04/KVC基础学习总结/</id>
-    <published>2018-04-04T06:16:30.000Z</published>
-    <updated>2018-05-15T02:18:54.524Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<ul>
-<li><strong>对象属性值的设置和获取</strong></li>
-<li><strong>访问集合属性值的专用API</strong></li>
-<li><strong>使用集合操作符</strong></li>
-<li><strong>描述非对象的值（基本数据类型和结构体等）</strong></li>
-<li><strong>属性类型验证</strong></li>
-<li><strong>访问器的搜索方式</strong></li>
-</ul>
-</blockquote>
-<a id="more"></a>
-<h3 id="对象属性值的设置和获取"><a href="#对象属性值的设置和获取" class="headerlink" title="对象属性值的设置和获取"></a>对象属性值的设置和获取</h3><ol>
-<li><p>KVC的通用API<br> setValueForKey(Path):<br> valueForKey(Path):</p>
-</li>
-<li><p>一次设置、获取多个属性值<br> setValueForKeysWithDictionary: 对内部的每一个属性均发送setValueForKey消息<br> dictionaryWithValueForKeys:    根据keys数组返回字典</p>
-</li>
-</ol>
-<h3 id="访问集合属性值的专用API"><a href="#访问集合属性值的专用API" class="headerlink" title="访问集合属性值的专用API"></a>访问集合属性值的专用API</h3><table>
-<thead>
-<tr>
-<th style="text-align:center">通过key访问集合</th>
-<th style="text-align:center">通过keyPath访问集合</th>
-<th style="text-align:center">被代理的类</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">mutableArrayValueForKey:</td>
-<td style="text-align:center">mutableArrayValueForKeyPath:</td>
-<td style="text-align:center">NSMutableArray</td>
-</tr>
-<tr>
-<td style="text-align:center">mutableSetValueForKey:</td>
-<td style="text-align:center">mutableSetValueForKeyPath:</td>
-<td style="text-align:center">NSMutableSet</td>
-</tr>
-<tr>
-<td style="text-align:center">mutableOrderedSetValueForKey:</td>
-<td style="text-align:center">mutableOrderedSetValueForKeyPath:</td>
-<td style="text-align:center">NSMutableOrderedSet</td>
-</tr>
-</tbody>
-</table>
-<p>访问集合属性的值时除了可以直接使用基本valueForKey(Path):方法，还可以使用上述三类专用API进行访问。当你对集合属性进行修改（增、删、改）时，上表的三类方法可以更高效的完成任务，他们分别返回一个类似NSMutableArray、NSMutableSet和NSMutableOrderedSet的代理类的对象，可以在此对象上直接调用任何相关类的api来直接操作属性值。</p>
-<p>使用此类api管理集合属性的高效体现在：</p>
-<ol>
-<li>比类型为不可变集合类型属性，通过valueForKey:取值，转换并修改后，再通过setValueForKey:保存回去效率高</li>
-<li>比直接将集合属性类型设置成mutable类修改高效</li>
-<li>对KVO有效</li>
-</ol>
-<p>示例代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// ------------返回一个可变对象的代理类（这里是仿可变数组类型，可以调用所有NSMutableArray的api）</span></div><div class="line">id mutableTransactions = [account mutableArrayValueForKey:@<span class="string">"transactions"</span>];</div><div class="line">NSLog(@<span class="string">"%@"</span>, mutableTransactions);</div><div class="line"><span class="comment">// 对返回的代理类对象进行操作（添加、删除、修改等），会直接在原属性上进行操作。</span></div><div class="line"><span class="comment">// 这比直接通过valueForKey获取集合对象后，修改，再setValueForKey存储回去效率高；也比直接维护一个可变集合属性效率高。</span></div><div class="line"><span class="comment">// 且这种方法对KVO有帮助（直接操作修改集合属性不会触发KVO）</span></div><div class="line">Transaction *targetTransaction = mutableTransactions[<span class="number">0</span>];</div><div class="line">targetTransaction.work = @<span class="string">"hhhhaaaa"</span>;</div><div class="line"><span class="comment">// 再次取出</span></div><div class="line">transactions = [account valueForKeyPath:@<span class="string">"transactions"</span>];</div><div class="line">NSLog(@<span class="string">"%@"</span>, transactions);</div></pre></td></tr></table></figure>
-<h3 id="使用集合操作符"><a href="#使用集合操作符" class="headerlink" title="使用集合操作符"></a>使用集合操作符</h3><p>在使用valueForKeyPath:访问集合属性时，可以在keyPath中使用集合操作符来直接操作返回的值。集合操作符使用“@”字符标识，使用集合操作符的keyPath结构如下：</p>
-<p><img src="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueCoding/art/keypath.jpg" alt="img"></p>
-<p>如图可知：keyPath分为<em>左keyPath、集合操作符、右keyPath</em>三部分。</p>
-<p>集合操作符主要分为三类：</p>
-<ul>
-<li><strong>聚合操作符</strong>：对集合对象进行操作，返回匹配条件的单一对象作为结果（@count除外，它没有右keyPath，且返回一个NSNumber对象）。</li>
-</ul>
-<p>主要包括：@sum、@max、@min、@avg、@count等。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 聚合操作符（操作集合属性，返回单个对象）</span></div><div class="line"><span class="comment">// @count</span></div><div class="line">NSNumber *count = [account valueForKeyPath:@<span class="string">"transactions.@count"</span>];</div><div class="line">NSLog(@<span class="string">"%@"</span>, count); <span class="comment">// @count，省略右keypath</span></div><div class="line"><span class="comment">// @max</span></div><div class="line">NSNumber *maxMoney = [account valueForKeyPath:@<span class="string">"transactions.@max.money"</span>];</div><div class="line">NSLog(@<span class="string">"%@"</span>, maxMoney);</div><div class="line"><span class="comment">// @min</span></div><div class="line">NSNumber *minMoney = [account.transactions valueForKeyPath:@<span class="string">"@min.money"</span>];  <span class="comment">// 直接对集合属性取值，可省略左keypath</span></div><div class="line">NSLog(@<span class="string">"%@"</span>, minMoney);</div><div class="line"><span class="comment">// @sum</span></div><div class="line">NSNumber *sumMoney = [account valueForKeyPath:@<span class="string">"transactions.@sum.money"</span>];</div><div class="line">NSLog(@<span class="string">"%@"</span>, sumMoney);</div></pre></td></tr></table></figure>
-<ul>
-<li><strong>数组操作符</strong>：对集合对象进行操作，通过对右keyPath指定的值进行操作，返回特定条件的集合对象。</li>
-</ul>
-<p>主要包括@unionOfObjects和@distinctUnionOfObjects，二者区别是：前者直接返回指定属性的值的数组，不过滤重复的值。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 数组操作符（操作集合属性，返回集合对象）</span></div><div class="line"><span class="comment">// @unionOfObjects 指定对象的集合</span></div><div class="line">id unionOfWorks = [account.transactions valueForKeyPath:@<span class="string">"@unionOfObjects.work"</span>];</div><div class="line">NSLog(@<span class="string">"%@"</span>, unionOfWorks);</div><div class="line"><span class="comment">// @distinctUnionOfObjects 指定对象的不重复集合</span></div><div class="line">id distinctUnionOfWorks = [account.transactions valueForKeyPath:@<span class="string">"@distinctUnionOfObjects.work"</span>];</div><div class="line">NSLog(@<span class="string">"%@"</span>, distinctUnionOfWorks);</div></pre></td></tr></table></figure>
-<ul>
-<li><strong>嵌套操作符</strong>：对于包含属性对象的集合所组成的集合（如数组内部包含的所有元素都是数组，这些子数组内部都是属性对象），嵌套操作符通过对右keyPath指定的值进行操作，返回特定条件的集合对象。</li>
-</ul>
-<p>包括@unionOfArrays、@distinctUnionOfArrays和@distinctUnionOfSets，前两者对嵌套数组进行操作、第三个对集合（NSSet）进行操作。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 嵌套操作符（操作包括集合属性对象的嵌套对象，返回集合对象）</span></div><div class="line">Transaction *moreWork1 = [[Transaction alloc] init];</div><div class="line">moreWork1.work = @<span class="string">"收入10000"</span>;</div><div class="line">moreWork1.payee = @[@<span class="string">"臭吉吉2"</span>, @<span class="string">"jiji2"</span>];</div><div class="line">moreWork1.money = <span class="number">10000</span>;</div><div class="line">Transaction *moreWork2 = [[Transaction alloc] init];</div><div class="line">moreWork2.work = @<span class="string">"支出2002"</span>;</div><div class="line">moreWork2.payee = @[@<span class="string">"赵吉222"</span>];</div><div class="line">moreWork2.money = <span class="number">2002</span>;</div><div class="line">NSArray *nestedTransactions = @[account.transactions, @[moreWork1, moreWork2]]; <span class="comment">// 所有的最小子元素都是transaction对象</span></div><div class="line"><span class="comment">// 注意：@unionOfArrays和@distinctUnionOfArrays的数据源，必须是数组嵌套成的数组，不能是元素与数组组合成的数据源数组。，如下面就不可以</span></div><div class="line"><span class="comment">//    NSArray *nestedTransactions = @[account.transactions, @[moreWork1, moreWork2], moreWork3];</span></div><div class="line"></div><div class="line"><span class="comment">// @unionOfArrays</span></div><div class="line">id unionOfWorksArray = [nestedTransactions valueForKeyPath:@<span class="string">"@unionOfArrays.work"</span>];</div><div class="line">NSLog(@<span class="string">"%@"</span>, unionOfWorksArray);</div><div class="line"><span class="comment">// @distinctUnionOfArrays</span></div><div class="line">id distinctUnionOfWorksArray = [nestedTransactions valueForKeyPath:@<span class="string">"@distinctUnionOfArrays.work"</span>];</div><div class="line">NSLog(@<span class="string">"%@"</span>, distinctUnionOfWorksArray);</div><div class="line"><span class="comment">// @distinctUnionOfSets</span></div><div class="line">NSSet *nestedTransactionsSet = [NSSet setWithObjects:</div><div class="line">    [NSSet setWithArray:account.transactions],</div><div class="line">    [NSSet setWithObjects:moreWork1, moreWork2, nil],</div><div class="line">    nil</div><div class="line">]; <span class="comment">// 所有的最小子元素都是transaction对象，整体及子集合必须都是set</span></div><div class="line">id distinctUnionOfWorksSet = [nestedTransactionsSet valueForKeyPath:@<span class="string">"@distinctUnionOfSets.work"</span>];</div><div class="line">NSLog(@<span class="string">"%@"</span>, distinctUnionOfWorksSet);</div></pre></td></tr></table></figure>
-<h3 id="描述非对象的值（基本数据类型和结构体等）"><a href="#描述非对象的值（基本数据类型和结构体等）" class="headerlink" title="描述非对象的值（基本数据类型和结构体等）"></a>描述非对象的值（基本数据类型和结构体等）</h3><ol>
-<li>对于基本数据类型的值，使用KVC进行设置和获取时需要将值进行对NSNumber类的封包和解包。</li>
-<li>对于内置的结构体，如NSPoint、NSRange、NSRect和NSSize，需要使用NSValue类对数据进行封包和解包。</li>
-<li>对于自定义的结构体，使用NSValue的通用api对数据进行封包和解包。</li>
-</ol>
-<p>对于自定义结构体的KVC，举例如下：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">typedef struct &#123;</div><div class="line">    float x;</div><div class="line">    float y;</div><div class="line">    float z;</div><div class="line">&#125; ThreeFloats;</div><div class="line"></div><div class="line">@interface ViewController ()</div><div class="line"></div><div class="line">@property (nonatomic) ThreeFloats threeFloats;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation ViewController</div><div class="line"></div><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    </div><div class="line">    // ------自定义的非对象数据KVC测试（自定义结构体转NSValue）</div><div class="line">    // 创建结构体数据</div><div class="line">    ThreeFloats floats = &#123;</div><div class="line">        1., 2., 3.</div><div class="line">    &#125;;</div><div class="line">    // 转化为NSValue</div><div class="line">    NSValue *customStructValue = [NSValue valueWithBytes:&amp;floats objCType:@encode(ThreeFloats)];</div><div class="line">    // KVC保存</div><div class="line">    [self setValue:customStructValue forKey:@"threeFloats"];</div><div class="line">    // 读取值</div><div class="line">    NSValue *propertyValue = [self valueForKey:@"threeFloats"];</div><div class="line">    // 转回结构体值</div><div class="line">    ThreeFloats resultFloats;</div><div class="line">    [propertyValue getValue:&amp;resultFloats size:sizeof(ThreeFloats)];</div><div class="line">    NSLog(@"%f, %f, %f", resultFloats.x, resultFloats.y, resultFloats.z);</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
-<h3 id="属性类型验证"><a href="#属性类型验证" class="headerlink" title="属性类型验证"></a>属性类型验证</h3><p>KVC协议定义了一些方法用于验证属性。除了使用key或keyPath进行设置和获取值以外，还可以使用它们进行属性验证。当调用validateValue:forKey:error（或者validateValue:forKeyPath:error）方法时，协议方法的默认实现是去查找是否对key存在validate[key]:error:方法。如果没有实现此方法，则验证方法默认通过，返回YES；如果你实现了这个key的方法，则会根据此方法的验证结果来返回原验证结果。</p>
-<p>你实现的validate[key]:error:方法根据key的值和error的指针，有三种验证实现方案：</p>
-<ol>
-<li>判定传入的值符合要求，直接返回YES，且不修改值和错误对象。</li>
-<li>判定传入的值不符合，且不对此值进行类型修正（如类型转换等）。这种情况下，方法返回NO，并且对用户传入的错误指针（如果传入了）进行赋值，包含其中的错误信息。</li>
-<li>判定传入的值不符合，但是创建个符合要求的新值进行替换。这种情况下，方法返回YES，且把传入的值的指针指向此新值（一定不要直接修改传入的值，就算是个mutable类对象也不行），并且不用处理错误信息。</li>
-</ol>
-<p>举例来说：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line">@interface Transaction : NSObject</div><div class="line"></div><div class="line"><span class="comment">/** 工作内容类型（这里用于验证属性） */</span></div><div class="line">@property (copy, nonatomic) NSString *work;</div><div class="line"></div><div class="line"><span class="comment">/** 收款人数组 一对多 */</span></div><div class="line">@property (nonatomic) NSArray&lt;NSString *&gt; *payee;</div><div class="line"><span class="comment">/** 钱数 */</span></div><div class="line">@property (nonatomic) NSInteger money;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">"Transaction.h"</span></span></div><div class="line"></div><div class="line">@implementation Transaction</div><div class="line"></div><div class="line">- (BOOL)validateWork:(id * _Nullable)workValue error:(out NSError * _Nullable *)error &#123;</div><div class="line">    <span class="keyword">if</span> (![*workValue isKindOfClass:[NSString class]]) &#123;</div><div class="line"><span class="comment">//        // 不修改，直接返回错误</span></div><div class="line"><span class="comment">//        if (error) &#123;</span></div><div class="line"><span class="comment">//            *error = [NSError errorWithDomain:@"validate error" code:9999 userInfo:@&#123;@"reason": @"invalid type"&#125;];</span></div><div class="line"><span class="comment">//        &#125;</span></div><div class="line"><span class="comment">//        return NO;</span></div><div class="line">        <span class="comment">// 将值修改为符合要求的值</span></div><div class="line">        *workValue = [NSString stringWithFormat:@<span class="string">"%@"</span>, *workValue];</div><div class="line">        <span class="keyword">return</span> YES;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> YES;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line"><span class="comment">/** 外部调用 */</span></div><div class="line"></div><div class="line"><span class="comment">// -----------测试属性验证</span></div><div class="line"><span class="comment">// 对应类中如果没有自己实现validate&lt;Key&gt;:error:方法，则验证无效，都返回YES</span></div><div class="line"><span class="comment">// validate&lt;Key&gt;:error:方法中可以对数据进行合法性判断，返回错误；或将不合法数据转化为合法数据（创建个新数据），返回成功。</span></div><div class="line">NSError *error = nil;</div><div class="line">id targetValue = @<span class="number">123</span>;	<span class="comment">// 这里错误传入了NSNumber对象，用以进行验证</span></div><div class="line">BOOL isValid = [targetTransaction validateValue:&amp;targetValue forKey:@<span class="string">"work"</span> error:&amp;error];</div><div class="line">NSLog(@<span class="string">"%d"</span>, isValid);</div></pre></td></tr></table></figure>
-<h3 id="访问器的搜索方式"><a href="#访问器的搜索方式" class="headerlink" title="访问器的搜索方式"></a>访问器的搜索方式</h3><p><strong>NSObject提供给NSKeyValueCoding协议的默认实现，是使用基于键（key）的访问器，根据一系列规则来调用对象的属性。</strong>这些协议方法使用一个键（key）参数来搜索对象实例的访问器（accessor）、实例变量和一些遵循确定命名规范的方法。了解搜索的工作原理，不仅有助于追踪KVC对象的行为，还可以帮助编写自己的兼容对象（类似KVC）。</p>
-<ul>
-<li><strong>基本getter的搜索模式（valueForKey:的工作模式）：</strong></li>
-</ul>
-<ol>
-<li><strong>首先依次查找访问方法set[Key]、[key]、is[Key]、_[key]。</strong>找到则跳到【5】中处理结果，否则进入下一步。</li>
-<li><strong>若没有找到访问器方法，则搜索匹配名为countOf[Key]和objectIn[Key]AtIndex:的实例方法（与NSArray中定义的原方法一致），还有[key]AtIndexes:方法（与NSArray中的objectsAtIndexes:一致）。如果找到了第一个方法和后两者之一，则创建并返回一个集合代理对象来响应所有的NSArray的方法（给代理对象发送NSArray方法时会自动组合调用以上实现的方法）。</strong>不满足则进入下一步【3】。<br> 代理对象会把收到的所有的NSArray的消息（即API调用）转化成给KVC相关对象（即类实例对象）组合发送countOf[Key]、objectIn[Key]AtIndex:和[key]AtIndexes:消息。如果原类中额外实现了get[Key]:range:方法，此代理对象也会适时使用，以提高性能。实际上，代理对象会和原实例对象一起工作，让它看起来就像是一个NSArray对象（虽然不是）。</li>
-<li><strong>当没有找到访问器方法和数组的访问方法时，系统再继续查找一组三个名为countOf[Key]、enumeratorOf[Key]和memberOf[Key]:的实例方法(都是NSSet类中的方法)。三个方法都找到，则创建一个集合代理对象来响应所有的NSSet方法并返回。</strong>不满足则进入下一步【4】。<br> 与NSArray的情况一样，系统会根据实现的方法生成并返回一个NSSet的代理对象，与原对象一起工作，来使其看起来像是一个NSSet对象（与上面一样，给返回的代理集合对象调用NSSet的api，你实现的countOf[Key]、enumeratorOf[Key]和memberOf[Key]:方法就会被组合调用。）。</li>
-<li><strong>访问器方法和集合访问方法组都没有找到，系统会查看类中是否实现了accessInstanceVariablesDirectly，如果该方法返回YES，则进入成员列表中进行进一步查找。依次查找名为_[key]、_is[Key]、[key]和is[Key]的成员变量。</strong>找到则跳到【5】中处理结果，否则进入下一步。</li>
-<li>如果得到的属性值是对象指针，直接返回结果。如果值是一个支持NSNumber转换的基本数据类型值，则封包成NSNumber对象返回。如果是一个不支持NSNumber转换的基本数据类型值（如结构体），则封包成NSValue对象返回。</li>
-<li>若以上查找均失败，则触发valueForUndefinedKey:方法，默认抛出异常。子类可以覆盖此方法。</li>
-</ol>
-<ul>
-<li><strong>基本setter的搜索模式（setValue:forKey:的工作模式）：</strong></li>
-</ul>
-<p>默认实现是，给定key和value参数作为输入，试图把key设置为value（对于非对象属性，要先解包成相应值）。被调用的对象依照下面的程序进行查找：</p>
-<ol>
-<li><strong>依次查找名为set[Key]:或_set[Key]的访问器方法，找到后，使用输入值触发该方法并完成（依照需要先解包值）。</strong></li>
-<li><strong>没找到访问器时，查看类方法accessInstanceVariablesDirectly，如果返回YES，依次查找成员变量中的类似_[key]、_is[Key]或is[Key]。找到，使用输入值触发该方法并完成（依照需要先解包值）。</strong></li>
-<li><strong>以上都没找到，则触发setValue:forUndefinedKey:方法。默认抛出异常，子类可以覆盖并提供其他行为（如赋值给其他属性等）。</strong></li>
-</ol>
-<ul>
-<li><strong>可变数组的搜索模式：</strong></li>
-</ul>
-<p>mutableArrayValueForKey:方法默认实现是输入key，返回调用对象的以key命名的属性（要求此属性是数组或可变数组类型，不可变数组无法实现步骤【1】）。此访问器的调用程序如下：</p>
-<ol>
-<li>查找一组方法命名如insertObject:in[Key]AtIndex:和removeObjectFrom[Key]AtIndex:（与NSMutableArray中的insertObject:atIndex和removeObjectAtIndex:一致），或者名为insert[Key]:atIndexed:和removeObjectsAtIndexes:（与NSMutableArray的insertObjects:atIndexes:和removeObjectsAtIndexesL:一致）。<br> 如果调用对象至少包含一个插入方法和一个删除方法，就返回一个可变代理对象。以后通过给此代理对象发送NSMutableArray的所有消息，都会通过组合调用insertObject:in[Key]AtIndex:、removeObjectFrom[Key]AtIndex:、insert[Key]:atIndexed:和removeObjectsAtIndexes:方法的形式来进行响应（或者可以直接将这些方法声明在.h文件中，外部类实例直接调用此方法也可以直接触发KVO机制）。<br> 如果原类的对象还实现了可选的替换方法，如replaceObjectIn[Key]AtIndex:withObject:或replace[Key]AtIndexes:with[Key]:，代理对象也会适时调用此方法来提高效率。</li>
-<li><p>如果类的实例对象没有这些可变的数组方法，就查找名字如set[Key]:的访问方法进行匹配。在这种情况下，返回的代理对象都是通过调用原始对象的set[Key]:方法来间接响应NSMutableArray的消息。</p>
-<blockquote>
-<p>注意：<br>步骤【2】中的机制由于需要每次创建新的集合对象（set[Key]:，setter方法设置，而不是修改已存在的对象），导致性能要比步骤【1】中要差了不少。所以自己设计KVC相关对象时要避免这种代码。</p>
-</blockquote>
-</li>
-<li><p>既没有找到可变数组方法，也没有找到访问器，查看类的accessInstanceVariablesDirectly方法是否返回YES，是则依次去类的成员变量中查询是否存在如_[key]或[key]。若存在，则返回一个代理对象，系统会把代理对象收到的每个NSMutableArray的消息都转发给这个成员变量，这个变量的类型需要是NSMutableArray或其子类。</p>
-</li>
-<li>如果上面所有的步骤都失败了，就返回一个可变的集合代理对象，作为参数，来触发setValue:forUndefinedKey:方法。默认在内部抛出NSUndefinedKeyException异常，子类可以覆盖进行其他处理。</li>
-</ol>
-<blockquote>
-<p>查了好多东西，发现只有在KVO时，使用此可变容器的api进行KVC属性设置。由于调用此api返回的是可变集合对象，且是系统在运行时动态生成的，内部已经包含了KVO使用的isa指针等。当对此代理对象调用NSMutableArray方法时，会自动触发KVO机制。</p>
-</blockquote>
-<p>其他如可变无序集合和可变有序集合的搜索模式与此类似，不再细说。</p>
-<h3 id="参考内容："><a href="#参考内容：" class="headerlink" title="参考内容："></a>参考内容：</h3><ul>
-<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueCoding/BasicPrinciples.html#//apple_ref/doc/uid/20002170-BAJEAIEE" target="_blank" rel="external">Key-Value Coding Fundamentals</a></li>
-<li><a href="https://www.jianshu.com/p/45cbd324ea65" target="_blank" rel="external">iOS开发技巧系列—详解KVC(我告诉你KVC的一切)</a></li>
-<li><a href="http://liumh.com/2015/08/22/ios-nsmutablearray-kvo/" target="_blank" rel="external">iOS如何为NSMutableArray添加KVO</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;对象属性值的设置和获取&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;访问集合属性值的专用API&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;使用集合操作符&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;描述非对象的值（基本数据类型和结构体等）&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;属性类型验证&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;访问器的搜索方式&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>iOS Protocol（协议）的简单总结</title>
-    <link href="http://yoursite.com/2018/04/03/iOS%20Protocol%EF%BC%88%E5%8D%8F%E8%AE%AE%EF%BC%89%E7%9A%84%E7%AE%80%E5%8D%95%E6%80%BB%E7%BB%93/"/>
-    <id>http://yoursite.com/2018/04/03/iOS Protocol（协议）的简单总结/</id>
-    <published>2018-04-03T02:50:26.000Z</published>
-    <updated>2018-05-15T02:18:57.631Z</updated>
-    
-    <content type="html"><![CDATA[<p>协议保存在类结构的协议表中，我们可以使用runtime的相关api查看指定类遵循的协议，或动态修改遵循的协议等。</p>
-<a id="more"></a>
-<h3 id="语法总结："><a href="#语法总结：" class="headerlink" title="语法总结："></a>语法总结：</h3><ol>
-<li>协议中可以声明<strong>方法、属性</strong></li>
-<li>协议方法分为可选可必选</li>
-<li><strong>协议属性不会自动合成</strong>（与@dynamic的property一样）</li>
-<li>协议可继承（通过xcode创建的protocol文件，默认继承了NSObject协议），且为单继承，子协议默认继承了父协议的所有内容</li>
-</ol>
-<h3 id="使用建议："><a href="#使用建议：" class="headerlink" title="使用建议："></a>使用建议：</h3><ol>
-<li>当主类遵循多个协议时，可以使用category将主类分开，防止代码量过大且过于复杂</li>
-<li>协议可以让使用类匿名（即对外返回id<xxx>的对象），公开的api放到protocol中，一般用于设计framework等。可以参见NSFetchResultController类的设计。</xxx></li>
-</ol>
-<h3 id="参考内容："><a href="#参考内容：" class="headerlink" title="参考内容："></a>参考内容：</h3><ul>
-<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/WorkingwithProtocols/WorkingwithProtocols.html#//apple_ref/doc/uid/TP40011210-CH11-SW1" target="_blank" rel="external">Working with Protocols</a></li>
-<li></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;协议保存在类结构的协议表中，我们可以使用runtime的相关api查看指定类遵循的协议，或动态修改遵循的协议等。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Objective-C 2.0 方法调用中的动态绑定和消息转发</title>
-    <link href="http://yoursite.com/2018/03/30/Objective-C%202.0%20%E5%8A%A8%E6%80%81%E7%BB%91%E5%AE%9A%E5%92%8C%E6%B6%88%E6%81%AF%E8%BD%AC%E5%8F%91/"/>
-    <id>http://yoursite.com/2018/03/30/Objective-C 2.0 动态绑定和消息转发/</id>
-    <published>2018-03-30T06:06:41.000Z</published>
-    <updated>2018-05-15T02:19:01.521Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<ul>
-<li><strong>OC方法调用的实质</strong></li>
-<li><strong>动态绑定和消息转发的流程</strong></li>
-<li><strong>动态绑定实例（添加实例方法、添加类方法）</strong></li>
-<li><strong>消息转发实例</strong></li>
-<li><strong>消息转发模拟“多继承”以及二者的区别</strong></li>
-<li><strong>使用消息转发代替继承</strong></li>
-</ul>
-</blockquote>
-<a id="more"></a>
-<h3 id="OC方法调用的实质"><a href="#OC方法调用的实质" class="headerlink" title="OC方法调用的实质"></a>OC方法调用的实质</h3><p>我们都知道，OC是C语言的超集，赋予了C强大的动态特性，其功劳主要归功于OC的运行时系统（runtime）。OC调用方法的实质是发送消息（即objc_msgSend函数）。在编译期，对象理论上可以调用任何方法，即使此方法并没有实现。直到运行期，系统才会根据方法名（SEL）去class的数据结构中查找对应方法进行方法调用。</p>
-<h3 id="动态绑定和消息转发的流程"><a href="#动态绑定和消息转发的流程" class="headerlink" title="动态绑定和消息转发的流程"></a>动态绑定和消息转发的流程</h3><p>给对象（类的实例）发送消息（即调用方法）的大致流程如下：</p>
-<ol>
-<li>根据实例的isa指针确定所属class</li>
-<li>在class的缓存表中查看是否存在此方法。若存在，加入缓存表后，找到对应IMP直接调用</li>
-<li>不存在缓存时，在class的方法表中查找。若存在，加入缓存表后，找到对应IMP直接调用</li>
-<li>方法表不存在时，根据class的super_class指针，在父类的方法表中继续查找。若存在，加入缓存表后，找到对应IMP直接调用</li>
-<li>都没有查找到时，runtime会启动动态绑定，调用resolveInstanceMethod方法，此时，可以动态添加此方法到class中。如已添加，加入缓存表后，找到对应IMP直接调用</li>
-<li>若没有动态添加方法，runtime会启动快速消息转发机制，即调用forwardTargetForSelector方法。我们可以直接返回一个类实例，指定其为调用者的代理对象，直接执行其对应的方法</li>
-<li>如果没有指定代理对象，runtime会启动完整的消息转发机制（forwardInvocation）：首先，调用methodSignatureForSelector方法，返回一个包含此方法实例对象的方法签名；接着，系统会根据此方法签名，生成一个NSInvacation对象（包含着方法选择器等信息），带有此参数并调用forwardInvocation方法。我们在forwardInvocation中，使用invacation对象调用invokeWithTarget方法，传入需要转发的实例对象。即完成了消息转发，系统会自动调用转发对象的对应方法，并将结果返回给最初的调用者。</li>
-<li>如果我们没有把消息转发给任何对象，最后系统会调用doesNotRecognizeMethod方法，并在其内部抛出异常，即表示无法处理此消息，最终默认crash掉APP。</li>
-</ol>
-<blockquote>
-<p>以上步骤中，1~4为方法的正常调用流程，5为动态绑定流程，6~8为消息转发流程。</p>
-</blockquote>
-<p>转发一张动态绑定和消息转发的流程图（上面的步骤5~8）：<br><img src="https://upload-images.jianshu.io/upload_images/1457495-8ee6afef466e6177.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700" alt="img"></p>
-<h3 id="动态绑定实例"><a href="#动态绑定实例" class="headerlink" title="动态绑定实例"></a>动态绑定实例</h3><ul>
-<li>添加实例方法</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    </div><div class="line">    [self performSelector:@selector(missingMethod:) withObject:@<span class="string">"haha"</span>];</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (BOOL)resolveInstanceMethod:(SEL)sel &#123;</div><div class="line">    <span class="keyword">if</span> (NSSelectorFromString(@<span class="string">"missingMethod:"</span>) == sel) &#123;</div><div class="line">        <span class="comment">// 是我们调用的方法，使用runtime添加实现</span></div><div class="line">        <span class="comment">// 方法描述中，v--void；@--id；:--SEL</span></div><div class="line">        class_addMethod([self class], sel, (IMP)missingMethodIMP, <span class="string">"v@:@\"NSString\""</span>);</div><div class="line">        <span class="keyword">return</span> YES;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 返回默认实现</span></div><div class="line">    <span class="keyword">return</span> [super resolveInstanceMethod:sel];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">missingMethodIMP</span><span class="params">(id self, SEL _cmd, NSString *param)</span> </span>&#123;</div><div class="line">    NSLog(@<span class="string">"calling missingMethodIMP with: %@"</span>, param);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>添加类方法：</li>
-</ul>
-<p>我们知道，与实例方法不同，类方法是保存在类所属元类的方法表中（即class -&gt; isa -&gt; meta class -&gt; method list）。所以给类动态绑定类方法，需要绑定到元类中，通过resolveClassMethod进行添加：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    </div><div class="line">    [[self <span class="class"><span class="keyword">class</span>] <span class="title">performSelector</span>:</span>@selector(missingClassMethod:) withObject:@<span class="string">"haha"</span>];</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (BOOL)resolveClassMethod:(SEL)sel &#123;</div><div class="line">    <span class="keyword">if</span> (NSSelectorFromString(@<span class="string">"missingClassMethod:"</span>) == sel) &#123;</div><div class="line">        <span class="comment">// 是我们调用的方法，使用runtime添加实现</span></div><div class="line">        <span class="comment">// 获取meta class</span></div><div class="line">        <span class="keyword">const</span> <span class="keyword">char</span> *className = class_getName(self);</div><div class="line">        id metaClass = objc_getMetaClass(className);</div><div class="line">        <span class="comment">// 添加方法</span></div><div class="line">        <span class="keyword">return</span> class_addMethod(metaClass, sel, (IMP)missingClassMethodIMP, <span class="string">"v@:@\"NSString\""</span>);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> [super resolveClassMethod:sel];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">missingClassMethodIMP</span><span class="params">(id self, SEL _cmd, NSString *param)</span> </span>&#123;</div><div class="line">    NSLog(@<span class="string">"calling missingClassMethodIMP with: %@"</span>, param);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="消息转发实例"><a href="#消息转发实例" class="headerlink" title="消息转发实例"></a>消息转发实例</h3><p>这里只列举了实例方法的消息转发。对于类方法的消息转发，只需将对应的“-”改为“+”即可。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line">@interface ClassAForForward : NSObject</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">"ClassAForForward.h"</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">"ClassBForForward.h"</span></span></div><div class="line"></div><div class="line">@implementation ClassAForForward</div><div class="line"></div><div class="line">+ (BOOL)resolveInstanceMethod:(SEL)sel &#123;</div><div class="line">    <span class="comment">// 这里只是演示一下，首先会进入动态绑定过程</span></div><div class="line">    <span class="comment">// 由于没有任何作用，会进入消息转发流程</span></div><div class="line">    <span class="keyword">return</span> [super resolveInstanceMethod:sel];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (id)forwardingTargetForSelector:(SEL)aSelector &#123;</div><div class="line">    <span class="comment">// 此方法可以直接指定转发的对象</span></div><div class="line">    <span class="comment">// 省略了获取方法签名和生成转发对象组合的方式</span></div><div class="line">    <span class="comment">// 效率高</span></div><div class="line">    <span class="keyword">if</span> (aSelector == NSSelectorFromString(@<span class="string">"methodB"</span>)) &#123;</div><div class="line">        <span class="keyword">return</span> [[ClassBForForward alloc] init];</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 直接返回，则会触发完整的消息转发机制</span></div><div class="line">    <span class="keyword">return</span> [super forwardingTargetForSelector:aSelector];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector &#123;</div><div class="line">    NSMethodSignature *signature = [super methodSignatureForSelector:aSelector];</div><div class="line">    <span class="keyword">if</span> (!signature) &#123;</div><div class="line">        <span class="comment">// 找不到SEL对应的方法签名，</span></div><div class="line">        <span class="comment">// 提供一个自定义的方法签名，返回给本类用于转发调用（forwardInvocation）</span></div><div class="line">        ClassBForForward *bInstance = [[ClassBForForward alloc] init];</div><div class="line">        <span class="comment">// 将带有此selector的类的方法签名返回给本类</span></div><div class="line">        <span class="comment">// 使本类调用“转发调用”方法（forwardInvocation）【即runtime会生成一个invocation传入到转发方法中并调用】</span></div><div class="line">        <span class="comment">// 相当于带有selector的类实例“代理”了本类执行selector</span></div><div class="line">        signature = [bInstance methodSignatureForSelector:aSelector];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> signature;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)forwardInvocation:(NSInvocation *)anInvocation &#123;</div><div class="line">    SEL aSelector = [anInvocation selector];</div><div class="line">    <span class="keyword">if</span> (aSelector) &#123;</div><div class="line">        <span class="comment">// 本类实例指定代理对象来调用selector</span></div><div class="line">        <span class="comment">// 转发给代理对象</span></div><div class="line">        ClassBForForward *bInstance = [[ClassBForForward alloc] init];</div><div class="line">        [anInvocation invokeWithTarget:bInstance];</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// 返回给系统继续调用（调用doesNotRecognizeSelector方法）</span></div><div class="line">        [super forwardInvocation:anInvocation];</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)doesNotRecognizeSelector:(SEL)aSelector &#123;</div><div class="line">    <span class="comment">// 最终无法转发的方法，会执行这里，之后默认crash</span></div><div class="line">    [super doesNotRecognizeSelector:aSelector];</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
-<h3 id="消息转发模拟“多继承”以及二者的区别"><a href="#消息转发模拟“多继承”以及二者的区别" class="headerlink" title="消息转发模拟“多继承”以及二者的区别"></a>消息转发模拟“多继承”以及二者的区别</h3><p>面向对象编程，其实根本目的就是为了代码复用。面向对象的方式之一就是继承，但由于OC只支持单继承，一定程度上减少了很多代码复用的机会，而且并不是所有的类都可以直接继承（如OC的类簇）。而消息转发机制可以在一定程度上解决这个问题。</p>
-<p>个人理解，消息转发实际上与代理模式一样，调用者本身不具备指定功能，通过代理对象调用方法来间接实现自己的功能。外部看起来与本身直接调用一样。当把多个功能分别转发给多个对象后，调用者本身就具备了多个类的多种功能，看起来就像是多继承一样。这也就赋予了OC“多继承”的功能，而且实现了代码复用（功能复用）。</p>
-<p>但是消息转发和真正的多继承还是存在明显区别的：</p>
-<ul>
-<li>多继承是“多合一”：多个父类的功能组合生成子类，子类的功能及结构会变多且复杂。</li>
-<li>消息转发是“一分多”：通过代理对象，将多个功能分发到多个类中进行实现，本类的实际结构和功能则相对简单，且对外部透明。</li>
-</ul>
-<h3 id="使用消息转发代替继承"><a href="#使用消息转发代替继承" class="headerlink" title="使用消息转发代替继承"></a>使用消息转发代替继承</h3><p>虽然消息转发隐藏了细节，在外部看起来像是调用类存在某种功能（实现了这个方法），或者是你认为调用类“继承”了转发类。但实际上，通过诸如respondsToSelector、isKindOfClass等函数还是可以识别出真相（此类函数只会查看本身的继承链，不会查看转发链）。如果你想要完全模拟“继承”，则需要覆盖此类方法才行。<br><em>官方文档有说过，一定要慎用消息转发，在没有彻底弄清转发机制和本类及转发类的功能时，不要乱用这个机制。</em></p>
-<p>参考内容：</p>
-<ul>
-<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtForwarding.html#//apple_ref/doc/uid/TP40008048-CH105-SW1" target="_blank" rel="external">Message Forwarding</a></li>
-<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtDynamicResolution.html#//apple_ref/doc/uid/TP40008048-CH102-SW1" target="_blank" rel="external">Dynamic Method Resolution</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;OC方法调用的实质&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;动态绑定和消息转发的流程&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;动态绑定实例（添加实例方法、添加类方法）&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;消息转发实例&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;消息转发模拟“多继承”以及二者的区别&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;使用消息转发代替继承&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Objective-C 2.0的category</title>
-    <link href="http://yoursite.com/2018/03/26/Objective-C%202.0%20category/"/>
-    <id>http://yoursite.com/2018/03/26/Objective-C 2.0 category/</id>
-    <published>2018-03-26T14:40:03.000Z</published>
-    <updated>2018-05-15T02:18:58.508Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<ul>
-<li><strong>class和category的数据结构</strong></li>
-<li><strong>为什么category只能添加方法，不能添加属性？</strong></li>
-<li><strong>category为何不要覆盖父类方法？</strong></li>
-<li><strong>多个category覆盖同名方法的执行顺序</strong></li>
-<li><strong>category与extension的区别</strong></li>
-<li><strong>关联对象和其他补充</strong></li>
-</ul>
-</blockquote>
-<a id="more"></a>
-<h3 id="class和category的数据结构"><a href="#class和category的数据结构" class="headerlink" title="class和category的数据结构"></a>class和category的数据结构</h3><p>在学习runtime时，可以知道，<em>OC的所有数据结构，包括对象、类、方法、协议等等，都是C的结构体</em>。<br>类的实例，即对象，主要只包含了一个isa指针，指向其所属的class。而class的isa指针则指向其元类（meta class），元类的isa指向根原类，根元类isa指向自身。</p>
-<p>来一张转烂了的图，顺便说明isa和super指针的指向关系：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/3270116-4fef3651af3f80d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/550" alt="img"></p>
-<p>class的主要数据结构（元类与其相同）：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> &#123;</span></div><div class="line">	Class isa    OBJC_ISA_AVAILABILITY;</div><div class="line">	</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> !__OBJC2__</span></div><div class="line">	Class super_class;    <span class="comment">// 父类</span></div><div class="line">	<span class="keyword">const</span> <span class="keyword">char</span> *name;    <span class="comment">// 类名</span></div><div class="line">	<span class="keyword">long</span> version;    <span class="comment">// 类版本信息，默认0</span></div><div class="line">	<span class="keyword">long</span> info;    <span class="comment">// 类信息</span></div><div class="line">	<span class="keyword">long</span> instance_size;    <span class="comment">// 类实例变量大小</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_ivar_list</span> *<span class="title">ivars</span>;</span>    <span class="comment">// 成员变量链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_method_list</span> **<span class="title">methodlists</span>;</span>    <span class="comment">// 方法链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_cache</span> *<span class="title">cache</span>;</span>    <span class="comment">// 方法缓存</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_protocol_list</span> *<span class="title">protocols</span>;</span>    <span class="comment">// 遵循的协议链表</span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"></div><div class="line">&#125; OBJC2_UNAVAILABLE;</div></pre></td></tr></table></figure>
-<p>简要说明下：</p>
-<ul>
-<li>根据class的数据结构，即可了解runtime的主要功能：可以在运行时获取类的相关信息，包括实例变量、方法列表、协议列表等，且可以通过相关api对各部分进行增删改查等操作（甚至是修改method的实现）。</li>
-<li>OC中的方法调用，并非在编译期确定调用地址，而是在运行时才会确定调用方法的真正地址（通过objc_msgsend函数进行方法调用）。子类的方法调用，会在methodlist中查找，未找到后，会在父类的methodlist中继续查找，直到找到后调用（未找到后进入消息转发）。找到后，会将此method的地址放入cache中，以加快访问。</li>
-</ul>
-<p>我们主要讨论的category，其结构如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">category_t</span> &#123;</span></div><div class="line">	<span class="keyword">const</span> <span class="keyword">char</span> *name;    <span class="comment">// 类名</span></div><div class="line">	<span class="keyword">classref_t</span> cls;    <span class="comment">// 类</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">method_list_t</span> *<span class="title">instanceMethods</span>;</span>    <span class="comment">// 保存添加的实例方法的链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">method_list_t</span> *<span class="title">classMethods</span>;</span>    <span class="comment">// 保存添加的类方法的链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">protocol_list_t</span> *<span class="title">protocols</span>;</span>    <span class="comment">// 保存实现的协议方法的链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">property_list_t</span> *<span class="title">instanceProperties</span>;</span>    <span class="comment">// 保存所有添加的属性</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="为什么category只能添加方法，不能添加属性？"><a href="#为什么category只能添加方法，不能添加属性？" class="headerlink" title="为什么category只能添加方法，不能添加属性？"></a>为什么category只能添加方法，不能添加属性？</h3><p>从category的结构中可以看出，<strong>由于内部只保存了属性，并不包含ivar（成员变量才能保存属性的值），即只生成了setter和getter方法的声明，没有对应实现，更没有对应的成员变量保存</strong>。所以在category中添加属性，需要使用runtime的相关对象（associate_object）进行。<br>而且对于category来说，<strong>添加的方法会在编译后添加到主类的方法列表中（实例方法添加到主类，类方法添加到主类所属的元类中）</strong>。</p>
-<h3 id="category为何不要覆盖父类方法？"><a href="#category为何不要覆盖父类方法？" class="headerlink" title="category为何不要覆盖父类方法？"></a>category为何不要覆盖父类方法？</h3><p>我们都知道，在category中覆盖父类方法时，系统会弹出警告（主类也实现了此方法），且调用原方法时，系统会执行category的实现，从而导致原始方法实现被覆盖。这里是为什么？<br>我们知道，由于category的方法在runtime加载后会添加到本类的方法表中，方法表保存的是方法的SEL，可以推测：</p>
-<ol>
-<li>原SEL被覆盖</li>
-<li>两个同名方法都被加入到方法表中，调用时只执行了category的</li>
-</ol>
-<p>另一个问题是，runtime在加载时，对于本类和category的加载顺序是什么。</p>
-<p>参照以下代码可以验证：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">// 主类</div><div class="line">#import &lt;Foundation/Foundation.h&gt;</div><div class="line"></div><div class="line">@interface TestClassForCategory : NSObject</div><div class="line"></div><div class="line">- (void)testMethod;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">#import "TestClassForCategory.h"</div><div class="line"></div><div class="line">@implementation TestClassForCategory</div><div class="line"></div><div class="line">+ (void)load &#123;</div><div class="line">    NSLog(@"load === TestClassForCategory");</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)testMethod &#123;</div><div class="line">    NSLog(@"instance method~~~~");</div><div class="line">&#125;</div><div class="line">@end</div><div class="line"></div><div class="line"></div><div class="line">// 分类（category）</div><div class="line">#import "TestClassForCategory.h"</div><div class="line"></div><div class="line">@interface TestClassForCategory (Category1)</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">#import "TestClassForCategory+Category1.h"</div><div class="line"></div><div class="line">@implementation TestClassForCategory (Category1)</div><div class="line"></div><div class="line">+ (void)load &#123;</div><div class="line">    NSLog(@"load === TestClassForCategory+Category1");</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)testMethod &#123;</div><div class="line">    // category的方法会添加到</div><div class="line">    NSLog(@"category1----");</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
-<p>我们可以在自己的测试类中，实例化TestClassForCategory并调用testMethod方法，可以看到输出结果：</p>
-<blockquote>
-<p>2018-03-27 07:55:10.278999+0800 Runtime_Learning2[3506:4499896] load === TestClassForCategory<br>2018-03-27 07:55:10.280645+0800 Runtime_Learning2[3506:4499896] load === TestClassForCategory+Category1<br>2018-03-27 07:55:14.702309+0800 Runtime_Learning2[3506:4499896] category1—-</p>
-</blockquote>
-<p>由此可以证明，<strong>runtime加载时，首先加载主类，然后加载category。</strong></p>
-<p>我们通过runtime的api来获取一下TestClassForCategory的方法表：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 打印TestClassForCategory的methodlist</span></div><div class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> methodlistCount;</div><div class="line">Method *methodlist =  class_copyMethodList([TestClassForCategory class], &amp;methodlistCount);</div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; methodlistCount; i++) &#123;</div><div class="line">    Method method = methodlist[i];</div><div class="line">    SEL sel = method_getName(method);</div><div class="line">    IMP imp = method_getImplementation(method);</div><div class="line">    NSLog(@<span class="string">"method - %@"</span>, NSStringFromSelector(sel));</div><div class="line">    imp();</div><div class="line">&#125;</div><div class="line"><span class="built_in">free</span>(methodlist);</div></pre></td></tr></table></figure>
-<p>执行结果如下：</p>
-<blockquote>
-<p>2018-03-27 07:55:10.683704+0800 Runtime_Learning2[3506:4499896] method - testMethod<br>2018-03-27 07:55:10.683855+0800<br>Runtime_Learning2[3506:4499896] category1—-<br>2018-03-27 07:55:10.683965+0800 Runtime_Learning2[3506:4499896] method - testMethod<br>2018-03-27 07:55:10.684055+0800 Runtime_Learning2[3506:4499896] instance method<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line">&gt; </div><div class="line"></div><div class="line">可以看到，**在主类的方法表中，果然保存了主类和分类两个SEL，且方法实现均可以被调用**。联系着load方法的执行顺序，我们可以知道，**class在方法列表中添加方法时，是依照“头部插入”的方式（“头插法”）来修改链表的**。</div><div class="line">原理如下（转自[iOS OC中分类Category实现原理](http://blog.sina.com.cn/s/blog_14679a7d20102xae4.html)）：</div><div class="line"></div><div class="line">![img](http://img.blog.csdn.net/20180131104524542?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvc2hpaHVib2tl/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)</div><div class="line"></div><div class="line">由此可见，当分类中覆盖了主类的方法后，**由于分类的方法在原方法前部，导致调用方法时，系统查找到第一个方法后，直接返回执行，本类方法不会执行**。所以一般不建议在分类中覆盖主类方法。特别是给系统类添加分类时，由于本类或其父类可能会有相同的方法声明，导致被分类覆盖。</div><div class="line"></div><div class="line">为避免此类问题的出现，可以在分类中声明方法时，添加自定义的方法前缀。</div><div class="line"></div><div class="line">### 多个category覆盖同名方法的执行顺序</div><div class="line"></div><div class="line">我们知道，在类的方法表中添加方法使用的是“头插法”，但当给主类添加多个分类时，分类方法的加载顺序又是如何呢？</div><div class="line">根据代码来看：</div><div class="line"></div><div class="line">``` C</div><div class="line">// 在以上代码的基础上再添加第二个category</div><div class="line">#import &quot;TestClassForCategory.h&quot;</div><div class="line"></div><div class="line">@interface TestClassForCategory (Category2)</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">#import &quot;TestClassForCategory+Category2.h&quot;</div><div class="line"></div><div class="line">@implementation TestClassForCategory (Category2)</div><div class="line"></div><div class="line">+ (void)load &#123;</div><div class="line">    NSLog(@&quot;load === TestClassForCategory+Category2&quot;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)testMethod &#123;</div><div class="line">    // category的方法会添加到</div><div class="line">    NSLog(@&quot;category2----&quot;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div><div class="line">```</div><div class="line">执行结果如下：</div><div class="line">&gt; </div><div class="line">&gt; 2018-03-27 10:58:50.708610+0800 Runtime_Learning2[4434:4568830] load === TestClassForCategory</div><div class="line">&gt; 2018-03-27 10:58:50.711459+0800 Runtime_Learning2[4434:4568830] load === TestClassForCategory+Category1</div><div class="line">&gt; 2018-03-27 10:58:50.712078+0800 Runtime_Learning2[4434:4568830] load === TestClassForCategory+Category2</div><div class="line">&gt; 2018-03-27 10:58:50.927215+0800 Runtime_Learning2[4434:4568830] method - testMethod</div><div class="line">&gt; 2018-03-27 10:58:50.927375+0800 Runtime_Learning2[4434:4568830] category2----</div><div class="line">&gt; 2018-03-27 10:58:50.927585+0800 Runtime_Learning2[4434:4568830] method - testMethod</div><div class="line">&gt; 2018-03-27 10:58:50.928280+0800 Runtime_Learning2[4434:4568830] category1----</div><div class="line">&gt; 2018-03-27 10:58:50.928472+0800 Runtime_Learning2[4434:4568830] method - testMethod</div><div class="line">&gt; 2018-03-27 10:58:50.928653+0800 Runtime_Learning2[4434:4568830] instance method</div></pre></td></tr></table></figure></p>
-<p>2018-03-27 10:58:53.851391+0800 Runtime_Learning2[4434:4568830] category2—-</p>
-</blockquote>
-<p>可以看到，最后加载的category2，则执行方法指向的是category2的方法。原因在哪呢？</p>
-<p>在工程TARGETS -&gt; Build Phases -&gt; Compile Sources中，我们可以看到，自上而下，编译资源的顺序是：Category1.m、Category2.m，我们可以自己上下调整编译顺序并执行，结果显而易见：</p>
-<p><strong>多个category的加载顺序（也是方法的覆盖顺序）是依照Compile Sources的顺序自上而下确定的。</strong></p>
-<p><em>注意，返回值不同的方法也会覆盖，因为SEL与返回值无关。</em></p>
-<p>所以，多个分类同时覆盖主类的方法时，执行结果无法直接确定，可能会出现不可预估的问题。</p>
-<h3 id="category与extension的区别"><a href="#category与extension的区别" class="headerlink" title="category与extension的区别"></a>category与extension的区别</h3><p>一般来说，我们都会认为class extension（类的扩展）是匿名的category，因为语法详尽，且功能相似，但实际上来说，二者可以说是<em>完全不同</em>。</p>
-<ul>
-<li><p>extension: </p>
-<ol>
-<li>它是class的一部分，与interface、implementation三者共同组成class，声明周期与class相同。</li>
-<li>分类是在编译期确定的，内部声明的属性和方法在编译期直接组成class结构体的数据（属性会自动生成ivar并合成setter和getter，分别添加到class的ivar_list和method_list中）。</li>
-<li>分类声明的方法，实现必须在class的implementation中，所以没有本类的源代码无法添加extension。</li>
-</ol>
-</li>
-<li><p>category:</p>
-<ol>
-<li>与class本体无关，可以单独存在。</li>
-<li>扩展是在编译期编译，在运行时加载到类中。category由于其数据结构所限，只能添加方法实现、属性声明和协议实现，内部不包含ivar成员变量，所以无法保存数据（声明的属性不能生成对应的ivar，也不能合成出setter和getter的实现）。</li>
-<li>编译期由于class结构布局和数据已经确定，在运行时，category只能将方法添加到class的方法链表中，其他东西无法修改（class的实例大小等在编译期已确定，无法修改）。</li>
-</ol>
-</li>
-</ul>
-<h3 id="关联对象和其他补充"><a href="#关联对象和其他补充" class="headerlink" title="关联对象和其他补充"></a>关联对象和其他补充</h3><ul>
-<li><p>由于在category中添加属性，需要使用关联对象（associate object）进行添加和访问，那关联对象的数据保存在哪里呢？</p>
-<p>  所有的关联对象都由AssociationsManager进行统一管理（添加、删除等），保存在全局map中，其中key是这个相关对象的指针地址，value则是单独的一个AssociationsHashMap，里面保存着key-value对。</p>
-</li>
-<li><p>提问：在class的load方法中，可以调用Category的方法吗？<br>  答：可以。runtime加载class和category等是在load方法调用前执行的，此时Category的方法已经加载到class的方法列表中，可以直接调用。</p>
-</li>
-<li><p>提问：当Category已经覆盖了Class中的方法时，如何调用Class中的原方法？<br>  答：由于使用“头插法”，Category的方法已经在Class的方法列表头部。系统调用方法时是从头开始检索，查到对应Method后即跳转IMP进行调用。我们可以使用runtime的api手动遍历Class的方法表，找到最后一个同名方法，直接调用IMP。</p>
-</li>
-<li><p>扩展一个类的方式：</p>
-<ol>
-<li>子类化</li>
-<li>使用category</li>
-<li>使用协议抽象（如UITableView的delegate和data source，可以给具有显示功能的类进行扩展）</li>
-</ol>
-</li>
-</ul>
-<p>参考内容：</p>
-<ul>
-<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/CustomizingExistingClasses/CustomizingExistingClasses.html" target="_blank" rel="external">Customizing Existing Classes
-</a></li>
-<li><a href="https://tech.meituan.com/DiveIntoCategory.html" target="_blank" rel="external">深入理解Objective-C：Category
-</a></li>
-<li><a href="http://blog.sina.com.cn/s/blog_14679a7d20102xae4.html" target="_blank" rel="external">iOS OC中分类Category实现原理</a></li>
-<li><a href="https://www.jianshu.com/p/87cfbdda0a68" target="_blank" rel="external">【iOS】category 重写方法的调用</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;class和category的数据结构&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;为什么category只能添加方法，不能添加属性？&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;category为何不要覆盖父类方法？&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;多个category覆盖同名方法的执行顺序&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;category与extension的区别&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;关联对象和其他补充&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
     
   </entry>
   

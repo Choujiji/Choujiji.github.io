@@ -178,6 +178,462 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/06/内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）/">《Objective-C高级编程 iOS与OS X多线程与内存管理》6</a>
+    </h1>
+  
+
+        
+        <a href="/2019/01/06/内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）/" class="archive-article-date">
+  	<time datetime="2019-01-06T07:51:20.446Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="内存管理篇：-6-不要使用静态和动态数组（非OC集合对象）"><a href="#内存管理篇：-6-不要使用静态和动态数组（非OC集合对象）" class="headerlink" title="内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）"></a>内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）</h2><h4 id="静态数组（类似于c数组，非OC的集合对象）："><a href="#静态数组（类似于c数组，非OC的集合对象）：" class="headerlink" title="静态数组（类似于c数组，非OC的集合对象）："></a>静态数组（类似于c数组，非OC的集合对象）：</h4><ul>
+<li>使用<strong>strong、</strong>weak和__autoreleasing修饰的静态数组（如：id objs[10]），其初始值也会自动赋值为nil，且当其释放时，子元素也会自动被释放；</li>
+</ul>
+        
+          <a class="article-more-a" href="/2019/01/06/内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/01/06/内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article id="post-内存管理篇： 5.ARC的规则补充" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/06/内存管理篇： 5.ARC的规则补充/">《Objective-C高级编程 iOS与OS X多线程与内存管理》5</a>
+    </h1>
+  
+
+        
+        <a href="/2019/01/06/内存管理篇： 5.ARC的规则补充/" class="archive-article-date">
+  	<time datetime="2019-01-06T07:49:49.390Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="内存管理篇：-5-ARC的规则补充"><a href="#内存管理篇：-5-ARC的规则补充" class="headerlink" title="内存管理篇： 5.ARC的规则补充"></a>内存管理篇： 5.ARC的规则补充</h2><ol>
+<li>ARC的方法命名</li>
+</ol>
+<blockquote>
+<p>我们都知道，在内存管理的思考方式中，当方法命名以“alloc、new、copy、mutableCopy”开头或直接命名时，返回对象（必须返回对象）的内存由接收方进行管理。这种方式在ARC中同样适用。</p>
+</blockquote>
+<p>在ARC环境下，以init或init开头的方法，也需要遵循此规则。且init的方法规定更为严格：</p>
+<ul>
+<li>必须返回id或类型的对象</li>
+<li>必须是实例方法</li>
+</ul>
+        
+          <a class="article-more-a" href="/2019/01/06/内存管理篇： 5.ARC的规则补充/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/01/06/内存管理篇： 5.ARC的规则补充/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article id="post-内存管理篇： 4.ARC的所有权修饰符" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/06/内存管理篇： 4.ARC的所有权修饰符/">《Objective-C高级编程 iOS与OS X多线程与内存管理》4</a>
+    </h1>
+  
+
+        
+        <a href="/2019/01/06/内存管理篇： 4.ARC的所有权修饰符/" class="archive-article-date">
+  	<time datetime="2019-01-06T07:47:20.057Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="内存管理篇：-4-ARC的所有权修饰符"><a href="#内存管理篇：-4-ARC的所有权修饰符" class="headerlink" title="内存管理篇： 4.ARC的所有权修饰符"></a>内存管理篇： 4.ARC的所有权修饰符</h2><h3 id="所有权修饰符"><a href="#所有权修饰符" class="headerlink" title="所有权修饰符"></a>所有权修饰符</h3><blockquote>
+<ul>
+<li>在ARC下，对象必须通过所有权修饰符进行修饰，系统会根据不同的所有权修饰符对对象进行相应的内存管理。</li>
+<li>所有权修饰符包括：<strong>strong、</strong>weak、<strong>unsafe_unretained、</strong>autoreleasing。</li>
+</ul>
+</blockquote>
+        
+          <a class="article-more-a" href="/2019/01/06/内存管理篇： 4.ARC的所有权修饰符/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/01/06/内存管理篇： 4.ARC的所有权修饰符/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article id="post-内存管理篇： 3.autorelease" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/06/内存管理篇： 3.autorelease/">《Objective-C高级编程 iOS与OS X多线程与内存管理》3</a>
+    </h1>
+  
+
+        
+        <a href="/2019/01/06/内存管理篇： 3.autorelease/" class="archive-article-date">
+  	<time datetime="2019-01-06T07:43:19.318Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="内存管理篇：-3-autorelease"><a href="#内存管理篇：-3-autorelease" class="headerlink" title="内存管理篇： 3.autorelease"></a>内存管理篇： 3.autorelease</h2><blockquote>
+<p><strong>autorelease的实质：</strong><br><em>将创建的对象加入到NSAutoreleasePool管理“数组”中，并告知ARC系统暂时不要对此对象进行处理。待pool对象在其所属的NSRunLoop循环一次完成，准备释放（drain）时，对“数组”中的所有对象依次调用release方法。此时ARC再对对象进行内存管理。</em></p>
+</blockquote>
+        
+          <a class="article-more-a" href="/2019/01/06/内存管理篇： 3.autorelease/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/01/06/内存管理篇： 3.autorelease/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article id="post-内存管理篇： 2.alloc-retain-release-dealloc的实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/06/内存管理篇： 2.alloc-retain-release-dealloc的实现/">《Objective-C高级编程 iOS与OS X多线程与内存管理》2</a>
+    </h1>
+  
+
+        
+        <a href="/2019/01/06/内存管理篇： 2.alloc-retain-release-dealloc的实现/" class="archive-article-date">
+  	<time datetime="2019-01-06T07:42:32.544Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="内存管理篇：-2-alloc-retain-release-dealloc的实现"><a href="#内存管理篇：-2-alloc-retain-release-dealloc的实现" class="headerlink" title="内存管理篇： 2.alloc/retain/release/dealloc的实现"></a>内存管理篇： 2.alloc/retain/release/dealloc的实现</h2><h3 id="GNUstep的实现方式"><a href="#GNUstep的实现方式" class="headerlink" title="GNUstep的实现方式"></a>GNUstep的实现方式</h3><p><strong>GNUstep的版本将引用计数与对象的内存组合在一起，方便读写存取。</strong><br><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1546151436-GNUstep%E7%9A%84%E5%AF%B9%E8%B1%A1%E7%BB%93%E6%9E%84.jpg" alt="img"><br>如图所示，使用了一个objc_layout结构体来表示引用计数，其大体结构及alloc的简化代码为：</p>
+        
+          <a class="article-more-a" href="/2019/01/06/内存管理篇： 2.alloc-retain-release-dealloc的实现/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/01/06/内存管理篇： 2.alloc-retain-release-dealloc的实现/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article id="post-内存管理篇：1.引用计数的思考方式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/06/内存管理篇：1.引用计数的思考方式/">《Objective-C高级编程 iOS与OS X多线程与内存管理》1</a>
+    </h1>
+  
+
+        
+        <a href="/2019/01/06/内存管理篇：1.引用计数的思考方式/" class="archive-article-date">
+  	<time datetime="2019-01-06T07:40:57.232Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="内存管理篇：1-引用计数的思考方式"><a href="#内存管理篇：1-引用计数的思考方式" class="headerlink" title="内存管理篇：1.引用计数的思考方式"></a>内存管理篇：1.引用计数的思考方式</h2><h3 id="自动引用计数"><a href="#自动引用计数" class="headerlink" title="自动引用计数"></a>自动引用计数</h3><blockquote>
+<p>支持条件：</p>
+<ul>
+<li>clang（LLVM编译器）3.0版本以上</li>
+<li>objc4 OC运行时库 493.9版本以上</li>
+<li>编译器设置中置为“ARC有效”</li>
+<li>Xcode 4.2版本以上</li>
+</ul>
+</blockquote>
+        
+          <a class="article-more-a" href="/2019/01/06/内存管理篇：1.引用计数的思考方式/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/01/06/内存管理篇：1.引用计数的思考方式/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article id="post-《Effective Objective-C 20 编写高质量iOS与OS X代码的52个有效方法》读书笔记" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/25/《Effective Objective-C 20 编写高质量iOS与OS X代码的52个有效方法》读书笔记/">《Effective Objective-C 20 编写高质量iOS与OS X代码的52个有效方法》读书笔记</a>
+    </h1>
+  
+
+        
+        <a href="/2018/12/25/《Effective Objective-C 20 编写高质量iOS与OS X代码的52个有效方法》读书笔记/" class="archive-article-date">
+  	<time datetime="2018-12-25T02:49:27.623Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-12-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="第1章：熟悉Objective-C"><a href="#第1章：熟悉Objective-C" class="headerlink" title="第1章：熟悉Objective-C"></a>第1章：熟悉Objective-C</h2><h3 id="第4条：多用类型常量，少用-define预处理指令"><a href="#第4条：多用类型常量，少用-define预处理指令" class="headerlink" title="第4条：多用类型常量，少用#define预处理指令"></a>第4条：多用类型常量，少用#define预处理指令</h3><ul>
+<li>声明类型常量好处是，编译器可以知道此变量的类型，且可以防止外部随意修改</li>
+<li>声明规则：
+        
+          <a class="article-more-a" href="/2018/12/25/《Effective Objective-C 20 编写高质量iOS与OS X代码的52个有效方法》读书笔记/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/12/25/《Effective Objective-C 20 编写高质量iOS与OS X代码的52个有效方法》读书笔记/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-mpvue开发微信小程序的准备工作" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -375,460 +831,9 @@
 
 
   
-    <article id="post-设计模式之建造者模式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/05/设计模式之建造者模式/">生成器模式</a>
-    </h1>
-  
-
-        
-        <a href="/2018/09/05/设计模式之建造者模式/" class="archive-article-date">
-  	<time datetime="2018-09-05T04:03:27.472Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="图示："><a href="#图示：" class="headerlink" title="图示："></a>图示：</h3><p>以下分别是类图与时序图<br><img src="http://p8r3sk4om.bkt.clouddn.com/374636-20170808225735589-1433194842.jpg" alt="img"><br><img src="http://p8r3sk4om.bkt.clouddn.com/20170503144820580.png" alt="img"><br>
-        
-          <a class="article-more-a" href="/2018/09/05/设计模式之建造者模式/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/09/05/设计模式之建造者模式/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-测试二下" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/05/15/测试二下/">这只是测试，新的小家（其实是tag）</a>
-    </h1>
-  
-
-        
-        <a href="/2018/05/15/测试二下/" class="archive-article-date">
-  	<time datetime="2018-05-15T02:24:06.602Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">react-native</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/05/15/测试二下/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-使用代码初始化StoryBoard中的ViewController" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/05/15/使用代码初始化StoryBoard中的ViewController/">使用代码初始化StoryBoard中的ViewController</a>
-    </h1>
-  
-
-        
-        <a href="/2018/05/15/使用代码初始化StoryBoard中的ViewController/" class="archive-article-date">
-  	<time datetime="2018-05-15T01:49:33.088Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取StoryBoard对象（这里使用的是默认的主bundle中的文件）</span></div><div class="line">UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@<span class="string">"Main"</span> bundle:nil];</div><div class="line"><span class="comment">// 使用ID在StoryBoard对象中获取并初始化新的ViewController</span></div><div class="line">BasicKVO_ViewController *vc1 = [storyBoard instantiateViewControllerWithIdentifier:@<span class="string">"BasicKVO_VC"</span>];</div></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2018/05/15/使用代码初始化StoryBoard中的ViewController/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/05/15/使用代码初始化StoryBoard中的ViewController/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-KVC基础学习总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/04/KVC基础学习总结/">KVC基础学习总结</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/04/KVC基础学习总结/" class="archive-article-date">
-  	<time datetime="2018-04-04T06:16:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<ul>
-<li><strong>对象属性值的设置和获取</strong></li>
-<li><strong>访问集合属性值的专用API</strong></li>
-<li><strong>使用集合操作符</strong></li>
-<li><strong>描述非对象的值（基本数据类型和结构体等）</strong></li>
-<li><strong>属性类型验证</strong></li>
-<li><strong>访问器的搜索方式</strong></li>
-</ul>
-</blockquote>
-        
-          <a class="article-more-a" href="/2018/04/04/KVC基础学习总结/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/04/KVC基础学习总结/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-iOS Protocol（协议）的简单总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/03/iOS Protocol（协议）的简单总结/">iOS Protocol（协议）的简单总结</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/03/iOS Protocol（协议）的简单总结/" class="archive-article-date">
-  	<time datetime="2018-04-03T02:50:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>协议保存在类结构的协议表中，我们可以使用runtime的相关api查看指定类遵循的协议，或动态修改遵循的协议等。</p>
-        
-          <a class="article-more-a" href="/2018/04/03/iOS Protocol（协议）的简单总结/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/03/iOS Protocol（协议）的简单总结/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-Objective-C 2.0 动态绑定和消息转发" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/30/Objective-C 2.0 动态绑定和消息转发/">Objective-C 2.0 方法调用中的动态绑定和消息转发</a>
-    </h1>
-  
-
-        
-        <a href="/2018/03/30/Objective-C 2.0 动态绑定和消息转发/" class="archive-article-date">
-  	<time datetime="2018-03-30T06:06:41.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-30</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<ul>
-<li><strong>OC方法调用的实质</strong></li>
-<li><strong>动态绑定和消息转发的流程</strong></li>
-<li><strong>动态绑定实例（添加实例方法、添加类方法）</strong></li>
-<li><strong>消息转发实例</strong></li>
-<li><strong>消息转发模拟“多继承”以及二者的区别</strong></li>
-<li><strong>使用消息转发代替继承</strong></li>
-</ul>
-</blockquote>
-        
-          <a class="article-more-a" href="/2018/03/30/Objective-C 2.0 动态绑定和消息转发/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/30/Objective-C 2.0 动态绑定和消息转发/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-Objective-C 2.0 category" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/26/Objective-C 2.0 category/">Objective-C 2.0的category</a>
-    </h1>
-  
-
-        
-        <a href="/2018/03/26/Objective-C 2.0 category/" class="archive-article-date">
-  	<time datetime="2018-03-26T14:40:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<ul>
-<li><strong>class和category的数据结构</strong></li>
-<li><strong>为什么category只能添加方法，不能添加属性？</strong></li>
-<li><strong>category为何不要覆盖父类方法？</strong></li>
-<li><strong>多个category覆盖同名方法的执行顺序</strong></li>
-<li><strong>category与extension的区别</strong></li>
-<li><strong>关联对象和其他补充</strong></li>
-</ul>
-</blockquote>
-        
-          <a class="article-more-a" href="/2018/03/26/Objective-C 2.0 category/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/26/Objective-C 2.0 category/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 
@@ -918,19 +923,19 @@ return o(t,i(n),arguments.length<3?void 0:u(arguments[2]))}})},function(t,n,r){v
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">微信小程序</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color1">微信小程序</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
