@@ -6,17 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2019 | 臭吉吉的瞎记空间</title>
+  <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》17 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="督促自己好好学习哦~">
-<meta property="og:type" content="website">
-<meta property="og:title" content="臭吉吉的瞎记空间">
-<meta property="og:url" content="http://yoursite.com/archives/2019/page/2/index.html">
+  <meta name="description" content="GCD篇：1.GCD的使用要点1.多线程一个CPU执行的CPU命令列为一条无分叉路径，即为线程。而这种无分叉路径存在多条，即为多线程。  在多线程中，一个CPU核执行多条不同路径上的不同命令。 在CPU中，使用寄存器将执行“路径”的状态保存到各自的专用的内存块中。在切换不同目标路径时，从对应的内存块中读取并在CPU中将执行信息复原，继续执行目标路径的命令列。这个过程称为“上下文切换”。 多线程中需">
+<meta name="keywords" content="读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Objective-C高级编程 iOS与OS X多线程与内存管理》17">
+<meta property="og:url" content="http://yoursite.com/2019/01/18/GCD篇：1.GCD的使用要点/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="督促自己好好学习哦~">
+<meta property="og:description" content="GCD篇：1.GCD的使用要点1.多线程一个CPU执行的CPU命令列为一条无分叉路径，即为线程。而这种无分叉路径存在多条，即为多线程。  在多线程中，一个CPU核执行多条不同路径上的不同命令。 在CPU中，使用寄存器将执行“路径”的状态保存到各自的专用的内存块中。在切换不同目标路径时，从对应的内存块中读取并在CPU中将执行信息复原，继续执行目标路径的命令列。这个过程称为“上下文切换”。 多线程中需">
+<meta property="og:updated_time" content="2019-01-18T05:43:36.161Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="臭吉吉的瞎记空间">
-<meta name="twitter:description" content="督促自己好好学习哦~">
+<meta name="twitter:title" content="《Objective-C高级编程 iOS与OS X多线程与内存管理》17">
+<meta name="twitter:description" content="GCD篇：1.GCD的使用要点1.多线程一个CPU执行的CPU命令列为一条无分叉路径，即为线程。而这种无分叉路径存在多条，即为多线程。  在多线程中，一个CPU核执行多条不同路径上的不同命令。 在CPU中，使用寄存器将执行“路径”的状态保存到各自的专用的内存块中。在切换不同目标路径时，从对应的内存块中读取并在CPU中将执行信息复原，继续执行目标路径的命令列。这个过程称为“上下文切换”。 多线程中需">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -176,36 +178,80 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-GCD篇：1.GCD的使用要点" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      《Objective-C高级编程 iOS与OS X多线程与内存管理》17
+    </h1>
+  
+
+        
+        <a href="/2019/01/18/GCD篇：1.GCD的使用要点/" class="archive-article-date">
+  	<time datetime="2019-01-18T05:43:36.161Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-18</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="GCD篇：1-GCD的使用要点"><a href="#GCD篇：1-GCD的使用要点" class="headerlink" title="GCD篇：1.GCD的使用要点"></a>GCD篇：1.GCD的使用要点</h2><h4 id="1-多线程"><a href="#1-多线程" class="headerlink" title="1.多线程"></a>1.多线程</h4><p>一个CPU执行的CPU命令列为<strong>一条无分叉路径</strong>，即为<em>线程</em>。而这种无分叉路径存在多条，即为<em>多线程</em>。</p>
+<ul>
+<li>在多线程中，一个CPU核执行多条不同路径上的不同命令。</li>
+<li>在CPU中，使用寄存器将执行“路径”的状态保存到各自的专用的内存块中。在切换不同目标路径时，从对应的内存块中读取并在CPU中将执行信息复原，继续执行目标路径的命令列。这个过程称为“上下文切换”。</li>
+<li>多线程中需要注意的主要问题：<ul>
+<li>数据竞争：多个线程同时更新相同资源；</li>
+<li>死锁：执行等待事件的多个线程互相持续等待；</li>
+<li>线程过多导致内存占用过大</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-GCD的API要点"><a href="#2-GCD的API要点" class="headerlink" title="2.GCD的API要点"></a>2.GCD的API要点</h4><h5 id="2-1-串行和并发队列的使用建议"><a href="#2-1-串行和并发队列的使用建议" class="headerlink" title="2.1 串行和并发队列的使用建议"></a>2.1 串行和并发队列的使用建议</h5><ul>
+<li>多个线程同时更新相同资源时，避免产生数据竞争，可以使用Serial Dispatch Queue；</li>
+<li>并行处理无数据竞争的问题时，使用Concurrent Dispatch Queue</li>
+</ul>
+<h5 id="2-2-GCD的内存管理"><a href="#2-2-GCD的内存管理" class="headerlink" title="2.2 GCD的内存管理"></a>2.2 GCD的内存管理</h5><ul>
+<li>GCD使用引用计数的内存管理方式；</li>
+<li>dispatch_queue_t对象可以保证在内部派发的block执行期间不被释放的原因：block对象通过dispatch_retain的方式保留队列，block对象执行完成后再释放引用；</li>
+<li>iOS6之后，ARC可以完全胜任GCD的内存管理，不可再调用dispatch_release等相关API；</li>
+</ul>
+<h5 id="2-3-队列的优先级"><a href="#2-3-队列的优先级" class="headerlink" title="2.3 队列的优先级"></a>2.3 队列的优先级</h5><ul>
+<li>对Global Dispatch Queue设置优先级，CGD会将各自使用该队列的线程设置为对应的优先级</li>
+<li>手动创建的队列，其优先级均为DISPATCH_QUEUE_PRIORITY_DEFAULT</li>
+<li>通过<em>dispatch_set_target_queue(targetQueue, originQueue)</em>修改队列的优先级：<ul>
+<li><em>targetQueue</em>为待修改优先级的队列，<em>originQueue</em>为参照优先级的队列</li>
+<li>此API可以设置队列的执行阶层：如多个串行队列同时修改相同资源时，将所有队列的优先级设置为同一个串行队列，可以防止并发处理，避免数据竞争的情况发生。</li>
+</ul>
+</li>
+<li>通过XNU管理，在GCD中使用的线程并不能保证实时性。</li>
+</ul>
+<h5 id="2-4-dispatch-after"><a href="#2-4-dispatch-after" class="headerlink" title="2.4 dispatch_after"></a>2.4 dispatch_after</h5><p>任务的延迟执行，是指<strong>在指定时间后或到达指定时间，将block对象派发到任务队列中</strong>。注意是“派发”而不是“执行”，故可能存在一定时间延迟，且根据执行线程的任务拥挤程度，执行时间也不确定（派发的任务是由NSRunLoop对象在一次运行循环中取出并执行）。</p>
+<h5 id="2-5-提高数据库或文件的读写效率"><a href="#2-5-提高数据库或文件的读写效率" class="headerlink" title="2.5 提高数据库或文件的读写效率"></a>2.5 提高数据库或文件的读写效率</h5><p>通过<em>COncurrent Dispatch Queue</em>和<em>dispatch_barrier_async函数</em>组合使用，异步读取，栅栏操作写入，既可以保证读取的高效，还能保证写入的有效性和安全性。</p>
+<h5 id="2-6-确保安全地使用dispatch-sync"><a href="#2-6-确保安全地使用dispatch-sync" class="headerlink" title="2.6 确保安全地使用dispatch_sync"></a>2.6 确保安全地使用dispatch_sync</h5><p>对于个人目前的认知来说，只有在保证真正实现“原子性”的property时，才有可能会使用这个东西。</p>
+<h5 id="2-7-Dispatch-Semaphore可以保证更细颗粒度的排他操作"><a href="#2-7-Dispatch-Semaphore可以保证更细颗粒度的排他操作" class="headerlink" title="2.7 Dispatch Semaphore可以保证更细颗粒度的排他操作"></a>2.7 Dispatch Semaphore可以保证更细颗粒度的排他操作</h5><ul>
+<li>Dispatch Semaphore根据初始化传入的计数值来保证同时执行任务的最大数量</li>
+<li>每次dispatch_semaphore_wait时，会从可用任务数中试图减1：<ul>
+<li>本身是0，则没有可用执行空间，等待</li>
+<li>可用执行空间大于0，则减去1，并执行下面的任务</li>
+</ul>
+</li>
+<li>dispatch_semaphore_signal会对任务计数加1，释放占用的任务空间。</li>
+</ul>
+<h5 id="2-8-dispatch-once"><a href="#2-8-dispatch-once" class="headerlink" title="2.8 dispatch_once"></a>2.8 dispatch_once</h5><ul>
+<li>dispatch_once可以保证真正的多线程访问安全</li>
+<li>一般用于单例对象的创建</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/06/内存管理篇：7.ARC实现之__strong及autorelease优化/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:52:21.263Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/06/内存管理篇：7.ARC实现之__strong及autorelease优化/">《Objective-C高级编程 iOS与OS X多线程与内存管理》7</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -217,250 +263,88 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/01/18/GCD篇：1.GCD的使用要点/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/06/内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:51:20.446Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        </div>
-    	 
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/06/内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）/">《Objective-C高级编程 iOS与OS X多线程与内存管理》6</a>
-    </h1>
+  
+    <a href="/2019/01/15/Blocks篇：7.循环引用问题/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">《Objective-C高级编程 iOS与OS X多线程与内存管理》16</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+  
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/06/内存管理篇： 5.ARC的规则补充/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:49:49.390Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/06/内存管理篇： 5.ARC的规则补充/">《Objective-C高级编程 iOS与OS X多线程与内存管理》5</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/06/内存管理篇： 4.ARC的所有权修饰符/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:47:20.057Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/06/内存管理篇： 4.ARC的所有权修饰符/">《Objective-C高级编程 iOS与OS X多线程与内存管理》4</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/06/内存管理篇： 3.autorelease/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:43:19.318Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/06/内存管理篇： 3.autorelease/">《Objective-C高级编程 iOS与OS X多线程与内存管理》3</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/06/内存管理篇： 2.alloc-retain-release-dealloc的实现/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:42:32.544Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/06/内存管理篇： 2.alloc-retain-release-dealloc的实现/">《Objective-C高级编程 iOS与OS X多线程与内存管理》2</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/06/内存管理篇：1.引用计数的思考方式/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:40:57.232Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/06/内存管理篇：1.引用计数的思考方式/">《Objective-C高级编程 iOS与OS X多线程与内存管理》1</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/archives/2019/">&laquo; Prev</a><a class="page-number" href="/archives/2019/">1</a><span class="page-number current">2</span>
-    </nav>
   
 
 
@@ -484,8 +368,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: true,
