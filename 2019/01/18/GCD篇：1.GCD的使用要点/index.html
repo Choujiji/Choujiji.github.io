@@ -15,7 +15,7 @@
 <meta property="og:url" content="http://yoursite.com/2019/01/18/GCD篇：1.GCD的使用要点/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
 <meta property="og:description" content="GCD篇：1.GCD的使用要点1.多线程一个CPU执行的CPU命令列为一条无分叉路径，即为线程。而这种无分叉路径存在多条，即为多线程。  在多线程中，一个CPU核执行多条不同路径上的不同命令。 在CPU中，使用寄存器将执行“路径”的状态保存到各自的专用的内存块中。在切换不同目标路径时，从对应的内存块中读取并在CPU中将执行信息复原，继续执行目标路径的命令列。这个过程称为“上下文切换”。 多线程中需">
-<meta property="og:updated_time" content="2019-01-18T05:43:36.161Z">
+<meta property="og:updated_time" content="2019-01-18T05:46:22.547Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《Objective-C高级编程 iOS与OS X多线程与内存管理》17">
 <meta name="twitter:description" content="GCD篇：1.GCD的使用要点1.多线程一个CPU执行的CPU命令列为一条无分叉路径，即为线程。而这种无分叉路径存在多条，即为多线程。  在多线程中，一个CPU核执行多条不同路径上的不同命令。 在CPU中，使用寄存器将执行“路径”的状态保存到各自的专用的内存块中。在切换不同目标路径时，从对应的内存块中读取并在CPU中将执行信息复原，继续执行目标路径的命令列。这个过程称为“上下文切换”。 多线程中需">
@@ -209,6 +209,7 @@
 </ul>
 </li>
 </ul>
+<a id="more"></a>
 <h4 id="2-GCD的API要点"><a href="#2-GCD的API要点" class="headerlink" title="2.GCD的API要点"></a>2.GCD的API要点</h4><h5 id="2-1-串行和并发队列的使用建议"><a href="#2-1-串行和并发队列的使用建议" class="headerlink" title="2.1 串行和并发队列的使用建议"></a>2.1 串行和并发队列的使用建议</h5><ul>
 <li>多个线程同时更新相同资源时，避免产生数据竞争，可以使用Serial Dispatch Queue；</li>
 <li>并行处理无数据竞争的问题时，使用Concurrent Dispatch Queue</li>
