@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>ARKit文档瞎翻译（7） | 臭吉吉的瞎记空间</title>
+  <title>objc-公共头文件（Public Headers）的基本内容（上） | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="原文请戳">
+  <meta name="description" content="1. NSObject.h内部主要包含了NSObject协议和NSObject类。  NSObject协议规定了主要几部分：  class和self 执行方法api 判断所属类和遵循协议的方法 内存管理方法（ARC下禁止） 响应方法api   NSObject类规定了主要几部分：  内部结构：isa的Class指针 load和initialize类方法 init和dealloc等实例方法 声明并实">
 <meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ARKit文档瞎翻译（7）">
-<meta property="og:url" content="http://yoursite.com/2017/07/04/ARKit_doc_7/index.html">
+<meta property="og:title" content="objc-公共头文件（Public Headers）的基本内容（上）">
+<meta property="og:url" content="http://yoursite.com/2019/01/21/objc-公共头文件（Public Headers）的基本内容（上）/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="原文请戳">
-<meta property="og:updated_time" content="2018-05-15T02:20:18.159Z">
+<meta property="og:description" content="1. NSObject.h内部主要包含了NSObject协议和NSObject类。  NSObject协议规定了主要几部分：  class和self 执行方法api 判断所属类和遵循协议的方法 内存管理方法（ARC下禁止） 响应方法api   NSObject类规定了主要几部分：  内部结构：isa的Class指针 load和initialize类方法 init和dealloc等实例方法 声明并实">
+<meta property="og:updated_time" content="2019-01-21T09:19:35.706Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ARKit文档瞎翻译（7）">
-<meta name="twitter:description" content="原文请戳">
+<meta name="twitter:title" content="objc-公共头文件（Public Headers）的基本内容（上）">
+<meta name="twitter:description" content="1. NSObject.h内部主要包含了NSObject协议和NSObject类。  NSObject协议规定了主要几部分：  class和self 执行方法api 判断所属类和遵循协议的方法 内存管理方法（ARC下禁止） 响应方法api   NSObject类规定了主要几部分：  内部结构：isa的Class指针 load和initialize类方法 init和dealloc等实例方法 声明并实">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -178,46 +178,111 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-ARKit_doc_7" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-objc-公共头文件（Public Headers）的基本内容（上）" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      ARKit文档瞎翻译（7）
+      objc-公共头文件（Public Headers）的基本内容（上）
     </h1>
   
 
         
-        <a href="/2017/07/04/ARKit_doc_7/" class="archive-article-date">
-  	<time datetime="2017-07-04T03:28:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-04</time>
+        <a href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（上）/" class="archive-article-date">
+  	<time datetime="2019-01-21T09:19:35.705Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-21</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">原文请戳</a></p>
-<a id="more"></a>
-<h1 id="ARSKView"><a href="#ARSKView" class="headerlink" title="ARSKView"></a>ARSKView</h1><p>使用2D的SpriteKit内容进而增强相机来显示AR体验的一种视图。</p>
-<hr>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>使用ARSKView类，可以在设备相机拍摄的真实世界视图的3D空间中放置2D元素来创建AR体验。当你运行这个视图提供的<a href="https://developer.apple.com/documentation/arkit/arsession?language=objc" target="_blank" rel="external">ARSession</a>对象时：</p>
+        <h3 id="1-NSObject-h"><a href="#1-NSObject-h" class="headerlink" title="1. NSObject.h"></a>1. NSObject.h</h3><p>内部主要包含了<strong>NSObject协议</strong>和<strong>NSObject类</strong>。</p>
 <ul>
-<li>该视图会自动渲染从相机拍摄到的实时视频并将其作为背景。</li>
-<li>当你实现了<a href="https://developer.apple.com/documentation/arkit/arskviewdelegate?language=objc" target="_blank" rel="external">ARSKViewDelegate</a>的方法把SpriteKit内容和真实世界的位置联系在一起时，该视图会自动缩放并旋转SpriteKit节点，以便他们在相机中看起来就像可以在真实世界中追踪到一样。</li>
+<li><p>NSObject协议规定了主要几部分：</p>
+<ul>
+<li>class和self</li>
+<li>执行方法api</li>
+<li>判断所属类和遵循协议的方法</li>
+<li>内存管理方法（ARC下禁止）</li>
+<li>响应方法api</li>
 </ul>
-<h2 id="话题"><a href="#话题" class="headerlink" title="话题"></a>话题</h2><h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><h6 id="使用SpriteKit提供2D虚拟内容"><a href="#使用SpriteKit提供2D虚拟内容" class="headerlink" title="使用SpriteKit提供2D虚拟内容"></a><a href="https://developer.apple.com/documentation/arkit/arskview/providing_2d_virtual_content_with_spritekit?language=objc" target="_blank" rel="external">使用SpriteKit提供2D虚拟内容</a></h6><pre><code>在AR体验中，使用SpriteKit在3D空间中放置2D图片
-</code></pre><h6 id="session"><a href="#session" class="headerlink" title="session"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2865589-session?language=objc" target="_blank" rel="external">session</a></h6><pre><code>管理着视图内容中的运动追踪和相机视图处理的AR会话对象
-</code></pre><h3 id="负责AR更新"><a href="#负责AR更新" class="headerlink" title="负责AR更新"></a>负责AR更新</h3><h6 id="delegate"><a href="#delegate" class="headerlink" title="delegate"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2865597-delegate?language=objc" target="_blank" rel="external">delegate</a></h6><pre><code>你提供的一个对象，用于使用SpriteKit内容来同步处理视图中的AR场景信息。
-</code></pre><h6 id="ARSKViewDelegate"><a href="#ARSKViewDelegate" class="headerlink" title="ARSKViewDelegate"></a><a href="https://developer.apple.com/documentation/arkit/arskviewdelegate?language=objc" target="_blank" rel="external">ARSKViewDelegate</a></h6><pre><code>可以实现的一系列方法，你可以用他们使用AR会话对象来同步处理SpriteKit内容。
-</code></pre><h3 id="真实世界表面的碰撞检测"><a href="#真实世界表面的碰撞检测" class="headerlink" title="真实世界表面的碰撞检测"></a>真实世界表面的碰撞检测</h3><h6 id="hitTest-types"><a href="#hitTest-types" class="headerlink" title="- hitTest:types:"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2875733-hittest?language=objc" target="_blank" rel="external">- hitTest:types:</a></h6><pre><code>在截取的相机图像中搜索真实世界的物体或AR锚点，与SpriteKit视图中的一个点相对应。
-</code></pre><h3 id="映射内容到真实世界的位置中"><a href="#映射内容到真实世界的位置中" class="headerlink" title="映射内容到真实世界的位置中"></a>映射内容到真实世界的位置中</h3><h6 id="anchorForNode"><a href="#anchorForNode" class="headerlink" title="- anchorForNode:"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2875729-anchorfornode?language=objc" target="_blank" rel="external">- anchorForNode:</a></h6><pre><code>如果存在，返回与指定SpriteKit节点相关的AR锚点
-</code></pre><h6 id="nodeForAnchor"><a href="#nodeForAnchor" class="headerlink" title="- nodeForAnchor:"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2873513-nodeforanchor?language=objc" target="_blank" rel="external">- nodeForAnchor:</a></h6><pre><code>如果存在，返回与指定AR锚点相关的SpriteKit节点
-</code></pre><h2 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h2><h3 id="继承自"><a href="#继承自" class="headerlink" title="继承自"></a>继承自</h3><p><a href="https://developer.apple.com/documentation/spritekit/skview?language=objc" target="_blank" rel="external">SKView</a></p>
-<h2 id="另请参阅"><a href="#另请参阅" class="headerlink" title="另请参阅"></a>另请参阅</h2><h3 id="基本视图"><a href="#基本视图" class="headerlink" title="基本视图"></a>基本视图</h3><h6 id="创建一个基本的AR体验"><a href="#创建一个基本的AR体验" class="headerlink" title="创建一个基本的AR体验"></a><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">创建一个基本的AR体验</a></h6><pre><code>配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容
-</code></pre><h6 id="ARSCNView"><a href="#ARSCNView" class="headerlink" title="ARSCNView"></a><a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a></h6><pre><code>使用3D的SceneKit内容进而增强相机来显示AR体验的一种视图。
-</code></pre>
+</li>
+<li><p>NSObject类规定了主要几部分：</p>
+<ul>
+<li>内部结构：isa的Class指针</li>
+<li>load和initialize类方法</li>
+<li>init和dealloc等实例方法</li>
+<li>声明并实现了消息转发的相关方法</li>
+<li>声明了类方法版本的NSObject协议方法<a id="more"></a>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="2-message-h"><a href="#2-message-h" class="headerlink" title="2. message.h"></a>2. message.h</h3><h4 id="2-1-super关键字对应的objc-super结构体："><a href="#2-1-super关键字对应的objc-super结构体：" class="headerlink" title="2.1 super关键字对应的objc_super结构体："></a>2.1 super关键字对应的<strong>objc_super结构体</strong>：</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_super</span> &#123;</span></div><div class="line">    <span class="comment">/** 接收者，当前类的实例，即使用super的self */</span></div><div class="line">    __unsafe_unretained _Nonnull id receiver;</div><div class="line">    <span class="comment">/** 父类的指针 */</span></div><div class="line">    __unsafe_unretained _Nonnull Class super_class;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="2-2-基本的消息原型"><a href="#2-2-基本的消息原型" class="headerlink" title="2.2 基本的消息原型"></a>2.2 基本的消息原型</h4><p>对象调用方法，即<strong>给对象发消息，调用objc_msgSend方法</strong>，而根据参数类型的不同，系统会自动调用对应的子版本；而<strong>通过对象，调用父类的方法，调用objc_msgSendSuper方法</strong>。</p>
+<ul>
+<li>objc_msgSend函数：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">id _<span class="function">Nullable <span class="title">objc_msgSend</span><span class="params">(id _Nullable self, SEL _Nullable op, ...)</span></span></div></pre></td></tr></table></figure>
+<p>说明：</p>
+<blockquote>
+<ul>
+<li>self，对象，即为id（指向objc_object实例的指针）</li>
+<li>op即为SEL，objc_selector的实例指针，运行时系统可以通过SEL找到方法实现IMP</li>
+<li>后面为方法调用的参数</li>
+</ul>
+</blockquote>
+<ul>
+<li>objc_msgSendSuper函数：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">id _<span class="function">Nullable <span class="title">objc_msgSendSuper</span><span class="params">(</span></span></div><div class="line">    struct objc_super * _Nullable super, </div><div class="line">    SEL _Nullable op,</div><div class="line">    ...</div><div class="line">)</div></pre></td></tr></table></figure>
+<p>说明：</p>
+<blockquote>
+<ul>
+<li>super，即为上述objc_super结构体实例的指针</li>
+<li>op为SEL</li>
+<li>后面传入调用参数</li>
+</ul>
+</blockquote>
+<hr>
+<h3 id="3-objc-h"><a href="#3-objc-h" class="headerlink" title="3. objc.h"></a>3. objc.h</h3><h4 id="3-1-Class"><a href="#3-1-Class" class="headerlink" title="3.1 Class"></a>3.1 Class</h4><p>Class，类对象，即objc_class的结构体实例指针：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> *<span class="title">Class</span>;</span></div></pre></td></tr></table></figure>
+<h4 id="3-2-对象"><a href="#3-2-对象" class="headerlink" title="3.2 对象"></a>3.2 对象</h4><p>对象，指的是Class的实例，默认即为id类型的变量：</p>
+<ul>
+<li>id即objc_object结构体实例的指针：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_object</span> *<span class="title">id</span>;</span></div></pre></td></tr></table></figure>
+<ul>
+<li>objc_object结构体，即<strong>对象真正的本质：包含类指针的结构体实例</strong></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_object</span> &#123;</span></div><div class="line">    Class _Nonnull isa;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="3-3-选择器及实现"><a href="#3-3-选择器及实现" class="headerlink" title="3.3 选择器及实现"></a>3.3 选择器及实现</h4><ul>
+<li>选择器SEL：objc_selector结构体实例的指针</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_selector</span> *<span class="title">SEL</span>;</span></div></pre></td></tr></table></figure>
+<ul>
+<li>方法实现IMP：c函数指针，参数为调用对象id、选择器SEL和参数列表</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> id _Nullable (*IMP)(id _Nonnull, SEL _Nonnull, ...)</div></pre></td></tr></table></figure>
+<h4 id="3-4-主要方法API"><a href="#3-4-主要方法API" class="headerlink" title="3.4 主要方法API"></a>3.4 主要方法API</h4><ul>
+<li>获取选择器对应的方法名：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> * _<span class="function">Nonnull <span class="title">sel_getName</span><span class="params">(SEL _Nonnull sel)</span></span>;</div></pre></td></tr></table></figure>
+<ul>
+<li>根据指定的名称向运行时系统注册选择器：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SEL _<span class="function">Nonnull <span class="title">sel_registerName</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> * _Nonnull str)</span></span>;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>在将方法添加到类定义中之前，必须先注册SEL</p>
+</blockquote>
+<ul>
+<li>返回对象所属类的名字：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> * _<span class="function">Nonnull <span class="title">object_getClassName</span><span class="params">(id _Nullable obj)</span></span>;</div></pre></td></tr></table></figure>
+
       
 
       
@@ -286,7 +351,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/07/04/ARKit_doc_7/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/01/21/objc-公共头文件（Public Headers）的基本内容（上）/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -300,18 +365,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2017/07/04/ARKit_doc_8/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          ARKit文档瞎翻译（8）
+          objc-公共头文件（Public Headers）的基本内容（下）
         
       </div>
     </a>
   
   
-    <a href="/2017/07/03/ARKit_doc_6/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">ARKit文档瞎翻译（6）</div>
+    <a href="/2019/01/18/GCD篇：1.GCD的使用要点/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">《Objective-C高级编程 iOS与OS X多线程与内存管理》17</div>
       <i class="icon-circle-right"></i>
     </a>
   

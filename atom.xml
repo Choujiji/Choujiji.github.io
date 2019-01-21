@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-01-18T05:46:22.547Z</updated>
+  <updated>2019-01-21T09:20:35.940Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,410 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>objc-公共头文件（Public Headers）的基本内容（下）</title>
+    <link href="http://yoursite.com/2019/01/21/objc-%E5%85%AC%E5%85%B1%E5%A4%B4%E6%96%87%E4%BB%B6%EF%BC%88Public%20Headers%EF%BC%89%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%86%85%E5%AE%B9%EF%BC%88%E4%B8%8B%EF%BC%89/"/>
+    <id>http://yoursite.com/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/</id>
+    <published>2019-01-21T09:20:35.940Z</published>
+    <updated>2019-01-21T09:20:35.940Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="runtime-h"><a href="#runtime-h" class="headerlink" title="runtime.h"></a>runtime.h</h3><h4 id="1-数据类型定义"><a href="#1-数据类型定义" class="headerlink" title="1.数据类型定义"></a>1.数据类型定义</h4><h5 id="1-1-方法Method"><a href="#1-1-方法Method" class="headerlink" title="1.1 方法Method"></a>1.1 方法Method</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">method_t</span> *<span class="title">Method</span>;</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">method_t</span> &#123;</span></div><div class="line">    SEL name;</div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *types;</div><div class="line">    IMP imp;</div><div class="line"></div><div class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">SortBySELAddress</span> :</span></div><div class="line">        <span class="keyword">public</span> <span class="built_in">std</span>::binary_function&lt;<span class="keyword">const</span> <span class="keyword">method_t</span>&amp;,</div><div class="line">                                    <span class="keyword">const</span> <span class="keyword">method_t</span>&amp;, <span class="keyword">bool</span>&gt;</div><div class="line">    &#123;</div><div class="line">        <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span> <span class="params">(<span class="keyword">const</span> <span class="keyword">method_t</span>&amp; lhs,</span></span></div><div class="line">                         <span class="keyword">const</span> <span class="keyword">method_t</span>&amp; rhs)</div><div class="line">        &#123; <span class="keyword">return</span> lhs.name &lt; rhs.name; &#125;</div><div class="line">    &#125;;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>如上所述，Method即为method_t的结构体实例指针，其组成包含<strong>SEL选择器、IMP函数指针和方法类型描述</strong>。</p>
+<h5 id="1-2-变量Ivar"><a href="#1-2-变量Ivar" class="headerlink" title="1.2 变量Ivar"></a>1.2 变量Ivar</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">ivar_t</span> *<span class="title">Ivar</span>;</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ivar_t</span> &#123;</span></div><div class="line">    <span class="keyword">int32_t</span> *offset;</div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name;</div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *type;</div><div class="line">    <span class="comment">// alignment is sometimes -1; use alignment() instead</span></div><div class="line">    <span class="keyword">uint32_t</span> alignment_raw;</div><div class="line">    <span class="keyword">uint32_t</span> size;</div><div class="line"></div><div class="line">    <span class="keyword">uint32_t</span> alignment() <span class="keyword">const</span> &#123;</div><div class="line">        <span class="keyword">if</span> (alignment_raw == ~(<span class="keyword">uint32_t</span>)<span class="number">0</span>) <span class="keyword">return</span> <span class="number">1U</span> &lt;&lt; WORD_SHIFT;</div><div class="line">        <span class="keyword">return</span> <span class="number">1</span> &lt;&lt; alignment_raw;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>Ivar为ivar_t的结构体实例指针，组成主要包括<strong>变量名，变量类型和偏移量（用于内存布局）</strong>。</p>
+<h5 id="1-3-分类Category"><a href="#1-3-分类Category" class="headerlink" title="1.3 分类Category"></a>1.3 分类Category</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">category_t</span> *<span class="title">Category</span>;</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">category_t</span> &#123;</span></div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name;</div><div class="line">    <span class="keyword">classref_t</span> cls;</div><div class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">method_list_t</span> *<span class="title">instanceMethods</span>;</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">method_list_t</span> *<span class="title">classMethods</span>;</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">protocol_list_t</span> *<span class="title">protocols</span>;</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">property_list_t</span> *<span class="title">instanceProperties</span>;</span></div><div class="line">    <span class="comment">// Fields below this point are not always present on disk.</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">property_list_t</span> *_<span class="title">classProperties</span>;</span></div><div class="line"></div><div class="line">    <span class="keyword">method_list_t</span> *methodsForMeta(<span class="keyword">bool</span> isMeta) &#123;</div><div class="line">        <span class="keyword">if</span> (isMeta) <span class="keyword">return</span> classMethods;</div><div class="line">        <span class="keyword">else</span> <span class="keyword">return</span> instanceMethods;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">property_list_t</span> *propertiesForMeta(<span class="keyword">bool</span> isMeta, struct header_info *hi);</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>Category为category_t的结构体实例指针，内部主要包括<em>**分类名、所属类、实例方法列表指针、类方法列表指针和协议列表指针</em>。</p>
+<h5 id="1-4-属性objc-property-t"><a href="#1-4-属性objc-property-t" class="headerlink" title="1.4 属性objc_property_t"></a>1.4 属性objc_property_t</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">property_t</span> *<span class="title">objc_property_t</span>;</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">property_t</span> &#123;</span></div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name;</div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *attributes;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>指向property_t结构体实例的指针，内部包含名称和支持的特性。</p>
+<h5 id="1-5-类Class"><a href="#1-5-类Class" class="headerlink" title="1.5 类Class"></a>1.5 类Class</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> *<span class="title">Class</span>;</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> &#123;</span></div><div class="line">    Class _Nonnull isa;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>Class即为指向objc_class结构体实例的指针。Class内部包含Class类型的isa指针。</li>
+<li>由于Class的结构与id一致，均只包含isa的Class指针，故<strong>Class也是对象</strong>（面向对象中一切皆为对象）。</li>
+<li>Class中的isa指向的是metaclass。</li>
+</ul>
+<h4 id="2-方法定义"><a href="#2-方法定义" class="headerlink" title="2.方法定义"></a>2.方法定义</h4><h5 id="2-1-使用对象的相关方法"><a href="#2-1-使用对象的相关方法" class="headerlink" title="2.1 使用对象的相关方法"></a>2.1 使用对象的相关方法</h5><h6 id="2-1-1-获取对象所属类"><a href="#2-1-1-获取对象所属类" class="headerlink" title="2.1.1 获取对象所属类"></a>2.1.1 获取对象所属类</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Class _<span class="function">Nullable </span></div><div class="line"><span class="title">object_getClass</span><span class="params">(id _Nullable obj)</span>;</div></pre></td></tr></table></figure>
+<h6 id="2-1-2-给对象设置所属类"><a href="#2-1-2-给对象设置所属类" class="headerlink" title="2.1.2 给对象设置所属类"></a>2.1.2 给对象设置所属类</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Class _<span class="function">Nullable</span></div><div class="line"><span class="title">object_setClass</span><span class="params">(id _Nullable obj, Class _Nonnull cls)</span>;</div></pre></td></tr></table></figure>
+<p>返回值为设置之前的类</p>
+<h6 id="2-1-3-判断执行对象是否为类"><a href="#2-1-3-判断执行对象是否为类" class="headerlink" title="2.1.3 判断执行对象是否为类"></a>2.1.3 判断执行对象是否为类</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function">BOOL</span></div><div class="line"><span class="title">object_isClass</span><span class="params">(id _Nullable obj)</span>;</div></pre></td></tr></table></figure>
+<p>返回YES，则传入对象为Class或metaclass（印证了Class也是对象）。</p>
+<h6 id="2-1-4-获取对象的实例变量的值"><a href="#2-1-4-获取对象的实例变量的值" class="headerlink" title="2.1.4 获取对象的实例变量的值"></a>2.1.4 获取对象的实例变量的值</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">id _<span class="function">Nullable</span></div><div class="line"><span class="title">object_getIvar</span><span class="params">(id _Nullable obj, Ivar _Nonnull ivar)</span>;</div></pre></td></tr></table></figure>
+<h6 id="2-1-5-向对象的实例变量设置值"><a href="#2-1-5-向对象的实例变量设置值" class="headerlink" title="2.1.5 向对象的实例变量设置值"></a>2.1.5 向对象的实例变量设置值</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span></span></div><div class="line"><span class="title">object_setIvar</span><span class="params">(id _Nullable obj, Ivar _Nonnull ivar, id _Nullable value)</span>;</div></pre></td></tr></table></figure>
+<p>对于实例变量Ivar来说，</p>
+<ul>
+<li>若其内存管理方式已知（如在ARC环境下），就会直接按照其进行设置；</li>
+<li>若未知，则按照__unsafe_unretained方式进行设置；</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span></span></div><div class="line"><span class="title">object_setIvarWithStrongDefault</span><span class="params">(id _Nullable obj, Ivar _Nonnull ivar, id _Nullable value)</span>;</div></pre></td></tr></table></figure>
+<p>对于实例变量Ivar来说，</p>
+<ul>
+<li>若其内存管理方式已知（如在ARC环境下），就会直接按照其进行设置；</li>
+<li>若未知，则按照__strong方式进行设置；</li>
+</ul>
+<h5 id="2-2-获取类定义的相关方法"><a href="#2-2-获取类定义的相关方法" class="headerlink" title="2.2 获取类定义的相关方法"></a>2.2 获取类定义的相关方法</h5><h6 id="2-2-1-根据名字获取类"><a href="#2-2-1-根据名字获取类" class="headerlink" title="2.2.1 根据名字获取类"></a>2.2.1 根据名字获取类</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 1. 一般方式</span></div><div class="line">Class _<span class="function">Nullable</span></div><div class="line"><span class="title">objc_getClass</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> * _Nonnull name)</span>;</div><div class="line"></div><div class="line"><span class="comment">// 2. 第二种方式</span></div><div class="line">Class _<span class="function">Nullable</span></div><div class="line"><span class="title">objc_lookUpClass</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> * _Nonnull name)</span>;</div><div class="line"></div><div class="line"><span class="comment">// 3. 自杀式</span></div><div class="line">Class _<span class="function">Nonnull</span></div><div class="line"><span class="title">objc_getRequiredClass</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> * _Nonnull name)</span>;</div></pre></td></tr></table></figure>
+<ul>
+<li>所有方式，均可以查询到是否存在改类。</li>
+<li>区别：当Class没有注册到运行时系统中时，<em>objc_getClass</em>方法会在类的处理回调执行后，再次查询该类是否已存在；<em>objc_lookUpClass</em>则不会；<em>objc_getRequiredClass</em>则会自动终止进程（只会查询编译时已确定的Class）。</li>
+</ul>
+<h6 id="2-2-2-获取类的原类"><a href="#2-2-2-获取类的原类" class="headerlink" title="2.2.2 获取类的原类"></a>2.2.2 获取类的原类</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Class _<span class="function">Nullable</span></div><div class="line"><span class="title">objc_getMetaClass</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> * _Nonnull name)</span>;</div></pre></td></tr></table></figure>
+<p>类方法都是保存在metaclass中的。</p>
+<h6 id="2-2-3-获取所有的类定义"><a href="#2-2-3-获取所有的类定义" class="headerlink" title="2.2.3 获取所有的类定义"></a>2.2.3 获取所有的类定义</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span></span></div><div class="line"><span class="title">objc_getClassList</span><span class="params">(Class _Nonnull * _Nullable buffer, <span class="keyword">int</span> bufferCount)</span>;</div></pre></td></tr></table></figure>
+<p>注意：</p>
+<blockquote>
+<p>不要假定返回的所有类都继承自NSObject，故对其中的类调用方法时需要提前检查该方法是否已经实现。</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Class _Nonnull * _<span class="function">Nullable</span></div><div class="line"><span class="title">objc_copyClassList</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> * _Nullable outCount)</span>;</div></pre></td></tr></table></figure>
+<p>我们一般使用此版本，不过使用完的列表对象，需要手动释放内存。</p>
+<h5 id="2-3-使用类的相关方法"><a href="#2-3-使用类的相关方法" class="headerlink" title="2.3 使用类的相关方法"></a>2.3 使用类的相关方法</h5><h6 id="2-3-1-获取类的名字"><a href="#2-3-1-获取类的名字" class="headerlink" title="2.3.1 获取类的名字"></a>2.3.1 获取类的名字</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> * _<span class="function">Nonnull</span></div><div class="line"><span class="title">class_getName</span><span class="params">(Class _Nullable cls)</span>;</div></pre></td></tr></table></figure>
+<h6 id="2-3-2-判断类是否为原类（metaclass）"><a href="#2-3-2-判断类是否为原类（metaclass）" class="headerlink" title="2.3.2 判断类是否为原类（metaclass）"></a>2.3.2 判断类是否为原类（metaclass）</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function">BOOL</span></div><div class="line"><span class="title">class_isMetaClass</span><span class="params">(Class _Nullable cls)</span>;</div></pre></td></tr></table></figure>
+<h6 id="2-3-3-获取类的父类"><a href="#2-3-3-获取类的父类" class="headerlink" title="2.3.3 获取类的父类"></a>2.3.3 获取类的父类</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Class _<span class="function">Nullable</span></div><div class="line"><span class="title">class_getSuperclass</span><span class="params">(Class _Nullable cls)</span>;</div></pre></td></tr></table></figure>
+<h6 id="2-3-4-返回类的实例的大小（OC对象的大小）"><a href="#2-3-4-返回类的实例的大小（OC对象的大小）" class="headerlink" title="2.3.4 返回类的实例的大小（OC对象的大小）"></a>2.3.4 返回类的实例的大小（OC对象的大小）</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">size_t</span></div><div class="line">class_getInstanceSize(Class _Nullable cls);</div></pre></td></tr></table></figure>
+<h6 id="2-3-5-获取类中的实例变量"><a href="#2-3-5-获取类中的实例变量" class="headerlink" title="2.3.5 获取类中的实例变量"></a>2.3.5 获取类中的实例变量</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Ivar _<span class="function">Nullable</span></div><div class="line"><span class="title">class_getInstanceVariable</span><span class="params">(Class _Nullable cls, <span class="keyword">const</span> <span class="keyword">char</span> * _Nonnull name)</span>;</div></pre></td></tr></table></figure>
+<p>返回的是指定名字的实例变量对象（非属性对象），类型为Ivar，即ivar<em>返回的是指定名字的实例变量对象（非属性对象），类型为Ivar，即ivar</em>返回构体指针。</p>
+<h6 id="2-3-6-获取类中的类变量"><a href="#2-3-6-获取类中的类变量" class="headerlink" title="2.3.6 获取类中的类变量"></a>2.3.6 获取类中的类变量</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Ivar _<span class="function">Nullable</span></div><div class="line"><span class="title">class_getClassVariable</span><span class="params">(Class _Nullable cls, <span class="keyword">const</span> <span class="keyword">char</span> * _Nonnull name)</span>;</div></pre></td></tr></table></figure>
+<p>一般来说，Class中并没有所谓的“类变量”。我们可以使用此方法来返回“isa”指针的对象。</p>
+<h6 id="2-3-7-拷贝并返回类的实例变量列表"><a href="#2-3-7-拷贝并返回类的实例变量列表" class="headerlink" title="2.3.7 拷贝并返回类的实例变量列表"></a>2.3.7 拷贝并返回类的实例变量列表</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Ivar _Nonnull * _<span class="function">Nullable</span></div><div class="line"><span class="title">class_copyIvarList</span><span class="params">(Class _Nullable cls, <span class="keyword">unsigned</span> <span class="keyword">int</span> * _Nullable outCount)</span>;</div></pre></td></tr></table></figure>
+<ul>
+<li>返回的是包含所有实例变量Ivar指针的数组，使用完毕后需要手动释放内存；</li>
+<li>只有自身类的实例变量，不包括父类</li>
+</ul>
+<h6 id="2-3-8-获取指定类的实例方法对象"><a href="#2-3-8-获取指定类的实例方法对象" class="headerlink" title="2.3.8 获取指定类的实例方法对象"></a>2.3.8 获取指定类的实例方法对象</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Method _<span class="function">Nullable</span></div><div class="line"><span class="title">class_getInstanceMethod</span><span class="params">(Class _Nullable cls, SEL _Nonnull name)</span>;</div></pre></td></tr></table></figure>
+<p>注意：此方法会查找父类中的实现。</p>
+<h6 id="2-3-9-获取指定类的类方法对象"><a href="#2-3-9-获取指定类的类方法对象" class="headerlink" title="2.3.9 获取指定类的类方法对象"></a>2.3.9 获取指定类的类方法对象</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Method _<span class="function">Nullable</span></div><div class="line"><span class="title">class_getClassMethod</span><span class="params">(Class _Nullable cls, SEL _Nonnull name)</span>;</div></pre></td></tr></table></figure>
+<p>注意：此方法会查找父类中的实现。</p>
+<h6 id="2-3-10-获取指定类中的指定方法实现"><a href="#2-3-10-获取指定类中的指定方法实现" class="headerlink" title="2.3.10 获取指定类中的指定方法实现"></a>2.3.10 获取指定类中的指定方法实现</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">IMP _<span class="function">Nullable</span></div><div class="line"><span class="title">class_getMethodImplementation</span><span class="params">(Class _Nullable cls, SEL _Nonnull name)</span>;</div></pre></td></tr></table></figure>
+<p>注意，返回的IMP为运行时中的内部对象，并非真正的函数指针。当找不到方法实现时，返回的是消息转发机制中的函数指针。</p>
+<h6 id="2-3-11-拷贝并返回类中的方法列表"><a href="#2-3-11-拷贝并返回类中的方法列表" class="headerlink" title="2.3.11 拷贝并返回类中的方法列表"></a>2.3.11 拷贝并返回类中的方法列表</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Method _Nonnull * _<span class="function">Nullable</span></div><div class="line"><span class="title">class_copyMethodList</span><span class="params">(Class _Nullable cls, <span class="keyword">unsigned</span> <span class="keyword">int</span> * _Nullable outCount)</span>;</div></pre></td></tr></table></figure>
+<ul>
+<li>返回的是包含所有方法Method指针的数组，使用完毕后需要手动释放内存；</li>
+<li>只有自身类的方法，不包括父类</li>
+</ul>
+<h6 id="2-3-12-拷贝并返回类遵循的协议列表"><a href="#2-3-12-拷贝并返回类遵循的协议列表" class="headerlink" title="2.3.12 拷贝并返回类遵循的协议列表"></a>2.3.12 拷贝并返回类遵循的协议列表</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Protocol * __unsafe_unretained _Nonnull * _<span class="function">Nullable </span></div><div class="line"><span class="title">class_copyProtocolList</span><span class="params">(Class _Nullable cls, <span class="keyword">unsigned</span> <span class="keyword">int</span> * _Nullable outCount)</span>;</div></pre></td></tr></table></figure>
+<p>这里的Protocol实质上是NSObject的子类。</p>
+<h6 id="2-3-13-获取类的属性对象（property）"><a href="#2-3-13-获取类的属性对象（property）" class="headerlink" title="2.3.13 获取类的属性对象（property）"></a>2.3.13 获取类的属性对象（property）</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">objc_property_t</span> _<span class="function">Nullable</span></div><div class="line"><span class="title">class_getProperty</span><span class="params">(Class _Nullable cls, <span class="keyword">const</span> <span class="keyword">char</span> * _Nonnull name)</span>;</div></pre></td></tr></table></figure>
+<h6 id="2-3-14-拷贝并返回类的属性列表"><a href="#2-3-14-拷贝并返回类的属性列表" class="headerlink" title="2.3.14 拷贝并返回类的属性列表"></a>2.3.14 拷贝并返回类的属性列表</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">objc_property_t</span> _Nonnull * _<span class="function">Nullable</span></div><div class="line"><span class="title">class_copyPropertyList</span><span class="params">(Class _Nullable cls, <span class="keyword">unsigned</span> <span class="keyword">int</span> * _Nullable outCount)</span>;</div></pre></td></tr></table></figure>
+<ul>
+<li>返回的是包含所有属性objc_property_t指针的数组，使用完毕后需要手动释放内存；</li>
+<li>只有自身类的属性，不包括父类</li>
+</ul>
+<h6 id="2-3-15-获取类的实例变量布局"><a href="#2-3-15-获取类的实例变量布局" class="headerlink" title="2.3.15 获取类的实例变量布局"></a>2.3.15 获取类的实例变量布局</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">uint8_t</span> * _<span class="function">Nullable</span></div><div class="line"><span class="title">class_getIvarLayout</span><span class="params">(Class _Nullable cls)</span>;</div></pre></td></tr></table></figure>
+<p>得到的是类的实例变量的布局描述，这里留下疑问？？？</p>
+<h6 id="2-3-16-获取类的weak的实例变量布局"><a href="#2-3-16-获取类的weak的实例变量布局" class="headerlink" title="2.3.16 获取类的weak的实例变量布局"></a>2.3.16 获取类的weak的实例变量布局</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">uint8_t</span> * _<span class="function">Nullable</span></div><div class="line"><span class="title">class_getWeakIvarLayout</span><span class="params">(Class _Nullable cls)</span>;</div></pre></td></tr></table></figure>
+<p>第二个疑问？？？</p>
+<h6 id="2-3-17-给类添加新方法"><a href="#2-3-17-给类添加新方法" class="headerlink" title="2.3.17 给类添加新方法"></a>2.3.17 给类添加新方法</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function">BOOL</span></div><div class="line"><span class="title">class_addMethod</span><span class="params">(</span></div><div class="line">    Class _Nullable cls, </div><div class="line">    SEL _Nonnull name, </div><div class="line">    IMP _Nonnull imp,</div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> * _Nullable types</div><div class="line">);</div></pre></td></tr></table></figure>
+<ul>
+<li>可以向类中动态添加方法</li>
+<li>可以覆盖父类的同名方法</li>
+<li>不会替换本类中已存在方法的实现（修改方法实现，可使用<em>method_setImplementation</em>方法）</li>
+</ul>
+<h6 id="2-3-18-替换类中指定方法的实现"><a href="#2-3-18-替换类中指定方法的实现" class="headerlink" title="2.3.18 替换类中指定方法的实现"></a>2.3.18 替换类中指定方法的实现</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">IMP _<span class="function">Nullable</span></div><div class="line"><span class="title">class_replaceMethod</span><span class="params">(</span></div><div class="line">    Class _Nullable cls, </div><div class="line">    SEL _Nonnull name, </div><div class="line">    IMP _Nonnull imp, </div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> * _Nullable types</div><div class="line">);</div></pre></td></tr></table></figure>
+<ul>
+<li>若方法不存在，则向该类中自动添加方法；</li>
+<li>方法已存在，则替换方法实现</li>
+</ul>
+<h6 id="2-3-19-向类中添加实例变量"><a href="#2-3-19-向类中添加实例变量" class="headerlink" title="2.3.19 向类中添加实例变量"></a>2.3.19 向类中添加实例变量</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function">BOOL</span></div><div class="line"><span class="title">class_addIvar</span><span class="params">(</span></div><div class="line">    Class _Nullable cls, </div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> * _Nonnull name, </div><div class="line">    <span class="keyword">size_t</span> size, </div><div class="line">    <span class="keyword">uint8_t</span> alignment, </div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> * _Nullable types</div><div class="line">);</div></pre></td></tr></table></figure>
+<ul>
+<li>只能在<em>objc_allocateClassPair</em>之后（动态创建类）并在<em>objc_registerClassPair</em>（向运行时系统注册类）之前调用，将实例变量添加到类布局中；</li>
+<li>只能添加到本类中，不能添加到metaclass中；</li>
+<li>alignment对齐方式，最少为“1&lt;&lt;alignment”；对于指针类型变量，传入log2(sizeof(pointer_type))。</li>
+</ul>
+<h6 id="2-3-20-向类中新增遵循的协议"><a href="#2-3-20-向类中新增遵循的协议" class="headerlink" title="2.3.20 向类中新增遵循的协议"></a>2.3.20 向类中新增遵循的协议</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function">BOOL</span></div><div class="line"><span class="title">class_addProtocol</span><span class="params">(Class _Nullable cls, Protocol * _Nonnull protocol)</span>;</div></pre></td></tr></table></figure>
+<p>返回NO时，即该类已遵循该协议</p>
+<h6 id="2-3-21-向类中新增属性"><a href="#2-3-21-向类中新增属性" class="headerlink" title="2.3.21 向类中新增属性"></a>2.3.21 向类中新增属性</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function">BOOL</span></div><div class="line"><span class="title">class_addProperty</span><span class="params">(</span></div><div class="line">    Class _Nullable cls, </div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> * _Nonnull name, </div><div class="line">    <span class="keyword">const</span> <span class="keyword">objc_property_attribute_t</span> * _Nullable attributes, </div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> attributeCount</div><div class="line">);</div></pre></td></tr></table></figure>
+<h6 id="2-3-22-替换类中的指定属性"><a href="#2-3-22-替换类中的指定属性" class="headerlink" title="2.3.22 替换类中的指定属性"></a>2.3.22 替换类中的指定属性</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span></span></div><div class="line"><span class="title">class_replaceProperty</span><span class="params">(</span></div><div class="line">    Class _Nullable cls, </div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> * _Nonnull name, </div><div class="line">    <span class="keyword">const</span> <span class="keyword">objc_property_attribute_t</span> * _Nullable attributes, </div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> attributeCount</div><div class="line">);</div></pre></td></tr></table></figure>
+<h6 id="2-3-23-向类中设置实例变量布局"><a href="#2-3-23-向类中设置实例变量布局" class="headerlink" title="2.3.23 向类中设置实例变量布局"></a>2.3.23 向类中设置实例变量布局</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span></span></div><div class="line"><span class="title">class_setIvarLayout</span><span class="params">(Class _Nullable cls, <span class="keyword">const</span> <span class="keyword">uint8_t</span> * _Nullable layout)</span>;</div></pre></td></tr></table></figure>
+<p>？？？</p>
+<h6 id="2-3-24-向类中设置weak的实例变量布局"><a href="#2-3-24-向类中设置weak的实例变量布局" class="headerlink" title="2.3.24 向类中设置weak的实例变量布局"></a>2.3.24 向类中设置weak的实例变量布局</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span></span></div><div class="line"><span class="title">class_setWeakIvarLayout</span><span class="params">(Class _Nullable cls, <span class="keyword">const</span> <span class="keyword">uint8_t</span> * _Nullable layout)</span>;</div></pre></td></tr></table></figure>
+<p>？？？</p>
+<h5 id="2-4-类实例化的相关方法"><a href="#2-4-类实例化的相关方法" class="headerlink" title="2.4 类实例化的相关方法"></a>2.4 类实例化的相关方法</h5><h6 id="2-4-1-创建类的实例"><a href="#2-4-1-创建类的实例" class="headerlink" title="2.4.1 创建类的实例"></a>2.4.1 创建类的实例</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">id _<span class="function">Nullable</span></div><div class="line"><span class="title">class_createInstance</span><span class="params">(Class _Nullable cls, <span class="keyword">size_t</span> extraBytes)</span></div><div class="line">    OBJC_RETURNS_RETAINED;</div></pre></td></tr></table></figure>
+<h5 id="2-5-动态添加类的相关方法"><a href="#2-5-动态添加类的相关方法" class="headerlink" title="2.5 动态添加类的相关方法"></a>2.5 动态添加类的相关方法</h5><h6 id="2-5-1-创建类及对应的元类"><a href="#2-5-1-创建类及对应的元类" class="headerlink" title="2.5.1 创建类及对应的元类"></a>2.5.1 创建类及对应的元类</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Class _<span class="function">Nullable</span></div><div class="line"><span class="title">objc_allocateClassPair</span><span class="params">(</span></div><div class="line">    Class _Nullable superclass, </div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> * _Nonnull name,  </div><div class="line">    <span class="keyword">size_t</span> extraBytes</div><div class="line">);</div></pre></td></tr></table></figure>
+<p>在运行时向系统添加类，需要先调用此方法（默认创建了类及对应的元类），之后可以使用<em>class_addMethod</em>和<em>class_addIvar</em>等添加方法和实例变量；最后调用<em>objc_registerClassPair</em>将该类注册到runtime系统中（实例方法需添加到本类，类方法添加到对应的元类中）。</p>
+<h6 id="2-5-2-注册新创建的类"><a href="#2-5-2-注册新创建的类" class="headerlink" title="2.5.2 注册新创建的类"></a>2.5.2 注册新创建的类</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span></span></div><div class="line"><span class="title">objc_registerClassPair</span><span class="params">(Class _Nonnull cls)</span>;</div></pre></td></tr></table></figure>
+<h6 id="2-5-3-释放类及元类"><a href="#2-5-3-释放类及元类" class="headerlink" title="2.5.3 释放类及元类"></a>2.5.3 释放类及元类</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span></span></div><div class="line"><span class="title">objc_disposeClassPair</span><span class="params">(Class _Nonnull cls)</span>;</div></pre></td></tr></table></figure>
+<p>注意：若存在本类的子类，不要调用此方法。</p>
+<h5 id="2-6-使用方法（Method）的相关方法"><a href="#2-6-使用方法（Method）的相关方法" class="headerlink" title="2.6 使用方法（Method）的相关方法"></a>2.6 使用方法（Method）的相关方法</h5><h6 id="2-6-1-获取方法中的选择器SEL"><a href="#2-6-1-获取方法中的选择器SEL" class="headerlink" title="2.6.1 获取方法中的选择器SEL"></a>2.6.1 获取方法中的选择器SEL</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">SEL _<span class="function">Nonnull</span></div><div class="line"><span class="title">method_getName</span><span class="params">(Method _Nonnull m)</span>;</div></pre></td></tr></table></figure>
+<h6 id="2-6-2-获取方法的实现IMP"><a href="#2-6-2-获取方法的实现IMP" class="headerlink" title="2.6.2 获取方法的实现IMP"></a>2.6.2 获取方法的实现IMP</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">IMP _<span class="function">Nonnull</span></div><div class="line"><span class="title">method_getImplementation</span><span class="params">(Method _Nonnull m)</span>;</div></pre></td></tr></table></figure>
+<h6 id="2-6-3-获取方法的类型编码"><a href="#2-6-3-获取方法的类型编码" class="headerlink" title="2.6.3 获取方法的类型编码"></a>2.6.3 获取方法的类型编码</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> * _<span class="function">Nullable</span></div><div class="line"><span class="title">method_getTypeEncoding</span><span class="params">(Method _Nonnull m)</span>;</div></pre></td></tr></table></figure>
+<h6 id="2-6-4-获取方法的参数个数"><a href="#2-6-4-获取方法的参数个数" class="headerlink" title="2.6.4 获取方法的参数个数"></a>2.6.4 获取方法的参数个数</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span></span></div><div class="line"><span class="title">method_getNumberOfArguments</span><span class="params">(Method _Nonnull m)</span>;</div></pre></td></tr></table></figure>
+<h6 id="2-6-5-拷贝并返回方法的返回类型"><a href="#2-6-5-拷贝并返回方法的返回类型" class="headerlink" title="2.6.5 拷贝并返回方法的返回类型"></a>2.6.5 拷贝并返回方法的返回类型</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">char</span> * _<span class="function">Nonnull</span></div><div class="line"><span class="title">method_copyReturnType</span><span class="params">(Method _Nonnull m)</span>;</div></pre></td></tr></table></figure>
+<p>需要手动释放返回值。</p>
+<h6 id="2-6-6-拷贝并返回方法的参数类型"><a href="#2-6-6-拷贝并返回方法的参数类型" class="headerlink" title="2.6.6 拷贝并返回方法的参数类型"></a>2.6.6 拷贝并返回方法的参数类型</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">char</span> * _<span class="function">Nullable</span></div><div class="line"><span class="title">method_copyArgumentType</span><span class="params">(Method _Nonnull m, <span class="keyword">unsigned</span> <span class="keyword">int</span> index)</span>;</div></pre></td></tr></table></figure>
+<p>需要手动释放返回值。</p>
+<h6 id="2-6-7-获取方法的描述结构体信息"><a href="#2-6-7-获取方法的描述结构体信息" class="headerlink" title="2.6.7 获取方法的描述结构体信息"></a>2.6.7 获取方法的描述结构体信息</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_method_description</span> * _<span class="title">Nonnull</span></span></div><div class="line"><span class="title">method_getDescription</span>(<span class="title">Method</span> _<span class="title">Nonnull</span> <span class="title">m</span>);</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_method_description</span> &#123;</span></div><div class="line">    SEL _Nullable name;               <span class="comment">/**&lt; The name of the method */</span></div><div class="line">    <span class="keyword">char</span> * _Nullable types;           <span class="comment">/**&lt; The types of the method arguments */</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h6 id="2-6-8-设置方法实现"><a href="#2-6-8-设置方法实现" class="headerlink" title="2.6.8 设置方法实现"></a>2.6.8 设置方法实现</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">IMP _<span class="function">Nonnull</span></div><div class="line"><span class="title">method_setImplementation</span><span class="params">(Method _Nonnull m, IMP _Nonnull imp)</span>;</div></pre></td></tr></table></figure>
+<p>返回值为先前的实现。</p>
+<h6 id="2-6-9-交换两个方法的实现"><a href="#2-6-9-交换两个方法的实现" class="headerlink" title="2.6.9 交换两个方法的实现"></a>2.6.9 交换两个方法的实现</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span></span></div><div class="line"><span class="title">method_exchangeImplementations</span><span class="params">(Method _Nonnull m1, Method _Nonnull m2)</span>;</div></pre></td></tr></table></figure>
+<h5 id="2-7-使用实例变量的相关方法"><a href="#2-7-使用实例变量的相关方法" class="headerlink" title="2.7 使用实例变量的相关方法"></a>2.7 使用实例变量的相关方法</h5><h6 id="2-7-1-获取实例变量的名称"><a href="#2-7-1-获取实例变量的名称" class="headerlink" title="2.7.1 获取实例变量的名称"></a>2.7.1 获取实例变量的名称</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> * _<span class="function">Nullable</span></div><div class="line"><span class="title">ivar_getName</span><span class="params">(Ivar _Nonnull v)</span>;</div></pre></td></tr></table></figure>
+<h6 id="2-7-2-获取实例变量的类型编码"><a href="#2-7-2-获取实例变量的类型编码" class="headerlink" title="2.7.2 获取实例变量的类型编码"></a>2.7.2 获取实例变量的类型编码</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> * _<span class="function">Nullable</span></div><div class="line"><span class="title">ivar_getTypeEncoding</span><span class="params">(Ivar _Nonnull v)</span>;</div></pre></td></tr></table></figure>
+<h6 id="2-7-3-获取实例变量的偏移量"><a href="#2-7-3-获取实例变量的偏移量" class="headerlink" title="2.7.3 获取实例变量的偏移量"></a>2.7.3 获取实例变量的偏移量</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">ptrdiff_t</span></div><div class="line">ivar_getOffset(Ivar _Nonnull v);</div></pre></td></tr></table></figure>
+<h5 id="2-7-使用属性的相关方法"><a href="#2-7-使用属性的相关方法" class="headerlink" title="2.7 使用属性的相关方法"></a>2.7 使用属性的相关方法</h5><h6 id="2-7-1-获取属性名称"><a href="#2-7-1-获取属性名称" class="headerlink" title="2.7.1 获取属性名称"></a>2.7.1 获取属性名称</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> * _<span class="function">Nonnull</span></div><div class="line"><span class="title">property_getName</span><span class="params">(<span class="keyword">objc_property_t</span> _Nonnull property)</span>;</div></pre></td></tr></table></figure>
+<h6 id="2-7-2-获取属性特性描述"><a href="#2-7-2-获取属性特性描述" class="headerlink" title="2.7.2 获取属性特性描述"></a>2.7.2 获取属性特性描述</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> * _<span class="function">Nullable</span></div><div class="line"><span class="title">property_getAttributes</span><span class="params">(<span class="keyword">objc_property_t</span> _Nonnull property)</span>;</div></pre></td></tr></table></figure>
+<h6 id="2-7-3-拷贝并返回属性的特性列表"><a href="#2-7-3-拷贝并返回属性的特性列表" class="headerlink" title="2.7.3 拷贝并返回属性的特性列表"></a>2.7.3 拷贝并返回属性的特性列表</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">objc_property_attribute_t</span> * _<span class="function">Nullable</span></div><div class="line"><span class="title">property_copyAttributeList</span><span class="params">(</span></div><div class="line">    <span class="keyword">objc_property_t</span> _Nonnull property, </div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> * _Nullable outCount</div><div class="line">);</div></pre></td></tr></table></figure>
+<p>返回的属性列表数组需要手动释放。</p>
+<h6 id="2-7-4-拷贝并返回属性特性的值"><a href="#2-7-4-拷贝并返回属性特性的值" class="headerlink" title="2.7.4 拷贝并返回属性特性的值"></a>2.7.4 拷贝并返回属性特性的值</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">char</span> * _<span class="function">Nullable</span></div><div class="line"><span class="title">property_copyAttributeValue</span><span class="params">(</span></div><div class="line">    <span class="keyword">objc_property_t</span> _Nonnull property, </div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> * _Nonnull attributeName</div><div class="line">);</div></pre></td></tr></table></figure>
+<p>返回值需要手动释放。</p>
+<h5 id="2-8-选择器相关方法"><a href="#2-8-选择器相关方法" class="headerlink" title="2.8 选择器相关方法"></a>2.8 选择器相关方法</h5><h6 id="2-8-1-获取选择器的名称"><a href="#2-8-1-获取选择器的名称" class="headerlink" title="2.8.1 获取选择器的名称"></a>2.8.1 获取选择器的名称</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> * _<span class="function">Nonnull</span></div><div class="line"><span class="title">sel_getName</span><span class="params">(SEL _Nonnull sel)</span>;</div></pre></td></tr></table></figure>
+<h6 id="2-8-2-向运行时系统注册选择器"><a href="#2-8-2-向运行时系统注册选择器" class="headerlink" title="2.8.2 向运行时系统注册选择器"></a>2.8.2 向运行时系统注册选择器</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">SEL _<span class="function">Nonnull</span></div><div class="line"><span class="title">sel_registerName</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> * _Nonnull str)</span>;</div></pre></td></tr></table></figure>
+<ul>
+<li>在向类定义中添加方法前，需要保证方法对应的SEL已注册到运行时系统中；</li>
+<li>若同名SEL已注册，则直接返回</li>
+</ul>
+<h6 id="2-8-3-判断两个SEL是否相同"><a href="#2-8-3-判断两个SEL是否相同" class="headerlink" title="2.8.3 判断两个SEL是否相同"></a>2.8.3 判断两个SEL是否相同</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function">BOOL</span></div><div class="line"><span class="title">sel_isEqual</span><span class="params">(SEL _Nonnull lhs, SEL _Nonnull rhs)</span>;</div></pre></td></tr></table></figure>
+<p>与“==”等价。</p>
+<h5 id="2-9-关联对象相关"><a href="#2-9-关联对象相关" class="headerlink" title="2.9 关联对象相关"></a>2.9 关联对象相关</h5><h6 id="2-9-1-关联规则"><a href="#2-9-1-关联规则" class="headerlink" title="2.9.1 关联规则"></a>2.9.1 关联规则</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">OBJC_ENUM</span><span class="params">(<span class="keyword">uintptr_t</span>, objc_AssociationPolicy)</span> </span>&#123;</div><div class="line">    <span class="comment">/** 关联对象为weak弱引用 */</span></div><div class="line">    OBJC_ASSOCIATION_ASSIGN = <span class="number">0</span>,</div><div class="line">    <span class="comment">/** 关联对象为strong强引用，非原子性 */</span></div><div class="line">    OBJC_ASSOCIATION_RETAIN_NONATOMIC = <span class="number">1</span>,</div><div class="line">    <span class="comment">/** 关联对象为copy强引用，非原子性 */</span></div><div class="line">    OBJC_ASSOCIATION_COPY_NONATOMIC = <span class="number">3</span>,</div><div class="line">    <span class="comment">/** 关联对象为strong强引用，原子性 */</span></div><div class="line">    OBJC_ASSOCIATION_RETAIN = <span class="number">01401</span>,</div><div class="line">    <span class="comment">/** 关联对象为copy强引用，原子性 */</span></div><div class="line">    OBJC_ASSOCIATION_COPY = <span class="number">01403</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h6 id="2-9-2-设置对象的关联对象"><a href="#2-9-2-设置对象的关联对象" class="headerlink" title="2.9.2 设置对象的关联对象"></a>2.9.2 设置对象的关联对象</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span></span></div><div class="line"><span class="title">objc_setAssociatedObject</span><span class="params">(</span></div><div class="line">    id _Nonnull object, </div><div class="line">    <span class="keyword">const</span> <span class="keyword">void</span> * _Nonnull key, </div><div class="line">    id _Nullable value, objc_AssociationPolicy policy</div><div class="line">);</div></pre></td></tr></table></figure>
+<h6 id="2-9-3-获取对象的关联对象值"><a href="#2-9-3-获取对象的关联对象值" class="headerlink" title="2.9.3 获取对象的关联对象值"></a>2.9.3 获取对象的关联对象值</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">id _<span class="function">Nullable</span></div><div class="line"><span class="title">objc_getAssociatedObject</span><span class="params">(id _Nonnull object, <span class="keyword">const</span> <span class="keyword">void</span> * _Nonnull key)</span>;</div></pre></td></tr></table></figure>
+<h6 id="2-9-4-移除对象的所有关联对象"><a href="#2-9-4-移除对象的所有关联对象" class="headerlink" title="2.9.4 移除对象的所有关联对象"></a>2.9.4 移除对象的所有关联对象</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span></span></div><div class="line"><span class="title">objc_removeAssociatedObjects</span><span class="params">(id _Nonnull object)</span>;</div></pre></td></tr></table></figure>
+<h4 id="3-类型编码的相关定义"><a href="#3-类型编码的相关定义" class="headerlink" title="3.类型编码的相关定义"></a>3.类型编码的相关定义</h4><h5 id="3-1-OC类型编码"><a href="#3-1-OC类型编码" class="headerlink" title="3.1 OC类型编码"></a>3.1 OC类型编码</h5><table>
+<thead>
+<tr>
+<th>编码</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>c</td>
+<td>char</td>
+</tr>
+<tr>
+<td>i</td>
+<td>int</td>
+</tr>
+<tr>
+<td>s</td>
+<td>short</td>
+</tr>
+<tr>
+<td>l</td>
+<td>long</td>
+</tr>
+<tr>
+<td>q</td>
+<td>long long</td>
+</tr>
+<tr>
+<td>C</td>
+<td>unsigned char</td>
+</tr>
+<tr>
+<td>I</td>
+<td>unsigned int</td>
+</tr>
+<tr>
+<td>S</td>
+<td>unsigned short</td>
+</tr>
+<tr>
+<td>L</td>
+<td>unsigned long</td>
+</tr>
+<tr>
+<td>Q</td>
+<td>unsigned long long</td>
+</tr>
+<tr>
+<td>f</td>
+<td>float</td>
+</tr>
+<tr>
+<td>d</td>
+<td>double</td>
+</tr>
+<tr>
+<td>B</td>
+<td>C++ bool 或 C99 _Bool</td>
+</tr>
+<tr>
+<td>v</td>
+<td>void</td>
+</tr>
+<tr>
+<td>*</td>
+<td>字符指针（C字符串）</td>
+</tr>
+<tr>
+<td>@</td>
+<td>id或OC类的对象</td>
+</tr>
+<tr>
+<td>#</td>
+<td>类对象（Class）</td>
+</tr>
+<tr>
+<td>:</td>
+<td>选择器（SEL）</td>
+</tr>
+<tr>
+<td>[<em>array type</em>]</td>
+<td>数组</td>
+</tr>
+<tr>
+<td>{<em>name=type…</em>}</td>
+<td>结构体</td>
+</tr>
+<tr>
+<td>(<em>name=type…</em>)</td>
+<td>联合体</td>
+</tr>
+<tr>
+<td>^type</td>
+<td>c指针</td>
+</tr>
+<tr>
+<td>?</td>
+<td>未知（可用于函数指针）</td>
+</tr>
+</tbody>
+</table>
+<h5 id="3-2-OC方法编码"><a href="#3-2-OC方法编码" class="headerlink" title="3.2 OC方法编码"></a>3.2 OC方法编码</h5><table>
+<thead>
+<tr>
+<th>编码</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>r</td>
+<td>const</td>
+</tr>
+</tbody>
+</table>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;runtime-h&quot;&gt;&lt;a href=&quot;#runtime-h&quot; class=&quot;headerlink&quot; title=&quot;runtime.h&quot;&gt;&lt;/a&gt;runtime.h&lt;/h3&gt;&lt;h4 id=&quot;1-数据类型定义&quot;&gt;&lt;a href=&quot;#1-数据类型定义&quot; class=&quot;headerlink&quot; title=&quot;1.数据类型定义&quot;&gt;&lt;/a&gt;1.数据类型定义&lt;/h4&gt;&lt;h5 id=&quot;1-1-方法Method&quot;&gt;&lt;a href=&quot;#1-1-方法Method&quot; class=&quot;headerlink&quot; title=&quot;1.1 方法Method&quot;&gt;&lt;/a&gt;1.1 方法Method&lt;/h5&gt;&lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;7&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;8&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;9&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;10&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;11&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;12&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;13&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;14&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;15&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;16&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;method_t&lt;/span&gt; *&lt;span class=&quot;title&quot;&gt;Method&lt;/span&gt;;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;method_t&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    SEL name;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;char&lt;/span&gt; *types;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    IMP imp;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;SortBySELAddress&lt;/span&gt; :&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;built_in&quot;&gt;std&lt;/span&gt;::binary_function&amp;lt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;method_t&lt;/span&gt;&amp;amp;,&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                                    &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;method_t&lt;/span&gt;&amp;amp;, &lt;span class=&quot;keyword&quot;&gt;bool&lt;/span&gt;&amp;gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;operator&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;method_t&lt;/span&gt;&amp;amp; lhs,&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                         &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;method_t&lt;/span&gt;&amp;amp; rhs)&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        &amp;#123; &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; lhs.name &amp;lt; rhs.name; &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &amp;#125;;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&amp;#125;;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>objc-公共头文件（Public Headers）的基本内容（上）</title>
+    <link href="http://yoursite.com/2019/01/21/objc-%E5%85%AC%E5%85%B1%E5%A4%B4%E6%96%87%E4%BB%B6%EF%BC%88Public%20Headers%EF%BC%89%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%86%85%E5%AE%B9%EF%BC%88%E4%B8%8A%EF%BC%89/"/>
+    <id>http://yoursite.com/2019/01/21/objc-公共头文件（Public Headers）的基本内容（上）/</id>
+    <published>2019-01-21T09:19:35.705Z</published>
+    <updated>2019-01-21T09:19:35.706Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="1-NSObject-h"><a href="#1-NSObject-h" class="headerlink" title="1. NSObject.h"></a>1. NSObject.h</h3><p>内部主要包含了<strong>NSObject协议</strong>和<strong>NSObject类</strong>。</p>
+<ul>
+<li><p>NSObject协议规定了主要几部分：</p>
+<ul>
+<li>class和self</li>
+<li>执行方法api</li>
+<li>判断所属类和遵循协议的方法</li>
+<li>内存管理方法（ARC下禁止）</li>
+<li>响应方法api</li>
+</ul>
+</li>
+<li><p>NSObject类规定了主要几部分：</p>
+<ul>
+<li>内部结构：isa的Class指针</li>
+<li>load和initialize类方法</li>
+<li>init和dealloc等实例方法</li>
+<li>声明并实现了消息转发的相关方法</li>
+<li>声明了类方法版本的NSObject协议方法<a id="more"></a>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="2-message-h"><a href="#2-message-h" class="headerlink" title="2. message.h"></a>2. message.h</h3><h4 id="2-1-super关键字对应的objc-super结构体："><a href="#2-1-super关键字对应的objc-super结构体：" class="headerlink" title="2.1 super关键字对应的objc_super结构体："></a>2.1 super关键字对应的<strong>objc_super结构体</strong>：</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_super</span> &#123;</span></div><div class="line">    <span class="comment">/** 接收者，当前类的实例，即使用super的self */</span></div><div class="line">    __unsafe_unretained _Nonnull id receiver;</div><div class="line">    <span class="comment">/** 父类的指针 */</span></div><div class="line">    __unsafe_unretained _Nonnull Class super_class;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="2-2-基本的消息原型"><a href="#2-2-基本的消息原型" class="headerlink" title="2.2 基本的消息原型"></a>2.2 基本的消息原型</h4><p>对象调用方法，即<strong>给对象发消息，调用objc_msgSend方法</strong>，而根据参数类型的不同，系统会自动调用对应的子版本；而<strong>通过对象，调用父类的方法，调用objc_msgSendSuper方法</strong>。</p>
+<ul>
+<li>objc_msgSend函数：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">id _<span class="function">Nullable <span class="title">objc_msgSend</span><span class="params">(id _Nullable self, SEL _Nullable op, ...)</span></span></div></pre></td></tr></table></figure>
+<p>说明：</p>
+<blockquote>
+<ul>
+<li>self，对象，即为id（指向objc_object实例的指针）</li>
+<li>op即为SEL，objc_selector的实例指针，运行时系统可以通过SEL找到方法实现IMP</li>
+<li>后面为方法调用的参数</li>
+</ul>
+</blockquote>
+<ul>
+<li>objc_msgSendSuper函数：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">id _<span class="function">Nullable <span class="title">objc_msgSendSuper</span><span class="params">(</span></span></div><div class="line">    struct objc_super * _Nullable super, </div><div class="line">    SEL _Nullable op,</div><div class="line">    ...</div><div class="line">)</div></pre></td></tr></table></figure>
+<p>说明：</p>
+<blockquote>
+<ul>
+<li>super，即为上述objc_super结构体实例的指针</li>
+<li>op为SEL</li>
+<li>后面传入调用参数</li>
+</ul>
+</blockquote>
+<hr>
+<h3 id="3-objc-h"><a href="#3-objc-h" class="headerlink" title="3. objc.h"></a>3. objc.h</h3><h4 id="3-1-Class"><a href="#3-1-Class" class="headerlink" title="3.1 Class"></a>3.1 Class</h4><p>Class，类对象，即objc_class的结构体实例指针：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> *<span class="title">Class</span>;</span></div></pre></td></tr></table></figure>
+<h4 id="3-2-对象"><a href="#3-2-对象" class="headerlink" title="3.2 对象"></a>3.2 对象</h4><p>对象，指的是Class的实例，默认即为id类型的变量：</p>
+<ul>
+<li>id即objc_object结构体实例的指针：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_object</span> *<span class="title">id</span>;</span></div></pre></td></tr></table></figure>
+<ul>
+<li>objc_object结构体，即<strong>对象真正的本质：包含类指针的结构体实例</strong></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_object</span> &#123;</span></div><div class="line">    Class _Nonnull isa;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="3-3-选择器及实现"><a href="#3-3-选择器及实现" class="headerlink" title="3.3 选择器及实现"></a>3.3 选择器及实现</h4><ul>
+<li>选择器SEL：objc_selector结构体实例的指针</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_selector</span> *<span class="title">SEL</span>;</span></div></pre></td></tr></table></figure>
+<ul>
+<li>方法实现IMP：c函数指针，参数为调用对象id、选择器SEL和参数列表</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> id _Nullable (*IMP)(id _Nonnull, SEL _Nonnull, ...)</div></pre></td></tr></table></figure>
+<h4 id="3-4-主要方法API"><a href="#3-4-主要方法API" class="headerlink" title="3.4 主要方法API"></a>3.4 主要方法API</h4><ul>
+<li>获取选择器对应的方法名：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> * _<span class="function">Nonnull <span class="title">sel_getName</span><span class="params">(SEL _Nonnull sel)</span></span>;</div></pre></td></tr></table></figure>
+<ul>
+<li>根据指定的名称向运行时系统注册选择器：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SEL _<span class="function">Nonnull <span class="title">sel_registerName</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> * _Nonnull str)</span></span>;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>在将方法添加到类定义中之前，必须先注册SEL</p>
+</blockquote>
+<ul>
+<li>返回对象所属类的名字：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> * _<span class="function">Nonnull <span class="title">object_getClassName</span><span class="params">(id _Nullable obj)</span></span>;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;1-NSObject-h&quot;&gt;&lt;a href=&quot;#1-NSObject-h&quot; class=&quot;headerlink&quot; title=&quot;1. NSObject.h&quot;&gt;&lt;/a&gt;1. NSObject.h&lt;/h3&gt;&lt;p&gt;内部主要包含了&lt;strong&gt;NSObject协议&lt;/strong&gt;和&lt;strong&gt;NSObject类&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;NSObject协议规定了主要几部分：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;class和self&lt;/li&gt;
+&lt;li&gt;执行方法api&lt;/li&gt;
+&lt;li&gt;判断所属类和遵循协议的方法&lt;/li&gt;
+&lt;li&gt;内存管理方法（ARC下禁止）&lt;/li&gt;
+&lt;li&gt;响应方法api&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;NSObject类规定了主要几部分：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;内部结构：isa的Class指针&lt;/li&gt;
+&lt;li&gt;load和initialize类方法&lt;/li&gt;
+&lt;li&gt;init和dealloc等实例方法&lt;/li&gt;
+&lt;li&gt;声明并实现了消息转发的相关方法&lt;/li&gt;
+&lt;li&gt;声明了类方法版本的NSObject协议方法
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》17</title>
@@ -1595,118 +1999,6 @@
     
     
       <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>mpvue开发微信小程序的准备工作</title>
-    <link href="http://yoursite.com/2018/09/29/mpvue%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C/"/>
-    <id>http://yoursite.com/2018/09/29/mpvue开发微信小程序的准备工作/</id>
-    <published>2018-09-29T09:50:05.106Z</published>
-    <updated>2018-09-29T10:02:39.270Z</updated>
-    
-    <content type="html"><![CDATA[<p>使用Vue.js都可以开发小程序了，喜大普奔啊~</p>
-<a id="more"></a>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">功能</th>
-<th style="text-align:center">方式</th>
-<th style="text-align:center">补充</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">新建工程</td>
-<td style="text-align:center">官方模板工程</td>
-<td style="text-align:center">1. vue init mpvue/mpvue-quickstart myProject 2. cd myProject 3. npm install 4. npm run dev</td>
-</tr>
-<tr>
-<td style="text-align:center">网络请求</td>
-<td style="text-align:center">fly.js或自己封装请求方法</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center">数据缓存</td>
-<td style="text-align:center">vuex</td>
-<td style="text-align:center">模板工程中带有配置选项</td>
-</tr>
-<tr>
-<td style="text-align:center">本地存储</td>
-<td style="text-align:center">wx.localStorage</td>
-<td style="text-align:center">小程序的自带存储模块</td>
-</tr>
-<tr>
-<td style="text-align:center">路由</td>
-<td style="text-align:center">mpvue-router-patch</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center">第三方UI组件</td>
-<td style="text-align:center">MinUI、iView WeApp、WeUI WXSS、ZanUI WeApp、Wux WeApp</td>
-<td style="text-align:center">1. 将使用的组件文件拷贝到mpvue工程的static路径下  2. 在需要使用的page文件夹下，新建“main.json”文件，内部的对象中引入：<img src="http://p8r3sk4om.bkt.clouddn.com/mpvue1" alt="img">  3.在vue文件中的template中即可直接使用</td>
-</tr>
-</tbody>
-</table>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;使用Vue.js都可以开发小程序了，喜大普奔啊~&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="微信小程序" scheme="http://yoursite.com/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>NSInvocation的莫名crash</title>
-    <link href="http://yoursite.com/2018/09/29/NSInvocation%E7%9A%84%E8%8E%AB%E5%90%8Dcrash/"/>
-    <id>http://yoursite.com/2018/09/29/NSInvocation的莫名crash/</id>
-    <published>2018-09-29T09:06:39.676Z</published>
-    <updated>2018-09-29T09:45:08.620Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="NSInvocation是iOS框架中对命令模式的一种OC封装，使用起来非常方便。在方法调用，或者消息转发中都可以使用到。以下是学着别人demo使用时，封装的多参数调用函数："><a href="#NSInvocation是iOS框架中对命令模式的一种OC封装，使用起来非常方便。在方法调用，或者消息转发中都可以使用到。以下是学着别人demo使用时，封装的多参数调用函数：" class="headerlink" title="NSInvocation是iOS框架中对命令模式的一种OC封装，使用起来非常方便。在方法调用，或者消息转发中都可以使用到。以下是学着别人demo使用时，封装的多参数调用函数："></a>NSInvocation是iOS框架中对命令模式的一种OC封装，使用起来非常方便。在方法调用，或者消息转发中都可以使用到。以下是学着别人demo使用时，封装的多参数调用函数：</h4><a id="more"></a>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line">#import &lt;Foundation/Foundation.h&gt;</div><div class="line"></div><div class="line">@interface NSObject (PerformSelector)</div><div class="line"></div><div class="line">- (id)performSelector:(SEL)aSelector</div><div class="line">        withArguments:(NSArray *)arguments;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">#import "NSObject+PerformSelector.h"</div><div class="line"></div><div class="line">@implementation NSObject (PerformSelector)</div><div class="line"></div><div class="line">- (id)performSelector:(SEL)aSelector</div><div class="line">        withArguments:(NSArray *)arguments &#123;</div><div class="line">    if (!aSelector) &#123;</div><div class="line">        return nil;</div><div class="line">    &#125;</div><div class="line">    NSMethodSignature *signature = [[self class] instanceMethodSignatureForSelector:aSelector];</div><div class="line">    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];</div><div class="line">    invocation.target = self;</div><div class="line">    invocation.selector = aSelector;</div><div class="line">    </div><div class="line">    if ([arguments isKindOfClass:[NSArray class]]) &#123;</div><div class="line">        // 减2是因为signature的参数包含固定的self和_cmd</div><div class="line">        NSInteger count = MIN(arguments.count, signature.numberOfArguments - 2);</div><div class="line">        for (int i = 0; i &lt; count; i++) &#123;</div><div class="line">            // 返回指定index的参数类型</div><div class="line">            const char *type = [signature getArgumentTypeAtIndex:(i + 2)];</div><div class="line">            // 类型是OC对象（本函数的参数为NSArray，所以都是对象）</div><div class="line">            if (strcmp(type, "@") == 0) &#123;</div><div class="line">                // 取出参数</div><div class="line">                id argument = arguments[i];</div><div class="line">                // 设置参数（copy到invocation上）</div><div class="line">                // 【同样，invocation的参数列表中前两个也是self和_cmd】</div><div class="line">                [invocation setArgument:&amp;argument atIndex:(i + 2)];</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    // 调用函数（此时会动态配置返回值）</div><div class="line">    [invocation invoke];</div><div class="line">    </div><div class="line">    // 取回返回值    </div><div class="line">    id returnValue = @1;</div><div class="line">    if (strcmp(signature.methodReturnType, "@") == 0) &#123;</div><div class="line">        // 返回值是OC对象，取回赋值到指针（这里是给野指针赋值，使其存在内容）</div><div class="line">        [invocation getReturnValue:&amp;returnValue];</div><div class="line">    &#125;</div><div class="line">    return returnValue;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure>
-<p>示例类如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line">@interface TestClass : NSObject</div><div class="line"></div><div class="line">- (NSString *)saySomething:(NSString *)a</div><div class="line">                         b:(NSString *)b</div><div class="line">                         c:(NSString *)c;</div><div class="line">@end</div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">"TestClass.h"</span></span></div><div class="line"></div><div class="line">@implementation TestClass</div><div class="line"></div><div class="line">- (instancetype)init &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (NSDictionary *)saySomething:(NSString *)a</div><div class="line">                             b:(NSString *)b</div><div class="line">                             c:(NSString *)c &#123;</div><div class="line">    <span class="keyword">return</span> @&#123;</div><div class="line">             @<span class="string">"a"</span>: a,</div><div class="line">             @<span class="string">"b"</span>: b,</div><div class="line">             @<span class="string">"c"</span>: c</div><div class="line">             &#125;;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure>
-<p>调用如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">TestClass *tc = [[TestClass alloc] init];</div><div class="line">        result = [tc performSelector:@selector(saySomething:b:c:) withArguments:@[@<span class="string">"Tom"</span>, @<span class="string">"Jim"</span>, @<span class="string">"Li Lei"</span>]];</div><div class="line">        NSLog(@<span class="string">"result = %@"</span>, result);</div></pre></td></tr></table></figure>
-<p>以上，解决了使用performSelector调用时只能传递单个参数的尴尬问题。但是，问题来了~~</p>
-<p>运行时，会发生crash。try-catch也无法捕获异常，觉得颇为诡异。之后，再打开zombie检测后，发现如下输出：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">2018-09-29 17:15:18.926491+0800 InvocationTest1[37029:49376429] *** -[__NSDictionaryI release]: message sent to deallocated instance 0x60000086aec0</div></pre></td></tr></table></figure>
-<p>原来是返回值被过渡释放导致。</p>
-<p>究其原因，可以在NSInvocation的类文档中查到，主要就一句：</p>
-<blockquote>
-<p>This class does not retain the arguments for the contained invocation by default. </p>
-</blockquote>
-<p>即为，本类默认不对参数进行保留操作。</p>
-<p>实质上，不仅如此，通过调用<em>getReturnValue:</em>方法并查阅说明可以知道，此方法只是根据给定的指针，创建buffer并将返回值写入其中。并未对其进行内存管理。</p>
-<p>现在回到代码。由于performSelector函数中，只是使用了临时变量指向并返回，导致NSInvocation的返回值对象的引用计数实际上是0，即创建完就要被释放。所以，当performSelector函数执行完成后，实际上返回值已经被释放。由于外侧调用者也没有对其进行保留等其他操作，导致调用者的作用域结束后，返回值会再次收到release操作，即发生crash。</p>
-<p>那么，如何解决此问题呢？<br>两种方式：</p>
-<ol>
-<li><strong>在调用NSInvocation对象的<em>getReturnValue:</em>方法时，不要传入OC对象指针，使用C指针（void *），并在最终桥接转换为OC对象。</strong>这种是本人比较推荐的方式，由于此实质上是往buffer内写入内容，使用C指针会更加严谨，而且避免了ARC内存释放导致的crash，返回时桥接转换为对象即可（这种情况也兼容所有数据类型）。</li>
-</ol>
-<p>将performSelector的代码修正为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> *returnValue = <span class="literal">NULL</span>;</div><div class="line"><span class="keyword">if</span> (<span class="built_in">strcmp</span>(signature.methodReturnType, <span class="string">"@"</span>) == <span class="number">0</span>) &#123;</div><div class="line">    <span class="comment">// 返回值是OC对象，取回赋值到指针（这里是给野指针赋值，使其存在内容）</span></div><div class="line">    [invocation getReturnValue:&amp;returnValue];</div><div class="line">&#125;</div><div class="line"><span class="keyword">return</span> (__bridge id)returnValue;</div></pre></td></tr></table></figure>
-<ol>
-<li><strong>使用__unsafe_unretained修饰OC指针，避免ARC对返回值进行内存管理。</strong>使用__weak同样可以达到效果，不过感觉上有点懵，需要继续深入查看内存管理相关的内容了。。。</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">id __unsafe_unretained returnValue = @<span class="number">1</span>;</div><div class="line"><span class="keyword">if</span> (<span class="built_in">strcmp</span>(signature.methodReturnType, <span class="string">"@"</span>) == <span class="number">0</span>) &#123;</div><div class="line">    <span class="comment">// 返回值是OC对象，取回赋值到指针（这里是给野指针赋值，使其存在内容）</span></div><div class="line">    [invocation getReturnValue:&amp;returnValue];</div><div class="line">&#125;</div><div class="line"><span class="keyword">return</span> returnValue;</div></pre></td></tr></table></figure>
-<p>问题解决。。。</p>
-<p>测试程序代码：<a href="https://github.com/Choujiji/NSInvocationTest" target="_blank" rel="external">测试NSInvocation调用</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h4 id=&quot;NSInvocation是iOS框架中对命令模式的一种OC封装，使用起来非常方便。在方法调用，或者消息转发中都可以使用到。以下是学着别人demo使用时，封装的多参数调用函数：&quot;&gt;&lt;a href=&quot;#NSInvocation是iOS框架中对命令模式的一种OC封装，使用起来非常方便。在方法调用，或者消息转发中都可以使用到。以下是学着别人demo使用时，封装的多参数调用函数：&quot; class=&quot;headerlink&quot; title=&quot;NSInvocation是iOS框架中对命令模式的一种OC封装，使用起来非常方便。在方法调用，或者消息转发中都可以使用到。以下是学着别人demo使用时，封装的多参数调用函数：&quot;&gt;&lt;/a&gt;NSInvocation是iOS框架中对命令模式的一种OC封装，使用起来非常方便。在方法调用，或者消息转发中都可以使用到。以下是学着别人demo使用时，封装的多参数调用函数：&lt;/h4&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
     
   </entry>
   
