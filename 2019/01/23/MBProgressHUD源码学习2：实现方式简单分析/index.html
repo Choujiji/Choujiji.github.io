@@ -6,17 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2019 | 臭吉吉的瞎记空间</title>
+  <title>MBProgressHUD源码学习2：实现方式简单分析 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="督促自己好好学习哦~">
-<meta property="og:type" content="website">
-<meta property="og:title" content="臭吉吉的瞎记空间">
-<meta property="og:url" content="http://yoursite.com/archives/2019/index.html">
+  <meta name="description" content="提要：  “全能”实现方法； “延后显示”和“最少显示时间”； 使用KVO更新UI； 使用通知方式处理自身视图的朝向变化； 总结">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MBProgressHUD源码学习2：实现方式简单分析">
+<meta property="og:url" content="http://yoursite.com/2019/01/23/MBProgressHUD源码学习2：实现方式简单分析/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="督促自己好好学习哦~">
+<meta property="og:description" content="提要：  “全能”实现方法； “延后显示”和“最少显示时间”； 使用KVO更新UI； 使用通知方式处理自身视图的朝向变化； 总结">
+<meta property="og:updated_time" content="2019-01-23T10:40:19.664Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="臭吉吉的瞎记空间">
-<meta name="twitter:description" content="督促自己好好学习哦~">
+<meta name="twitter:title" content="MBProgressHUD源码学习2：实现方式简单分析">
+<meta name="twitter:description" content="提要：  “全能”实现方法； “延后显示”和“最少显示时间”； 使用KVO更新UI； 使用通知方式处理自身视图的朝向变化； 总结">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -176,36 +178,85 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-MBProgressHUD源码学习2：实现方式简单分析" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      MBProgressHUD源码学习2：实现方式简单分析
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/23/MBProgressHUD源码学习2：实现方式简单分析/" class="archive-article-date">
+
+        
+        <a href="/2019/01/23/MBProgressHUD源码学习2：实现方式简单分析/" class="archive-article-date">
   	<time datetime="2019-01-23T10:40:09.240Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-23</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/23/MBProgressHUD源码学习2：实现方式简单分析/">MBProgressHUD源码学习2：实现方式简单分析</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>提要：</p>
+<ol>
+<li>“全能”实现方法；</li>
+<li>“延后显示”和“最少显示时间”；</li>
+<li>使用KVO更新UI；</li>
+<li>使用通知方式处理自身视图的朝向变化；</li>
+<li>总结<a id="more"></a>
+<h3 id="1-“全能”实现方法"><a href="#1-“全能”实现方法" class="headerlink" title="1. “全能”实现方法"></a>1. “全能”实现方法</h3></li>
+</ol>
+</blockquote>
+<p><strong>“全能”实现方法，即真正用于实现功能的方法</strong>。这一封装方式在MBProgressHUD.m中屡见不鲜。如“全能”初始化方法<em>initWithFrame</em>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 全能初始化方法 */</span></div><div class="line">- (id)initWithFrame:(CGRect)frame &#123;</div><div class="line">	self = [super initWithFrame:frame];</div><div class="line">	<span class="keyword">if</span> (self) &#123;</div><div class="line">		<span class="comment">// 各种属性初始值设置</span></div><div class="line">		...</div><div class="line">		</div><div class="line">        <span class="comment">// 初始化label</span></div><div class="line">		[self setupLabels];</div><div class="line">        <span class="comment">// 加载indicator</span></div><div class="line">		[self updateIndicators];</div><div class="line">        <span class="comment">// 注册KVO，将UI的属性修改绑定到一起</span></div><div class="line">		[self registerForKVO];</div><div class="line">        <span class="comment">// 注册屏幕朝向通知，自动旋转</span></div><div class="line">		[self registerForNotifications];</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (id)initWithView:(UIView *)view &#123;</div><div class="line">	NSAssert(view, @<span class="string">"View must not be nil."</span>);</div><div class="line">	<span class="keyword">return</span> [self initWithFrame:view.bounds];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (id)initWithWindow:(UIWindow *)window &#123;</div><div class="line">	<span class="keyword">return</span> [self initWithView:window];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在以上代码中，可以看出，外部API使用的初始化最终都是通过调用<em>initWithFrame</em>方法完成的。该方法的主要功能如下：</p>
+<ul>
+<li>提供了主要属性的初始赋值；</li>
+<li>对用于显示信息的的UILabel对象进行初始化，真正的布局在layoutSubView中进行处理；</li>
+<li>根据mode属性，对不同类型的indicator视图对象进行初始化；</li>
+<li>通过KVO，将用于更新UI的相关属性进行统一配置；</li>
+<li>使用通知，监听系统屏幕转向消息，配置视图转向重绘方法。</li>
+</ul>
+<blockquote>
+<p>类似的封装方式，在本类中还体现在：</p>
+<ol>
+<li>如线程block的任务配置api中，<em>showAnimated:whileExecutingBlock:onQueue:completionBlock:</em>方法作为真正的实现方法，其余均为本方法的不同调用版本。</li>
+<li>显示和隐藏HUD方法，分别通过<em>showUsingAnimation:</em>和<em>hideUsingAnimation:</em>方法进行真正的功能实现。</li>
+</ol>
+<p>这种封装方式的好处是使实现代码集中，便于管理，且不易出错。</p>
+</blockquote>
+<h3 id="2-“延后显示”和“最少显示时间”"><a href="#2-“延后显示”和“最少显示时间”" class="headerlink" title="2. “延后显示”和“最少显示时间”"></a>2. “延后显示”和“最少显示时间”</h3><ol>
+<li>MBProgressHUD中，存在<em>graceTime</em>这一属性，其意义为“延迟一定的时间显示HUD”。即当任务运行时间过短的情况下，防止“闪烁”情况发生（HUD刚刚显示就隐藏）。此值需要我们手动设置，默认为0。</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 显示自身 */</span></div><div class="line">- (<span class="keyword">void</span>)show:(BOOL)animated &#123;</div><div class="line">	useAnimation = animated;</div><div class="line">	<span class="comment">// 设置了graceTime后，就会延时显示了</span></div><div class="line">	<span class="keyword">if</span> (self.graceTime &gt; <span class="number">0.0</span>) &#123;</div><div class="line">		self.graceTimer = [NSTimer scheduledTimerWithTimeInterval:self.graceTime target:self </div><div class="line">						   selector:@selector(handleGraceTimer:) userInfo:nil repeats:NO];</div><div class="line">	&#125; </div><div class="line">	<span class="comment">// 直接显示</span></div><div class="line">	<span class="keyword">else</span> &#123;</div><div class="line">		[self showUsingAnimation:useAnimation];</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)handleGraceTimer:(NSTimer *)theTimer &#123;</div><div class="line">	<span class="comment">// 任务执行期间，才会显示；否则就不必显示HUD了</span></div><div class="line">	<span class="keyword">if</span> (taskInProgress) &#123;</div><div class="line">		[self showUsingAnimation:useAnimation];</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>代码中还存在<em>minShowTime</em>这一属性，即“最小显示时长”。用于在HUD隐藏时，当少于指定显示时长时延迟消失时机，防止“闪烁”情况发生：</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 隐藏自身 */</span></div><div class="line">- (<span class="keyword">void</span>)hide:(BOOL)animated &#123;</div><div class="line">	useAnimation = animated;</div><div class="line">    <span class="comment">// 存在最小显示时长，并且HUD已经在显示（showStarted中保存了显示时刻）</span></div><div class="line">	<span class="keyword">if</span> (self.minShowTime &gt; <span class="number">0.0</span> &amp;&amp; showStarted) &#123;</div><div class="line">        <span class="comment">// 计算已显示时长</span></div><div class="line">		NSTimeInterval interv = [[NSDate date] timeIntervalSinceDate:showStarted];</div><div class="line">		<span class="keyword">if</span> (interv &lt; self.minShowTime) &#123;</div><div class="line">            <span class="comment">// 小于最小显示时长，则补齐时长后，执行隐藏功能（防止过早隐藏，出现闪烁）</span></div><div class="line">			self.minShowTimer = [NSTimer scheduledTimerWithTimeInterval:(self.minShowTime - interv) target:self </div><div class="line">								selector:@selector(handleMinShowTimer:) userInfo:nil repeats:NO];</div><div class="line">			<span class="keyword">return</span>;</div><div class="line">		&#125; </div><div class="line">	&#125;</div><div class="line">	<span class="comment">// 直接隐藏</span></div><div class="line">	[self hideUsingAnimation:useAnimation];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)handleMinShowTimer:(NSTimer *)theTimer &#123;</div><div class="line">	[self hideUsingAnimation:useAnimation];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="3-使用KVO更新UI"><a href="#3-使用KVO更新UI" class="headerlink" title="3. 使用KVO更新UI"></a>3. 使用KVO更新UI</h3><p>对于MBProgressHUD中过于繁杂的各种配置属性（如mode、progress、各种文字及样式颜色等），设置后都需要进行UI更新。为了进行统一管理，且降低代码复杂程度，源码中使用了KVO的方式进行处理：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)registerForKVO &#123;</div><div class="line">    <span class="comment">// 依次设置需要的实例变量为KVO</span></div><div class="line">	<span class="keyword">for</span> (NSString *keyPath in [self observableKeypaths]) &#123;</div><div class="line">		[self addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew context:<span class="literal">NULL</span>];</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (NSArray *)observableKeypaths &#123;</div><div class="line">    <span class="comment">// 返回所有需要设置为KVO的实例变量</span></div><div class="line">	<span class="keyword">return</span> [NSArray arrayWithObjects:@<span class="string">"mode"</span>, @<span class="string">"customView"</span>, @<span class="string">"labelText"</span>, @<span class="string">"labelFont"</span>, @<span class="string">"labelColor"</span>,</div><div class="line">			@<span class="string">"detailsLabelText"</span>, @<span class="string">"detailsLabelFont"</span>, @<span class="string">"detailsLabelColor"</span>, @<span class="string">"progress"</span>, @<span class="string">"activityIndicatorColor"</span>, nil];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(<span class="keyword">void</span> *)context &#123;</div><div class="line">    <span class="comment">// 由于所有KVO监听的实例变量均为UI相关，确保在主线程设置</span></div><div class="line">	<span class="keyword">if</span> (![NSThread isMainThread]) &#123;</div><div class="line">		[self performSelectorOnMainThread:@selector(updateUIForKeypath:) withObject:keyPath waitUntilDone:NO];</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		[self updateUIForKeypath:keyPath];</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)updateUIForKeypath:(NSString *)keyPath &#123;</div><div class="line">    <span class="comment">// 统一进行属性设置</span></div><div class="line">	<span class="keyword">if</span> ([keyPath isEqualToString:@<span class="string">"mode"</span>] || [keyPath isEqualToString:@<span class="string">"customView"</span>] ||</div><div class="line">		[keyPath isEqualToString:@<span class="string">"activityIndicatorColor"</span>]) &#123;</div><div class="line">		[self updateIndicators];</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([keyPath isEqualToString:@<span class="string">"labelText"</span>]) &#123;</div><div class="line">		label.text = self.labelText;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([keyPath isEqualToString:@<span class="string">"labelFont"</span>]) &#123;</div><div class="line">		label.font = self.labelFont;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([keyPath isEqualToString:@<span class="string">"labelColor"</span>]) &#123;</div><div class="line">		label.textColor = self.labelColor;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([keyPath isEqualToString:@<span class="string">"detailsLabelText"</span>]) &#123;</div><div class="line">		detailsLabel.text = self.detailsLabelText;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([keyPath isEqualToString:@<span class="string">"detailsLabelFont"</span>]) &#123;</div><div class="line">		detailsLabel.font = self.detailsLabelFont;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([keyPath isEqualToString:@<span class="string">"detailsLabelColor"</span>]) &#123;</div><div class="line">		detailsLabel.textColor = self.detailsLabelColor;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([keyPath isEqualToString:@<span class="string">"progress"</span>]) &#123;</div><div class="line">		<span class="keyword">if</span> ([indicator respondsToSelector:@selector(setProgress:)]) &#123;</div><div class="line">			[(id)indicator setValue:@(progress) forKey:@<span class="string">"progress"</span>];</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span>;</div><div class="line">	&#125;</div><div class="line">    <span class="comment">// 设置完成后，更新布局（label等）并重绘界面（progress等）</span></div><div class="line">	[self setNeedsLayout];</div><div class="line">	[self setNeedsDisplay];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>通过<em>updateUIForKeypath:</em>方法，统一对所有UI相关修改进行属性设置，并在最后统一绘制并刷新布局，完成UI更新。</p>
+</blockquote>
+<p>移除KVO监听时，使用同样的方式：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)unregisterFromKVO &#123;</div><div class="line">    <span class="comment">// 依次移除KVO监听</span></div><div class="line">	<span class="keyword">for</span> (NSString *keyPath in [self observableKeypaths]) &#123;</div><div class="line">		[self removeObserver:self forKeyPath:keyPath];</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (NSArray *)observableKeypaths &#123;</div><div class="line">    <span class="comment">// 返回所有需要设置为KVO的实例变量</span></div><div class="line">	<span class="keyword">return</span> [NSArray arrayWithObjects:@<span class="string">"mode"</span>, @<span class="string">"customView"</span>, @<span class="string">"labelText"</span>, @<span class="string">"labelFont"</span>, @<span class="string">"labelColor"</span>,</div><div class="line">			@<span class="string">"detailsLabelText"</span>, @<span class="string">"detailsLabelFont"</span>, @<span class="string">"detailsLabelColor"</span>, @<span class="string">"progress"</span>, @<span class="string">"activityIndicatorColor"</span>, nil];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="4-使用通知方式处理自身视图的朝向变化"><a href="#4-使用通知方式处理自身视图的朝向变化" class="headerlink" title="4. 使用通知方式处理自身视图的朝向变化"></a>4. 使用通知方式处理自身视图的朝向变化</h3><p>在设备朝向发生改变时，通过监听系统通知事件（<em>UIApplicationDidChangeStatusBarOrientationNotification</em>），重绘自身，以适应视图转向：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)registerForNotifications &#123;</div><div class="line">	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];</div><div class="line">    <span class="comment">// 监听屏幕旋转消息</span></div><div class="line">	[nc addObserver:self selector:@selector(statusBarOrientationDidChange:)</div><div class="line">			   name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)unregisterFromNotifications &#123;</div><div class="line">	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];</div><div class="line">	[nc removeObserver:self name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)statusBarOrientationDidChange:(NSNotification *)notification &#123;</div><div class="line">	UIView *superview = self.superview;</div><div class="line">	<span class="keyword">if</span> (!superview) &#123;</div><div class="line">		<span class="keyword">return</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// 依附于父视图上，则进行自身更新</span></div><div class="line">		[self updateForCurrentOrientationAnimated:YES];</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)updateForCurrentOrientationAnimated:(BOOL)animated &#123;</div><div class="line">    <span class="comment">// Stay in sync with the superview in any case</span></div><div class="line">    <span class="keyword">if</span> (self.superview) &#123;</div><div class="line">        <span class="comment">// 自身尺寸为转向后的父视图尺寸</span></div><div class="line">        self.bounds = self.superview.bounds;</div><div class="line">        <span class="comment">// 重绘自身，更新为新样式</span></div><div class="line">        [self setNeedsDisplay];</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h3><ol>
+<li><strong>高效统一的UI更新</strong>：由于源码中将视图组件（如UILabel和）的布局配置封装于<em>layoutSubView:</em>方法中；将HUD的背景图及progress进度条绘制置于<em>drawRect:</em>方法中，故可以在任意时机通过调用<em>setNeedsLayout</em>以及<em>setNeedsDisplay</em>统一更新UI。再通过KVO、通知等方式统一进行绑定，实现了高效率的UI更新及代码规范的封装方式。</li>
+<li><strong>对于“全能”实现方法的二次封装</strong>：只将真正的实现代码封装在指定方法中，并提供详细的配置参数。其他相关API只是对改方法进行不同配置上的二次封装，使代码机制，易于管理，减少了出错概率。</li>
+<li><strong>灵活使用KVO等方式进行变量的自动设置</strong>：KVO可以在运行期间自动完成对应变量的更新，这对于大量对象的频繁修改尤其有效，也是集中管理代码的良好方式。</li>
+</ol>
 
-        <div class="article-info info-on-right">
-          
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -217,364 +268,88 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/01/23/MBProgressHUD源码学习2：实现方式简单分析/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/23/MBProgressHUD源码学习1：公有API介绍/" class="archive-article-date">
-  	<time datetime="2019-01-23T10:39:06.662Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-23</time>
-</a>
-        </div>
-    	 
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/23/MBProgressHUD源码学习1：公有API介绍/">MBProgressHUD源码学习1：公有API介绍</a>
-    </h1>
+  
+    <a href="/2019/01/23/MBProgressHUD源码学习1：公有API介绍/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">MBProgressHUD源码学习1：公有API介绍</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+  
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/" class="archive-article-date">
-  	<time datetime="2019-01-21T09:20:35.940Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-21</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/">objc-公共头文件（Public Headers）的基本内容（下）</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（上）/" class="archive-article-date">
-  	<time datetime="2019-01-21T09:19:35.705Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-21</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（上）/">objc-公共头文件（Public Headers）的基本内容（上）</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/18/GCD篇：1.GCD的使用要点/" class="archive-article-date">
-  	<time datetime="2019-01-18T05:43:36.161Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-18</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/18/GCD篇：1.GCD的使用要点/">《Objective-C高级编程 iOS与OS X多线程与内存管理》17</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/15/Blocks篇：7.循环引用问题/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:12:59.642Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/15/Blocks篇：7.循环引用问题/">《Objective-C高级编程 iOS与OS X多线程与内存管理》16</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/15/Blocks篇：6.Blocks捕获的OC对象及其内存管理/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:12:24.974Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/15/Blocks篇：6.Blocks捕获的OC对象及其内存管理/">《Objective-C高级编程 iOS与OS X多线程与内存管理》15</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/15/Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:11:24.722Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/15/Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）/">《Objective-C高级编程 iOS与OS X多线程与内存管理》14</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/15/Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:10:25.966Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/15/Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）/">《Objective-C高级编程 iOS与OS X多线程与内存管理》13</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/15/Blocks篇：3.Blocks使用捕获到的变量/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:09:21.983Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/15/Blocks篇：3.Blocks使用捕获到的变量/">《Objective-C高级编程 iOS与OS X多线程与内存管理》12</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/archives/2019/page/2/">2</a><a class="page-number" href="/archives/2019/page/3/">3</a><a class="extend next" rel="next" href="/archives/2019/page/2/">Next &raquo;</a>
-    </nav>
   
 
 
@@ -598,8 +373,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: true,

@@ -6,17 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2019 | 臭吉吉的瞎记空间</title>
+  <title>MBProgressHUD源码学习1：公有API介绍 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="督促自己好好学习哦~">
-<meta property="og:type" content="website">
-<meta property="og:title" content="臭吉吉的瞎记空间">
-<meta property="og:url" content="http://yoursite.com/archives/2019/index.html">
+  <meta name="description" content="源代码基于0.91版本； 本篇只介绍相关公有API，同时简单说明实现方式   1. 用于快速调用HUD的类方法1.1 在指定视图上显示和移除HUD 在视图中显示HUD，进入等待状态">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MBProgressHUD源码学习1：公有API介绍">
+<meta property="og:url" content="http://yoursite.com/2019/01/23/MBProgressHUD源码学习1：公有API介绍/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="督促自己好好学习哦~">
+<meta property="og:description" content="源代码基于0.91版本； 本篇只介绍相关公有API，同时简单说明实现方式   1. 用于快速调用HUD的类方法1.1 在指定视图上显示和移除HUD 在视图中显示HUD，进入等待状态">
+<meta property="og:updated_time" content="2019-01-23T10:39:27.847Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="臭吉吉的瞎记空间">
-<meta name="twitter:description" content="督促自己好好学习哦~">
+<meta name="twitter:title" content="MBProgressHUD源码学习1：公有API介绍">
+<meta name="twitter:description" content="源代码基于0.91版本； 本篇只介绍相关公有API，同时简单说明实现方式   1. 用于快速调用HUD的类方法1.1 在指定视图上显示和移除HUD 在视图中显示HUD，进入等待状态">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -176,74 +178,100 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-MBProgressHUD源码学习1：公有API介绍" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/23/MBProgressHUD源码学习2：实现方式简单分析/" class="archive-article-date">
-  	<time datetime="2019-01-23T10:40:09.240Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-23</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/23/MBProgressHUD源码学习2：实现方式简单分析/">MBProgressHUD源码学习2：实现方式简单分析</a>
+    <h1 class="article-title" itemprop="name">
+      MBProgressHUD源码学习1：公有API介绍
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/23/MBProgressHUD源码学习1：公有API介绍/" class="archive-article-date">
+        
+        <a href="/2019/01/23/MBProgressHUD源码学习1：公有API介绍/" class="archive-article-date">
   	<time datetime="2019-01-23T10:39:06.662Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-23</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/23/MBProgressHUD源码学习1：公有API介绍/">MBProgressHUD源码学习1：公有API介绍</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<ul>
+<li>源代码基于0.91版本；</li>
+<li>本篇只介绍相关公有API，同时简单说明实现方式</li>
+</ul>
+</blockquote>
+<h3 id="1-用于快速调用HUD的类方法"><a href="#1-用于快速调用HUD的类方法" class="headerlink" title="1. 用于快速调用HUD的类方法"></a>1. 用于快速调用HUD的类方法</h3><h4 id="1-1-在指定视图上显示和移除HUD"><a href="#1-1-在指定视图上显示和移除HUD" class="headerlink" title="1.1 在指定视图上显示和移除HUD"></a>1.1 在指定视图上显示和移除HUD</h4><ul>
+<li><p>在视图中显示HUD，进入等待状态</p>
+<a id="more"></a>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">+ (MB_INSTANCETYPE)showHUDAddedTo:(UIView *)view animated:(BOOL)animated;</div></pre></td></tr></table></figure>
+</li>
+<li><p>在视图上移除HUD，退出等待状态</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">+ (BOOL)hideHUDForView:(UIView *)view animated:(BOOL)animated;</div></pre></td></tr></table></figure>
+<p>对于没有特别要求，只需要简单屏蔽用户交互时使用；二者一般成对使用。</p>
+<ul>
+<li>移除视图中的所有HUD，退出等待状态</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">+ (NSUInteger)hideAllHUDsForView:(UIView *)view animated:(BOOL)animated;</div></pre></td></tr></table></figure>
+<p>此方法会遍历查找视图层级中的所有HUD视图并移除。</p>
+<blockquote>
+<p>快速显示和隐藏HUD方法，自动管理HUD的生命周期，故在实现中设置为“隐藏后直接移除视图”，如：</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 示例的显示HUD方法</span></div><div class="line">+ (MB_INSTANCETYPE)showHUDAddedTo:(UIView *)view animated:(BOOL)animated &#123;</div><div class="line">	MBProgressHUD *hud = [[self alloc] initWithView:view];</div><div class="line">    <span class="comment">// 类方法，只是用于快速显示或隐藏，不关心视图，故消失后直接移除</span></div><div class="line">	hud.removeFromSuperViewOnHide = YES;</div><div class="line">	[view addSubview:hud];</div><div class="line">	[hud show:animated];</div><div class="line">	<span class="keyword">return</span> MB_AUTORELEASE(hud);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="1-2-获取视图中存在的HUD对象"><a href="#1-2-获取视图中存在的HUD对象" class="headerlink" title="1.2 获取视图中存在的HUD对象"></a>1.2 获取视图中存在的HUD对象</h4><ul>
+<li>获取视图中当前显示的HUD对象</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">+ (MB_INSTANCETYPE)HUDForView:(UIView *)view;</div></pre></td></tr></table></figure>
+<p>这里使用了逆序遍历view的子视图的方式，快速获取最上层的HUD对象：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">+ (MB_INSTANCETYPE)HUDForView:(UIView *)view &#123;</div><div class="line">    <span class="comment">// 逆序迭代（符合视图层级）</span></div><div class="line">	NSEnumerator *subviewsEnum = [view.subviews reverseObjectEnumerator];</div><div class="line">	<span class="keyword">for</span> (UIView *subview in subviewsEnum) &#123;</div><div class="line">		<span class="keyword">if</span> ([subview isKindOfClass:self]) &#123;</div><div class="line">			<span class="keyword">return</span> (MBProgressHUD *)subview;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> nil;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>获取视图中所有存在的HUD对象</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">+ (NSArray *)allHUDsForView:(UIView *)view;</div></pre></td></tr></table></figure>
+<h3 id="2-初始化HUD的实例方法"><a href="#2-初始化HUD的实例方法" class="headerlink" title="2 初始化HUD的实例方法"></a>2 初始化HUD的实例方法</h3><h4 id="2-1-使用UIWindow对象尺寸创建HUD"><a href="#2-1-使用UIWindow对象尺寸创建HUD" class="headerlink" title="2.1 使用UIWindow对象尺寸创建HUD"></a>2.1 使用UIWindow对象尺寸创建HUD</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (id)initWithWindow:(UIWindow *)window;</div></pre></td></tr></table></figure>
+<h4 id="2-2-使用UIView对象尺寸创建HUD"><a href="#2-2-使用UIView对象尺寸创建HUD" class="headerlink" title="2.2 使用UIView对象尺寸创建HUD"></a>2.2 使用UIView对象尺寸创建HUD</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (id)initWithView:(UIView *)view;</div></pre></td></tr></table></figure>
+<p>说明：</p>
+<ul>
+<li>二者都是通过调用<em>initWithFrame</em>方法进行实例化，只是参数类型不同；</li>
+<li>需要创建方自主管理HUD的生存周期。</li>
+</ul>
+<p>注意：</p>
+<ul>
+<li><strong>以上初始化方法中的参数只是由于指定HUD视图自身尺寸，并非添加到视图上。</strong></li>
+<li><strong>添加到的父视图需要手动指定。</strong></li>
+</ul>
+<h3 id="3-显示、隐藏HUD的相关实例方法"><a href="#3-显示、隐藏HUD的相关实例方法" class="headerlink" title="3 显示、隐藏HUD的相关实例方法"></a>3 显示、隐藏HUD的相关实例方法</h3><h4 id="3-1-显示HUD视图，进入等待状态"><a href="#3-1-显示HUD视图，进入等待状态" class="headerlink" title="3.1 显示HUD视图，进入等待状态"></a>3.1 显示HUD视图，进入等待状态</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)show:(BOOL)animated;</div></pre></td></tr></table></figure>
+<h4 id="3-2-隐藏HUD视图，退出等待状态"><a href="#3-2-隐藏HUD视图，退出等待状态" class="headerlink" title="3.2 隐藏HUD视图，退出等待状态"></a>3.2 隐藏HUD视图，退出等待状态</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)hide:(BOOL)animated;</div></pre></td></tr></table></figure>
+<h4 id="3-3-在指定时间后，隐藏HUD视图，退出等待状态"><a href="#3-3-在指定时间后，隐藏HUD视图，退出等待状态" class="headerlink" title="3.3 在指定时间后，隐藏HUD视图，退出等待状态"></a>3.3 在指定时间后，隐藏HUD视图，退出等待状态</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)hide:(BOOL)animated afterDelay:(NSTimeInterval)delay;</div></pre></td></tr></table></figure>
+<p>以上方法，都是在通过自己实例化HUD对象后（默认为隐藏状态），自主控制HUD视图的显示与隐藏。</p>
+<h3 id="4-在指定任务执行时，自动显示和隐藏HUD的相关方法"><a href="#4-在指定任务执行时，自动显示和隐藏HUD的相关方法" class="headerlink" title="4 在指定任务执行时，自动显示和隐藏HUD的相关方法"></a>4 在指定任务执行时，自动显示和隐藏HUD的相关方法</h3><h4 id="4-1-使用“target-selector”方式执行后台任务"><a href="#4-1-使用“target-selector”方式执行后台任务" class="headerlink" title="4.1 使用“target - selector”方式执行后台任务"></a>4.1 使用“<em>target - selector</em>”方式执行后台任务</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)showWhileExecuting:(SEL)method onTarget:(id)target withObject:(id)object animated:(BOOL)animated;</div></pre></td></tr></table></figure>
+<p>此方法的实现步骤：</p>
+<ol>
+<li>在后台自动创建新线程，在其中执行预定任务；</li>
+<li>同时在主线程创建并显示HUD；</li>
+<li>任务完成后，在主线程中清理缓存数据，同时移除HUD，结束等待状态。</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)showWhileExecuting:(SEL)method onTarget:(id)target withObject:(id)object animated:(BOOL)animated &#123;</div><div class="line">    <span class="comment">// 保存需要执行的参数对象</span></div><div class="line">	methodForExecution = method;</div><div class="line">	targetForExecution = MB_RETAIN(target);</div><div class="line">	objectForExecution = MB_RETAIN(object);	</div><div class="line">    <span class="comment">// 这里由于是开辟新线程执行任务，故是异步执行</span></div><div class="line">	self.taskInProgress = YES;</div><div class="line">	[NSThread detachNewThreadSelector:@selector(launchExecution) toTarget:self withObject:nil];</div><div class="line">    <span class="comment">// 同时显示HUD视图，进入等待状态</span></div><div class="line">	[self show:animated];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)launchExecution &#123;</div><div class="line">	@autoreleasepool &#123;</div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> clang diagnostic push</span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> clang diagnostic ignored <span class="meta-string">"-Warc-performSelector-leaks"</span></span></div><div class="line">        <span class="comment">// 1.这里由于没有使用返回值，故需要向编译器添加“忽略内存泄漏”要求</span></div><div class="line">        <span class="comment">// 2.此方法在支持完毕前，不会返回（卡住当前执行线程）</span></div><div class="line">		[targetForExecution performSelector:methodForExecution withObject:objectForExecution];</div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> clang diagnostic pop</span></div><div class="line">        <span class="comment">// 执行完毕后，执行主线程的任务</span></div><div class="line">		[self performSelectorOnMainThread:@selector(cleanUp) withObject:nil waitUntilDone:NO];</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)cleanUp &#123;</div><div class="line">    <span class="comment">// 标识任务已结束</span></div><div class="line">	taskInProgress = NO;</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> !__has_feature(objc_arc)</span></div><div class="line">	[targetForExecution release];</div><div class="line">	[objectForExecution release];</div><div class="line"><span class="meta">#<span class="meta-keyword">else</span></span></div><div class="line">    <span class="comment">// 清除保留的执行对象</span></div><div class="line">	targetForExecution = nil;</div><div class="line">	objectForExecution = nil;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">    <span class="comment">// 隐藏HUD视图，退出等待状态</span></div><div class="line">	[self hide:useAnimation];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="4-2-使用“block”方式执行后台任务"><a href="#4-2-使用“block”方式执行后台任务" class="headerlink" title="4.2 使用“block”方式执行后台任务"></a>4.2 使用“<em>block</em>”方式执行后台任务</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)showAnimated:(BOOL)animated whileExecutingBlock:(<span class="keyword">dispatch_block_t</span>)block;</div></pre></td></tr></table></figure>
+<h4 id="4-3-使用“block”方式执行后台任务，并在完成后执行指定任务"><a href="#4-3-使用“block”方式执行后台任务，并在完成后执行指定任务" class="headerlink" title="4.3 使用“block”方式执行后台任务，并在完成后执行指定任务"></a>4.3 使用“<em>block</em>”方式执行后台任务，并在完成后执行指定任务</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)showAnimated:(BOOL)animated whileExecutingBlock:(<span class="keyword">dispatch_block_t</span>)block completionBlock:(MBProgressHUDCompletionBlock)completion;</div></pre></td></tr></table></figure>
+<h4 id="4-4-使用“block”方式执行后台任务，任务在指定的GCD队列中执行"><a href="#4-4-使用“block”方式执行后台任务，任务在指定的GCD队列中执行" class="headerlink" title="4.4 使用“block”方式执行后台任务，任务在指定的GCD队列中执行"></a>4.4 使用“<em>block</em>”方式执行后台任务，任务在指定的GCD队列中执行</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)showAnimated:(BOOL)animated whileExecutingBlock:(<span class="keyword">dispatch_block_t</span>)block onQueue:(<span class="keyword">dispatch_queue_t</span>)<span class="built_in">queue</span>;</div></pre></td></tr></table></figure>
+<h4 id="4-5-使用“block”方式执行后台任务，任务在指定的GCD队列中执行，并在完成后执行指定任务"><a href="#4-5-使用“block”方式执行后台任务，任务在指定的GCD队列中执行，并在完成后执行指定任务" class="headerlink" title="4.5 使用“block”方式执行后台任务，任务在指定的GCD队列中执行，并在完成后执行指定任务"></a>4.5 使用“<em>block</em>”方式执行后台任务，任务在指定的GCD队列中执行，并在完成后执行指定任务</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)showAnimated:(BOOL)animated whileExecutingBlock:(<span class="keyword">dispatch_block_t</span>)block onQueue:(<span class="keyword">dispatch_queue_t</span>)<span class="built_in">queue</span></div><div class="line">		  completionBlock:(MBProgressHUDCompletionBlock)completion;</div></pre></td></tr></table></figure>
+<p>以上通过block方式执行任务的API，都是<strong>通过GCD的方式，在并发队列中执行异步任务</strong>，简化了实现。如<em>1.4.5</em>的方法实现：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 真正的block版本的异步执行函数 */</span></div><div class="line">- (<span class="keyword">void</span>)showAnimated:(BOOL)animated whileExecutingBlock:(<span class="keyword">dispatch_block_t</span>)block onQueue:(<span class="keyword">dispatch_queue_t</span>)<span class="built_in">queue</span></div><div class="line">	 completionBlock:(MBProgressHUDCompletionBlock)completion &#123;</div><div class="line">    <span class="comment">// 标识任务已开始执行</span></div><div class="line">	self.taskInProgress = YES;</div><div class="line">    <span class="comment">// 将block保存到堆内存（由于completion为外部回调，不会捕获当前对象中的变量，防止是栈内存的block被释放，故需要拷贝到堆上）</span></div><div class="line">	self.completionBlock = completion;</div><div class="line">    <span class="comment">// 在队列中异步执行任务</span></div><div class="line">	dispatch_async(<span class="built_in">queue</span>, ^(<span class="keyword">void</span>) &#123;</div><div class="line">		block();</div><div class="line">        <span class="comment">// 完成后，主线程进行清理工作</span></div><div class="line">		dispatch_async(dispatch_get_main_queue(), ^(<span class="keyword">void</span>) &#123;</div><div class="line">			[self cleanUp];</div><div class="line">		&#125;);</div><div class="line">	&#125;);</div><div class="line">    <span class="comment">// 同时，在主线程显示HUD视图，进入等待状态</span></div><div class="line">	[self show:animated];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<hr>
 
-        <div class="article-info info-on-right">
-          
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -255,326 +283,97 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/01/23/MBProgressHUD源码学习1：公有API介绍/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/" class="archive-article-date">
-  	<time datetime="2019-01-21T09:20:35.940Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-21</time>
-</a>
-        </div>
-    	 
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/">objc-公共头文件（Public Headers）的基本内容（下）</a>
-    </h1>
+    <a href="/2019/01/23/MBProgressHUD源码学习2：实现方式简单分析/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          MBProgressHUD源码学习2：实现方式简单分析
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">objc-公共头文件（Public Headers）的基本内容（下）</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+  
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（上）/" class="archive-article-date">
-  	<time datetime="2019-01-21T09:19:35.705Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-21</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（上）/">objc-公共头文件（Public Headers）的基本内容（上）</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/18/GCD篇：1.GCD的使用要点/" class="archive-article-date">
-  	<time datetime="2019-01-18T05:43:36.161Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-18</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/18/GCD篇：1.GCD的使用要点/">《Objective-C高级编程 iOS与OS X多线程与内存管理》17</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/15/Blocks篇：7.循环引用问题/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:12:59.642Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/15/Blocks篇：7.循环引用问题/">《Objective-C高级编程 iOS与OS X多线程与内存管理》16</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/15/Blocks篇：6.Blocks捕获的OC对象及其内存管理/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:12:24.974Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/15/Blocks篇：6.Blocks捕获的OC对象及其内存管理/">《Objective-C高级编程 iOS与OS X多线程与内存管理》15</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/15/Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:11:24.722Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/15/Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）/">《Objective-C高级编程 iOS与OS X多线程与内存管理》14</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/15/Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:10:25.966Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/15/Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）/">《Objective-C高级编程 iOS与OS X多线程与内存管理》13</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/15/Blocks篇：3.Blocks使用捕获到的变量/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:09:21.983Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/15/Blocks篇：3.Blocks使用捕获到的变量/">《Objective-C高级编程 iOS与OS X多线程与内存管理》12</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/archives/2019/page/2/">2</a><a class="page-number" href="/archives/2019/page/3/">3</a><a class="extend next" rel="next" href="/archives/2019/page/2/">Next &raquo;</a>
-    </nav>
   
 
 
@@ -598,8 +397,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: true,

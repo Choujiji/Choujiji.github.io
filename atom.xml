@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-01-21T09:20:35.940Z</updated>
+  <updated>2019-01-23T10:40:19.664Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,177 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MBProgressHUD源码学习2：实现方式简单分析</title>
+    <link href="http://yoursite.com/2019/01/23/MBProgressHUD%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A02%EF%BC%9A%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E7%AE%80%E5%8D%95%E5%88%86%E6%9E%90/"/>
+    <id>http://yoursite.com/2019/01/23/MBProgressHUD源码学习2：实现方式简单分析/</id>
+    <published>2019-01-23T10:40:09.240Z</published>
+    <updated>2019-01-23T10:40:19.664Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>提要：</p>
+<ol>
+<li>“全能”实现方法；</li>
+<li>“延后显示”和“最少显示时间”；</li>
+<li>使用KVO更新UI；</li>
+<li>使用通知方式处理自身视图的朝向变化；</li>
+<li>总结<a id="more"></a>
+<h3 id="1-“全能”实现方法"><a href="#1-“全能”实现方法" class="headerlink" title="1. “全能”实现方法"></a>1. “全能”实现方法</h3></li>
+</ol>
+</blockquote>
+<p><strong>“全能”实现方法，即真正用于实现功能的方法</strong>。这一封装方式在MBProgressHUD.m中屡见不鲜。如“全能”初始化方法<em>initWithFrame</em>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 全能初始化方法 */</span></div><div class="line">- (id)initWithFrame:(CGRect)frame &#123;</div><div class="line">	self = [super initWithFrame:frame];</div><div class="line">	<span class="keyword">if</span> (self) &#123;</div><div class="line">		<span class="comment">// 各种属性初始值设置</span></div><div class="line">		...</div><div class="line">		</div><div class="line">        <span class="comment">// 初始化label</span></div><div class="line">		[self setupLabels];</div><div class="line">        <span class="comment">// 加载indicator</span></div><div class="line">		[self updateIndicators];</div><div class="line">        <span class="comment">// 注册KVO，将UI的属性修改绑定到一起</span></div><div class="line">		[self registerForKVO];</div><div class="line">        <span class="comment">// 注册屏幕朝向通知，自动旋转</span></div><div class="line">		[self registerForNotifications];</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (id)initWithView:(UIView *)view &#123;</div><div class="line">	NSAssert(view, @<span class="string">"View must not be nil."</span>);</div><div class="line">	<span class="keyword">return</span> [self initWithFrame:view.bounds];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (id)initWithWindow:(UIWindow *)window &#123;</div><div class="line">	<span class="keyword">return</span> [self initWithView:window];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在以上代码中，可以看出，外部API使用的初始化最终都是通过调用<em>initWithFrame</em>方法完成的。该方法的主要功能如下：</p>
+<ul>
+<li>提供了主要属性的初始赋值；</li>
+<li>对用于显示信息的的UILabel对象进行初始化，真正的布局在layoutSubView中进行处理；</li>
+<li>根据mode属性，对不同类型的indicator视图对象进行初始化；</li>
+<li>通过KVO，将用于更新UI的相关属性进行统一配置；</li>
+<li>使用通知，监听系统屏幕转向消息，配置视图转向重绘方法。</li>
+</ul>
+<blockquote>
+<p>类似的封装方式，在本类中还体现在：</p>
+<ol>
+<li>如线程block的任务配置api中，<em>showAnimated:whileExecutingBlock:onQueue:completionBlock:</em>方法作为真正的实现方法，其余均为本方法的不同调用版本。</li>
+<li>显示和隐藏HUD方法，分别通过<em>showUsingAnimation:</em>和<em>hideUsingAnimation:</em>方法进行真正的功能实现。</li>
+</ol>
+<p>这种封装方式的好处是使实现代码集中，便于管理，且不易出错。</p>
+</blockquote>
+<h3 id="2-“延后显示”和“最少显示时间”"><a href="#2-“延后显示”和“最少显示时间”" class="headerlink" title="2. “延后显示”和“最少显示时间”"></a>2. “延后显示”和“最少显示时间”</h3><ol>
+<li>MBProgressHUD中，存在<em>graceTime</em>这一属性，其意义为“延迟一定的时间显示HUD”。即当任务运行时间过短的情况下，防止“闪烁”情况发生（HUD刚刚显示就隐藏）。此值需要我们手动设置，默认为0。</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 显示自身 */</span></div><div class="line">- (<span class="keyword">void</span>)show:(BOOL)animated &#123;</div><div class="line">	useAnimation = animated;</div><div class="line">	<span class="comment">// 设置了graceTime后，就会延时显示了</span></div><div class="line">	<span class="keyword">if</span> (self.graceTime &gt; <span class="number">0.0</span>) &#123;</div><div class="line">		self.graceTimer = [NSTimer scheduledTimerWithTimeInterval:self.graceTime target:self </div><div class="line">						   selector:@selector(handleGraceTimer:) userInfo:nil repeats:NO];</div><div class="line">	&#125; </div><div class="line">	<span class="comment">// 直接显示</span></div><div class="line">	<span class="keyword">else</span> &#123;</div><div class="line">		[self showUsingAnimation:useAnimation];</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)handleGraceTimer:(NSTimer *)theTimer &#123;</div><div class="line">	<span class="comment">// 任务执行期间，才会显示；否则就不必显示HUD了</span></div><div class="line">	<span class="keyword">if</span> (taskInProgress) &#123;</div><div class="line">		[self showUsingAnimation:useAnimation];</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>代码中还存在<em>minShowTime</em>这一属性，即“最小显示时长”。用于在HUD隐藏时，当少于指定显示时长时延迟消失时机，防止“闪烁”情况发生：</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 隐藏自身 */</span></div><div class="line">- (<span class="keyword">void</span>)hide:(BOOL)animated &#123;</div><div class="line">	useAnimation = animated;</div><div class="line">    <span class="comment">// 存在最小显示时长，并且HUD已经在显示（showStarted中保存了显示时刻）</span></div><div class="line">	<span class="keyword">if</span> (self.minShowTime &gt; <span class="number">0.0</span> &amp;&amp; showStarted) &#123;</div><div class="line">        <span class="comment">// 计算已显示时长</span></div><div class="line">		NSTimeInterval interv = [[NSDate date] timeIntervalSinceDate:showStarted];</div><div class="line">		<span class="keyword">if</span> (interv &lt; self.minShowTime) &#123;</div><div class="line">            <span class="comment">// 小于最小显示时长，则补齐时长后，执行隐藏功能（防止过早隐藏，出现闪烁）</span></div><div class="line">			self.minShowTimer = [NSTimer scheduledTimerWithTimeInterval:(self.minShowTime - interv) target:self </div><div class="line">								selector:@selector(handleMinShowTimer:) userInfo:nil repeats:NO];</div><div class="line">			<span class="keyword">return</span>;</div><div class="line">		&#125; </div><div class="line">	&#125;</div><div class="line">	<span class="comment">// 直接隐藏</span></div><div class="line">	[self hideUsingAnimation:useAnimation];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)handleMinShowTimer:(NSTimer *)theTimer &#123;</div><div class="line">	[self hideUsingAnimation:useAnimation];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="3-使用KVO更新UI"><a href="#3-使用KVO更新UI" class="headerlink" title="3. 使用KVO更新UI"></a>3. 使用KVO更新UI</h3><p>对于MBProgressHUD中过于繁杂的各种配置属性（如mode、progress、各种文字及样式颜色等），设置后都需要进行UI更新。为了进行统一管理，且降低代码复杂程度，源码中使用了KVO的方式进行处理：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)registerForKVO &#123;</div><div class="line">    <span class="comment">// 依次设置需要的实例变量为KVO</span></div><div class="line">	<span class="keyword">for</span> (NSString *keyPath in [self observableKeypaths]) &#123;</div><div class="line">		[self addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew context:<span class="literal">NULL</span>];</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (NSArray *)observableKeypaths &#123;</div><div class="line">    <span class="comment">// 返回所有需要设置为KVO的实例变量</span></div><div class="line">	<span class="keyword">return</span> [NSArray arrayWithObjects:@<span class="string">"mode"</span>, @<span class="string">"customView"</span>, @<span class="string">"labelText"</span>, @<span class="string">"labelFont"</span>, @<span class="string">"labelColor"</span>,</div><div class="line">			@<span class="string">"detailsLabelText"</span>, @<span class="string">"detailsLabelFont"</span>, @<span class="string">"detailsLabelColor"</span>, @<span class="string">"progress"</span>, @<span class="string">"activityIndicatorColor"</span>, nil];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(<span class="keyword">void</span> *)context &#123;</div><div class="line">    <span class="comment">// 由于所有KVO监听的实例变量均为UI相关，确保在主线程设置</span></div><div class="line">	<span class="keyword">if</span> (![NSThread isMainThread]) &#123;</div><div class="line">		[self performSelectorOnMainThread:@selector(updateUIForKeypath:) withObject:keyPath waitUntilDone:NO];</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		[self updateUIForKeypath:keyPath];</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)updateUIForKeypath:(NSString *)keyPath &#123;</div><div class="line">    <span class="comment">// 统一进行属性设置</span></div><div class="line">	<span class="keyword">if</span> ([keyPath isEqualToString:@<span class="string">"mode"</span>] || [keyPath isEqualToString:@<span class="string">"customView"</span>] ||</div><div class="line">		[keyPath isEqualToString:@<span class="string">"activityIndicatorColor"</span>]) &#123;</div><div class="line">		[self updateIndicators];</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([keyPath isEqualToString:@<span class="string">"labelText"</span>]) &#123;</div><div class="line">		label.text = self.labelText;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([keyPath isEqualToString:@<span class="string">"labelFont"</span>]) &#123;</div><div class="line">		label.font = self.labelFont;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([keyPath isEqualToString:@<span class="string">"labelColor"</span>]) &#123;</div><div class="line">		label.textColor = self.labelColor;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([keyPath isEqualToString:@<span class="string">"detailsLabelText"</span>]) &#123;</div><div class="line">		detailsLabel.text = self.detailsLabelText;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([keyPath isEqualToString:@<span class="string">"detailsLabelFont"</span>]) &#123;</div><div class="line">		detailsLabel.font = self.detailsLabelFont;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([keyPath isEqualToString:@<span class="string">"detailsLabelColor"</span>]) &#123;</div><div class="line">		detailsLabel.textColor = self.detailsLabelColor;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([keyPath isEqualToString:@<span class="string">"progress"</span>]) &#123;</div><div class="line">		<span class="keyword">if</span> ([indicator respondsToSelector:@selector(setProgress:)]) &#123;</div><div class="line">			[(id)indicator setValue:@(progress) forKey:@<span class="string">"progress"</span>];</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span>;</div><div class="line">	&#125;</div><div class="line">    <span class="comment">// 设置完成后，更新布局（label等）并重绘界面（progress等）</span></div><div class="line">	[self setNeedsLayout];</div><div class="line">	[self setNeedsDisplay];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>通过<em>updateUIForKeypath:</em>方法，统一对所有UI相关修改进行属性设置，并在最后统一绘制并刷新布局，完成UI更新。</p>
+</blockquote>
+<p>移除KVO监听时，使用同样的方式：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)unregisterFromKVO &#123;</div><div class="line">    <span class="comment">// 依次移除KVO监听</span></div><div class="line">	<span class="keyword">for</span> (NSString *keyPath in [self observableKeypaths]) &#123;</div><div class="line">		[self removeObserver:self forKeyPath:keyPath];</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (NSArray *)observableKeypaths &#123;</div><div class="line">    <span class="comment">// 返回所有需要设置为KVO的实例变量</span></div><div class="line">	<span class="keyword">return</span> [NSArray arrayWithObjects:@<span class="string">"mode"</span>, @<span class="string">"customView"</span>, @<span class="string">"labelText"</span>, @<span class="string">"labelFont"</span>, @<span class="string">"labelColor"</span>,</div><div class="line">			@<span class="string">"detailsLabelText"</span>, @<span class="string">"detailsLabelFont"</span>, @<span class="string">"detailsLabelColor"</span>, @<span class="string">"progress"</span>, @<span class="string">"activityIndicatorColor"</span>, nil];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="4-使用通知方式处理自身视图的朝向变化"><a href="#4-使用通知方式处理自身视图的朝向变化" class="headerlink" title="4. 使用通知方式处理自身视图的朝向变化"></a>4. 使用通知方式处理自身视图的朝向变化</h3><p>在设备朝向发生改变时，通过监听系统通知事件（<em>UIApplicationDidChangeStatusBarOrientationNotification</em>），重绘自身，以适应视图转向：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)registerForNotifications &#123;</div><div class="line">	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];</div><div class="line">    <span class="comment">// 监听屏幕旋转消息</span></div><div class="line">	[nc addObserver:self selector:@selector(statusBarOrientationDidChange:)</div><div class="line">			   name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)unregisterFromNotifications &#123;</div><div class="line">	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];</div><div class="line">	[nc removeObserver:self name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)statusBarOrientationDidChange:(NSNotification *)notification &#123;</div><div class="line">	UIView *superview = self.superview;</div><div class="line">	<span class="keyword">if</span> (!superview) &#123;</div><div class="line">		<span class="keyword">return</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// 依附于父视图上，则进行自身更新</span></div><div class="line">		[self updateForCurrentOrientationAnimated:YES];</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)updateForCurrentOrientationAnimated:(BOOL)animated &#123;</div><div class="line">    <span class="comment">// Stay in sync with the superview in any case</span></div><div class="line">    <span class="keyword">if</span> (self.superview) &#123;</div><div class="line">        <span class="comment">// 自身尺寸为转向后的父视图尺寸</span></div><div class="line">        self.bounds = self.superview.bounds;</div><div class="line">        <span class="comment">// 重绘自身，更新为新样式</span></div><div class="line">        [self setNeedsDisplay];</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h3><ol>
+<li><strong>高效统一的UI更新</strong>：由于源码中将视图组件（如UILabel和）的布局配置封装于<em>layoutSubView:</em>方法中；将HUD的背景图及progress进度条绘制置于<em>drawRect:</em>方法中，故可以在任意时机通过调用<em>setNeedsLayout</em>以及<em>setNeedsDisplay</em>统一更新UI。再通过KVO、通知等方式统一进行绑定，实现了高效率的UI更新及代码规范的封装方式。</li>
+<li><strong>对于“全能”实现方法的二次封装</strong>：只将真正的实现代码封装在指定方法中，并提供详细的配置参数。其他相关API只是对改方法进行不同配置上的二次封装，使代码机制，易于管理，减少了出错概率。</li>
+<li><strong>灵活使用KVO等方式进行变量的自动设置</strong>：KVO可以在运行期间自动完成对应变量的更新，这对于大量对象的频繁修改尤其有效，也是集中管理代码的良好方式。</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;提要：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;“全能”实现方法；&lt;/li&gt;
+&lt;li&gt;“延后显示”和“最少显示时间”；&lt;/li&gt;
+&lt;li&gt;使用KVO更新UI；&lt;/li&gt;
+&lt;li&gt;使用通知方式处理自身视图的朝向变化；&lt;/li&gt;
+&lt;li&gt;总结
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MBProgressHUD源码学习1：公有API介绍</title>
+    <link href="http://yoursite.com/2019/01/23/MBProgressHUD%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A01%EF%BC%9A%E5%85%AC%E6%9C%89API%E4%BB%8B%E7%BB%8D/"/>
+    <id>http://yoursite.com/2019/01/23/MBProgressHUD源码学习1：公有API介绍/</id>
+    <published>2019-01-23T10:39:06.662Z</published>
+    <updated>2019-01-23T10:39:27.847Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<ul>
+<li>源代码基于0.91版本；</li>
+<li>本篇只介绍相关公有API，同时简单说明实现方式</li>
+</ul>
+</blockquote>
+<h3 id="1-用于快速调用HUD的类方法"><a href="#1-用于快速调用HUD的类方法" class="headerlink" title="1. 用于快速调用HUD的类方法"></a>1. 用于快速调用HUD的类方法</h3><h4 id="1-1-在指定视图上显示和移除HUD"><a href="#1-1-在指定视图上显示和移除HUD" class="headerlink" title="1.1 在指定视图上显示和移除HUD"></a>1.1 在指定视图上显示和移除HUD</h4><ul>
+<li><p>在视图中显示HUD，进入等待状态</p>
+<a id="more"></a>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">+ (MB_INSTANCETYPE)showHUDAddedTo:(UIView *)view animated:(BOOL)animated;</div></pre></td></tr></table></figure>
+</li>
+<li><p>在视图上移除HUD，退出等待状态</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">+ (BOOL)hideHUDForView:(UIView *)view animated:(BOOL)animated;</div></pre></td></tr></table></figure>
+<p>对于没有特别要求，只需要简单屏蔽用户交互时使用；二者一般成对使用。</p>
+<ul>
+<li>移除视图中的所有HUD，退出等待状态</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">+ (NSUInteger)hideAllHUDsForView:(UIView *)view animated:(BOOL)animated;</div></pre></td></tr></table></figure>
+<p>此方法会遍历查找视图层级中的所有HUD视图并移除。</p>
+<blockquote>
+<p>快速显示和隐藏HUD方法，自动管理HUD的生命周期，故在实现中设置为“隐藏后直接移除视图”，如：</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 示例的显示HUD方法</span></div><div class="line">+ (MB_INSTANCETYPE)showHUDAddedTo:(UIView *)view animated:(BOOL)animated &#123;</div><div class="line">	MBProgressHUD *hud = [[self alloc] initWithView:view];</div><div class="line">    <span class="comment">// 类方法，只是用于快速显示或隐藏，不关心视图，故消失后直接移除</span></div><div class="line">	hud.removeFromSuperViewOnHide = YES;</div><div class="line">	[view addSubview:hud];</div><div class="line">	[hud show:animated];</div><div class="line">	<span class="keyword">return</span> MB_AUTORELEASE(hud);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="1-2-获取视图中存在的HUD对象"><a href="#1-2-获取视图中存在的HUD对象" class="headerlink" title="1.2 获取视图中存在的HUD对象"></a>1.2 获取视图中存在的HUD对象</h4><ul>
+<li>获取视图中当前显示的HUD对象</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">+ (MB_INSTANCETYPE)HUDForView:(UIView *)view;</div></pre></td></tr></table></figure>
+<p>这里使用了逆序遍历view的子视图的方式，快速获取最上层的HUD对象：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">+ (MB_INSTANCETYPE)HUDForView:(UIView *)view &#123;</div><div class="line">    <span class="comment">// 逆序迭代（符合视图层级）</span></div><div class="line">	NSEnumerator *subviewsEnum = [view.subviews reverseObjectEnumerator];</div><div class="line">	<span class="keyword">for</span> (UIView *subview in subviewsEnum) &#123;</div><div class="line">		<span class="keyword">if</span> ([subview isKindOfClass:self]) &#123;</div><div class="line">			<span class="keyword">return</span> (MBProgressHUD *)subview;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> nil;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>获取视图中所有存在的HUD对象</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">+ (NSArray *)allHUDsForView:(UIView *)view;</div></pre></td></tr></table></figure>
+<h3 id="2-初始化HUD的实例方法"><a href="#2-初始化HUD的实例方法" class="headerlink" title="2 初始化HUD的实例方法"></a>2 初始化HUD的实例方法</h3><h4 id="2-1-使用UIWindow对象尺寸创建HUD"><a href="#2-1-使用UIWindow对象尺寸创建HUD" class="headerlink" title="2.1 使用UIWindow对象尺寸创建HUD"></a>2.1 使用UIWindow对象尺寸创建HUD</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (id)initWithWindow:(UIWindow *)window;</div></pre></td></tr></table></figure>
+<h4 id="2-2-使用UIView对象尺寸创建HUD"><a href="#2-2-使用UIView对象尺寸创建HUD" class="headerlink" title="2.2 使用UIView对象尺寸创建HUD"></a>2.2 使用UIView对象尺寸创建HUD</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (id)initWithView:(UIView *)view;</div></pre></td></tr></table></figure>
+<p>说明：</p>
+<ul>
+<li>二者都是通过调用<em>initWithFrame</em>方法进行实例化，只是参数类型不同；</li>
+<li>需要创建方自主管理HUD的生存周期。</li>
+</ul>
+<p>注意：</p>
+<ul>
+<li><strong>以上初始化方法中的参数只是由于指定HUD视图自身尺寸，并非添加到视图上。</strong></li>
+<li><strong>添加到的父视图需要手动指定。</strong></li>
+</ul>
+<h3 id="3-显示、隐藏HUD的相关实例方法"><a href="#3-显示、隐藏HUD的相关实例方法" class="headerlink" title="3 显示、隐藏HUD的相关实例方法"></a>3 显示、隐藏HUD的相关实例方法</h3><h4 id="3-1-显示HUD视图，进入等待状态"><a href="#3-1-显示HUD视图，进入等待状态" class="headerlink" title="3.1 显示HUD视图，进入等待状态"></a>3.1 显示HUD视图，进入等待状态</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)show:(BOOL)animated;</div></pre></td></tr></table></figure>
+<h4 id="3-2-隐藏HUD视图，退出等待状态"><a href="#3-2-隐藏HUD视图，退出等待状态" class="headerlink" title="3.2 隐藏HUD视图，退出等待状态"></a>3.2 隐藏HUD视图，退出等待状态</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)hide:(BOOL)animated;</div></pre></td></tr></table></figure>
+<h4 id="3-3-在指定时间后，隐藏HUD视图，退出等待状态"><a href="#3-3-在指定时间后，隐藏HUD视图，退出等待状态" class="headerlink" title="3.3 在指定时间后，隐藏HUD视图，退出等待状态"></a>3.3 在指定时间后，隐藏HUD视图，退出等待状态</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)hide:(BOOL)animated afterDelay:(NSTimeInterval)delay;</div></pre></td></tr></table></figure>
+<p>以上方法，都是在通过自己实例化HUD对象后（默认为隐藏状态），自主控制HUD视图的显示与隐藏。</p>
+<h3 id="4-在指定任务执行时，自动显示和隐藏HUD的相关方法"><a href="#4-在指定任务执行时，自动显示和隐藏HUD的相关方法" class="headerlink" title="4 在指定任务执行时，自动显示和隐藏HUD的相关方法"></a>4 在指定任务执行时，自动显示和隐藏HUD的相关方法</h3><h4 id="4-1-使用“target-selector”方式执行后台任务"><a href="#4-1-使用“target-selector”方式执行后台任务" class="headerlink" title="4.1 使用“target - selector”方式执行后台任务"></a>4.1 使用“<em>target - selector</em>”方式执行后台任务</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)showWhileExecuting:(SEL)method onTarget:(id)target withObject:(id)object animated:(BOOL)animated;</div></pre></td></tr></table></figure>
+<p>此方法的实现步骤：</p>
+<ol>
+<li>在后台自动创建新线程，在其中执行预定任务；</li>
+<li>同时在主线程创建并显示HUD；</li>
+<li>任务完成后，在主线程中清理缓存数据，同时移除HUD，结束等待状态。</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)showWhileExecuting:(SEL)method onTarget:(id)target withObject:(id)object animated:(BOOL)animated &#123;</div><div class="line">    <span class="comment">// 保存需要执行的参数对象</span></div><div class="line">	methodForExecution = method;</div><div class="line">	targetForExecution = MB_RETAIN(target);</div><div class="line">	objectForExecution = MB_RETAIN(object);	</div><div class="line">    <span class="comment">// 这里由于是开辟新线程执行任务，故是异步执行</span></div><div class="line">	self.taskInProgress = YES;</div><div class="line">	[NSThread detachNewThreadSelector:@selector(launchExecution) toTarget:self withObject:nil];</div><div class="line">    <span class="comment">// 同时显示HUD视图，进入等待状态</span></div><div class="line">	[self show:animated];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)launchExecution &#123;</div><div class="line">	@autoreleasepool &#123;</div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> clang diagnostic push</span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> clang diagnostic ignored <span class="meta-string">"-Warc-performSelector-leaks"</span></span></div><div class="line">        <span class="comment">// 1.这里由于没有使用返回值，故需要向编译器添加“忽略内存泄漏”要求</span></div><div class="line">        <span class="comment">// 2.此方法在支持完毕前，不会返回（卡住当前执行线程）</span></div><div class="line">		[targetForExecution performSelector:methodForExecution withObject:objectForExecution];</div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> clang diagnostic pop</span></div><div class="line">        <span class="comment">// 执行完毕后，执行主线程的任务</span></div><div class="line">		[self performSelectorOnMainThread:@selector(cleanUp) withObject:nil waitUntilDone:NO];</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)cleanUp &#123;</div><div class="line">    <span class="comment">// 标识任务已结束</span></div><div class="line">	taskInProgress = NO;</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> !__has_feature(objc_arc)</span></div><div class="line">	[targetForExecution release];</div><div class="line">	[objectForExecution release];</div><div class="line"><span class="meta">#<span class="meta-keyword">else</span></span></div><div class="line">    <span class="comment">// 清除保留的执行对象</span></div><div class="line">	targetForExecution = nil;</div><div class="line">	objectForExecution = nil;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">    <span class="comment">// 隐藏HUD视图，退出等待状态</span></div><div class="line">	[self hide:useAnimation];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="4-2-使用“block”方式执行后台任务"><a href="#4-2-使用“block”方式执行后台任务" class="headerlink" title="4.2 使用“block”方式执行后台任务"></a>4.2 使用“<em>block</em>”方式执行后台任务</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)showAnimated:(BOOL)animated whileExecutingBlock:(<span class="keyword">dispatch_block_t</span>)block;</div></pre></td></tr></table></figure>
+<h4 id="4-3-使用“block”方式执行后台任务，并在完成后执行指定任务"><a href="#4-3-使用“block”方式执行后台任务，并在完成后执行指定任务" class="headerlink" title="4.3 使用“block”方式执行后台任务，并在完成后执行指定任务"></a>4.3 使用“<em>block</em>”方式执行后台任务，并在完成后执行指定任务</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)showAnimated:(BOOL)animated whileExecutingBlock:(<span class="keyword">dispatch_block_t</span>)block completionBlock:(MBProgressHUDCompletionBlock)completion;</div></pre></td></tr></table></figure>
+<h4 id="4-4-使用“block”方式执行后台任务，任务在指定的GCD队列中执行"><a href="#4-4-使用“block”方式执行后台任务，任务在指定的GCD队列中执行" class="headerlink" title="4.4 使用“block”方式执行后台任务，任务在指定的GCD队列中执行"></a>4.4 使用“<em>block</em>”方式执行后台任务，任务在指定的GCD队列中执行</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)showAnimated:(BOOL)animated whileExecutingBlock:(<span class="keyword">dispatch_block_t</span>)block onQueue:(<span class="keyword">dispatch_queue_t</span>)<span class="built_in">queue</span>;</div></pre></td></tr></table></figure>
+<h4 id="4-5-使用“block”方式执行后台任务，任务在指定的GCD队列中执行，并在完成后执行指定任务"><a href="#4-5-使用“block”方式执行后台任务，任务在指定的GCD队列中执行，并在完成后执行指定任务" class="headerlink" title="4.5 使用“block”方式执行后台任务，任务在指定的GCD队列中执行，并在完成后执行指定任务"></a>4.5 使用“<em>block</em>”方式执行后台任务，任务在指定的GCD队列中执行，并在完成后执行指定任务</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)showAnimated:(BOOL)animated whileExecutingBlock:(<span class="keyword">dispatch_block_t</span>)block onQueue:(<span class="keyword">dispatch_queue_t</span>)<span class="built_in">queue</span></div><div class="line">		  completionBlock:(MBProgressHUDCompletionBlock)completion;</div></pre></td></tr></table></figure>
+<p>以上通过block方式执行任务的API，都是<strong>通过GCD的方式，在并发队列中执行异步任务</strong>，简化了实现。如<em>1.4.5</em>的方法实现：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 真正的block版本的异步执行函数 */</span></div><div class="line">- (<span class="keyword">void</span>)showAnimated:(BOOL)animated whileExecutingBlock:(<span class="keyword">dispatch_block_t</span>)block onQueue:(<span class="keyword">dispatch_queue_t</span>)<span class="built_in">queue</span></div><div class="line">	 completionBlock:(MBProgressHUDCompletionBlock)completion &#123;</div><div class="line">    <span class="comment">// 标识任务已开始执行</span></div><div class="line">	self.taskInProgress = YES;</div><div class="line">    <span class="comment">// 将block保存到堆内存（由于completion为外部回调，不会捕获当前对象中的变量，防止是栈内存的block被释放，故需要拷贝到堆上）</span></div><div class="line">	self.completionBlock = completion;</div><div class="line">    <span class="comment">// 在队列中异步执行任务</span></div><div class="line">	dispatch_async(<span class="built_in">queue</span>, ^(<span class="keyword">void</span>) &#123;</div><div class="line">		block();</div><div class="line">        <span class="comment">// 完成后，主线程进行清理工作</span></div><div class="line">		dispatch_async(dispatch_get_main_queue(), ^(<span class="keyword">void</span>) &#123;</div><div class="line">			[self cleanUp];</div><div class="line">		&#125;);</div><div class="line">	&#125;);</div><div class="line">    <span class="comment">// 同时，在主线程显示HUD视图，进入等待状态</span></div><div class="line">	[self show:animated];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<hr>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;源代码基于0.91版本；&lt;/li&gt;
+&lt;li&gt;本篇只介绍相关公有API，同时简单说明实现方式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;1-用于快速调用HUD的类方法&quot;&gt;&lt;a href=&quot;#1-用于快速调用HUD的类方法&quot; class=&quot;headerlink&quot; title=&quot;1. 用于快速调用HUD的类方法&quot;&gt;&lt;/a&gt;1. 用于快速调用HUD的类方法&lt;/h3&gt;&lt;h4 id=&quot;1-1-在指定视图上显示和移除HUD&quot;&gt;&lt;a href=&quot;#1-1-在指定视图上显示和移除HUD&quot; class=&quot;headerlink&quot; title=&quot;1.1 在指定视图上显示和移除HUD&quot;&gt;&lt;/a&gt;1.1 在指定视图上显示和移除HUD&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;在视图中显示HUD，进入等待状态&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>objc-公共头文件（Public Headers）的基本内容（下）</title>
@@ -1520,480 +1691,6 @@
     <summary type="html">
     
       &lt;h2 id=&quot;内存管理篇：-2-alloc-retain-release-dealloc的实现&quot;&gt;&lt;a href=&quot;#内存管理篇：-2-alloc-retain-release-dealloc的实现&quot; class=&quot;headerlink&quot; title=&quot;内存管理篇： 2.alloc/retain/release/dealloc的实现&quot;&gt;&lt;/a&gt;内存管理篇： 2.alloc/retain/release/dealloc的实现&lt;/h2&gt;&lt;h3 id=&quot;GNUstep的实现方式&quot;&gt;&lt;a href=&quot;#GNUstep的实现方式&quot; class=&quot;headerlink&quot; title=&quot;GNUstep的实现方式&quot;&gt;&lt;/a&gt;GNUstep的实现方式&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;GNUstep的版本将引用计数与对象的内存组合在一起，方便读写存取。&lt;/strong&gt;&lt;br&gt;&lt;img src=&quot;http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1546151436-GNUstep%E7%9A%84%E5%AF%B9%E8%B1%A1%E7%BB%93%E6%9E%84.jpg&quot; alt=&quot;img&quot;&gt;&lt;br&gt;如图所示，使用了一个objc_layout结构体来表示引用计数，其大体结构及alloc的简化代码为：&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》1</title>
-    <link href="http://yoursite.com/2019/01/06/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%AF%87%EF%BC%9A1.%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0%E7%9A%84%E6%80%9D%E8%80%83%E6%96%B9%E5%BC%8F/"/>
-    <id>http://yoursite.com/2019/01/06/内存管理篇：1.引用计数的思考方式/</id>
-    <published>2019-01-06T07:40:57.232Z</published>
-    <updated>2019-01-06T07:44:02.313Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="内存管理篇：1-引用计数的思考方式"><a href="#内存管理篇：1-引用计数的思考方式" class="headerlink" title="内存管理篇：1.引用计数的思考方式"></a>内存管理篇：1.引用计数的思考方式</h2><h3 id="自动引用计数"><a href="#自动引用计数" class="headerlink" title="自动引用计数"></a>自动引用计数</h3><blockquote>
-<p>支持条件：</p>
-<ul>
-<li>clang（LLVM编译器）3.0版本以上</li>
-<li>objc4 OC运行时库 493.9版本以上</li>
-<li>编译器设置中置为“ARC有效”</li>
-<li>Xcode 4.2版本以上</li>
-</ul>
-</blockquote>
-<a id="more"></a>
-<p><strong>简单来说，ARC作为编译器特性（运行时库帮助解决weak自动置nil及autorelease优化等功能），系统在编译期根据情况，为代码自动添加retain、release等内存管理代码</strong>。开发者只需要集中精力在业务实现上即可，无需过多考虑内存问题。</p>
-<h3 id="内存管理的思考方式"><a href="#内存管理的思考方式" class="headerlink" title="内存管理的思考方式"></a>内存管理的思考方式</h3><p>实际上，<strong>无需过多考虑“引用计数”这个数字</strong>，编码时只需遵循如下四种规则：</p>
-<ol>
-<li>自己生成的对象，自己持有（alloc/new/copy/mutableCopy）</li>
-<li>非自己生成的对象，自己也能持有（retain）</li>
-<li>自己不再需要持有的对象，自己释放（release）</li>
-<li>非自己持有的对象，自己无法释放（系统自动dealloc）</li>
-</ol>
-<h4 id="自己生成的对象，自己持有"><a href="#自己生成的对象，自己持有" class="headerlink" title="自己生成的对象，自己持有"></a>自己生成的对象，自己持有</h4><p>除了默认的四种创建对象方法，这里还需注意一点：<br>对于自定义的class，在编写API时，需要遵循“命名法则”：即将创建对象的方法，声明为：</p>
-<ul>
-<li>allocXXX…</li>
-<li>newXXX…</li>
-<li>copyXXX…</li>
-<li>mutableCopyXXX…</li>
-</ul>
-<p>ARC环境下，系统会根据方法命名，自动将返回的对象使用__strong修饰，即新对象的内存由创建方负责管理，也就是“自己持有创建的对象”。</p>
-<h4 id="非自己生成的对象，自己也能持有"><a href="#非自己生成的对象，自己也能持有" class="headerlink" title="非自己生成的对象，自己也能持有"></a>非自己生成的对象，自己也能持有</h4><ul>
-<li>对于其他对象（非自己创建的），如果需要正常使用的话，需要对新对象进行“retain”操作。</li>
-<li>对于类方法创建对象的API（如NSMutableArray的array方法），一般来说，内部返回的都是“autorelease”修饰的对象，内存是无需接收方管理的。直接使用即可。</li>
-</ul>
-<h4 id="自己不再需要持有的对象，自己释放"><a href="#自己不再需要持有的对象，自己释放" class="headerlink" title="自己不再需要持有的对象，自己释放"></a>自己不再需要持有的对象，自己释放</h4><ul>
-<li>使用完毕后的对象，无论是否为自己创建，需要持有方对其调用“release”操作，放弃持有。</li>
-<li>类方法创建得到的对象，无需释放。</li>
-</ul>
-<h4 id="非自己持有的对象，自己无法释放"><a href="#非自己持有的对象，自己无法释放" class="headerlink" title="非自己持有的对象，自己无法释放"></a>非自己持有的对象，自己无法释放</h4><p>dealloc为系统在运行期根据对象的引用情况自动调用。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;内存管理篇：1-引用计数的思考方式&quot;&gt;&lt;a href=&quot;#内存管理篇：1-引用计数的思考方式&quot; class=&quot;headerlink&quot; title=&quot;内存管理篇：1.引用计数的思考方式&quot;&gt;&lt;/a&gt;内存管理篇：1.引用计数的思考方式&lt;/h2&gt;&lt;h3 id=&quot;自动引用计数&quot;&gt;&lt;a href=&quot;#自动引用计数&quot; class=&quot;headerlink&quot; title=&quot;自动引用计数&quot;&gt;&lt;/a&gt;自动引用计数&lt;/h3&gt;&lt;blockquote&gt;
-&lt;p&gt;支持条件：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;clang（LLVM编译器）3.0版本以上&lt;/li&gt;
-&lt;li&gt;objc4 OC运行时库 493.9版本以上&lt;/li&gt;
-&lt;li&gt;编译器设置中置为“ARC有效”&lt;/li&gt;
-&lt;li&gt;Xcode 4.2版本以上&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
-    
-    </summary>
-    
-    
-      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《Effective Objective-C 20 编写高质量iOS与OS X代码的52个有效方法》读书笔记</title>
-    <link href="http://yoursite.com/2018/12/25/%E3%80%8AEffective%20Objective-C%2020%20%E7%BC%96%E5%86%99%E9%AB%98%E8%B4%A8%E9%87%8FiOS%E4%B8%8EOS%20X%E4%BB%A3%E7%A0%81%E7%9A%8452%E4%B8%AA%E6%9C%89%E6%95%88%E6%96%B9%E6%B3%95%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    <id>http://yoursite.com/2018/12/25/《Effective Objective-C 20 编写高质量iOS与OS X代码的52个有效方法》读书笔记/</id>
-    <published>2018-12-25T02:49:27.623Z</published>
-    <updated>2019-01-06T07:41:16.291Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="第1章：熟悉Objective-C"><a href="#第1章：熟悉Objective-C" class="headerlink" title="第1章：熟悉Objective-C"></a>第1章：熟悉Objective-C</h2><h3 id="第4条：多用类型常量，少用-define预处理指令"><a href="#第4条：多用类型常量，少用-define预处理指令" class="headerlink" title="第4条：多用类型常量，少用#define预处理指令"></a>第4条：多用类型常量，少用#define预处理指令</h3><ul>
-<li>声明类型常量好处是，编译器可以知道此变量的类型，且可以防止外部随意修改</li>
-<li>声明规则：<a id="more"></a>
-<ul>
-<li><strong>全局常量</strong>：<em>使用extern开头，类名作为常量前缀（OC无命名空间，避免冲突），const修饰常量名，头文件声明，实现文件赋值</em>。例如：</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 在ViewController.h中声明通知名</span></div><div class="line"><span class="comment">/** ViewController视图已加载通知 */</span></div><div class="line"><span class="keyword">extern</span> NSString * <span class="keyword">const</span> ViewControllerViewDidLoadNotification;</div><div class="line"></div><div class="line"><span class="comment">// 在ViewController.m中赋值通知名</span></div><div class="line">NSString *<span class="keyword">const</span> ViewControllerViewDidLoadNotification = @<span class="string">"ViewControllerViewDidLoadNotification"</span>;</div></pre></td></tr></table></figure>
-<pre><code>- **局部常量**（类内使用的）：*使用static开头，“k”作为常量前缀，const修饰常量名，在实现文件中声明及赋值*。这种局部常量（static + const）的优点是：**编译器不会创建符号，会像#define一样，把遇到的所有变量直接替换，但是带有类型信息**。
-</code></pre><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 动画时长 */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">const</span> NSTimeInterval kAnimationDuration = <span class="number">0.3</span>;</div></pre></td></tr></table></figure>
-<h3 id="第5条：用枚举表示状态、选项、状态码"><a href="#第5条：用枚举表示状态、选项、状态码" class="headerlink" title="第5条：用枚举表示状态、选项、状态码"></a>第5条：用枚举表示状态、选项、状态码</h3><ul>
-<li>如果枚举值的选项可以进行组合，则使用时，用“按位或”操作（“|”）。声明枚举时，使用二进制进行表示。</li>
-<li><p>NS_OPTIONS和NS_ENUM其实都是定义的宏，可以向下兼容（编译器支持新枚举特性时生成的enum带有类型声明，否则没有）。</p>
-<blockquote>
-<p>凡是需要以按位或操作来组合的枚举都应使用NS_OPTIONS定义。若是枚举不需要相互组合，则应使用NS_ENUM来定义。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">NS_OPTIONS</span><span class="params">(NSUInteger, UIViewAutoresizing)</span> </span>&#123;</div><div class="line">    UIViewAutoresizingNone                 = <span class="number">0</span>,</div><div class="line">    UIViewAutoresizingFlexibleLeftMargin   = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,</div><div class="line">    UIViewAutoresizingFlexibleWidth        = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,</div><div class="line">    UIViewAutoresizingFlexibleRightMargin  = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,</div><div class="line">    UIViewAutoresizingFlexibleTopMargin    = <span class="number">1</span> &lt;&lt; <span class="number">3</span>,</div><div class="line">    UIViewAutoresizingFlexibleHeight       = <span class="number">1</span> &lt;&lt; <span class="number">4</span>,</div><div class="line">    UIViewAutoresizingFlexibleBottomMargin = <span class="number">1</span> &lt;&lt; <span class="number">5</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">NS_ENUM</span><span class="params">(NSInteger, UIViewAnimationTransition)</span> </span>&#123;</div><div class="line">    UIViewAnimationTransitionNone,</div><div class="line">    UIViewAnimationTransitionFlipFromLeft,</div><div class="line">    UIViewAnimationTransitionFlipFromRight,</div><div class="line">    UIViewAnimationTransitionCurlUp,</div><div class="line">    UIViewAnimationTransitionCurlDown,</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-</blockquote>
-</li>
-<li><p>在switch语句中，使用枚举变量时，不要加default分支，这样编译器会提示是否还有未枚举的分支。</p>
-</li>
-</ul>
-<h2 id="第2章：对象、消息、运行期"><a href="#第2章：对象、消息、运行期" class="headerlink" title="第2章：对象、消息、运行期"></a>第2章：对象、消息、运行期</h2><h3 id="第7条：在对象内部尽量直接访问实例变量"><a href="#第7条：在对象内部尽量直接访问实例变量" class="headerlink" title="第7条：在对象内部尽量直接访问实例变量"></a>第7条：在对象内部尽量直接访问实例变量</h3><blockquote>
-<ul>
-<li>在对象内部读取数据时，应该直接通过实例变量来读；而写入数据时，则应通过属性来写。</li>
-<li>在初始化和dealloc方法中，总应该直接通过实例变量来读写数据。</li>
-<li>有时会使用惰性初始化技术配置某份数据，这种情况下，需要通过属性来读取数据。</li>
-</ul>
-</blockquote>
-<h3 id="第8条：理解“对象等同性”这一概念"><a href="#第8条：理解“对象等同性”这一概念" class="headerlink" title="第8条：理解“对象等同性”这一概念"></a>第8条：理解“对象等同性”这一概念</h3><ul>
-<li><p>NSObject协议中用于判定对象相等的方法：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">- (BOOL)isEqual:(id)object;</div><div class="line">- (NSUInteger)hash;</div><div class="line"><span class="comment">// 协议里hash为只读属性： @property (readonly) NSUInteger hash;</span></div></pre></td></tr></table></figure>
-</li>
-<li><p><em>如果两个对象相等，则其hash值必然相等；反之则不一定</em>（因为isEqual:方法先回判断两者是否为相同类型）。</p>
-</li>
-<li>自定义类型中，若提供判定对象相等方法，可以实现上述方法和属性。</li>
-</ul>
-<h3 id="第11条：理解objc-msgSend的作用"><a href="#第11条：理解objc-msgSend的作用" class="headerlink" title="第11条：理解objc_msgSend的作用"></a>第11条：理解objc_msgSend的作用</h3><ul>
-<li><em>objc_msgSend使用了“<strong>尾调用优化</strong>”技术（tail-call optimization），实质上即为<strong>函数调用的栈帧的复用</strong></em>。<ul>
-<li>一般来说，函数调用时，会在栈中生成新的栈帧（申请一块新的栈内存），跳转过去进行新函数的调用。当在函数执行过程中，如果再次调用其他函数，会再次压入新的栈帧并跳转，直到依次调用完毕再返回并释放栈帧的内存。</li>
-<li>对于OC来说，<strong>当函数调用中，如果返回值“仅仅”是调用其他函数（没有其他任何操作，如进行其他运算等），则会把当前函数调用的栈帧直接交给调用的新函数（自身数据变为新函数的）</strong>。这样即避免了重复申请内存，而且调用地址不必来回跳转，在多个函数调用时对效率的提升和内存控制尤其有效。</li>
-<li><a href="https://www.jianshu.com/p/9e3cd9b1095a?from=timeline&amp;isappinstalled=0" target="_blank" rel="external">iOS objc_msgSend尾调用优化机制详解</a></li>
-</ul>
-</li>
-</ul>
-<h3 id="第12条：理解消息转发机制"><a href="#第12条：理解消息转发机制" class="headerlink" title="第12条：理解消息转发机制"></a>第12条：理解消息转发机制</h3><ul>
-<li><strong>动态方法解析</strong>：<em>在方法未找到时执行的第一步操作，即</em>resolveInstanceMethod<em>和</em>resolveClassMethod<em>方法。在此函数中使用class_addMethod可以为当前类添加动态实例方法或类方法（类方法要添加到class的meta class中）</em>。之后，当前实例即会缓存并调用新添加的方法，且以后会在缓存列表内直接调用，不再进行方法解析步骤。一般来说，我们会在存在@dymamic修饰的属性所属的类中通过此方法来提供实现，比如Core Data的数据类中。</li>
-<li><strong>备援接收者</strong>：动态解析过程若没有提供方法时，则进入此步骤。<em>在方法</em>forwardingTargetForSelector<em>方法中，运行时系统会将此selector对应的消息原封不动转发给返回的对象</em>。利用<em>此方法可以模拟出”多继承“</em>：即将对应方法转发给可以执行的类实例。</li>
-<li><strong>完整的消息转发机制</strong>：上一步只能转发原始消息，如果对方法参数等需要二次修改，则需要通过此步骤（上一步没有成功执行即会进入此步，所以性能代价会大一些）。<em>系统会通过forwardInvocation方法，将原target、selector和parameter等封装为NSInvocation对象。我们需要将此invocation的目标改为对应的接收者，使其执行。也可以对selector进行修改，如增删改参数，甚至改变selector。不能处理时，通过super返回给父类实例进行处理，直到NSObject最终触发doesNotRecognizeSelector方法，抛出异常</em>。</li>
-</ul>
-<h2 id="接口与API设计"><a href="#接口与API设计" class="headerlink" title="接口与API设计"></a>接口与API设计</h2><h3 id="第15条：用前缀避免命名空间冲突"><a href="#第15条：用前缀避免命名空间冲突" class="headerlink" title="第15条：用前缀避免命名空间冲突"></a>第15条：用前缀避免命名空间冲突</h3><ul>
-<li>双字符前缀是苹果官方使用的，自己需要使用至少三字符的前缀，避免冲突。</li>
-<li>类的实现文件中定义的c函数在编译后的目标文件（.o）中会成为顶级符号（全局符号），所有也需要添加前缀。</li>
-<li>自己封装的库中，若引用了其他第三方库，应对第三方库的类文件分别添加前缀命名。防止其他项目引入本库后，再引入同样的第三方库产生命名冲突。</li>
-</ul>
-<h3 id="第16条：提供“全能初始化”方法"><a href="#第16条：提供“全能初始化”方法" class="headerlink" title="第16条：提供“全能初始化”方法"></a>第16条：提供“全能初始化”方法</h3><ul>
-<li>类中存在多个初始化方法是，需要指定一个作为“全能初始化”方法（designed initializer），使其余方法都通过此方法进行实例的初始化。对后期修改维护有利。</li>
-<li><p>子类继承时，<strong>如果子类存在自己独特的“全能初始化”方法，则必须要覆盖父类的全能初始化方法（防止使用父类的方法创建子类实例）</strong>：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 父类：矩形类</span></div><div class="line"></div><div class="line"><span class="comment">// EOCRectangle.h</span></div><div class="line">@interface EOCRectangle: NSObject</div><div class="line"></div><div class="line">@property (nonatomic, assign, readonly) <span class="keyword">float</span> width;</div><div class="line">@property (nonatomic, assign, readonly) <span class="keyword">float</span> height;</div><div class="line"></div><div class="line">- (id)initWithWidth:(<span class="keyword">float</span>)width </div><div class="line">         andHeight:(<span class="keyword">float</span>)height;</div><div class="line">         </div><div class="line">@end</div><div class="line"></div><div class="line"><span class="comment">// EOCRectangle.m</span></div><div class="line">@implementation EOCRectangle</div><div class="line"></div><div class="line"><span class="comment">/** designed initializer */</span></div><div class="line">- (id)initWithWidth:(<span class="keyword">float</span>)width </div><div class="line">         andHeight:(<span class="keyword">float</span>)height &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        _width = width;</div><div class="line">        _height = height;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** overrided initializer */</span></div><div class="line">- (id)init &#123;</div><div class="line">    <span class="keyword">return</span> [self initWithWidth:<span class="number">5.0f</span> andHeight:<span class="number">10.0f</span>];</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line"><span class="comment">// 子类：正方形类</span></div><div class="line"></div><div class="line"><span class="comment">// EOCSquare.h</span></div><div class="line">@interface EOCSquare: EOCRectangle</div><div class="line"></div><div class="line">- (id)initWithDimension:(<span class="keyword">float</span>)dimension;</div><div class="line">         </div><div class="line">@end</div><div class="line"><span class="comment">// EOCSquare.m</span></div><div class="line">@implementation EOCSquare</div><div class="line"><span class="comment">/** designed initializer */</span></div><div class="line">- (id)initWithDimension:(<span class="keyword">float</span>)dimension &#123;</div><div class="line">    <span class="keyword">return</span> [super initWithWidth:dimension height:dimension];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** overrided initializer */</span></div><div class="line">- (id)initWithWidth:(<span class="keyword">float</span>)width </div><div class="line">         andHeight:(<span class="keyword">float</span>)height &#123;</div><div class="line">    <span class="keyword">float</span> dimension = MAX(width, height);</div><div class="line">    <span class="keyword">return</span> [self initWithDimension:dimenson];</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure>
-</li>
-<li><p><em>如果类中存在多种完全不同的初始化方式，则需要多个“全能初始化”方法</em>。如遵循NSCoding协议的类，需要实现<em>initWithCoder</em>方法作为单独的“全能初始化”方法。</p>
-</li>
-</ul>
-<h3 id="第18条：尽量使用不可变对象"><a href="#第18条：尽量使用不可变对象" class="headerlink" title="第18条：尽量使用不可变对象"></a>第18条：尽量使用不可变对象</h3><ul>
-<li><p>需要公开的属性，尽量用“readonly”进行语义修饰，防止外部进行修改；内部修改时，在分类中可以修改为“readwrite”</p>
-<ol>
-<li>由于iOS的属性一般使用“nonatomic”进行修饰，为了防止极端情况下，内部修改属性时，外部读取产生的数据不统一的情况，可以使用GCD的同步操作对读取和修改进行统一处理。</li>
-<li>不考虑外部使用“KVC”的方式对只读属性设置，甚至是根据实例内存布局通过内存偏移量对属性进行强制修改的情况，还是应该尽量遵循此属性声明方式。</li>
-</ol>
-</li>
-<li><p>对于可变集合对象，尽量不要作为公开属性。</p>
-<ol>
-<li>可以声明为分类中的属性，或是类的成员变量。在外部使用不可变的版本进行属性公开。</li>
-<li>增删改等方式，提供公开方法用以外部调用。</li>
-</ol>
-</li>
-</ul>
-<h3 id="第20条：为私有方法名加前缀"><a href="#第20条：为私有方法名加前缀" class="headerlink" title="第20条：为私有方法名加前缀"></a>第20条：为私有方法名加前缀</h3><ul>
-<li>为普通类的私有方法（在实现文件中的声明并只提供内部调用的方法）的方法名前，添加“p_”作为前缀，提高调试效率。</li>
-<li>对于自定义的库文件类，甚至可以使用“类名 + _”的方式为私有方法命名，尽量减少命名冲突。</li>
-</ul>
-<h3 id="第21条：理解Objective-C错误类型"><a href="#第21条：理解Objective-C错误类型" class="headerlink" title="第21条：理解Objective-C错误类型"></a>第21条：理解Objective-C错误类型</h3><ul>
-<li>在ARC下，代码不是“异常安全”（exception safe）的：即当抛出异常时，本应该在作用域末尾自动释放的内存，便不会释放了（MRC下，需要开发者在抛出异常之前手动释放所有内存，极易出错）。</li>
-</ul>
-<h2 id="第4章-协议与分类"><a href="#第4章-协议与分类" class="headerlink" title="第4章 协议与分类"></a>第4章 协议与分类</h2><h3 id="第23条：通过委托与数据源协议进行对象间通信"><a href="#第23条：通过委托与数据源协议进行对象间通信" class="headerlink" title="第23条：通过委托与数据源协议进行对象间通信"></a>第23条：通过委托与数据源协议进行对象间通信</h3><ul>
-<li><p>协议分类及数据流向</p>
-<ol>
-<li><em>若某类实例需要让其他对象代替实现某些逻辑功能，则可以把需要实现逻辑的方法抽象为协议，让“其他对象”成为其“委托对象”，实现协议的方法</em>。此模式即为“<strong>委托模式</strong>”，数据流向为“Class -&gt; Delegate”。如：UITableViewDelegate，tableView实例将处理列表点击等行为委托给代理对象（如UIViewController实例）。 </li>
-<li><em>若某类实例需要通过一些方法获取数据，则可以把这些方法抽象为协议，让“其他对象”成为其“委托对象”，实现协议的方法</em>。这种委托模式也称为“<strong>数据源模式</strong>”，数据流向为“Data Source -&gt; Class”。如：UITableViewDataSource，tableView实例从代理对象（如UIViewController实例）中获取列表的数据等。<br><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/%E5%A7%94%E6%89%98%E6%A8%A1%E5%BC%8F.jpg" alt="img"></li>
-</ol>
-</li>
-<li><p>提高协议方法的调用效率</p>
-<ol>
-<li>众所周知，对于optional的协议方法，调用前需要进行实现判断（使用respondsToSelector方法）。若在委托对象中频繁调用此方法（如下载progress等），每次进行响应判断，意义不大，且效率可能会出现瓶颈。针对此情况，可以使用“位段”方式（bitField）进行优化，对于是否能够响应协议方法调用，只需要一个二进制位（bit）即可进行表示。所以，可以为委托对象所属的类声明一个结构体成员变量。此结构体内部的成员与所有的optional协议方法一一对应，成员值均为0或1。然后，在设置代理对象时，将所有的实现情况进行判断并赋值到此结构体成员变量中。即可在实际回调协议方法是免去每次进行响应判断，提高效率。<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">@porotocol DownloadProtocol: NSObject</div><div class="line">...</div><div class="line">@optional</div><div class="line">- (<span class="keyword">void</span>)onDownloadingProgress:(CGFloat)progress;</div><div class="line">...</div><div class="line">@end</div><div class="line"></div><div class="line">...</div><div class="line"><span class="meta">#import <span class="meta-string">"DownloadProtocol.h"</span></span></div><div class="line"></div><div class="line">@interface MyClass: NSObject</div><div class="line"></div><div class="line">@property (nonatomic, weak) id&lt;DownloadProtocol&gt; delegate;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@<span class="function">interface <span class="title">MyClass</span> <span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">// 声明结构体变量成员</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> &#123;</span></div><div class="line">        NSInteger onDownloadProgress: <span class="number">0</span></div><div class="line">    &#125; _downloadProtocolFlag;</div><div class="line">&#125;</div><div class="line">@end</div><div class="line"></div><div class="line">@implementation MyClass: NSObject </div><div class="line"></div><div class="line"><span class="comment">// 手动实现delegate的setter，对代理对象的方法实现情况进行检查并缓存</span></div><div class="line">- (<span class="keyword">void</span>)setDelegate:(id&lt;DownloadProtocol&gt;)delegate &#123;</div><div class="line">    _delegate = delegate;</div><div class="line">    <span class="comment">// 对所有optional方法依次检查，这里只是一个</span></div><div class="line">    _downloadProtocolFlag.onDownloadProgress = [_delegate respondsToSelector:@selector(onDownloadProgress:)]; </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 实际调用时，即可简化判断，提高效率</span></div><div class="line">- (<span class="keyword">void</span>)testMyDownloadProgress:(CGFloat)progress &#123;</div><div class="line">    <span class="keyword">if</span> (_downloadProtocolFlag.onDownloadProgress) &#123;</div><div class="line">    [self.delegate onDownloadProgress: progress];</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
-</li>
-</ol>
-</li>
-</ul>
-<h3 id="第24条：将类的实现代码分散到便于管理的数个分类之中"><a href="#第24条：将类的实现代码分散到便于管理的数个分类之中" class="headerlink" title="第24条：将类的实现代码分散到便于管理的数个分类之中"></a>第24条：将类的实现代码分散到便于管理的数个分类之中</h3><ul>
-<li>有时无需继承父类时，可有使用分类（Category）方式扩展类的功能。</li>
-<li>使用分类将不同功能的的代码分隔到不同区块中，可以防止原始类过于庞大，代码逻辑清晰，便于调试（调用信息的符号中会显示为不同的分类）。</li>
-<li>对于类或模块内部的私有方法，可以创建private分类，且不对外公开。</li>
-</ul>
-<h3 id="第25条：总是为第三方类的分类名称加前缀"><a href="#第25条：总是为第三方类的分类名称加前缀" class="headerlink" title="第25条：总是为第三方类的分类名称加前缀"></a>第25条：总是为第三方类的分类名称加前缀</h3><ul>
-<li>在OC中，由于分类是在运行期进行加载，且各分类的加载顺序依照编译顺序而定（在build phrase中可以手动修改，当然分类的加载是在本类之后），故分类中可以覆盖本类的方法。但是，当多个分类同时覆盖本类方法后，便无法确定调用时的版本了（只能依靠build phrase顺序）【分类的方法在加载时，依照类似链表“头插法”的方式，将方法添加到类的方法列表头部，原始方法则被挤到了后面，所以当调用方法时，系统只找到第一个方法后便直接跳转执行】。所以，为了避免分类异常覆盖本类方法时，需要如下做法进行改进（OC没有命名空间）：<ul>
-<li>创建类的分类时，需要为分类名前添加自定义的前缀</li>
-<li>创建分类的方法时，需要为各方法名前也添加自定义的前缀</li>
-</ul>
-</li>
-</ul>
-<h3 id="第26条：勿在分类中声明属性"><a href="#第26条：勿在分类中声明属性" class="headerlink" title="第26条：勿在分类中声明属性"></a>第26条：勿在分类中声明属性</h3><ul>
-<li><strong>“属性”实质上是数据的封装，背后有成员变量作为数据支持，系统只是合成了setter和getter</strong>。</li>
-<li>分类中不能生成真正属性的原因：由于编译期，本类的内存布局结构已经确定（实例变量区域的偏移量及大小已经确定），分类在运行期加载时，已经无法在本类的实例变量区域进行操作。</li>
-<li><p>分类中声明并实现“属性”的方法：</p>
-<ol>
-<li>使用正常语法声明，使用相关对象（associate object）实现属性的setter和getter（只是模拟属性，添加了内存管理语义）。</li>
-<li>使用@dynamic关键字告知编译器，在运行期再提供实现。可以通过方法转发的方式（如resolveInstanceMethod）提供动态实现。</li>
-</ol>
-</li>
-<li><p>由于属性是实例变量的封装，所以建议属性依照实例变量的方式，在主类的头文件中直接进行声明。</p>
-</li>
-<li><strong>分类只是用于扩展类的功能，而非提供类的额外存储</strong>。</li>
-</ul>
-<h3 id="第27条：使用“class-continuation分类”隐藏实现细节"><a href="#第27条：使用“class-continuation分类”隐藏实现细节" class="headerlink" title="第27条：使用“class-continuation分类”隐藏实现细节"></a>第27条：使用“class-continuation分类”隐藏实现细节</h3><ul>
-<li>此”class-continuation分类”即为类的扩展（extension）。这是唯一可以在其中同时声明实例变量、属性和方法的匿名“分类”。原因：<strong>类的扩展是与本类源码一起在编译期共同确定类的内存布局</strong>，所以此时会将扩展的实例变量等一同加载到类的对应部分。</li>
-<li>可以将不对外公开的方法、属性和实例变量等放在扩展中。</li>
-<li>在扩展中引用C++代码，可以只在当前类中引入C++编译器进行混合编译（类实现文件要用“.mm”为后缀），头文件对外仍然只公布简洁的OC风格接口。</li>
-<li>可以在头文件中声明只读属性，扩展中重新声明为可读写属性，内部使用setter进行数据修改时，可以正常触发KVO监听回调。</li>
-<li>在扩展中遵循只在内部使用的协议。</li>
-</ul>
-<h3 id="第28条：通过协议提供匿名对象"><a href="#第28条：通过协议提供匿名对象" class="headerlink" title="第28条：通过协议提供匿名对象"></a>第28条：通过协议提供匿名对象</h3><ul>
-<li>对于无需外部关心的类（只关心提供的功能），可以将所需功能封装为协议，将类名淡化为遵循此协议的匿名对象（id<myprotocol>）。</myprotocol></li>
-<li>此种设计方法可以在后端进行实现替换，而对前端调用方完全透明，增加了编码的灵活程度，也降低了耦合（例如使用不同类数据库进行数据存取，协议中只提供通用的连接、断开、增删改查等方法即可）。</li>
-</ul>
-<h2 id="第5章-内存管理"><a href="#第5章-内存管理" class="headerlink" title="第5章 内存管理"></a>第5章 内存管理</h2><h3 id="第29条：理解引用计数"><a href="#第29条：理解引用计数" class="headerlink" title="第29条：理解引用计数"></a>第29条：理解引用计数</h3><p>在手动管理内存模式下，内存管理语义为“strong”的属性，其setter一般都是如此实现的：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)setFoo:(id)foo &#123;</div><div class="line">    <span class="comment">// 1.保留新值</span></div><div class="line">    [foo retain];</div><div class="line">    <span class="comment">// 2.释放原有值</span></div><div class="line">    [_foo release];</div><div class="line">    <span class="comment">// 3.赋值</span></div><div class="line">    _foo = foo</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>其中，为何1和2步骤不能交换呢？<br>因为，当使用重复的foo对象进行设置时（假设foo对象只被本类实例保留），先释放，会导致foo对象内存被系统回收。致使setter失败【使用ARC即可避免此问题发生】。</p>
-<h3 id="第30条：以ARC简化引用计数"><a href="#第30条：以ARC简化引用计数" class="headerlink" title="第30条：以ARC简化引用计数"></a>第30条：以ARC简化引用计数</h3><ul>
-<li><p>使用ARC时必须遵循的方法命名规则</p>
-<ul>
-<li>方法名以“alloc、new、copy和mutableCopy”为开头时，其返回对象的内存管理由调用方负责。即在方法中，系统不会自动添加内存管理语句。</li>
-<li>方法名以其他方式命名的，其返回对象的内存管理由方法自身负责。即在方法中，系统会自动给返回的对象添加autorelease操作。</li>
-<li>ARC对代码的额外优化：<ul>
-<li>编译期：对于多次的retain和release操作，ARC会根据情况适当成对的抵消掉此调用操作。</li>
-<li>运行期：例如，对于使用方法调用返回autorelease的对象，ARC会使用objc_autoreleaseReturnValue来替代传统的autorelease方法，此时会检查函数返回之后的代码：若调用方需要对此对象进行保留，则不会执行autorelease操作，而是设置全局标志位；调用方retain时，使用objc_retainAutoreleasedReturnValue函数，检查此标志位，若已置位，则不执行retain操作，直接使用。这样，通过检测标志位代替传统的autorelease和retain，优化了执行效率。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>ARC如何清理实例变量</p>
-<ul>
-<li>在ARC环境下，系统会利用Objective-C++的清理例程（cleanup routine）特性，待回收的对象会调用所有C++对象的析构函数。ARC借住此特性，会在dealloc中生成清理内存的代码。</li>
-<li>对于非OC对象，如CF对象或手动malloc的对象，在dealloc方法中还是需要手动释放这些对象的内存</li>
-<li>在deallc中无需调用super方法。</li>
-</ul>
-</li>
-<li><p>覆写内存管理方法</p>
-<ul>
-<li>不能调用或覆盖release和retain等内存管理方法【单例中尤其注意】：ARC会优化retain、release等相关操作，使其不经过OC的消息派发机制（方法调用），底层使用了c函数版本进行了实现。</li>
-</ul>
-</li>
-</ul>
-<h3 id="第31条：在dealloc方法中只释放引用并解除监听"><a href="#第31条：在dealloc方法中只释放引用并解除监听" class="headerlink" title="第31条：在dealloc方法中只释放引用并解除监听"></a>第31条：在dealloc方法中只释放引用并解除监听</h3><ul>
-<li>ARC下，dealloc方法会自动释放创建的OC对象的引用，但需要手动释放Core Foundation创建的对象和其他手动申请内存并创建的c对象。</li>
-<li>dealloc中尽量不要调用其他方法（如实例方法等）</li>
-<li>dealloc过程中，由于实例已经处于“释放状态”，无法确保代码会执行在确定的线程上。故不能在释放是执行异步多线程代码。</li>
-<li>dealloc中释放KVO监听和NSNotificationCenter中注册的通知</li>
-<li>对于创建和释放开销较大和系统稀缺的资源，一般单独创建自己的清理方法（如数据库对象的“连接”和“关闭”操作等）。使用完成后即提示调用者进行及时的资源清理，而不是在dealloc中释放内存【dealloc中可以检查是否正确清理此对象，没有则自动调用并给出debug提示】。</li>
-</ul>
-<h3 id="第35条：用“僵尸对象”调试内存管理问题"><a href="#第35条：用“僵尸对象”调试内存管理问题" class="headerlink" title="第35条：用“僵尸对象”调试内存管理问题"></a>第35条：用“僵尸对象”调试内存管理问题</h3><ul>
-<li>在“XCode-&gt;Scheme-&gt;Run-&gt;Diagnostics”中，勾选“Enable Zombie Objects”选项，开启功能。</li>
-<li>在调试模式中，开启此功能，可以防止已释放对象的内存被覆盖重用，可以帮助追溯调用过程和类型信息等。</li>
-<li><p>已释放对象转化为“僵尸对象”的过程（“僵尸模式”开启的情况下，NSObject的dealloc会在运行期swizzle成类似以下代码）：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取待释放对象所属的类</span></div><div class="line">Class cls = object_getClass(self);</div><div class="line"></div><div class="line"><span class="comment">// 获取类名</span></div><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> *clsName = class_getName(cls);</div><div class="line"></div><div class="line"><span class="comment">// 生成僵尸类名</span></div><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> *zombieClsName = <span class="string">"_NSZombie_"</span> + clsName;</div><div class="line"></div><div class="line"><span class="comment">// 查看是否存在此类</span></div><div class="line">Class zombieCls = objc_lookUpClass(zombieClsName);</div><div class="line"></div><div class="line"><span class="comment">// 不存在，则创建此类</span></div><div class="line"><span class="keyword">if</span> (!zombieCls) &#123;</div><div class="line">    <span class="comment">// 获取名为“_NSZombie_”的样板类</span></div><div class="line">    Class baseZombieCls = objc_lookUpClass(<span class="string">"_NSZombie_"</span>);</div><div class="line">    </div><div class="line">    <span class="comment">// 复制样板类来创建此类</span></div><div class="line">    zombieCls = objc_duplicateClass(baseZombieCls, zombieClsName, <span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 正常释放实例</span></div><div class="line">objc_destructInstance(self);</div><div class="line"></div><div class="line"><span class="comment">// 将实例所属类指向新的僵尸类（替换isa指向）</span></div><div class="line">objc_setClass(self, zombieCls);</div><div class="line"></div><div class="line"><span class="comment">// 现在，self即为“_NSZombie_原始类名”的实例了</span></div></pre></td></tr></table></figure>
-</li>
-<li><p><strong>“僵尸类“为”根类“，只存在isa指针，没有任何方法实现（样本类的拷贝）。故其实例接收到的所有消息都需要进行完整的消息转发</strong>。被转发的消息响应过程的伪代码如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取对象类名</span></div><div class="line">Class cls = objc_getClass(self);</div><div class="line"></div><div class="line"><span class="comment">// 查看是否为”僵尸类“</span></div><div class="line"><span class="keyword">if</span> (String_has_prefix(clsName, <span class="string">"_NSZombie_"</span>)) &#123;</div><div class="line">    <span class="comment">// 是，则对象是”僵尸对象“</span></div><div class="line">    </div><div class="line">    <span class="comment">// 获取原始类名（去掉前缀）</span></div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *originClsName = substring_from(clsName, <span class="number">10</span>);</div><div class="line">    </div><div class="line">    <span class="comment">// 获取消息的选择器名</span></div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *selectorName = sel_getName(_cmd);</div><div class="line">    </div><div class="line">    <span class="comment">// 输出消息</span></div><div class="line">    Log(<span class="string">"*** -[%s %s]: message sent to deallocated instance %p"</span>, originClsName, selectorName, self);</div><div class="line">    </div><div class="line">    <span class="comment">// 结束程序</span></div><div class="line">    <span class="built_in">abort</span>();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="第6章-块与大中枢派发"><a href="#第6章-块与大中枢派发" class="headerlink" title="第6章 块与大中枢派发"></a>第6章 块与大中枢派发</h2><h3 id="第37条：理解“块”这一概念"><a href="#第37条：理解“块”这一概念" class="headerlink" title="第37条：理解“块”这一概念"></a>第37条：理解“块”这一概念</h3><ul>
-<li>块的内部结构（内存布局）：</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>Block</th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>void*</td>
-<td>isa</td>
-<td>指向Class对象的指针</td>
-</tr>
-<tr>
-<td>int</td>
-<td>flags</td>
-<td></td>
-</tr>
-<tr>
-<td>int</td>
-<td>reserved</td>
-<td></td>
-</tr>
-<tr>
-<td>void (<em>)(void </em>, …)</td>
-<td>invoke</td>
-<td>实现函数的指针</td>
-</tr>
-<tr>
-<td>struct *</td>
-<td>descriptor</td>
-<td>块的描述信息</td>
-</tr>
-<tr>
-<td>捕获到的外部变量…</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<ol>
-<li>isa指针，指向的是Block的类型。Block分为三种类型：_NSConcreteStackBlock，_NSConcreteMallocBlock和_NSConcreteGlobalBlock。其中，_NSConcreteStackBlock分配在占内存上；_NSConcreteMallocBlock分配在堆内存上，有引用计数（即为对象），会捕获外部变量；_NSConcreteGlobalBlock不捕获变量（内部不使用外部变量的Block即为全局Block），内存在编译期即可确定，相当于单例。</li>
-<li>其中，<strong>invoke实现函数的参数为Block结构体实例的指针</strong>，使用它<em>可以方便地从内存中读取出捕获到的变量</em>。</li>
-<li>捕获到的变量，对于对象，只是拷贝了其指针（对象的引用计数+1）</li>
-</ol>
-<table>
-<thead>
-<tr>
-<th>descriptor</th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>unsigned long int</td>
-<td>reserved</td>
-<td></td>
-</tr>
-<tr>
-<td>unsigned long int</td>
-<td>size</td>
-<td></td>
-</tr>
-<tr>
-<td>void (<em>)(void </em>, void *)</td>
-<td>copy</td>
-<td>拷贝辅助函数</td>
-</tr>
-<tr>
-<td>void (<em>)(void </em>, coid *)</td>
-<td>dispose</td>
-<td>释放辅助函数</td>
-</tr>
-</tbody>
-</table>
-<p>描述结构体中，copy和dispose函数的作用是拷贝和释放Block实例时，对捕获到的变量进行拷贝和释放操作。</p>
-<h3 id="第39条：用handler块降低代码分散程度"><a href="#第39条：用handler块降低代码分散程度" class="headerlink" title="第39条：用handler块降低代码分散程度"></a>第39条：用handler块降低代码分散程度</h3><ul>
-<li>使用Block代替Delegate，可以使代码分布整体化，降低分散程度。特别是<strong>对于自身实例作为多个不同对象的Delegate时（如多个UITableView实例均使用self作为delegate），由于每个Delegate均存在自己单独的handler回调，省去了对于不同对象判断执行的过程，使代码更加简洁</strong>。</li>
-<li>设置带有handler回调的API时，根据需要可以添加执行队列（NSOperation或GCD等）参数。外部调用时，可以根据不同需要灵活配置（如系统添加通知的方法addObserverForName方法）。</li>
-</ul>
-<h3 id="第41条：多用派发队列，少用同步锁"><a href="#第41条：多用派发队列，少用同步锁" class="headerlink" title="第41条：多用派发队列，少用同步锁"></a>第41条：多用派发队列，少用同步锁</h3><p>我们知道，在iOS端，为了保证性能，类中property的内存语义一般被设置为“nonatomic”。但是极端情况下，为了保证属性的读写为原子操作，需要单独进行处理。一般来说，可以使用synchronized关键字对self进行同步加锁，或者使用NSLock进行锁操作，但是频繁读写时效率会很低。<br>为了保证效率，使用GCD的派发队列进行property的读写操作优化：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// TestClass.h</span></div><div class="line">@interface TestClass : NSObject</div><div class="line"></div><div class="line">@property (nonatomic, strong) NSString *testName;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line"><span class="comment">// TestClass.m</span></div><div class="line">@<span class="function">interface <span class="title">TestClass</span> <span class="params">()</span> </span>&#123;</div><div class="line">    NSString *_testName;</div><div class="line">    <span class="keyword">dispatch_queue_t</span> _propertyQueue;</div><div class="line">&#125;</div><div class="line">@end</div><div class="line"></div><div class="line">@implementation</div><div class="line">- (instancetype)init &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        <span class="comment">// 创建并发队列</span></div><div class="line">        _propertyQueue = dispatch_queue_create(<span class="string">"com.TestClass.p_queue"</span>, DISPATCH_QUEUE_CONCURRENT);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div><div class="line">- (NSString *)testName &#123;</div><div class="line">    <span class="comment">// 并发队列读取（使用async是因为需要同步返回函数值，实质上也是并发执行）</span></div><div class="line">    __block NSString *tmpValue;</div><div class="line">    dispatch_sync(_propertyQueue, ^&#123;</div><div class="line">        tmpValue = self-&gt;_testName;</div><div class="line">    &#125;);</div><div class="line">    <span class="keyword">return</span> tmpValue;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)setTestName:(NSString *)testName &#123;</div><div class="line">    <span class="comment">// 使用barrier，可以保证此处为原子操作（其余操作等待完成后才开始执行）</span></div><div class="line">    dispatch_barrier_async(_propertyQueue, ^&#123;</div><div class="line">        self-&gt;_testName = testName;</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure></p>
-<p><strong>注意</strong>：</p>
-<ul>
-<li>使用dispatch_barrier_async或dispatch_barrier_sync方法时，必须保证执行的队列是手动创建的并发队列，不能是串行或者系统的全局队列**。</li>
-<li>栅栏方法同步和异步版本的区别是：同步添加Block时，队列会等待Block执行完毕后再返回（继续执行下面的代码）；异步时，则立即返回，可以将后面的任务派发的队列中（但是不会执行），等待栅栏Block执行完毕后，继续执行其他任务。</li>
-<li>在property中两种版本均可。但是同步版本的效率更高（异步版本需要拷贝Block）。</li>
-</ul>
-<p><strong>对于property，getter使用自定义并发队列的async操作，setter使用自定义并发队列的barrier操作。</strong></p>
-<h3 id="第42条：多用GCD，少用performSelector系列方法"><a href="#第42条：多用GCD，少用performSelector系列方法" class="headerlink" title="第42条：多用GCD，少用performSelector系列方法"></a>第42条：多用GCD，少用performSelector系列方法</h3><p>除了performSelector系列方法的API局限性以外（不能传多于两个参数、线程相关API参数过少、参数只能为对象类型、不能调用c方法等），最重要的是内存管理方面的缺失。示例如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">SEL selector;</div><div class="line"><span class="keyword">if</span> (<span class="comment">/** 条件1 */</span>) &#123;</div><div class="line">    selector = @SEL(newObject);</div><div class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="comment">/** 条件2 */</span>) &#123;</div><div class="line">    selector = @SEL(copy);</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    selector = @SEL(someProperty)</div><div class="line">&#125;</div><div class="line"><span class="comment">// object为类实例，包含newObject构造器、copy方法和someProperty属性</span></div><div class="line">id ret = [object performSelector:selector];</div></pre></td></tr></table></figure></p>
-<p>在ARC环境下，如果是条件1和2，编译器会将执行后返回对象的内存管理权交给接收者；如果是直接设置属性，则不进行内存管理。由于现在selector的选择是在运行时进行绑定，编译器就无法根据方法签名（名称、参数及返回值类型）使用ARC进行内存管理了（甚至不知道改selector是否存在）。所以，这种写法下，编译器会提示警告，可能会发生内存泄漏。<br>使用Block配合GCD的相关方法可以有效解决这些问题，如参数、线程、内存管理等。</p>
-<h3 id="第43条：掌握GCD及操作队列的使用时机"><a href="#第43条：掌握GCD及操作队列的使用时机" class="headerlink" title="第43条：掌握GCD及操作队列的使用时机"></a>第43条：掌握GCD及操作队列的使用时机</h3><ul>
-<li>在解决多线程与任务管理的问题时，可以根据需要灵活选用GCD或操作队列（NSOperationQueue）进行处理。</li>
-<li>操作队列是Objective-C的API，底层使用GCD进行实现，具备了大多数GCD的功能，其优点如下：<ul>
-<li>可以取消尚未执行的任务（NSOperation对象）。</li>
-<li>可以对操作的执行状况使用KVO进行监听，如“isCancelled”、“isFinished”等。</li>
-<li>可以对单个的操作进行优先级设置（即执行线程的优先级）；GCD只能对并发的派发队列进行优先级设置，颗粒度不够细。</li>
-<li>对不同操作之间可以设置依赖关系。通过设置依赖，更容易控制不同任务之间的执行顺序。</li>
-<li>可以重用任务对象（NSOperation），系统默认实现了NSBlockOperation子类。由于支持了面向对象，我们可以根据需要对父类进行继承，扩展操作对象的功能。</li>
-</ul>
-</li>
-</ul>
-<h3 id="第44条：通过Dispatch-Group机制，根据系统资源状况来执行任务："><a href="#第44条：通过Dispatch-Group机制，根据系统资源状况来执行任务：" class="headerlink" title="第44条：通过Dispatch Group机制，根据系统资源状况来执行任务："></a>第44条：通过Dispatch Group机制，根据系统资源状况来执行任务：</h3><p><strong>在后台自动执行一系列任务，完成后通知主线程</strong>：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 对象数组，这里是模拟多个需要执行任务的对象</span></div><div class="line">NSArray *objects = @[...];</div><div class="line"></div><div class="line"><span class="comment">// 后台执行，需要获取并发队列</span></div><div class="line"><span class="keyword">dispatch_queue_t</span> globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>);</div><div class="line"></div><div class="line"><span class="comment">// 一系列任务，可以编写成组</span></div><div class="line"><span class="keyword">dispatch_group_t</span> group = dispatch_group_create();</div><div class="line"></div><div class="line"><span class="comment">// 自动执行：异步加入组中，不能阻塞执行队列</span></div><div class="line"><span class="keyword">for</span> (id object in objects) &#123;</div><div class="line">    dispatch_group_async(</div><div class="line">        group, </div><div class="line">        globalQueue,</div><div class="line">        ^&#123; [object performTask]; &#125;</div><div class="line">    );</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 完成后通知主线程</span></div><div class="line">dispatch_group_notify(</div><div class="line">    group,</div><div class="line">    dispatch_get_main_queue(),</div><div class="line">    ^&#123;</div><div class="line">        <span class="comment">// 主线程执行代码</span></div><div class="line">    &#125;</div><div class="line">);</div></pre></td></tr></table></figure></p>
-<p>主要是利用了GCD并发队列的强大功能，GCD会根据系统资源占用情况，自动分配CPU核心和不同数量的执行线程去并发执行任务，可以最大限度的优化多线程编程性能。通过dispatch_group_t对象，可以根据需要阻塞（可以使用dispatch_group_wait）执行队列或是监控任务的执行过程。</p>
-<h3 id="第46条：不要使用dispatch-get-current-queue"><a href="#第46条：不要使用dispatch-get-current-queue" class="headerlink" title="第46条：不要使用dispatch_get_current_queue"></a>第46条：不要使用dispatch_get_current_queue</h3><blockquote>
-<p>首先结论是：<strong>dispatch_get_current_queue对避免代码死锁没有任何作用，因为它返回的只是当前队列的名称，而不是当前执行任务所在的队列！！！</strong></p>
-</blockquote>
-<p>我们以队列层级的例子一步步进行验证：</p>
-<ol>
-<li>父队列为串行队列rootQueue；子队列有两个，分别为串行队列serialQueue和并行队列concurrentQueue。我们分别向两个子队列中派发任务，看一下实际的执行情况：<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 根队列</span></div><div class="line"><span class="keyword">const</span> <span class="keyword">void</span> *rootQueueKey = <span class="string">"com.jiji.rootQueue"</span>;</div><div class="line"><span class="keyword">dispatch_queue_t</span> rootQueue = dispatch_queue_create(rootQueueKey, DISPATCH_QUEUE_SERIAL);</div><div class="line"></div><div class="line"><span class="comment">// 创建两个队列</span></div><div class="line"><span class="keyword">dispatch_queue_t</span> concurrentQueue = dispatch_queue_create(<span class="string">"com.jiji.concurrent1"</span>, DISPATCH_QUEUE_CONCURRENT);</div><div class="line"><span class="keyword">dispatch_queue_t</span> serialQueue = dispatch_queue_create(<span class="string">"com.jiji.serial1"</span>, DISPATCH_QUEUE_SERIAL);</div><div class="line"></div><div class="line"><span class="comment">// 设置两个子队列的根队列为rootQueue（串行）</span></div><div class="line">dispatch_set_target_queue(concurrentQueue, rootQueue);</div><div class="line">dispatch_set_target_queue(serialQueue, rootQueue);</div><div class="line"></div><div class="line"><span class="comment">// 配置任务：</span></div><div class="line"><span class="comment">// 并行子队列异步派发两个任务</span></div><div class="line">dispatch_async(concurrentQueue, ^&#123;</div><div class="line">    NSLog(@<span class="string">"task1"</span>);</div><div class="line">&#125;);</div><div class="line">dispatch_async(concurrentQueue, ^&#123;</div><div class="line">    NSLog(@<span class="string">"task2"</span>);</div><div class="line">&#125;);</div><div class="line"><span class="comment">// 串行子队列异步派发两个任务</span></div><div class="line">dispatch_async(serialQueue, ^&#123;</div><div class="line">    NSLog(@<span class="string">"task3"</span>);</div><div class="line">&#125;);</div><div class="line">dispatch_async(serialQueue, ^&#123;</div><div class="line">    NSLog(@<span class="string">"task4"</span>);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>运行结果如下：</p>
-<blockquote>
-<p>TestIos[32776:25904922] task1<br>TestIos[32776:25904922] task2<br>TestIos[32776:25904922] task3<br>TestIos[32776:25904922] task4</p>
-</blockquote>
-<p>以上情况表明：不管子队列是串行还是并行队列，由于根队列为串行，最终任务的执行情况为串行执行。</p>
-<ol>
-<li>现在，我的疑问是，由于任务串行执行，是否证明真正执行任务的队列是串行队列（根队列）？带着这个疑问，我们先验证一下：<br>我们修改一下代码，在task1的执行块中，查看一下当前队列：<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dispatch_async(concurrentQueue, ^&#123;</div><div class="line">    NSLog(@<span class="string">"task1"</span>);</div><div class="line">    NSLog(@<span class="string">"%@"</span>, dispatch_get_current_queue());</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>执行结果：</p>
-<blockquote>
-<p>TestIos[32776:25904922] <os_dispatch_queue: com.jiji.concurrent1=""></os_dispatch_queue:></p>
-</blockquote>
-<p>看来不是，还是在并发队列这个子队列中。<br>那现在做个假设，如果在此任务中，再向其根队列派发一个同步任务进行验证（如果死锁，证明实际任务运行在根队列中；否则就在当前子队列中）：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">dispatch_async(concurrentQueue, ^&#123;</div><div class="line">    NSLog(@<span class="string">"task1"</span>);</div><div class="line">    NSLog(@<span class="string">"%@"</span>, dispatch_get_current_queue());</div><div class="line">    <span class="comment">// 添加同步任务</span></div><div class="line">    dispatch_sync(rootQueue, ^&#123;</div><div class="line">        NSLog(@<span class="string">"new task!!!"</span>);</div><div class="line">    &#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
-<p>结果很显然，发生了死锁，证明实际上此任务是在根队列（target queue）中执行（向serialQueue中派发同步任务也会如此，虽然不会死锁，但线程一直等待，永远不会返回）。</p>
-<p><strong>这也就证明了，实际上<em>dispatch_get_current_queue</em>方法并没有返回真正的运行队列</strong>。如果以此API返回值进行判断，则无法保证多线程环境下代码执行的准确性。</p>
-<ol>
-<li>那若是如此，如何来确保任务执行在正确的队列中？使用<em>dispatch_queue_set_specfic</em>和<em>dispatch_get_specific</em>两个API即可。我们修改一下示例代码：<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 根队列</span></div><div class="line"><span class="keyword">const</span> <span class="keyword">void</span> *rootQueueKey = <span class="string">"com.jiji.rootQueue"</span>;</div><div class="line"><span class="keyword">dispatch_queue_t</span> rootQueue = dispatch_queue_create(rootQueueKey, DISPATCH_QUEUE_SERIAL);</div><div class="line"><span class="comment">// 根队列用指定key进行标记</span></div><div class="line">dispatch_queue_set_specific(rootQueue, rootQueueKey, &amp;rootQueueKey, <span class="literal">NULL</span>);</div><div class="line"></div><div class="line"><span class="comment">// 创建两个队列</span></div><div class="line"><span class="keyword">dispatch_queue_t</span> concurrentQueue = dispatch_queue_create(<span class="string">"com.jiji.concurrent1"</span>, DISPATCH_QUEUE_CONCURRENT);</div><div class="line"><span class="keyword">dispatch_queue_t</span> serialQueue = dispatch_queue_create(<span class="string">"com.jiji.serial1"</span>, DISPATCH_QUEUE_SERIAL);</div><div class="line"></div><div class="line"><span class="comment">// 设置两个子队列的根队列为rootQueue（串行）</span></div><div class="line">dispatch_set_target_queue(concurrentQueue, rootQueue);</div><div class="line">dispatch_set_target_queue(serialQueue, rootQueue);</div><div class="line"><span class="comment">// 配置任务：</span></div><div class="line">dispatch_async(concurrentQueue, ^&#123;</div><div class="line">    NSLog(@<span class="string">"task1"</span>);</div><div class="line">    </div><div class="line">    <span class="comment">// 根据key获取队列绑定的值（存在，则当前队列即为key所对应的队列）</span></div><div class="line">    <span class="keyword">void</span> *context = dispatch_get_specific(rootQueueKey);</div><div class="line">    <span class="keyword">if</span> (context) &#123;</div><div class="line">        <span class="comment">// 当前执行在根队列上，不可以向根队列及任何子队列派发同步任务</span></div><div class="line">        NSLog(@<span class="string">"NO!!!!!!"</span>);</div><div class="line">        <span class="comment">// 但是，调用dispatch_get_current_queue()返回的队列，可以让你误以为是在本队列执行，所以可能会向其他队列派发同步任务，继而发生死锁。这也就是绝对不要使用此API的原因。</span></div><div class="line">        NSLog(@<span class="string">"%@"</span>, dispatch_get_current_queue());</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// 可以派发任意任务</span></div><div class="line">        NSLog(@<span class="string">"OK~"</span>);</div><div class="line">        dispatch_sync(rootQueue, ^&#123;</div><div class="line">            NSLog(@<span class="string">"new task!!!"</span>);</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>如代码所示，<strong>当dispatch_get_specific返回对应的数据时，证明当前运行队列即为检查的目标队列</strong>。如果此时还需要向此队列派发同步任务，只要直接执行任务即可，无需派发。</p>
-<ul>
-<li>注意：对于实现真正原子操作的property来说，由于实现setter和getter时使用了自定义队列，且setter中使用同步方式返回实例的值。为了防止死锁发生，一定要避免他人使用相同队列对属性进行访问。</li>
-</ul>
-<h2 id="第7章-系统框架"><a href="#第7章-系统框架" class="headerlink" title="第7章 系统框架"></a>第7章 系统框架</h2><h3 id="第48条：多用块枚举，少用for循环"><a href="#第48条：多用块枚举，少用for循环" class="headerlink" title="第48条：多用块枚举，少用for循环"></a>第48条：多用块枚举，少用for循环</h3><ol>
-<li><p>快速枚举（for…in）：</p>
-<ul>
-<li>比传统for循环更高效，与NSEnumerator一样但语法更简洁。</li>
-<li>可以遍历如NSArray、NSDictionary、NSSet及自定义Collection（需遵循NSFastEnumeration协议）。</li>
-<li>NSEnumerator由于也遵循NSFastEnumeration协议，所以可以支持用快速枚举对集合进行反向遍历。</li>
-<li>缺点是不支持获取对象索引。</li>
-</ul>
-</li>
-<li><p>使用集合带有Block参数的遍历API进行集合遍历：</p>
-<ul>
-<li>方便获取对象索引及字典键值</li>
-<li>可以直接修改Block的参数类型为对象类型，利用编译器特性，省去了进行显示地类型转换</li>
-<li>对于可以配置NSEnumerationOptions的版本，可以方便设置如反向遍历、并发遍历（底层使用GCD队列）等功能。</li>
-</ul>
-</li>
-</ol>
-<h3 id="第49条：对自定义其内存管理语义的collection使用无缝桥接"><a href="#第49条：对自定义其内存管理语义的collection使用无缝桥接" class="headerlink" title="第49条：对自定义其内存管理语义的collection使用无缝桥接"></a>第49条：对自定义其内存管理语义的collection使用无缝桥接</h3><ol>
-<li><p>主要先说一下OC对象和CF变量指针的转换方式：</p>
-<ul>
-<li>__bridge: 互相转换均可，不进行内存所有权转换。即转换后仍然使用原系统对对象或变量进行内存管理（OC使用ARC，CF手动使用CFRelease）</li>
-<li>__bridge_transfer：一般用于CF-&gt;OC的过程中，转换所有权。转换后的OC对象，系统自动使用ARC对其进行内存管理。</li>
-<li>__bridge_retained：一般用于OC-&gt;CF的过程中，转换所有权。转换后的CF变量，其指针的引用计数+1，需要使用CFRelease等函数进行手动内存管理。</li>
-</ul>
-</li>
-<li><p>可以通过CF框架，使用C语言API创建集合对象，之后利用桥接转换为OC对象，即可得到符合自定义内存管理语义的集合对象。</p>
-<ul>
-<li>如使用NSDictionary时，需要key无需支持NSCopy协议，则可以使用此方法，创建CFDictionaryRef指针（在CFDictionaryRetainCallBack和CFDictionaryReleaseCallBack中进行修改）后，使用__bridge_transfer转换为OC对象并转换所有权。</li>
-</ul>
-</li>
-</ol>
-<h3 id="第51条：精简initialize与load的实现代码"><a href="#第51条：精简initialize与load的实现代码" class="headerlink" title="第51条：精简initialize与load的实现代码"></a>第51条：精简initialize与load的实现代码</h3><ol>
-<li><strong>+(void)load</strong>:</li>
-</ol>
-<ul>
-<li>运行时系统启动时，加载Class或Category时会调用（只有Class和Category存在此方法，且只执行一次）。</li>
-<li>load方法不遵循继承体系，只有对应的Class活Category实现后才会被调用。</li>
-<li>系统首先加载所有Class，后加载Category。Class间加载顺序无法确定（不要在Class的load方法中调用其他Class）。</li>
-<li>load方法执行时会阻塞程序运行，所以不要执行复杂任务或加锁。<blockquote>
-<p>自己只在Category中利用load方法，swizzle过所属Class的方法，在内部实现自定义功能（如记录日志）。</p>
-</blockquote>
-</li>
-</ul>
-<ol>
-<li><strong>+(void)initialize</strong>:</li>
-</ol>
-<ul>
-<li>被调用时为“懒加载”：运行时系统在首次调用Class时，先调用本方法；不访问不调用。</li>
-<li>initialize方法执行时，运行时系统已启动完毕，加载（load）了所有相关类，可以在此调用任意类的任意方法。但是<em>需要注意避免“循环引用”导致的死锁</em>（如ClassA的initialize中调用ClassB，ClassB首次执行，initialize中使用ClassA）。</li>
-<li>本方法遵循继承体系，本类未实现时会执行父类的版本。</li>
-<li>initialize方法执行时，是“线程安全”的，会阻塞其他类运行，无需加锁。但是，方法无法确定其执行线程，所以仍然不能运行过于复杂的任务（如果是UI线程则会导致APP无响应）。</li>
-</ul>
-<blockquote>
-<p>正确用法举例：</p>
-<ol>
-<li>在initialize中初始化声明为全局static的OC对象（由于在编译期只能初始化基本数据类型或NSString变量或常量）。</li>
-<li>单例类可以用于初始化内部数据。</li>
-</ol>
-</blockquote>
-<h3 id="第52条：别忘了NSTimer会保留其目标对象"><a href="#第52条：别忘了NSTimer会保留其目标对象" class="headerlink" title="第52条：别忘了NSTimer会保留其目标对象"></a>第52条：别忘了NSTimer会保留其目标对象</h3><p>举例来说，以常用的直接在当前runloop中配置计时器“<em>scheduledTimerWithTimeInterval: target: selector: userInfo: repeats:</em>”为例：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">@interface EOCClass: NSObject &#123;</div><div class="line">    NSTimer *_pollTimer;</div><div class="line">&#125;</div><div class="line">- (<span class="keyword">void</span>)startPolling;</div><div class="line">- (<span class="keyword">void</span>)stopPolling;</div><div class="line">@end</div><div class="line"></div><div class="line">@implementation EOCClass</div><div class="line">- (<span class="keyword">void</span>)dealloc &#123;</div><div class="line">    [_pollTimer invalidate];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)stopPolling &#123;</div><div class="line">    [_pollTimer invalidate];</div><div class="line">    _pollTimer = nil;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)startPolling &#123;</div><div class="line">    _pollTimer = [NSTimer scheduledTimerWithTimeInterval:<span class="number">5.0</span></div><div class="line">        target:self</div><div class="line">        selector:@selector(p_doPoll)</div><div class="line">        userInfo:nil</div><div class="line">        repeat:YES</div><div class="line">    ];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)p_doPoll &#123;</div><div class="line">    <span class="comment">// ...task</span></div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure></p>
-<p>以上代码可以很明显地看出，由于_pollTimer的target是self，即NSTimer保留了EOCClass实例，且_pollTimer是EOCClass的实例变量，在ARC下隐含为强引用的内存管理方式，最终导致了引用循环。</p>
-<p><strong>解决方法：</strong><br><em>由于类对象本身即为单例，使用类对象作为NSTimer的target即可巧妙“避免”此问题发生。</em></p>
-<p>这里使用了NSTimer的Category进行处理，免除使用第三方类或者自定义单例对象：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">@interface NSTimer (EOCBlocksSupport)</div><div class="line">+ (NSTimer *)scheduledTimerWithTimerInterval:(NSTimeInterval)interval</div><div class="line">    block:(void (^)())block</div><div class="line">    repeats:(BOOL)repeats;</div><div class="line">@end</div><div class="line"></div><div class="line">@implementation NSTimer (EOCBlocksSupport)</div><div class="line"></div><div class="line">+ (NSTimer *)scheduledTimerWithTimerInterval:(NSTimeInterval)interval</div><div class="line">    block:(void (^)())block</div><div class="line">    repeats:(BOOL)repeats &#123;</div><div class="line">    </div><div class="line">    return [self scheduledTimerWithTimerInterval:interval</div><div class="line">        target:self</div><div class="line">        selector:@selector(eoc_blockInvoke:)</div><div class="line">        userInfo:[block copy]</div><div class="line">        repeats:repeats</div><div class="line">    ];</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (void)eoc_blockInvoke:(NSTimer *)timer &#123;</div><div class="line">    // 取出timer中设置的userInfo，并转换为block对象</div><div class="line">    void (^block)() = timer.userInfo;</div><div class="line">    if (block) &#123;</div><div class="line">        // 执行</div><div class="line">        block();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure></p>
-<p>配置定时器时，按如下方式:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)startPolling &#123;</div><div class="line">    <span class="comment">// 声明self的弱引用指针（使Block对象通过弱指针保留对象，引用计数不变）</span></div><div class="line">    __weak EOCClass *weakSelf = self;</div><div class="line">    _pollTimer = [NSTimer scheduledTimerWithTimerInterval:<span class="number">5.0</span></div><div class="line">    block:^&#123;</div><div class="line">        <span class="comment">// 声明强指针指向weakSelf，可防止使用时对象被释放</span></div><div class="line">        __strong EOCClass *strongSelf = weakSelf;</div><div class="line">        [strongSelf p_doPoll];</div><div class="line">    &#125;</div><div class="line">    repeats:YES];</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>如上所示，</p>
-<ul>
-<li>此时只有EOCClass的实例保留了定时器，定时器对象并不会保留self。完成使用后，self即可被正常释放，同时定时器被取消。</li>
-<li>使用<strong>weak指针还可以保证更加安全（相比</strong>unsafe_unretain），因为self实例释放后，若是忘记取消定时器，对weak指针发消息是安全的。</li>
-</ul>
-<blockquote>
-<p><em>注意</em>：NSTimer类在iOS10中新增了带有Block参数的API，不过使用时依然要注意循环引用的问题。</p>
-</blockquote>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;第1章：熟悉Objective-C&quot;&gt;&lt;a href=&quot;#第1章：熟悉Objective-C&quot; class=&quot;headerlink&quot; title=&quot;第1章：熟悉Objective-C&quot;&gt;&lt;/a&gt;第1章：熟悉Objective-C&lt;/h2&gt;&lt;h3 id=&quot;第4条：多用类型常量，少用-define预处理指令&quot;&gt;&lt;a href=&quot;#第4条：多用类型常量，少用-define预处理指令&quot; class=&quot;headerlink&quot; title=&quot;第4条：多用类型常量，少用#define预处理指令&quot;&gt;&lt;/a&gt;第4条：多用类型常量，少用#define预处理指令&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;声明类型常量好处是，编译器可以知道此变量的类型，且可以防止外部随意修改&lt;/li&gt;
-&lt;li&gt;声明规则：
     
     </summary>
     
