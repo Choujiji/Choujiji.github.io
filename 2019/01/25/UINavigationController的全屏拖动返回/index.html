@@ -6,17 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives | 臭吉吉的瞎记空间</title>
+  <title>UINavigationController的全屏拖动返回 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="督促自己好好学习哦~">
-<meta property="og:type" content="website">
-<meta property="og:title" content="臭吉吉的瞎记空间">
-<meta property="og:url" content="http://yoursite.com/archives/page/5/index.html">
+  <meta name="description" content="我们知道，导航控制器的边缘返回功能使用的是“UIScreenEdgePanGestureRecognizer”类配合交互式动画进行实现。 想要使用全屏滑动返回，可以通过两种方式进行实现：  通过苹果提供的交互式动画方式，提供动画对象和交互对象，使用UIPanGestureRecognizer对象控制交互动画的过程，实现全屏滑动返回。 使用自定义的UIPanGestureRecognizer对象通">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UINavigationController的全屏拖动返回">
+<meta property="og:url" content="http://yoursite.com/2019/01/25/UINavigationController的全屏拖动返回/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="督促自己好好学习哦~">
+<meta property="og:description" content="我们知道，导航控制器的边缘返回功能使用的是“UIScreenEdgePanGestureRecognizer”类配合交互式动画进行实现。 想要使用全屏滑动返回，可以通过两种方式进行实现：  通过苹果提供的交互式动画方式，提供动画对象和交互对象，使用UIPanGestureRecognizer对象控制交互动画的过程，实现全屏滑动返回。 使用自定义的UIPanGestureRecognizer对象通">
+<meta property="og:updated_time" content="2019-01-25T06:44:59.235Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="臭吉吉的瞎记空间">
-<meta name="twitter:description" content="督促自己好好学习哦~">
+<meta name="twitter:title" content="UINavigationController的全屏拖动返回">
+<meta name="twitter:description" content="我们知道，导航控制器的边缘返回功能使用的是“UIScreenEdgePanGestureRecognizer”类配合交互式动画进行实现。 想要使用全屏滑动返回，可以通过两种方式进行实现：  通过苹果提供的交互式动画方式，提供动画对象和交互对象，使用UIPanGestureRecognizer对象控制交互动画的过程，实现全屏滑动返回。 使用自定义的UIPanGestureRecognizer对象通">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -176,36 +178,56 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-UINavigationController的全屏拖动返回" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      UINavigationController的全屏拖动返回
+    </h1>
+  
+
+        
+        <a href="/2019/01/25/UINavigationController的全屏拖动返回/" class="archive-article-date">
+  	<time datetime="2019-01-25T06:44:59.235Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-25</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>我们知道，导航控制器的边缘返回功能使用的是“<em>UIScreenEdgePanGestureRecognizer</em>”类配合交互式动画进行实现。</p>
+<p>想要使用全屏滑动返回，可以通过两种方式进行实现：</p>
+<ol>
+<li>通过苹果提供的交互式动画方式，提供动画对象和交互对象，使用UIPanGestureRecognizer对象控制交互动画的过程，实现全屏滑动返回。</li>
+<li>使用自定义的UIPanGestureRecognizer对象通过KVC的方式“替换”掉原来的UIScreenEdgePanGestureRecognizer对象，使我们可以通过拖拽手势触发导航控制器原交互方法，以达到目的。</li>
+</ol>
+<p>这里只第二种情况进行学习总结。<br><a id="more"></a></p>
+</blockquote>
+<p>注意：本文为<a href="https://www.jianshu.com/p/d39f7d22db6c" target="_blank" rel="external">轻松学习之二——iOS利用Runtime自定义控制器POP手势动画</a>的读后总结，感叹作者思路之妙。</p>
+<h4 id="1-查看手势响应对象的存储方式"><a href="#1-查看手势响应对象的存储方式" class="headerlink" title="1. 查看手势响应对象的存储方式"></a>1. 查看手势响应对象的存储方式</h4><p>我们知道，手势触发是通过“<em>target-action</em>”方式进行。若想要进行手势替换，就需要了解手势是如何在UIGesture类内进行存储的。故我们先通过runtime的API对其一探究竟：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> ivarCount = <span class="number">0</span>;</div><div class="line"><span class="comment">// 指向Ivar对象数组的头指针</span></div><div class="line">Ivar *ivarList = class_copyIvarList([UIGestureRecognizer class], &amp;ivarCount);</div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ivarCount; i++) &#123;</div><div class="line">    Ivar ivar = ivarList[i];</div><div class="line">    </div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name = ivar_getName(ivar);</div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *type = ivar_getTypeEncoding(ivar);</div><div class="line">    </div><div class="line">    NSLog(@<span class="string">"name = %s, type = %s"</span>, name, type);</div><div class="line">    </div><div class="line">    <span class="comment">// 有效数据为： NSMutableArray *_targets</span></div><div class="line">&#125;</div><div class="line"><span class="built_in">free</span>(ivarList);</div></pre></td></tr></table></figure>
+<p>通过读取<em>UIGestureRecognizer</em>类的实例对象列表，可以查到，所有的手势响应的对象为类型为<em>NSMutableArray</em>的名为“<em>_targets</em>”的私有变量中。而对于内部真正对象的存储方式，我们需要在<em>UIGestureRecognizer</em>的实例中查看。现在，我们随意在UIView实例上添加一个手势，并通过以下方式查看我们定义的<em>target</em>和<em>action</em>是如何存储的：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">(lldb) po [ges valueForKey:@<span class="string">"_targets"</span>]</div><div class="line">&lt;__NSArrayM <span class="number">0x60000045e1b0</span>&gt;(</div><div class="line">(action=onGes:, target=&lt;DetailViewController <span class="number">0x7fd2f3e31fb0</span>&gt;)</div><div class="line">)</div></pre></td></tr></table></figure>
+<p>在debug时，我们可以看到<em>_target</em>数组内部为<em>target</em>和<em>action</em>组成的对象，在触发手势时，运行时系统就动态地向target发送action消息完成手势响应。且由于”_targets”是数组类型，可以在运行期间动态修改内部数据。这也就为我们实现全屏手势提供了可能。</p>
+<h4 id="2-探究导航控制器的返回手势"><a href="#2-探究导航控制器的返回手势" class="headerlink" title="2. 探究导航控制器的返回手势"></a>2. 探究导航控制器的返回手势</h4><p>现在，我们转回到导航控制器中，使用同样方式查看其手势实例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取导航控制器的交互手势对象</span></div><div class="line">UIGestureRecognizer *originGesture = self.navigationController.interactivePopGestureRecognizer;</div><div class="line"></div><div class="line"><span class="comment">// 取出存储的响应信息数组</span></div><div class="line">NSArray *targets = [originGesture valueForKey:@<span class="string">"_targets"</span>];</div></pre></td></tr></table></figure>
+<p>通过调试，可以看到，内部执行的<em>target</em>和<em>action</em>对象如下所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">(lldb) po [originGesture valueForKey:@<span class="string">"_targets"</span>]</div><div class="line">&lt;__NSArrayM <span class="number">0x604000450ec0</span>&gt;(</div><div class="line">(action=handleNavigationTransition:, target=&lt;_UINavigationInteractiveTransition <span class="number">0x7fd2f3c15fe0</span>&gt;)</div><div class="line">)</div></pre></td></tr></table></figure>
+<p>其中，<em>target</em>为私有类<em>_UINavigationInteractiveTransition</em>的实例，<em>action</em>为名为“<em>handleNavigationTransition:</em>”的SEL选择器。</p>
+<h4 id="3-手势的替换"><a href="#3-手势的替换" class="headerlink" title="3. 手势的替换"></a>3. 手势的替换</h4><p>在上面，我们已经得到了边缘拖动时绑定的target和执行的SEL，现在我们只要利用runtime的动态性，将原手势与自定义的UIPanGestureRecognizer对象进行替换，使新手势绑定原<em>target</em>和<em>action</em>，并添加到原控制视图中，最后关闭原手势响应，即可完成神不知鬼不觉的“掉包”。完整代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">UIGestureRecognizer *originGesture = self.navigationController.interactivePopGestureRecognizer;</div><div class="line"><span class="comment">// 原始手势的绑定视图（并非当前视图）</span></div><div class="line">UIView *originGestureView = originGesture.view;</div><div class="line"><span class="comment">// 关闭原始手势</span></div><div class="line">originGesture.enabled = NO;</div><div class="line"></div><div class="line">NSArray *targets = [originGesture valueForKey:@<span class="string">"_targets"</span>];</div><div class="line">id target = targets[<span class="number">0</span>];</div><div class="line"></div><div class="line"><span class="comment">// 真正的触发对象</span></div><div class="line">id realTarget = [target valueForKey:@<span class="string">"_target"</span>];</div><div class="line"></div><div class="line"><span class="comment">// 真正的回调为名为“handleNavigationTransition:”的SEL</span></div><div class="line">SEL realAction = NSSelectorFromString(@<span class="string">"handleNavigationTransition:"</span>);</div><div class="line"></div><div class="line"><span class="comment">// 使用自定义的全屏拖拽手势，使触发target和action均为原navigation的边缘手势，即扩大了手势响应范围。</span></div><div class="line">UIPanGestureRecognizer *gesture = [[UIPanGestureRecognizer alloc] initWithTarget:realTarget action:realAction];</div><div class="line">[originGestureView addGestureRecognizer:gesture];</div></pre></td></tr></table></figure>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/07/04/ARKit_doc_8/" class="archive-article-date">
-  	<time datetime="2017-07-04T06:05:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-04</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/07/04/ARKit_doc_8/">ARKit文档瞎翻译（8）</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -217,353 +239,88 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/01/25/UINavigationController的全屏拖动返回/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/07/04/ARKit_doc_7/" class="archive-article-date">
-  	<time datetime="2017-07-04T03:28:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-04</time>
-</a>
-        </div>
-    	 
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/07/04/ARKit_doc_7/">ARKit文档瞎翻译（7）</a>
-    </h1>
+  
+    <a href="/2019/01/23/MBProgressHUD源码学习2：实现方式简单分析/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">MBProgressHUD源码学习2：实现方式简单分析</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+  
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/07/03/ARKit_doc_6/" class="archive-article-date">
-  	<time datetime="2017-07-03T14:06:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/07/03/ARKit_doc_6/">ARKit文档瞎翻译（6）</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/07/03/ARKit_doc_5/" class="archive-article-date">
-  	<time datetime="2017-07-03T08:27:40.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/07/03/ARKit_doc_5/">ARKit文档瞎翻译（5）</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/07/03/ARKit_doc_4/" class="archive-article-date">
-  	<time datetime="2017-07-03T06:49:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/07/03/ARKit_doc_4/">ARKit文档瞎翻译（4）</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/07/03/ARKit_doc_3/" class="archive-article-date">
-  	<time datetime="2017-07-03T03:41:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/07/03/ARKit_doc_3/">ARKit文档瞎翻译（3）</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/06/29/ARKit_doc_2/" class="archive-article-date">
-  	<time datetime="2017-06-29T08:19:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-29</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/06/29/ARKit_doc_2/">ARKit文档瞎翻译（2）</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/06/29/ARKit_doc_1/" class="archive-article-date">
-  	<time datetime="2017-06-29T07:37:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-29</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/06/29/ARKit_doc_1/">ARKit文档瞎翻译（1）</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/06/05/测试一下/" class="archive-article-date">
-  	<time datetime="2017-06-05T14:48:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-05</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/06/05/测试一下/">第一篇博文</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/06/05/hello-world/" class="archive-article-date">
-  	<time datetime="2017-06-05T03:06:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-05</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/06/05/hello-world/">你好这个世界~</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/archives/page/4/">&laquo; Prev</a><a class="page-number" href="/archives/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/3/">3</a><a class="page-number" href="/archives/page/4/">4</a><span class="page-number current">5</span>
-    </nav>
   
 
 
@@ -587,8 +344,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: true,

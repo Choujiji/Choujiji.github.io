@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-01-23T10:40:19.664Z</updated>
+  <updated>2019-01-25T06:44:59.235Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,55 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>UINavigationController的全屏拖动返回</title>
+    <link href="http://yoursite.com/2019/01/25/UINavigationController%E7%9A%84%E5%85%A8%E5%B1%8F%E6%8B%96%E5%8A%A8%E8%BF%94%E5%9B%9E/"/>
+    <id>http://yoursite.com/2019/01/25/UINavigationController的全屏拖动返回/</id>
+    <published>2019-01-25T06:44:59.235Z</published>
+    <updated>2019-01-25T06:44:59.235Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>我们知道，导航控制器的边缘返回功能使用的是“<em>UIScreenEdgePanGestureRecognizer</em>”类配合交互式动画进行实现。</p>
+<p>想要使用全屏滑动返回，可以通过两种方式进行实现：</p>
+<ol>
+<li>通过苹果提供的交互式动画方式，提供动画对象和交互对象，使用UIPanGestureRecognizer对象控制交互动画的过程，实现全屏滑动返回。</li>
+<li>使用自定义的UIPanGestureRecognizer对象通过KVC的方式“替换”掉原来的UIScreenEdgePanGestureRecognizer对象，使我们可以通过拖拽手势触发导航控制器原交互方法，以达到目的。</li>
+</ol>
+<p>这里只第二种情况进行学习总结。<br><a id="more"></a></p>
+</blockquote>
+<p>注意：本文为<a href="https://www.jianshu.com/p/d39f7d22db6c" target="_blank" rel="external">轻松学习之二——iOS利用Runtime自定义控制器POP手势动画</a>的读后总结，感叹作者思路之妙。</p>
+<h4 id="1-查看手势响应对象的存储方式"><a href="#1-查看手势响应对象的存储方式" class="headerlink" title="1. 查看手势响应对象的存储方式"></a>1. 查看手势响应对象的存储方式</h4><p>我们知道，手势触发是通过“<em>target-action</em>”方式进行。若想要进行手势替换，就需要了解手势是如何在UIGesture类内进行存储的。故我们先通过runtime的API对其一探究竟：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> ivarCount = <span class="number">0</span>;</div><div class="line"><span class="comment">// 指向Ivar对象数组的头指针</span></div><div class="line">Ivar *ivarList = class_copyIvarList([UIGestureRecognizer class], &amp;ivarCount);</div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ivarCount; i++) &#123;</div><div class="line">    Ivar ivar = ivarList[i];</div><div class="line">    </div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name = ivar_getName(ivar);</div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *type = ivar_getTypeEncoding(ivar);</div><div class="line">    </div><div class="line">    NSLog(@<span class="string">"name = %s, type = %s"</span>, name, type);</div><div class="line">    </div><div class="line">    <span class="comment">// 有效数据为： NSMutableArray *_targets</span></div><div class="line">&#125;</div><div class="line"><span class="built_in">free</span>(ivarList);</div></pre></td></tr></table></figure>
+<p>通过读取<em>UIGestureRecognizer</em>类的实例对象列表，可以查到，所有的手势响应的对象为类型为<em>NSMutableArray</em>的名为“<em>_targets</em>”的私有变量中。而对于内部真正对象的存储方式，我们需要在<em>UIGestureRecognizer</em>的实例中查看。现在，我们随意在UIView实例上添加一个手势，并通过以下方式查看我们定义的<em>target</em>和<em>action</em>是如何存储的：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">(lldb) po [ges valueForKey:@<span class="string">"_targets"</span>]</div><div class="line">&lt;__NSArrayM <span class="number">0x60000045e1b0</span>&gt;(</div><div class="line">(action=onGes:, target=&lt;DetailViewController <span class="number">0x7fd2f3e31fb0</span>&gt;)</div><div class="line">)</div></pre></td></tr></table></figure>
+<p>在debug时，我们可以看到<em>_target</em>数组内部为<em>target</em>和<em>action</em>组成的对象，在触发手势时，运行时系统就动态地向target发送action消息完成手势响应。且由于”_targets”是数组类型，可以在运行期间动态修改内部数据。这也就为我们实现全屏手势提供了可能。</p>
+<h4 id="2-探究导航控制器的返回手势"><a href="#2-探究导航控制器的返回手势" class="headerlink" title="2. 探究导航控制器的返回手势"></a>2. 探究导航控制器的返回手势</h4><p>现在，我们转回到导航控制器中，使用同样方式查看其手势实例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取导航控制器的交互手势对象</span></div><div class="line">UIGestureRecognizer *originGesture = self.navigationController.interactivePopGestureRecognizer;</div><div class="line"></div><div class="line"><span class="comment">// 取出存储的响应信息数组</span></div><div class="line">NSArray *targets = [originGesture valueForKey:@<span class="string">"_targets"</span>];</div></pre></td></tr></table></figure>
+<p>通过调试，可以看到，内部执行的<em>target</em>和<em>action</em>对象如下所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">(lldb) po [originGesture valueForKey:@<span class="string">"_targets"</span>]</div><div class="line">&lt;__NSArrayM <span class="number">0x604000450ec0</span>&gt;(</div><div class="line">(action=handleNavigationTransition:, target=&lt;_UINavigationInteractiveTransition <span class="number">0x7fd2f3c15fe0</span>&gt;)</div><div class="line">)</div></pre></td></tr></table></figure>
+<p>其中，<em>target</em>为私有类<em>_UINavigationInteractiveTransition</em>的实例，<em>action</em>为名为“<em>handleNavigationTransition:</em>”的SEL选择器。</p>
+<h4 id="3-手势的替换"><a href="#3-手势的替换" class="headerlink" title="3. 手势的替换"></a>3. 手势的替换</h4><p>在上面，我们已经得到了边缘拖动时绑定的target和执行的SEL，现在我们只要利用runtime的动态性，将原手势与自定义的UIPanGestureRecognizer对象进行替换，使新手势绑定原<em>target</em>和<em>action</em>，并添加到原控制视图中，最后关闭原手势响应，即可完成神不知鬼不觉的“掉包”。完整代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">UIGestureRecognizer *originGesture = self.navigationController.interactivePopGestureRecognizer;</div><div class="line"><span class="comment">// 原始手势的绑定视图（并非当前视图）</span></div><div class="line">UIView *originGestureView = originGesture.view;</div><div class="line"><span class="comment">// 关闭原始手势</span></div><div class="line">originGesture.enabled = NO;</div><div class="line"></div><div class="line">NSArray *targets = [originGesture valueForKey:@<span class="string">"_targets"</span>];</div><div class="line">id target = targets[<span class="number">0</span>];</div><div class="line"></div><div class="line"><span class="comment">// 真正的触发对象</span></div><div class="line">id realTarget = [target valueForKey:@<span class="string">"_target"</span>];</div><div class="line"></div><div class="line"><span class="comment">// 真正的回调为名为“handleNavigationTransition:”的SEL</span></div><div class="line">SEL realAction = NSSelectorFromString(@<span class="string">"handleNavigationTransition:"</span>);</div><div class="line"></div><div class="line"><span class="comment">// 使用自定义的全屏拖拽手势，使触发target和action均为原navigation的边缘手势，即扩大了手势响应范围。</span></div><div class="line">UIPanGestureRecognizer *gesture = [[UIPanGestureRecognizer alloc] initWithTarget:realTarget action:realAction];</div><div class="line">[originGestureView addGestureRecognizer:gesture];</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;我们知道，导航控制器的边缘返回功能使用的是“&lt;em&gt;UIScreenEdgePanGestureRecognizer&lt;/em&gt;”类配合交互式动画进行实现。&lt;/p&gt;
+&lt;p&gt;想要使用全屏滑动返回，可以通过两种方式进行实现：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;通过苹果提供的交互式动画方式，提供动画对象和交互对象，使用UIPanGestureRecognizer对象控制交互动画的过程，实现全屏滑动返回。&lt;/li&gt;
+&lt;li&gt;使用自定义的UIPanGestureRecognizer对象通过KVC的方式“替换”掉原来的UIScreenEdgePanGestureRecognizer对象，使我们可以通过拖拽手势触发导航控制器原交互方法，以达到目的。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这里只第二种情况进行学习总结。&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>MBProgressHUD源码学习2：实现方式简单分析</title>
@@ -1655,42 +1704,6 @@
       &lt;h2 id=&quot;内存管理篇：-3-autorelease&quot;&gt;&lt;a href=&quot;#内存管理篇：-3-autorelease&quot; class=&quot;headerlink&quot; title=&quot;内存管理篇： 3.autorelease&quot;&gt;&lt;/a&gt;内存管理篇： 3.autorelease&lt;/h2&gt;&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;autorelease的实质：&lt;/strong&gt;&lt;br&gt;&lt;em&gt;将创建的对象加入到NSAutoreleasePool管理“数组”中，并告知ARC系统暂时不要对此对象进行处理。待pool对象在其所属的NSRunLoop循环一次完成，准备释放（drain）时，对“数组”中的所有对象依次调用release方法。此时ARC再对对象进行内存管理。&lt;/em&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
-    
-    </summary>
-    
-    
-      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》2</title>
-    <link href="http://yoursite.com/2019/01/06/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%AF%87%EF%BC%9A%202.alloc-retain-release-dealloc%E7%9A%84%E5%AE%9E%E7%8E%B0/"/>
-    <id>http://yoursite.com/2019/01/06/内存管理篇： 2.alloc-retain-release-dealloc的实现/</id>
-    <published>2019-01-06T07:42:32.544Z</published>
-    <updated>2019-01-06T07:59:00.288Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="内存管理篇：-2-alloc-retain-release-dealloc的实现"><a href="#内存管理篇：-2-alloc-retain-release-dealloc的实现" class="headerlink" title="内存管理篇： 2.alloc/retain/release/dealloc的实现"></a>内存管理篇： 2.alloc/retain/release/dealloc的实现</h2><h3 id="GNUstep的实现方式"><a href="#GNUstep的实现方式" class="headerlink" title="GNUstep的实现方式"></a>GNUstep的实现方式</h3><p><strong>GNUstep的版本将引用计数与对象的内存组合在一起，方便读写存取。</strong><br><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1546151436-GNUstep%E7%9A%84%E5%AF%B9%E8%B1%A1%E7%BB%93%E6%9E%84.jpg" alt="img"><br>如图所示，使用了一个objc_layout结构体来表示引用计数，其大体结构及alloc的简化代码为：</p>
-<a id="more"></a>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_layout</span> &#123;</span></div><div class="line">    <span class="comment">// 引用计数</span></div><div class="line">    NSUInteger retained;</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (id)alloc &#123;</div><div class="line">    <span class="keyword">int</span> size = <span class="keyword">sizeof</span>(struct objc_layout) + 对象大小；</div><div class="line">    <span class="comment">// 创建一段大小为size的连续内存，并写入0</span></div><div class="line">    <span class="comment">// 使用结构体指针指向此地址</span></div><div class="line">    struct objc_layout *p = <span class="built_in">calloc</span>(<span class="number">1</span>, size);</div><div class="line">    <span class="comment">// 返回id类型对象（地址+1即为对象的地址）</span></div><div class="line">    <span class="keyword">return</span> (id)(p + <span class="number">1</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><strong>由此可知，retainCount即返回结构体中retained成员的值即可：</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">- (NSUinteger)retainCount &#123;</div><div class="line">    <span class="keyword">return</span> NSExtraRefCount(self) + <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">inline</span> NSUInteger</span></div><div class="line"><span class="title">NSExtraRefCount</span><span class="params">(id anObject)</span> &#123;</div><div class="line">    <span class="comment">// 由于对象指向的是+1的地址，故-1即为结构体实例的地址</span></div><div class="line">    <span class="keyword">return</span> ((struct objc_layout *)anObject)[<span class="number">-1</span>].retained;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>由于初始化的内存中填充数据为0，故新对象的引用计数为1（0+1）。</p>
-<p><strong>而对于retain和release操作，即对retained变量进行+1和-1操作即可。而且，在release操作时，当retained为0时，运行时系统即调用dealloc方法，将对象的内存释放。</strong></p>
-<h3 id="苹果的实现方式"><a href="#苹果的实现方式" class="headerlink" title="苹果的实现方式"></a>苹果的实现方式</h3><p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1546151340-Apple%E7%9A%84%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0%E8%A1%A8.jpg" alt="img"></p>
-<p>直接看图，<strong>苹果使用了单独的引用计数表来存储所有对象的引用计数。且使用了对象内存地址的hash值作为key，将引用计数作为内容进行保存</strong>。简单的实现代码如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- (NSUInteger)retainCount &#123;</div><div class="line">    <span class="keyword">return</span> (NSUInteger)__CFDoExternRefOperation(OPERATION_retainCount, self);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (id)retain &#123;</div><div class="line">    <span class="keyword">return</span> (id)__CFDoExternRefOperation(OPERATION_retain, self);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)release &#123;</div><div class="line">    <span class="keyword">return</span> (id)__CFDoExternRefOperation(OPERATION_release, self);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>所调用的方法如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> __CFDoExternRefOperation(<span class="keyword">unitptr_t</span> op, id obj) &#123;</div><div class="line">    <span class="comment">// 获取引用计数表</span></div><div class="line">    CFBasicHashRef table = 取得对象对应的散列表(obj);</div><div class="line">    <span class="keyword">int</span> count;</div><div class="line">    </div><div class="line">    <span class="comment">// 根据操作分发给不同函数</span></div><div class="line">    <span class="keyword">switch</span> (op) &#123;</div><div class="line">    <span class="keyword">case</span> OPERATION_retainCount:</div><div class="line">        <span class="comment">// retainCount</span></div><div class="line">        count = CFBasicHashGetCountOfKey(table, obj);</div><div class="line">        <span class="keyword">return</span> count;</div><div class="line">    <span class="keyword">case</span> OPERATION_retain:</div><div class="line">        <span class="comment">// retain</span></div><div class="line">        CFBasicHashAddValue(table, obj);</div><div class="line">        <span class="keyword">return</span> obj;</div><div class="line">    <span class="keyword">case</span> OPERATION_release:</div><div class="line">        <span class="comment">// release</span></div><div class="line">        count = CFBasicHashRemoveValue(table, obj);</div><div class="line">        <span class="keyword">return</span> (<span class="number">0</span> == count);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>苹果的实现虽然看似没有GNUstep的方式简单，实际上其优点也是显而易见：</p>
-<ul>
-<li>对象创建时，其内存分配无需考虑引用计数相关逻辑，结构纯粹。</li>
-<li>引用计数表中，可以根据内存块的地址追溯对象的原始内存，方便调试及内存泄露检测等功能。</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;内存管理篇：-2-alloc-retain-release-dealloc的实现&quot;&gt;&lt;a href=&quot;#内存管理篇：-2-alloc-retain-release-dealloc的实现&quot; class=&quot;headerlink&quot; title=&quot;内存管理篇： 2.alloc/retain/release/dealloc的实现&quot;&gt;&lt;/a&gt;内存管理篇： 2.alloc/retain/release/dealloc的实现&lt;/h2&gt;&lt;h3 id=&quot;GNUstep的实现方式&quot;&gt;&lt;a href=&quot;#GNUstep的实现方式&quot; class=&quot;headerlink&quot; title=&quot;GNUstep的实现方式&quot;&gt;&lt;/a&gt;GNUstep的实现方式&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;GNUstep的版本将引用计数与对象的内存组合在一起，方便读写存取。&lt;/strong&gt;&lt;br&gt;&lt;img src=&quot;http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1546151436-GNUstep%E7%9A%84%E5%AF%B9%E8%B1%A1%E7%BB%93%E6%9E%84.jpg&quot; alt=&quot;img&quot;&gt;&lt;br&gt;如图所示，使用了一个objc_layout结构体来表示引用计数，其大体结构及alloc的简化代码为：&lt;/p&gt;
     
     </summary>
     
