@@ -178,6 +178,71 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-FDFullscreenPopGesture源码学习" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/26/FDFullscreenPopGesture源码学习/">FDFullscreenPopGesture源码学习</a>
+    </h1>
+  
+
+        
+        <a href="/2019/01/26/FDFullscreenPopGesture源码学习/" class="archive-article-date">
+  	<time datetime="2019-01-26T08:24:50.622Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>首先附上项目地址：<br><a href="https://github.com/forkingdog/FDFullscreenPopGesture/tree/1.1" target="_blank" rel="external">FDFullscreenPopGesture</a><br>本篇使用1.1版本源码进行学习</p>
+</blockquote>
+<p>此项目以AOP的方式实现了UINavigationController的“一行代码实现全屏滑动返回”功能。其主要功能是通过<em>UINavigationController</em>内置的<em>interactivePopGestureRecognizer</em>手势对象。通过使用自定义的UIPanGestureRecognizer类实例绑定原手势的<em>action</em>及<em>SEL</em>，使响应范围扩大到整个屏幕，巧妙地实现了此功能。详细解释可以查看原博客<a href="https://www.jianshu.com/p/d39f7d22db6c" target="_blank" rel="external">轻松学习之二——iOS利用Runtime自定义控制器POP手势动画</a>或本人的读后解析<a href="https://www.jianshu.com/p/3ed067b2620b" target="_blank" rel="external">UINavigationController的全屏拖动返回
+</a>。</p>
+        
+          <a class="article-more-a" href="/2019/01/26/FDFullscreenPopGesture源码学习/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/01/26/FDFullscreenPopGesture源码学习/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-UINavigationController的全屏拖动返回" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -781,77 +846,9 @@
 
 
   
-    <article id="post-Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/15/Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）/">《Objective-C高级编程 iOS与OS X多线程与内存管理》13</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/15/Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:10:25.966Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Blocks篇：4-Blocks的存储域（ARC下-NSConcreteBlock的陷阱）"><a href="#Blocks篇：4-Blocks的存储域（ARC下-NSConcreteBlock的陷阱）" class="headerlink" title="Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）"></a>Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）</h2><blockquote>
-<p>在上一节中我们知道，在Block捕获不同种类的变量时，生成的Block对象的类型(isa指针)分为三种：</p>
-<ul>
-<li>_NSConcreteStackBlock</li>
-<li>_NSConcreteGlobalBlock</li>
-<li>_NSConcreteMallocBlock</li>
-</ul>
-<p>此三种类型的Block对象分别存储在栈区、全局（数据区）和堆区<br>
-        
-          <a class="article-more-a" href="/2019/01/15/Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/15/Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 

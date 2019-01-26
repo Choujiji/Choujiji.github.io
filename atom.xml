@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-01-25T06:44:59.235Z</updated>
+  <updated>2019-01-26T08:24:50.622Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,164 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>FDFullscreenPopGesture源码学习</title>
+    <link href="http://yoursite.com/2019/01/26/FDFullscreenPopGesture%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/"/>
+    <id>http://yoursite.com/2019/01/26/FDFullscreenPopGesture源码学习/</id>
+    <published>2019-01-26T08:24:50.622Z</published>
+    <updated>2019-01-26T08:24:50.622Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>首先附上项目地址：<br><a href="https://github.com/forkingdog/FDFullscreenPopGesture/tree/1.1" target="_blank" rel="external">FDFullscreenPopGesture</a><br>本篇使用1.1版本源码进行学习</p>
+</blockquote>
+<p>此项目以AOP的方式实现了UINavigationController的“一行代码实现全屏滑动返回”功能。其主要功能是通过<em>UINavigationController</em>内置的<em>interactivePopGestureRecognizer</em>手势对象。通过使用自定义的UIPanGestureRecognizer类实例绑定原手势的<em>action</em>及<em>SEL</em>，使响应范围扩大到整个屏幕，巧妙地实现了此功能。详细解释可以查看原博客<a href="https://www.jianshu.com/p/d39f7d22db6c" target="_blank" rel="external">轻松学习之二——iOS利用Runtime自定义控制器POP手势动画</a>或本人的读后解析<a href="https://www.jianshu.com/p/3ed067b2620b" target="_blank" rel="external">UINavigationController的全屏拖动返回
+</a>。</p>
+<a id="more"></a>
+<h4 id="1-主要结构说明"><a href="#1-主要结构说明" class="headerlink" title="1. 主要结构说明"></a>1. 主要结构说明</h4><p>整个项目非常简单，对外只有一组.h及.m文件。代码量也只有区区两三百行，足够轻量且高效，值得我等膜拜学习~</p>
+<h5 id="1-1-头文件的结构说明"><a href="#1-1-头文件的结构说明" class="headerlink" title="1.1 头文件的结构说明"></a>1.1 头文件的结构说明</h5><p>项目对外公开的类及主要功能为：</p>
+<ul>
+<li>UINavigationController的扩展类：<em>UINavigationController + FDFullscreenPopGesture</em></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>fd_fullscreenPopGestureRecognizer</em></td>
+<td>属性</td>
+<td>真正的全屏拖动响应的手势对象</td>
+</tr>
+<tr>
+<td><em>fd_viewControllerBasedNavigationBarAppearanceEnabled</em></td>
+<td>属性</td>
+<td>是否允许ViewController对象自定义导航栏外观（默认为YES）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>UIViewController的扩展类：<em>UIViewController + FDFullscreenPopGesture</em></li>
+</ul>
+<blockquote>
+<p>主要用于ViewController对象自主控制全屏手势的使能（以便ViewController的视图也处理自定义的拖动手势，防止手势冲突）</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fd_interactivePopDisabled</td>
+<td>属性</td>
+<td>是否允许响应UINavigationController的全屏拖动手势</td>
+</tr>
+<tr>
+<td>fd_prefersNavigationBarHidden</td>
+<td>属性</td>
+<td>表名当前ViewController对象的导航栏是否隐藏（默认为NO）</td>
+</tr>
+</tbody>
+</table>
+<h5 id="1-2-实现文件的结构说明"><a href="#1-2-实现文件的结构说明" class="headerlink" title="1.2 实现文件的结构说明"></a>1.2 实现文件的结构说明</h5><ul>
+<li>遵循<em>UIGestureRecognizerDelegate</em>协议的类：_FDFullscreenPopGestureRecognizerDelegate</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>navigationController</td>
+<td>weak属性</td>
+<td>内部需要根据导航器对象做处理</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>内部实现了<em>gestureRecognizerShouldBegin:</em>方法，用于处理不同情况下是否响应拖动手势。<br>设计此类的主要目的是将此功能独立出来，作为<em>UINavigationController + FDFullscreenPopGesture</em>的工具类使用，简化了原类代码，使结构更加清晰。</p>
+</blockquote>
+<ul>
+<li>UIViewController的私有扩展类：<em>UIViewController + FDFullscreenPopGesturePrivate</em></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fd_willAppearInjectBlock</td>
+<td>block对象，属性</td>
+<td>保存注入的block对象到堆内存，等待合适时机执行【按命名来说，在ViewWillAppear方法中执行】</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>在运行时交换了<em>ViewWillAppear:</em>方法实现，在其中注入执行了block对象。</p>
+</blockquote>
+<ul>
+<li><em>UINavigationController + FDFullscreenPopGesture</em>的实现</li>
+</ul>
+<blockquote>
+<p>交换了<em>pushViewController:animated:</em>方法实现，在内部实现了主要功能：</p>
+<ol>
+<li>使用自定义的UIPanGestureRecognizer对象绑定了原有手势的<em>action</em>和<em>SEL</em>，添加到UINavigationController的切换控制视图上。</li>
+<li>声明并实现了注入的<em>_FDViewControllerWillAppearInjectBlock</em>对象，并赋值给指定的UIViewController对象。</li>
+</ol>
+</blockquote>
+<ul>
+<li><em>UIViewController + FDFullscreenPopGesture</em>的实现</li>
+</ul>
+<blockquote>
+<p>只是对扩展中声明的属性进行实现。</p>
+</blockquote>
+<h4 id="2-使用Category扩展原类，并向指定方法注入新的功能"><a href="#2-使用Category扩展原类，并向指定方法注入新的功能" class="headerlink" title="2. 使用Category扩展原类，并向指定方法注入新的功能"></a>2. 使用Category扩展原类，并向指定方法注入新的功能</h4><p>在OC中，一般是通过Category对Class进行扩展的方式来实现AOP的。本项目即是如此。例如，通过对UINavigationController进行扩展，在load时对方法进行替换，将手势添加到导航器控制视图上，并绑定上原来的<em>target</em>和<em>SEL</em>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">+ (<span class="keyword">void</span>)load</div><div class="line">&#123;</div><div class="line">    <span class="comment">// 交换push方法实现，用于执行自定义操作</span></div><div class="line">    Method originalMethod = class_getInstanceMethod(self, @selector(pushViewController:animated:));</div><div class="line">    Method swizzledMethod = class_getInstanceMethod(self, @selector(fd_pushViewController:animated:));</div><div class="line">    method_exchangeImplementations(originalMethod, swizzledMethod);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)fd_pushViewController:(UIViewController *)viewController animated:(BOOL)animated</div><div class="line">&#123;</div><div class="line">    <span class="comment">// 检查导航器的切换视图中的手势数组中，是否已经包含全屏拖动手势对象</span></div><div class="line">    <span class="keyword">if</span> (![self.interactivePopGestureRecognizer.view.gestureRecognizers containsObject:self.fd_fullscreenPopGestureRecognizer]) &#123;</div><div class="line">        <span class="comment">// 没有，则向其中添加自定义的拖拽手势</span></div><div class="line">        [self.interactivePopGestureRecognizer.view addGestureRecognizer:self.fd_fullscreenPopGestureRecognizer];</div><div class="line"></div><div class="line">        <span class="comment">// 通过查看运行时期间，手势对象内部的存储结构，获取原手势响应的target和执行的SEL</span></div><div class="line">        NSArray *internalTargets = [self.interactivePopGestureRecognizer valueForKey:@<span class="string">"targets"</span>];</div><div class="line">        id internalTarget = [internalTargets.firstObject valueForKey:@<span class="string">"target"</span>];</div><div class="line">        SEL internalAction = NSSelectorFromString(@<span class="string">"handleNavigationTransition:"</span>);</div><div class="line">        <span class="comment">// 设置自定义的拖拽手势代理，处理不同情况下手势是否响应（故上面的类用于解耦手势的代理方法实现，简化本类代码）</span></div><div class="line">        self.fd_fullscreenPopGestureRecognizer.delegate = self.fd_popGestureRecognizerDelegate;</div><div class="line">        <span class="comment">// 将原手势的action和SEL绑定到自定义的拖拽手势中</span></div><div class="line">        [self.fd_fullscreenPopGestureRecognizer addTarget:internalTarget action:internalAction];</div><div class="line"></div><div class="line">        <span class="comment">// 禁止原手势响应（原手势为边缘拖动手势）</span></div><div class="line">        self.interactivePopGestureRecognizer.enabled = NO;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 处理自定义导航栏外观</span></div><div class="line">    [self fd_setupViewControllerBasedNavigationBarAppearanceIfNeeded:viewController];</div><div class="line">    </div><div class="line">    [self fd_pushViewController:viewController animated:animated];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如此实现，即可在引入头文件后，对应的UINavigationController实例自动添加全屏返回手势，对原类的耦合性降至最低。</p>
+<p>本项目中，UIViewController的扩展也使用了此方式，以达到在<em>ViewWillAppear:</em>方法中执行注入block，实现运行时对导航栏隐藏设置的修改。充分利用了OC语言的动态性，使代码简洁易用，降低耦合。</p>
+<h4 id="3-防止block对self捕获产生的引用循环，并保证block执行时的完整性"><a href="#3-防止block对self捕获产生的引用循环，并保证block执行时的完整性" class="headerlink" title="3. 防止block对self捕获产生的引用循环，并保证block执行时的完整性"></a>3. 防止block对self捕获产生的引用循环，并保证block执行时的完整性</h4><p>在<em>fd_setupViewControllerBasedNavigationBarAppearanceIfNeeded:</em>方法中，作者初始化了UIViewController对象在<em>ViewWillAppear:</em>方法中需要注入的block。先看代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)fd_setupViewControllerBasedNavigationBarAppearanceIfNeeded:(UIViewController *)appearingViewController</div><div class="line">&#123;</div><div class="line">    <span class="comment">// 检查ViewController对象是否允许自定义导航栏外观</span></div><div class="line">    <span class="keyword">if</span> (!self.fd_viewControllerBasedNavigationBarAppearanceEnabled) &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 声明self弱指针</span></div><div class="line">    __<span class="function">weak <span class="title">typeof</span><span class="params">(self)</span> weakSelf </span>= self;</div><div class="line">    <span class="comment">// 声明并实现注入的block对象</span></div><div class="line">    _FDViewControllerWillAppearInjectBlock block = ^(UIViewController *viewController, BOOL animated) &#123;</div><div class="line">        <span class="comment">// block内部捕获的是self的弱指针，不会对self进行强引用</span></div><div class="line">        __strong typeof(weakSelf) strongSelf = weakSelf;</div><div class="line">        <span class="keyword">if</span> (strongSelf) &#123;</div><div class="line">            <span class="comment">// 根据外部设置，隐藏或显示当前ViewController下的导航栏</span></div><div class="line">            [strongSelf setNavigationBarHidden:viewController.fd_prefersNavigationBarHidden animated:animated];</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">    </div><div class="line">    <span class="comment">// 将block对象赋值给扩展后的ViewController对象（适时调用）</span></div><div class="line">    appearingViewController.fd_willAppearInjectBlock = block;</div><div class="line">    <span class="comment">// 获取导航栈的最后一个ViewController（即当前已显示的，马上要被新的ViewController压到栈中的）</span></div><div class="line">    UIViewController *disappearingViewController = self.viewControllers.lastObject;</div><div class="line">    <span class="keyword">if</span> (disappearingViewController &amp;&amp; !disappearingViewController.fd_willAppearInjectBlock) &#123;</div><div class="line">        <span class="comment">// 即将消失的ViewController若存在（即新push的ViewController不是根视图的情况），也将block赋值给它（以备pop时，前一个ViewController对象也能执行block，viewWillAppear时修改导航栏外观）</span></div><div class="line">        disappearingViewController.fd_willAppearInjectBlock = block;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其中，最为重要的是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// block外部声明</span></div><div class="line">__<span class="function">weak <span class="title">typeof</span><span class="params">(self)</span> weakSelf </span>= self;</div><div class="line"></div><div class="line"><span class="comment">// block函数体内部声明</span></div><div class="line"> __<span class="function">strong <span class="title">typeof</span><span class="params">(weakSelf)</span> strongSelf </span>= weakSelf;</div></pre></td></tr></table></figure>
+<p>我们都知道，使用<strong>weak修饰的OC对象，可以防止</strong>NSMallocBlock对象在捕获时对其添加强引用（详见<a href="https://www.jianshu.com/p/46ed0de020f0" target="_blank" rel="external">《Objective-C高级编程 iOS与OS X多线程与内存管理》16</a>），避免产生引用循环。但是这样有一个弊端，就是假设当self释放后，若block在此时执行，self对象自动置为nil，预定的功能可能就无法正常实现了。为了防止这种情况发生，可以<strong>声明一个<strong>strong修饰的局部指针变量，指向捕获的弱对象，既可以保证在block执行过程中self不被释放，还可以避免对self进行强引用（</strong>strong变量会在作用域外被自动release）</strong>。</p>
+<h4 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h4><ul>
+<li>FDFullscreenPopGesture主要通过Category的方式对UINavigationController和UIViewController进行功能扩展，避免了Class继承方式的“笨重”，简化了引入和使用。</li>
+<li>在Category的load方法中，替换了原类的方法实现（原类的load加载要在扩展类之前），在其中注入了指定功能。</li>
+<li>使用KVC的方式，巧妙地进行UIGestureRecognizer对象的替换，近乎“无损”地实现了全屏滑动返回功能，避免了使用传统的交互式动画方式实现自定义的UINavigationController。</li>
+<li>使用<strong>weak对象避免block的引用循环，并用</strong>strong对象保证block执行过程中捕获对象不被释放。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;首先附上项目地址：&lt;br&gt;&lt;a href=&quot;https://github.com/forkingdog/FDFullscreenPopGesture/tree/1.1&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;FDFullscreenPopGesture&lt;/a&gt;&lt;br&gt;本篇使用1.1版本源码进行学习&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;此项目以AOP的方式实现了UINavigationController的“一行代码实现全屏滑动返回”功能。其主要功能是通过&lt;em&gt;UINavigationController&lt;/em&gt;内置的&lt;em&gt;interactivePopGestureRecognizer&lt;/em&gt;手势对象。通过使用自定义的UIPanGestureRecognizer类实例绑定原手势的&lt;em&gt;action&lt;/em&gt;及&lt;em&gt;SEL&lt;/em&gt;，使响应范围扩大到整个屏幕，巧妙地实现了此功能。详细解释可以查看原博客&lt;a href=&quot;https://www.jianshu.com/p/d39f7d22db6c&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;轻松学习之二——iOS利用Runtime自定义控制器POP手势动画&lt;/a&gt;或本人的读后解析&lt;a href=&quot;https://www.jianshu.com/p/3ed067b2620b&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;UINavigationController的全屏拖动返回
+&lt;/a&gt;。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>UINavigationController的全屏拖动返回</title>
@@ -1668,41 +1826,6 @@
 &lt;li&gt;在ARC下，对象必须通过所有权修饰符进行修饰，系统会根据不同的所有权修饰符对对象进行相应的内存管理。&lt;/li&gt;
 &lt;li&gt;所有权修饰符包括：&lt;strong&gt;strong、&lt;/strong&gt;weak、&lt;strong&gt;unsafe_unretained、&lt;/strong&gt;autoreleasing。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/blockquote&gt;
-    
-    </summary>
-    
-    
-      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》3</title>
-    <link href="http://yoursite.com/2019/01/06/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%AF%87%EF%BC%9A%203.autorelease/"/>
-    <id>http://yoursite.com/2019/01/06/内存管理篇： 3.autorelease/</id>
-    <published>2019-01-06T07:43:19.318Z</published>
-    <updated>2019-01-06T07:44:11.504Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="内存管理篇：-3-autorelease"><a href="#内存管理篇：-3-autorelease" class="headerlink" title="内存管理篇： 3.autorelease"></a>内存管理篇： 3.autorelease</h2><blockquote>
-<p><strong>autorelease的实质：</strong><br><em>将创建的对象加入到NSAutoreleasePool管理“数组”中，并告知ARC系统暂时不要对此对象进行处理。待pool对象在其所属的NSRunLoop循环一次完成，准备释放（drain）时，对“数组”中的所有对象依次调用release方法。此时ARC再对对象进行内存管理。</em></p>
-</blockquote>
-<a id="more"></a>
-<h3 id="GNUstep的实现"><a href="#GNUstep的实现" class="headerlink" title="GNUstep的实现"></a>GNUstep的实现</h3><p>GNUstep的版本使用了同NSMutableArray一样的连接列表，将被标记的对象加入到“正在使用中的”autoreleasePool对象中。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// NSObject.m中：</span></div><div class="line">- (id)autorelease &#123;</div><div class="line">    [NSAutoreleasePool addObject:self];</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// NSAutoreleasePool.m中：</span></div><div class="line">+ (<span class="keyword">void</span>)addObject:(id)anObj &#123;</div><div class="line">    NSAutoreleasePool *pool = 获取正在使用中的pool；</div><div class="line">    <span class="keyword">if</span> (pool != nil) &#123;</div><div class="line">        [pool addObject:anObj];</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)addObject:(id)anObj &#123;</div><div class="line">    <span class="comment">// 加入到内部管理的数组中</span></div><div class="line">    [<span class="built_in">array</span> addObject:anObj];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h5 id="方法调用优化：在GNUstep实现的版本中，为了提高autorelease方法执行的速度，使用了“IMP-Caching”的方式，及将函数指针提前缓存，需要时跳过了“objc-msgSend”的过程，直接调用："><a href="#方法调用优化：在GNUstep实现的版本中，为了提高autorelease方法执行的速度，使用了“IMP-Caching”的方式，及将函数指针提前缓存，需要时跳过了“objc-msgSend”的过程，直接调用：" class="headerlink" title="方法调用优化：在GNUstep实现的版本中，为了提高autorelease方法执行的速度，使用了“IMP Caching”的方式，及将函数指针提前缓存，需要时跳过了“objc_msgSend”的过程，直接调用："></a>方法调用优化：在GNUstep实现的版本中，为了提高autorelease方法执行的速度，使用了“IMP Caching”的方式，及将函数指针提前缓存，需要时跳过了“objc_msgSend”的过程，直接调用：</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// NSObject.m中：</span></div><div class="line"></div><div class="line"><span class="comment">// 缓存类名</span></div><div class="line">id autorelease_class = [NSAutoreleasePool class];</div><div class="line"><span class="comment">// 缓存方法名</span></div><div class="line">SEL autorelease_sel = @selector(<span class="string">"addObject:"</span>);</div><div class="line"><span class="comment">// 缓存方法实现（函数指针）</span></div><div class="line">IMP autorelease_imp = [autorelease_class methodForSelector:autorelease_sel];</div><div class="line"></div><div class="line">- (id)autorelease &#123;</div><div class="line">    <span class="comment">// 直接调用</span></div><div class="line">    (*autorelease_imp)(autorelease_class, autorelease_sel, self);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>注意：<br>由于NSAutoreleasePool覆盖了autorelease的方法实现（其他对象执行的是NSObject的实现），对pool对象发送autorelease消息会抛出异常。<br>即<strong>不能对NSAutoreleasePool对象调用autorelease方法。</strong></p>
-</blockquote>
-<ul>
-<li>补充：<strong>无论编译环境是否为ARC有效，都推荐使用@autoreleasepool块作为替代</strong>，以提高代码可读性。</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;内存管理篇：-3-autorelease&quot;&gt;&lt;a href=&quot;#内存管理篇：-3-autorelease&quot; class=&quot;headerlink&quot; title=&quot;内存管理篇： 3.autorelease&quot;&gt;&lt;/a&gt;内存管理篇： 3.autorelease&lt;/h2&gt;&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;autorelease的实质：&lt;/strong&gt;&lt;br&gt;&lt;em&gt;将创建的对象加入到NSAutoreleasePool管理“数组”中，并告知ARC系统暂时不要对此对象进行处理。待pool对象在其所属的NSRunLoop循环一次完成，准备释放（drain）时，对“数组”中的所有对象依次调用release方法。此时ARC再对对象进行内存管理。&lt;/em&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
     
     </summary>
