@@ -6,17 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>臭吉吉的瞎记空间</title>
+  <title>《a series about Grand Central Dispatch》博客学习笔记 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="督促自己好好学习哦~">
-<meta property="og:type" content="website">
-<meta property="og:title" content="臭吉吉的瞎记空间">
-<meta property="og:url" content="http://yoursite.com/page/2/index.html">
+  <meta name="description" content="本篇是a series about Grand Central Dispatch的学习记录。原文共6篇，循序渐进地介绍了GCD的基本使用及相关规范。">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《a series about Grand Central Dispatch》博客学习笔记">
+<meta property="og:url" content="http://yoursite.com/2019/01/30/《a series about Grand Central Dispatch》博客学习笔记/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="督促自己好好学习哦~">
+<meta property="og:description" content="本篇是a series about Grand Central Dispatch的学习记录。原文共6篇，循序渐进地介绍了GCD的基本使用及相关规范。">
+<meta property="og:updated_time" content="2019-01-29T17:13:19.750Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="臭吉吉的瞎记空间">
-<meta name="twitter:description" content="督促自己好好学习哦~">
+<meta name="twitter:title" content="《a series about Grand Central Dispatch》博客学习笔记">
+<meta name="twitter:description" content="本篇是a series about Grand Central Dispatch的学习记录。原文共6篇，循序渐进地介绍了GCD的基本使用及相关规范。">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -176,634 +178,104 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-《a series about Grand Central Dispatch》博客学习笔记" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/15/Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）/">《Objective-C高级编程 iOS与OS X多线程与内存管理》14</a>
+    <h1 class="article-title" itemprop="name">
+      《a series about Grand Central Dispatch》博客学习笔记
     </h1>
   
 
         
-        <a href="/2019/01/15/Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:11:24.722Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
+        <a href="/2019/01/30/《a series about Grand Central Dispatch》博客学习笔记/" class="archive-article-date">
+  	<time datetime="2019-01-29T17:13:19.750Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-30</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="Blocks篇：5-Blocks修改捕获到的变量（-block修饰符）"><a href="#Blocks篇：5-Blocks修改捕获到的变量（-block修饰符）" class="headerlink" title="Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）"></a>Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）</h2><blockquote>
-<p>我们知道，在Block中，修改捕获变量的方式：</p>
-<ul>
-<li>对于全局变量，由于实质上Block并未对其进行捕获，故可以直接在Block函数体内部进行变量修改；</li>
-<li>对于局部的静态变量，由于Block捕获的是其指针，故可以通过指针对原变量进行修改；</li>
-<li>对于普通的局部变量，由于在Block函数体内使用的版本已经不是之前的变量了（是Block结构体中保存的成员），故编译器不支持直接修改。这种情况下，只能通过“__block”修饰变量进行处理。
-        
-          <a class="article-more-a" href="/2019/01/15/Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/15/Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/15/Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）/">《Objective-C高级编程 iOS与OS X多线程与内存管理》13</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/15/Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:10:25.966Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Blocks篇：4-Blocks的存储域（ARC下-NSConcreteBlock的陷阱）"><a href="#Blocks篇：4-Blocks的存储域（ARC下-NSConcreteBlock的陷阱）" class="headerlink" title="Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）"></a>Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）</h2><blockquote>
-<p>在上一节中我们知道，在Block捕获不同种类的变量时，生成的Block对象的类型(isa指针)分为三种：</p>
-<ul>
-<li>_NSConcreteStackBlock</li>
-<li>_NSConcreteGlobalBlock</li>
-<li>_NSConcreteMallocBlock</li>
-</ul>
-<p>此三种类型的Block对象分别存储在栈区、全局（数据区）和堆区<br>
-        
-          <a class="article-more-a" href="/2019/01/15/Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/15/Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-Blocks篇：3.Blocks使用捕获到的变量" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/15/Blocks篇：3.Blocks使用捕获到的变量/">《Objective-C高级编程 iOS与OS X多线程与内存管理》12</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/15/Blocks篇：3.Blocks使用捕获到的变量/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:09:21.983Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Blocks篇：3-Blocks使用捕获到的变量"><a href="#Blocks篇：3-Blocks使用捕获到的变量" class="headerlink" title="Blocks篇：3.Blocks使用捕获到的变量"></a>Blocks篇：3.Blocks使用捕获到的变量</h2><blockquote>
-<p>所谓Blocks捕获变量，即在Block函数体内使用外部声明的变量。</p>
+        <blockquote>
+<p>本篇是<a href="https://www.humancode.us/2014/07/28/intro-to-gcd.html" target="_blank" rel="external">a series about Grand Central Dispatch</a>的学习记录。<br>原文共6篇，循序渐进地介绍了GCD的基本使用及相关规范。</p>
 </blockquote>
-<h4 id="1-捕获局部变量（自动变量）和静态局部变量"><a href="#1-捕获局部变量（自动变量）和静态局部变量" class="headerlink" title="1. 捕获局部变量（自动变量）和静态局部变量"></a>1. 捕获局部变量（自动变量）和静态局部变量</h4>
-        
-          <a class="article-more-a" href="/2019/01/15/Blocks篇：3.Blocks使用捕获到的变量/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/15/Blocks篇：3.Blocks使用捕获到的变量/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-Blocks篇：2.Blocks的调用过程及其对象本质" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/15/Blocks篇：2.Blocks的调用过程及其对象本质/">《Objective-C高级编程 iOS与OS X多线程与内存管理》11</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/15/Blocks篇：2.Blocks的调用过程及其对象本质/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:06:05.910Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Blocks篇：2-Blocks的调用过程及其对象本质"><a href="#Blocks篇：2-Blocks的调用过程及其对象本质" class="headerlink" title="Blocks篇：2.Blocks的调用过程及其对象本质"></a>Blocks篇：2.Blocks的调用过程及其对象本质</h2><blockquote>
-<ul>
-<li>Blocks实际上是通过支持Block的编译器，将其转换为标准的C代码进行编译。</li>
-<li>我们可以使用clang的“-rewrite-objc”命令，将包含Block的源代码转换为C++代码，帮助理解。
-        
-          <a class="article-more-a" href="/2019/01/15/Blocks篇：2.Blocks的调用过程及其对象本质/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/15/Blocks篇：2.Blocks的调用过程及其对象本质/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-Blocks篇：1.Blocks的声明" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/15/Blocks篇：1.Blocks的声明/">《Objective-C高级编程 iOS与OS X多线程与内存管理》10</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/15/Blocks篇：1.Blocks的声明/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:05:21.255Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Blocks篇：1-Blocks的声明"><a href="#Blocks篇：1-Blocks的声明" class="headerlink" title="Blocks篇：1.Blocks的声明"></a>Blocks篇：1.Blocks的声明</h2><blockquote>
-<p><strong>Blocks是带有自动变量值的匿名函数。</strong></p>
-</blockquote>
-<p>写法：</p>
-<ul>
-<li>Blocks变量声明：与C函数指针声明基本相似，将指针符号”*”替换为“^”。</li>
-<li>Blocks主体声明：省略了名称的C函数，在原函数名前添加“^”。<ul>
-<li>无参数Blocks，可以省略参数列表</li>
-<li>无返回值Blocks，可以省略返回值</li>
+<a id="more"></a>
+<h3 id="1-Why-GCD"><a href="#1-Why-GCD" class="headerlink" title="1. Why GCD?"></a>1. Why GCD?</h3><h4 id="1-1-在GCD出现之前，解决数据竞争的方式"><a href="#1-1-在GCD出现之前，解决数据竞争的方式" class="headerlink" title="1.1 在GCD出现之前，解决数据竞争的方式"></a>1.1 在GCD出现之前，解决数据竞争的方式</h4><ul>
+<li>信号（Semaphore）：只允许使用固定的有限资源。在资源可用之前，线程需要一直等待。</li>
+<li>互斥锁（Mutual Exclusion）：一次只允许一个线程执行。当前线程拥有锁时，其他线程等待。</li>
+<li>条件变量（Condition Variable）：在指定条件为真之前，线程等待。</li>
 </ul>
+<h4 id="1-2-GCD队列"><a href="#1-2-GCD队列" class="headerlink" title="1.2 GCD队列"></a>1.2 GCD队列</h4><p>分为<strong>串行队列、并发队列和主队列</strong>三种。</p>
+<h4 id="1-3-Blocks"><a href="#1-3-Blocks" class="headerlink" title="1.3 Blocks"></a>1.3 Blocks</h4><p>Blocks可以捕获上下文中的变量（保存当时的值）。</p>
+<h4 id="1-4-你好，GCD"><a href="#1-4-你好，GCD" class="headerlink" title="1.4 你好，GCD"></a>1.4 你好，GCD</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 1.</span></div><div class="line">dispatch_main(); </div><div class="line"></div><div class="line"><span class="comment">// 2.</span></div><div class="line">[[NSRunLoop currentRunLoop] run];</div></pre></td></tr></table></figure>
+<p>以上两者均可以启动主线程运行（在main函数中可以使队列不返回，程序不结束。）。但是建议用后者，因为NSRunLoop对象中可以支持NSTimer等资源执行，前者不可以。需要退出当前队列，在对应队列中执行<em>exit(0)</em>即可。</p>
+<h3 id="2-Using-GCD-Queues-For-Synchronization"><a href="#2-Using-GCD-Queues-For-Synchronization" class="headerlink" title="2. Using GCD Queues For Synchronization"></a>2. Using GCD Queues For Synchronization</h3><p>传统情况下，数据竞争（多线程环境下更新同一份数据）需要使用排它锁进行数据更新，使用GCD可以通过串行队列直接解决。</p>
+<h3 id="3-GCD-Concurrent-Queues"><a href="#3-GCD-Concurrent-Queues" class="headerlink" title="3. GCD Concurrent Queues"></a>3. GCD Concurrent Queues</h3><ul>
+<li>GCD的并发队列是代替多线程的一种更好的方式。</li>
+<li>GCD会自动管理在并发队列中运行任务的线程（创建、释放和重用等）。</li>
+<li>使用GCD的栅栏配合并发队列，可以很容易创建读写锁（并发读取，同步写入）。</li>
+</ul>
+<h4 id="4-GCD-Target-Queues"><a href="#4-GCD-Target-Queues" class="headerlink" title="4. GCD Target Queues"></a>4. GCD Target Queues</h4><ul>
+<li>所有我们自定义的队列都有一个目标队列。默认此目标队列即为默认优先级的全局并发队列。</li>
+<li>当进队的block准备执行时，队列将会把此block重进使其进入到目标队列中，由目标队列进行block真正的执行。</li>
+<li>只有全局并发队列和主队列二者才有真正执行block的能力。其他任何队列都是将此二者之一作为目标队列的。</li>
+</ul>
+<h5 id="4-1-使用目标队列规范执行时机"><a href="#4-1-使用目标队列规范执行时机" class="headerlink" title="4.1 使用目标队列规范执行时机"></a>4.1 使用目标队列规范执行时机</h5><p>直接看栗子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">makeCall</span><span class="params">(<span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span>, NSString *caller, NSArray *callees)</span> </span>&#123;</div><div class="line">    <span class="comment">// 获取随机接通对象</span></div><div class="line">    NSInteger targetIndex = arc4random() % callees.count;</div><div class="line">    NSString *callee = callees[targetIndex];</div><div class="line">    </div><div class="line">    NSLog(@<span class="string">"%@ 正在呼叫 %@..."</span>, caller, callee);</div><div class="line">    sleep(<span class="number">1</span>);</div><div class="line">    NSLog(@<span class="string">"%@ 与 %@ 呼叫完毕！"</span>, caller, callee);</div><div class="line">    </div><div class="line">    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (<span class="keyword">int64_t</span>)(arc4random() % <span class="number">1000</span> * NSEC_PER_SEC)), <span class="built_in">queue</span>, ^&#123;</div><div class="line">        makeCall(<span class="built_in">queue</span>, caller, callees);</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">        NSArray *house1Folks = @[@<span class="string">"小明"</span>, @<span class="string">"小华"</span>, @<span class="string">"小希"</span>];</div><div class="line">        NSArray *house2Folks = @[@<span class="string">"大明"</span>, @<span class="string">"大华"</span>, @<span class="string">"大希"</span>];</div><div class="line">        </div><div class="line">        <span class="comment">// 创建并发队列，用于执行block</span></div><div class="line">        <span class="keyword">dispatch_queue_t</span> house1Queue = dispatch_queue_create(<span class="string">"com.jiji.concurrent"</span>, DISPATCH_QUEUE_CONCURRENT);</div><div class="line">        </div><div class="line">        <span class="comment">// 创建串行队列，作为并发队列的目标队列</span></div><div class="line">        <span class="keyword">dispatch_queue_t</span> targetQueue = dispatch_queue_create(<span class="string">"com.jiji.targetQueue"</span>, DISPATCH_QUEUE_SERIAL);</div><div class="line">        dispatch_set_target_queue(house1Queue, targetQueue);</div><div class="line">        </div><div class="line">        <span class="keyword">for</span> (NSString *caller in house1Folks) &#123;</div><div class="line">            dispatch_async(house1Queue, ^&#123;</div><div class="line">                makeCall(house1Queue, caller, house2Folks);</div><div class="line">            &#125;);</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// 使主队列不返回</span></div><div class="line">        [[NSRunLoop currentRunLoop] run];</div><div class="line"><span class="comment">//        dispatch_main(); // Xcode都无法结束调试</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>执行结果为：</p>
+<blockquote>
+<p>2019-01-28 11:09:09.259488+0800 GCDTest[92057:9310107] 小明 正在呼叫 大明…<br>2019-01-28 11:09:10.260182+0800 GCDTest[92057:9310107] 小明 与 大明 呼叫完毕！<br>2019-01-28 11:09:10.260306+0800 GCDTest[92057:9310107] 小华 正在呼叫 大希…<br>2019-01-28 11:09:11.262624+0800 GCDTest[92057:9310107] 小华 与 大希 呼叫完毕！<br>2019-01-28 11:09:11.262751+0800 GCDTest[92057:9310107] 小希 正在呼叫 大希…<br>2019-01-28 11:09:12.264263+0800 GCDTest[92057:9310107] 小希 与 大希 呼叫完毕！</p>
+</blockquote>
+<p>使用目标队列，在本例中，通过将串行队列设置为house1Queue的目标队列，将本来在并发队列中对于block的无序执行变为了串行执行。故<em>dispatch_set_target_queue</em>可以将原队列的优先级设置为与目标队列相同，在这里即变为了串行执行。而由于自定义的串行队列默认的目标为全局并发队列，故实际上block是在全局队列中重进进队并执行。</p>
+<h5 id="4-2-使指定串行队列作为多个队列的共同目标"><a href="#4-2-使指定串行队列作为多个队列的共同目标" class="headerlink" title="4.2 使指定串行队列作为多个队列的共同目标"></a>4.2 使指定串行队列作为多个队列的共同目标</h5><p>这样设置，可以将子队列设置为同级（实质优先级相同，且执行block时都在目标队列中）。</p>
+<h5 id="4-3-现实当中的应用"><a href="#4-3-现实当中的应用" class="headerlink" title="4.3 现实当中的应用"></a>4.3 现实当中的应用</h5><ul>
+<li><strong>设置多个目标队列目标为一个串行队列，可以让你在多线程环境下，执行任务时变得有序可控</strong>。也就是这里所说的“同一时刻只做一件事”：如数据库访问、硬盘读写或其他硬件资源的访问等。</li>
+<li>当需要在一大堆不同类型的事件资源中进行有序处理，比如“同一时间只做一件事”时，这种模式也非常有用。如，处理定时器、网络事件或文件系统活动等。</li>
+<li>当处理不同框架的不同事件时，在你不方便修改源代码时，使用此模式可能也能解决问题。</li>
+</ul>
+<p>注意：</p>
+<ul>
+<li>对于必须并发执行的操作，使用这种模式时会发生死锁。</li>
+<li><strong>一般来说，直接在串行队列中使用<em>dispatch_async</em>派发block即可代替本模式。</strong></li>
+</ul>
+<h4 id="5-Writing-Thread-Safe-Classes-with-GCD"><a href="#5-Writing-Thread-Safe-Classes-with-GCD" class="headerlink" title="5. Writing Thread-Safe Classes with GCD"></a>5. Writing Thread-Safe Classes with GCD</h4><blockquote>
+<p>线程安全，<em>一般来说，在GCD中都需要使用串行队列或者在并发队列中的派发执行栅栏任务</em>。故一定需要记住一点：<strong>线程安全是以牺牲性能为代价的，一定不要滥用。</strong></p>
+</blockquote>
+<p>使用GCD实现线程安全的类，需要在内部设置上述二者之一的队列。作者以串行队列为例，并以优雅的封装方式进行了阐述。直接贴完整代码：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div></pre></td><td class="code"><pre><div class="line">// 头文件（公共API中没有任何需要调用者额外注意的事件）</div><div class="line"></div><div class="line">@interface Warrior: NSObject</div><div class="line"></div><div class="line">@property (nonatomic, strong) NSString *leftHandEquippedItem;</div><div class="line">@property (nonatomic, strong) NSString *rightHandEquippedItem;</div><div class="line"></div><div class="line">- (void)swapLeftAndRightHandEquippedItems;</div><div class="line">- (NSString *)juggleNewItem:(NSString *)item; // return dropped item</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">// 实现文件</div><div class="line"></div><div class="line">@interface Warrior()</div><div class="line"></div><div class="line">/** 串行队列，线程安全的基础 */</div><div class="line">@property (nonatomic, strong) dispatch_queue_t memberQueue;</div><div class="line">/** 线程安全的内部版本，该命名方式表明需要在队列中使用 */</div><div class="line">@property (nonatomic, strong) NSString *memberQueueLeftHandEquippedItem;</div><div class="line">/** 线程安全的内部版本，该命名方式表明需要在队列中使用 */</div><div class="line">@property (nonatomic, strong) NSString *memberQueueRightHandEquippedItem;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation Warrior</div><div class="line"></div><div class="line">- (id)init &#123;</div><div class="line">    self = [super init];</div><div class="line">    if (self) &#123;</div><div class="line">        // 由于队列对象非常“轻”，实例化时可放心创建</div><div class="line">        _memberQueue = dispatch_queue_create("Queue", DISPATCH_QUEUE_SERIAL);</div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// private的setter（由于内部版本需要在队列中使用，故直接赋值即可）</div><div class="line"></div><div class="line">- (void)setMemberQueueLeftHandEquippedItem:(NSString *)item &#123;</div><div class="line">    NSLog(@"Left hand now holds %@", item);</div><div class="line">    _memberQueueLeftHandEquippedItem = item;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)setMemberQueueRightHandEquippedItem:(NSString *)item &#123;</div><div class="line">    NSLog(@"Right hand now holds %@", item);</div><div class="line">    _memberQueueRightHandEquippedItem = item;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// public的getter（外部API的实现是调用的内部版本，需要在队列中使用，保证线程安全）</div><div class="line"></div><div class="line">- (NSString *)leftHandEquippedItem &#123;</div><div class="line">    __block NSString *retval;</div><div class="line">    dispatch_sync(self.memberQueue, ^&#123;</div><div class="line">        retval = self.memberQueueLeftHandEquippedItem;</div><div class="line">    &#125;);</div><div class="line">    return retval;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (NSString *)rightHandEquippedItem &#123;</div><div class="line">    __block NSString *retval;</div><div class="line">    dispatch_sync(self.memberQueue, ^&#123;</div><div class="line">        retval = self.memberQueueRightHandEquippedItem;</div><div class="line">    &#125;);</div><div class="line">    return retval;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// public的setter（外部API的实现是调用的内部版本，需要在队列中使用，保证线程安全）</div><div class="line"></div><div class="line">- (void)setLeftHandEquippedItem:(NSString *)item &#123;</div><div class="line">    dispatch_sync(self.memberQueue, ^&#123;</div><div class="line">        self.memberQueueLeftHandEquippedItem = item;</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)setRightHandEquippedItem:(NSString *)item &#123;</div><div class="line">    dispatch_sync(self.memberQueue, ^&#123;</div><div class="line">        self.memberQueueRightHandEquippedItem = item;</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">// private的method（由于内部版本需要在队列中使用，故直接赋值即可）</div><div class="line"></div><div class="line">- (void)memberQueueSwapLeftAndRightHandEquippedItems &#123;</div><div class="line">    NSString *oldLeftHandEquippedItem = self.memberQueueLeftHandEquippedItem;</div><div class="line">    self.memberQueueLeftHandEquippedItem = self.memberQueueRightHandEquippedItem;</div><div class="line">    self.memberQueueRightHandEquippedItem = oldLeftHandEquippedItem;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// public的method（外部API的实现是调用的内部版本，需要在队列中使用，保证线程安全）</div><div class="line"></div><div class="line">- (void)swapLeftAndRightHandEquippedItems &#123;</div><div class="line">    dispatch_sync(self.memberQueue, ^&#123;</div><div class="line">        [self memberQueueSwapLeftAndRightHandEquippedItems];</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (NSString *)juggleNewItem:(NSString *)item &#123;</div><div class="line">    __block NSString *retval;</div><div class="line">    // 这里再说一遍，由于在队列中执行，故block内直接使用内部版本的变量和方法</div><div class="line">    dispatch_sync(self.memberQueue, ^&#123;</div><div class="line">        retval = self.memberQueueRightHandEquippedItem;</div><div class="line">        self.memberQueueRightHandEquippedItem = item;</div><div class="line">        // 这里调用外部方法会导致死锁</div><div class="line">        [self memberQueueSwapLeftAndRightHandEquippedItems];</div><div class="line">    &#125;);</div><div class="line">    return retval;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure>
+<p>以上便实现了一个“线程安全”类。其编码方式需要我们学习：</p>
+<ul>
+<li>外部API（即头文件的代码）的声明与普通类无异，使用者无需关心内部实现，直接使用即可。</li>
+<li>内部实现文件中，将对应需要进行线程安全处理的属性和方法等单独声明并实现私有的版本，且在命名上进行区分（如代码中的“<em>memberQueue-</em>”前缀）：不仅增强了代码的可读性（根据命名即可知道是线程安全的版本）；还可以在当类的属性和方法增多，代码量增大时，保证类结构的清晰。</li>
+<li>除了init和dealloc等方法中，尽量不要直接使用实例变量ivar，保证代码的风格统一，可读性不变。</li>
+</ul>
+<h4 id="6-Keeping-Things-Straight-with-GCD"><a href="#6-Keeping-Things-Straight-with-GCD" class="headerlink" title="6. Keeping Things Straight with GCD"></a>6. Keeping Things Straight with GCD</h4><h5 id="6-1-设计线程安全的类或库"><a href="#6-1-设计线程安全的类或库" class="headerlink" title="6.1 设计线程安全的类或库"></a>6.1 设计线程安全的类或库</h5><ul>
+<li><p>设计线程安全的类或者库时，要把“线程安全”的细节设置到实现文件中，头文件或公有API中不要有相关体现（如线程和队列等）。</p>
+</li>
+<li><p>若整个库中的多个类都需要保证“线程安全”，使用同一个串行队列一般即可保证性能。如将此队列设置为私有的公共单例对象：</p>
 </li>
 </ul>
-        
-          <a class="article-more-a" href="/2019/01/15/Blocks篇：1.Blocks的声明/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/15/Blocks篇：1.Blocks的声明/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-内存管理篇：9.ARC实现之__autoreleasing" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/06/内存管理篇：9.ARC实现之__autoreleasing/">《Objective-C高级编程 iOS与OS X多线程与内存管理》9</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/06/内存管理篇：9.ARC实现之__autoreleasing/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:54:34.109Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="内存管理篇：9-ARC实现之-autoreleasing"><a href="#内存管理篇：9-ARC实现之-autoreleasing" class="headerlink" title="内存管理篇：9.ARC实现之__autoreleasing"></a>内存管理篇：9.ARC实现之__autoreleasing</h2><ol>
-<li>__autoreleasing修饰的变量与在非ARC环境下，对对象调用autorelease方法效果一致：</li>
-</ol>
-        
-          <a class="article-more-a" href="/2019/01/06/内存管理篇：9.ARC实现之__autoreleasing/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/06/内存管理篇：9.ARC实现之__autoreleasing/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-内存管理篇：8.ARC实现之__weak" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/06/内存管理篇：8.ARC实现之__weak/">《Objective-C高级编程 iOS与OS X多线程与内存管理》8</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/06/内存管理篇：8.ARC实现之__weak/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:53:26.381Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="内存管理篇：8-ARC实现之-weak"><a href="#内存管理篇：8-ARC实现之-weak" class="headerlink" title="内存管理篇：8.ARC实现之__weak"></a>内存管理篇：8.ARC实现之__weak</h2><blockquote>
-<p>我们知道，weak修饰的变量，其地址是被存储在一个专用的散列表中，此散列表的键值为原内存的散列值（即对象地址的hash值）。</p>
-</blockquote>
-<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1546747255-weak%E8%A1%A8.jpg" alt="img"></p>
-<p>__weak修饰的变量，其主要存在两大功能：</p>
-<ol>
-<li><strong>当其引用的对象被释放时，此变量自动被赋值为nil</strong>；</li>
-<li><strong>使用__weak修饰的变量时，实际上使用的是添加到autoreleasePool中的对象</strong>。</li>
-</ol>
-        
-          <a class="article-more-a" href="/2019/01/06/内存管理篇：8.ARC实现之__weak/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/06/内存管理篇：8.ARC实现之__weak/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-内存管理篇：7.ARC实现之__strong及autorelease优化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/06/内存管理篇：7.ARC实现之__strong及autorelease优化/">《Objective-C高级编程 iOS与OS X多线程与内存管理》7</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/06/内存管理篇：7.ARC实现之__strong及autorelease优化/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:52:21.263Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="内存管理篇：7-ARC实现之-strong及autorelease优化"><a href="#内存管理篇：7-ARC实现之-strong及autorelease优化" class="headerlink" title="内存管理篇：7.ARC实现之__strong及autorelease优化"></a>内存管理篇：7.ARC实现之__strong及autorelease优化</h2><blockquote>
-<p>对于持有非自己创建的对象的情况，我们知道，这种情况是指对于非“alloc、new、copy和mutableCopy”开头的并返回对象实例的方法，接收方不负责内存管理。<br>ARC会在方法实现中将返回值加入到autoreleasePool中，待接收方从中取出使用，延迟释放时机。</p>
-</blockquote>
-        
-          <a class="article-more-a" href="/2019/01/06/内存管理篇：7.ARC实现之__strong及autorelease优化/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/06/内存管理篇：7.ARC实现之__strong及autorelease优化/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/06/内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）/">《Objective-C高级编程 iOS与OS X多线程与内存管理》6</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/06/内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:51:20.446Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="内存管理篇：-6-不要使用静态和动态数组（非OC集合对象）"><a href="#内存管理篇：-6-不要使用静态和动态数组（非OC集合对象）" class="headerlink" title="内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）"></a>内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）</h2><h4 id="静态数组（类似于c数组，非OC的集合对象）："><a href="#静态数组（类似于c数组，非OC的集合对象）：" class="headerlink" title="静态数组（类似于c数组，非OC的集合对象）："></a>静态数组（类似于c数组，非OC的集合对象）：</h4><ul>
-<li>使用<strong>strong、</strong>weak和__autoreleasing修饰的静态数组（如：id objs[10]），其初始值也会自动赋值为nil，且当其释放时，子元素也会自动被释放；</li>
-</ul>
-        
-          <a class="article-more-a" href="/2019/01/06/内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/06/内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-内存管理篇： 5.ARC的规则补充" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/06/内存管理篇： 5.ARC的规则补充/">《Objective-C高级编程 iOS与OS X多线程与内存管理》5</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/06/内存管理篇： 5.ARC的规则补充/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:49:49.390Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="内存管理篇：-5-ARC的规则补充"><a href="#内存管理篇：-5-ARC的规则补充" class="headerlink" title="内存管理篇： 5.ARC的规则补充"></a>内存管理篇： 5.ARC的规则补充</h2><ol>
-<li>ARC的方法命名</li>
-</ol>
-<blockquote>
-<p>我们都知道，在内存管理的思考方式中，当方法命名以“alloc、new、copy、mutableCopy”开头或直接命名时，返回对象（必须返回对象）的内存由接收方进行管理。这种方式在ARC中同样适用。</p>
-</blockquote>
-<p>在ARC环境下，以init或init开头的方法，也需要遵循此规则。且init的方法规定更为严格：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Bank_Private.h</span></div><div class="line"><span class="keyword">dispatch_queue_t</span> memberQueue();</div><div class="line"></div><div class="line"><span class="comment">// Bank.m</span></div><div class="line"><span class="meta">#import <span class="meta-string">"Bank_Private.h"</span></span></div><div class="line"><span class="keyword">dispatch_queue_t</span> memberQueue() &#123;</div><div class="line">    <span class="keyword">static</span> <span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span>;</div><div class="line">    <span class="keyword">static</span> <span class="keyword">dispatch_once_t</span> onceToken;</div><div class="line">    dispatch_once(&amp;onceToken, ^&#123;</div><div class="line">        <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"member queue"</span>, DISPATCH_QUEUE_SERIAL);</div><div class="line">    &#125;);</div><div class="line">    <span class="keyword">return</span> <span class="built_in">queue</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <ul>
-<li>必须返回id或类型的对象</li>
-<li>必须是实例方法</li>
+<li>在设计“线程安全”的类或者库时，若要时刻保证调用正确，结构清晰，且不出现死锁或数据竞争的情况。需要遵循三条命名原则：<ol>
+<li>必须在队列内访问的变量或方法，其命名必须以该队列的名称做前缀。</li>
+<li>向队列中派发的block，其内部只能访问那些以队列前缀命名的变量或方法。</li>
+<li>在“前缀”命名的方法中，只能访问带有同样前缀的变量或方法。</li>
+</ol>
+</li>
 </ul>
-        
-          <a class="article-more-a" href="/2019/01/06/内存管理篇： 5.ARC的规则补充/#more">more >></a>
-        
+<h5 id="6-2-使用单个队列的简易性"><a href="#6-2-使用单个队列的简易性" class="headerlink" title="6.2 使用单个队列的简易性"></a>6.2 使用单个队列的简易性</h5><h6 id="6-2-1-创建“读写锁”"><a href="#6-2-1-创建“读写锁”" class="headerlink" title="6.2.1 创建“读写锁”"></a>6.2.1 创建“读写锁”</h6><p>“读写锁”，即“随意读取，写入保护”。在创建时，可以设置两个带有前缀的方法，如“memberQueue<em>”和“memberQueueMutating</em>”。前者只能读取变量的值或调用无修改功能的方法，后者可以对变量进行读写或调用任意方法（包括可修改数据的方法）。</p>
+<ul>
+<li>“memberQueue_”前缀的方法，内部可以随意使用<em>dispatch_sync</em>或是<em>dispatch_async</em>进行配置；</li>
+<li>“memberQueueMutating_”前缀的方法，内部必须使用<em>dispatch_barrier_sync</em>或是<em>dispatch_barrier_async</em>进行配置。</li>
+</ul>
+<h6 id="6-2-2-不要使用多个，嵌套的队列"><a href="#6-2-2-不要使用多个，嵌套的队列" class="headerlink" title="6.2.2 不要使用多个，嵌套的队列"></a>6.2.2 不要使用多个，嵌套的队列</h6><ul>
+<li>自己的类的结构中，最多只需要一个串行队列即可。</li>
+<li>一般来说，如果在一个类中，在需要使用多个串行队列来实现一个功能时，出于性能考虑，可以直接单独使用一个并发队列来进行替换。</li>
+</ul>
+
       
 
       
@@ -816,7 +288,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
         		</li>
       		
 		</ul>
@@ -825,26 +297,85 @@
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/06/内存管理篇： 5.ARC的规则补充/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/01/30/《a series about Grand Central Dispatch》博客学习笔记/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
 
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2019/01/26/FDFullscreenPopGesture源码学习/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">FDFullscreenPopGesture源码学习</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 
 
 
   
   
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
-    </nav>
+  
+
+  
+
   
 
 
@@ -867,8 +398,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
