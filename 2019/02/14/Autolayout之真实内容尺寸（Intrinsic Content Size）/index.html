@@ -6,19 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>ARKit文档瞎翻译（7） | 臭吉吉的瞎记空间</title>
+  <title>Autolayout之真实内容尺寸（Intrinsic Content Size） | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="原文请戳">
+  <meta name="description" content="注：本文节选并翻译自Anatomy of a Constraint  真实内容尺寸到目前为止，所有的示例都是用约束来定义视图的位置和尺寸的。可是，某些视图会根据当前内容生成出一个自然尺寸。这个尺寸即可参考着叫做真实内容尺寸。比如，一个按钮的真实内容尺寸就是它的标题加上一个小边缘。 不是所有的视图都有真实内容尺寸，对于普通视图来说，真实内容尺寸可以定义出视图的宽、高或者二者全部。下面的表格3-1中">
 <meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ARKit文档瞎翻译（7）">
-<meta property="og:url" content="http://yoursite.com/2017/07/04/ARKit_doc_7/index.html">
+<meta property="og:title" content="Autolayout之真实内容尺寸（Intrinsic Content Size）">
+<meta property="og:url" content="http://yoursite.com/2019/02/14/Autolayout之真实内容尺寸（Intrinsic Content Size）/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="原文请戳">
-<meta property="og:updated_time" content="2018-05-15T02:20:18.159Z">
+<meta property="og:description" content="注：本文节选并翻译自Anatomy of a Constraint  真实内容尺寸到目前为止，所有的示例都是用约束来定义视图的位置和尺寸的。可是，某些视图会根据当前内容生成出一个自然尺寸。这个尺寸即可参考着叫做真实内容尺寸。比如，一个按钮的真实内容尺寸就是它的标题加上一个小边缘。 不是所有的视图都有真实内容尺寸，对于普通视图来说，真实内容尺寸可以定义出视图的宽、高或者二者全部。下面的表格3-1中">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/intrinsic_content_size_2x.png">
+<meta property="og:updated_time" content="2019-02-14T08:56:47.594Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ARKit文档瞎翻译（7）">
-<meta name="twitter:description" content="原文请戳">
+<meta name="twitter:title" content="Autolayout之真实内容尺寸（Intrinsic Content Size）">
+<meta name="twitter:description" content="注：本文节选并翻译自Anatomy of a Constraint  真实内容尺寸到目前为止，所有的示例都是用约束来定义视图的位置和尺寸的。可是，某些视图会根据当前内容生成出一个自然尺寸。这个尺寸即可参考着叫做真实内容尺寸。比如，一个按钮的真实内容尺寸就是它的标题加上一个小边缘。 不是所有的视图都有真实内容尺寸，对于普通视图来说，真实内容尺寸可以定义出视图的宽、高或者二者全部。下面的表格3-1中">
+<meta name="twitter:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/intrinsic_content_size_2x.png">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -178,46 +180,83 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-ARKit_doc_7" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-Autolayout之真实内容尺寸（Intrinsic Content Size）" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      ARKit文档瞎翻译（7）
+      Autolayout之真实内容尺寸（Intrinsic Content Size）
     </h1>
   
 
         
-        <a href="/2017/07/04/ARKit_doc_7/" class="archive-article-date">
-  	<time datetime="2017-07-04T03:28:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-04</time>
+        <a href="/2019/02/14/Autolayout之真实内容尺寸（Intrinsic Content Size）/" class="archive-article-date">
+  	<time datetime="2019-02-14T08:56:47.594Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://developer.apple.com/documentation/arkit/arskview?language=objc" target="_blank" rel="external">原文请戳</a></p>
-<a id="more"></a>
-<h1 id="ARSKView"><a href="#ARSKView" class="headerlink" title="ARSKView"></a>ARSKView</h1><p>使用2D的SpriteKit内容进而增强相机来显示AR体验的一种视图。</p>
-<hr>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>使用ARSKView类，可以在设备相机拍摄的真实世界视图的3D空间中放置2D元素来创建AR体验。当你运行这个视图提供的<a href="https://developer.apple.com/documentation/arkit/arsession?language=objc" target="_blank" rel="external">ARSession</a>对象时：</p>
+        <blockquote>
+<p>注：本文节选并翻译自<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/AnatomyofaConstraint.html#//apple_ref/doc/uid/TP40010853-CH9-SW1" target="_blank" rel="external">Anatomy of a Constraint</a></p>
+</blockquote>
+<h4 id="真实内容尺寸"><a href="#真实内容尺寸" class="headerlink" title="真实内容尺寸"></a>真实内容尺寸</h4><p>到目前为止，所有的示例都是用约束来定义视图的位置和尺寸的。可是，某些视图会根据当前内容生成出一个自然尺寸。这个尺寸即可参考着叫做<em>真实内容尺寸</em>。比如，一个按钮的真实内容尺寸就是它的标题加上一个小边缘。</p>
+<p>不是所有的视图都有真实内容尺寸，对于普通视图来说，真实内容尺寸可以定义出视图的宽、高或者二者全部。下面的表格3-1中列出了一些示例。<br><a id="more"></a></p>
 <ul>
-<li>该视图会自动渲染从相机拍摄到的实时视频并将其作为背景。</li>
-<li>当你实现了<a href="https://developer.apple.com/documentation/arkit/arskviewdelegate?language=objc" target="_blank" rel="external">ARSKViewDelegate</a>的方法把SpriteKit内容和真实世界的位置联系在一起时，该视图会自动缩放并旋转SpriteKit节点，以便他们在相机中看起来就像可以在真实世界中追踪到一样。</li>
+<li><strong>表格3-1</strong> 基本控件的真实内容尺寸</li>
 </ul>
-<h2 id="话题"><a href="#话题" class="headerlink" title="话题"></a>话题</h2><h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><h6 id="使用SpriteKit提供2D虚拟内容"><a href="#使用SpriteKit提供2D虚拟内容" class="headerlink" title="使用SpriteKit提供2D虚拟内容"></a><a href="https://developer.apple.com/documentation/arkit/arskview/providing_2d_virtual_content_with_spritekit?language=objc" target="_blank" rel="external">使用SpriteKit提供2D虚拟内容</a></h6><pre><code>在AR体验中，使用SpriteKit在3D空间中放置2D图片
-</code></pre><h6 id="session"><a href="#session" class="headerlink" title="session"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2865589-session?language=objc" target="_blank" rel="external">session</a></h6><pre><code>管理着视图内容中的运动追踪和相机视图处理的AR会话对象
-</code></pre><h3 id="负责AR更新"><a href="#负责AR更新" class="headerlink" title="负责AR更新"></a>负责AR更新</h3><h6 id="delegate"><a href="#delegate" class="headerlink" title="delegate"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2865597-delegate?language=objc" target="_blank" rel="external">delegate</a></h6><pre><code>你提供的一个对象，用于使用SpriteKit内容来同步处理视图中的AR场景信息。
-</code></pre><h6 id="ARSKViewDelegate"><a href="#ARSKViewDelegate" class="headerlink" title="ARSKViewDelegate"></a><a href="https://developer.apple.com/documentation/arkit/arskviewdelegate?language=objc" target="_blank" rel="external">ARSKViewDelegate</a></h6><pre><code>可以实现的一系列方法，你可以用他们使用AR会话对象来同步处理SpriteKit内容。
-</code></pre><h3 id="真实世界表面的碰撞检测"><a href="#真实世界表面的碰撞检测" class="headerlink" title="真实世界表面的碰撞检测"></a>真实世界表面的碰撞检测</h3><h6 id="hitTest-types"><a href="#hitTest-types" class="headerlink" title="- hitTest:types:"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2875733-hittest?language=objc" target="_blank" rel="external">- hitTest:types:</a></h6><pre><code>在截取的相机图像中搜索真实世界的物体或AR锚点，与SpriteKit视图中的一个点相对应。
-</code></pre><h3 id="映射内容到真实世界的位置中"><a href="#映射内容到真实世界的位置中" class="headerlink" title="映射内容到真实世界的位置中"></a>映射内容到真实世界的位置中</h3><h6 id="anchorForNode"><a href="#anchorForNode" class="headerlink" title="- anchorForNode:"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2875729-anchorfornode?language=objc" target="_blank" rel="external">- anchorForNode:</a></h6><pre><code>如果存在，返回与指定SpriteKit节点相关的AR锚点
-</code></pre><h6 id="nodeForAnchor"><a href="#nodeForAnchor" class="headerlink" title="- nodeForAnchor:"></a><a href="https://developer.apple.com/documentation/arkit/arskview/2873513-nodeforanchor?language=objc" target="_blank" rel="external">- nodeForAnchor:</a></h6><pre><code>如果存在，返回与指定AR锚点相关的SpriteKit节点
-</code></pre><h2 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h2><h3 id="继承自"><a href="#继承自" class="headerlink" title="继承自"></a>继承自</h3><p><a href="https://developer.apple.com/documentation/spritekit/skview?language=objc" target="_blank" rel="external">SKView</a></p>
-<h2 id="另请参阅"><a href="#另请参阅" class="headerlink" title="另请参阅"></a>另请参阅</h2><h3 id="基本视图"><a href="#基本视图" class="headerlink" title="基本视图"></a>基本视图</h3><h6 id="创建一个基本的AR体验"><a href="#创建一个基本的AR体验" class="headerlink" title="创建一个基本的AR体验"></a><a href="https://developer.apple.com/documentation/arkit/building_a_basic_ar_experience?language=objc" target="_blank" rel="external">创建一个基本的AR体验</a></h6><pre><code>配置一个AR会话对象并使用SceneKit或SpriteKit来显示AR内容
-</code></pre><h6 id="ARSCNView"><a href="#ARSCNView" class="headerlink" title="ARSCNView"></a><a href="https://developer.apple.com/documentation/arkit/arscnview?language=objc" target="_blank" rel="external">ARSCNView</a></h6><pre><code>使用3D的SceneKit内容进而增强相机来显示AR体验的一种视图。
-</code></pre>
+<table>
+<thead>
+<tr>
+<th>视图</th>
+<th>真实内容尺寸</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UIView和NSView</td>
+<td>无</td>
+</tr>
+<tr>
+<td>Sliders</td>
+<td>只定义了宽度（iOS）</td>
+</tr>
+<tr>
+<td>Labels、buttons、switches和text fields</td>
+<td>同时定义了宽度和高度</td>
+</tr>
+<tr>
+<td>Text views和image views</td>
+<td>不同情况下差别很大</td>
+</tr>
+</tbody>
+</table>
+<p>真实内容尺寸基于视图的当前内容。一个label或button的真实内容尺寸基于显示文字的总量和使用的字体。对于其他视图来说，真实内容尺寸可能会更复杂。例如，一个空的image view没有真实内容尺寸。一旦在上面添加图片之后，它的真实内容尺寸就被设置为图片的尺寸了。</p>
+<p>一个text view的真实内容尺寸有多种不同情况，取决于其内容、是否可以滑动或者是给它添加的其他约束。比如，当可以滑动时，text view没有真实内容尺寸。当不可滑动时，默认来说视图的真实内容尺寸基于不换行的文字计算而来。再例，在文字中如果不存在换行，真实内容尺寸会计算出需要的宽和高，并将内容布局为一个单行文字。如果你添加约束指定了text view的宽，真实内容尺寸就会根据此宽度来定义出需要的高度并进行显示。</p>
+<p>Autolayout通过对每一个尺寸使用一对约束来表示真实内容尺寸。抗拉伸约束（content hugging，内容包裹）把视图向内部推以保证它可以优雅地环抱着其内容。抗压缩约束（compression resistance）把视图向外推以便它不会轻易裁剪其内容。</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/intrinsic_content_size_2x.png" alt="img"></p>
+<p>在列表3-5中展示的这些约束通过使用不等式来进行定义。这里，<em>IntrinsicHeight</em>和<em>IntrinsicWidth</em>常量代表了视图真实内容尺寸中的宽和高。</p>
+<ul>
+<li><strong>列表3-5</strong> 抗压缩和抗拉伸约束方程</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 抗压缩</span></div><div class="line">View.height &gt;= <span class="number">0.0</span> * NotAnAttribute + IntrinsicHeight</div><div class="line">View.width &gt;= <span class="number">0.0</span> * NotAnAttribute + IntrinsicWidth</div><div class="line"> </div><div class="line"><span class="comment">// 抗拉伸</span></div><div class="line">View.height &lt;= <span class="number">0.0</span> * NotAnAttribute + IntrinsicHeight</div><div class="line">View.width &lt;= <span class="number">0.0</span> * NotAnAttribute + IntrinsicWidth</div></pre></td></tr></table></figure>
+<p>这些约束中的每一个都有自己的优先级。默认来说，视图使用250优先级来定义抗拉伸约束，而使用750优先级来定义抗压缩约束。因此，对于压缩视图来说，拉伸它更加容易。对大多数的控件来说，这都是默认行为。例如，你可以安全地将一个button拉伸到大于它本身的真实内容尺寸；但是，如果你压缩它，则很可能会裁剪其内容。记住，Interface Builder可能会适当修改这些优先级以避免此种情况发生。了解更多信息，请看<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/WorkingwithConstraintsinInterfaceBuidler.html#//apple_ref/doc/uid/TP40010853-CH10-SW2" target="_blank" rel="external">设置抗拉伸和抗压缩约束的优先级</a>。</p>
+<p>尽可能地在布局中多使用视图的真实内容尺寸。它可以让你的布局动态适配视图内容的变化。它还可以减少约束的数量来创建出明确的、无冲突的布局，但是你需要管理该视图的抗拉伸和抗压缩约束（统称为<em>CHCR</em>）的优先级。这里是一些处理真实内容尺寸的指导建议：</p>
+<ul>
+<li>当拉伸一些列视图来填充空间时，如果所有视图都有相同的抗拉伸优先级，此布局就存在歧义了。Autolayout不知道应该拉伸哪个视图。<br>  一个普遍的例子就是label和text field的组合。一般来说，你想要让text field来拉伸填充额外空间，而label保持它自身的真实内容尺寸。要确保这种情况，要保证text field的水平抗拉伸优先级要低于label。<br>  实际上，这个例子如此普遍，Interface Builder已经可以自动处理此情况，自动将label的抗拉伸优先级设置为251。如果手动编码进行布局，你需要自己修改抗拉伸优先级。</li>
+<li>当一些带有不可见背景的视图（如buttons或labels）被拉伸超过本身真实内容尺寸时，可能经常会显示出怪异或非预期的布局。导致的实际问题可能并不严重，因为文字直接出现在了错误位置上。要避免这种不必要的拉伸，增加抗拉伸优先级即可。</li>
+<li>基准线约束只在那些存在真实内容高度的视图上才有效。如果一个视图被垂直拉伸或压缩，基准线约束便不再正常匹配。</li>
+<li>一些视图，如switches，应该总是以真实内容尺寸进行显示。通过提高CHCR优先级来防止被拉伸或压缩。</li>
+<li>避免给视图设置“必须级”CHCR优先级。对于视图来说错误的显示尺寸要比偶然出现的约束冲突要更好。如果一个视图需要一直保持真实内容尺寸，考虑将其设置为“非常高”（999）优先级。这个接近“满级”的优先级统称可以保证视图不被拉伸或压缩，而且还可以提供出一个紧急值，以免你的视图在一个与你期望的优先级不同的环境下显示。</li>
+</ul>
+<h4 id="真实内容尺寸-VS-合适尺寸"><a href="#真实内容尺寸-VS-合适尺寸" class="headerlink" title="真实内容尺寸 VS 合适尺寸"></a>真实内容尺寸 VS 合适尺寸</h4><p>真实内容尺寸在Autolayout中扮演着输入角色。当一个视图存在真实内容尺寸是，系统会生成对应约束来表示尺寸，并且该约束被用于布局的计算。</p>
+<p>另一方面，合适尺寸，相当于Autolayout发动机的输出。它是一个视图基于约束计算而得出的尺寸。如果一个视图使用Autolayout来布局子视图，系统便会基于其内容（也就是子视图的布局）计算出该视图的合适尺寸。</p>
+<p>UIStackView就是一个好例子。排除任何其他约束，系统会基于其内容和属性计算出stack view的尺寸。从各种角度来看，stack view就好像是存在真实内容尺寸一样：你可以仅仅通过一个单独的垂直约束和一个水平约束就可以定义其位置，进而生成一个完整布局。但是它的尺寸是通过Autolayout进行计算的—-所以尺寸并不是作为Autolayout的输入。设置stack view的CHCR优先级也没有作用，因为实际上stack view并不存在真实内容尺寸。</p>
+<p>如果你想要让stack view与外部其他视图（不是stack view的子视图）进行自适应尺寸适配，要么就创建明确的约束来捕获那些关系，要么就参照外部其他视图来修改stack view子视图的CHCR优先级。</p>
+
       
 
       
@@ -286,7 +325,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/07/04/ARKit_doc_7/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/02/14/Autolayout之真实内容尺寸（Intrinsic Content Size）/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -300,18 +339,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2017/07/04/ARKit_doc_8/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          ARKit文档瞎翻译（8）
-        
-      </div>
-    </a>
   
-  
-    <a href="/2017/07/03/ARKit_doc_6/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">ARKit文档瞎翻译（6）</div>
+    <a href="/2019/01/30/《a series about Grand Central Dispatch》博客学习笔记/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">《a series about Grand Central Dispatch》博客学习笔记</div>
       <i class="icon-circle-right"></i>
     </a>
   
