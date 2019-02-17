@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-02-14T08:56:47.594Z</updated>
+  <updated>2019-02-17T09:03:48.866Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,165 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Autolayout之嵌套Stack View的使用</title>
+    <link href="http://yoursite.com/2019/02/17/Autolayout%E4%B9%8B%E5%B5%8C%E5%A5%97Stack%20View%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
+    <id>http://yoursite.com/2019/02/17/Autolayout之嵌套Stack View的使用/</id>
+    <published>2019-02-17T09:03:48.866Z</published>
+    <updated>2019-02-17T09:03:48.866Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>注：本文节选并翻译自<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/LayoutUsingStackViews.html#//apple_ref/doc/uid/TP40010853-CH11-SW1" target="_blank" rel="external">Stack Views</a></p>
+</blockquote>
+<h4 id="嵌套的多个Stack-View"><a href="#嵌套的多个Stack-View" class="headerlink" title="嵌套的多个Stack View"></a>嵌套的多个Stack View</h4><p>以下做法展示了一个使用多层嵌套stack view组成的复杂布局。但是，此例中，stack view无法单独生成所有的约束。因此，我们额外需要提供更加完整的约束。</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Nested_Stack_Views_Screenshot_2x.png" alt="img"></p>
+<p>在视图层次完成之后，添加约束展示在下一章节，<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/LayoutUsingStackViews.html#//apple_ref/doc/uid/TP40010853-CH11-SW12" target="_blank" rel="external">视图和约束</a>。</p>
+<a id="more"></a>
+<h5 id="视图和约束"><a href="#视图和约束" class="headerlink" title="视图和约束"></a>视图和约束</h5><p>在使用多个嵌套的stack view时，最容易的使用方式就是“<em>从内到外</em>”。首先，在Interface Builder中布局出名称行。把label和text field放到相对正确的位置上，同时选中，然后依次点击Editor &gt; Embed in &gt; Stack View菜单项。这便创建了一个水平stack view。</p>
+<p>下一步，把这些对象水平放好，全选，再次点击Editor &gt; Embed in &gt; Stack View菜单项。这便创建了一个多行的水平stack view。如下图所示，继续创建界面。</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/nested_stack_views_2x.png" alt="img"></p>
+<ol>
+<li>Root Stack View.Leading = Superview.LeadingMargin</li>
+<li>Root Stack View.Trailing = Superview.TrailingMargin</li>
+<li>Root Stack View.Top = Top Layout Guide.Bottom + 20.0</li>
+<li>Bottom Layout Guide.Top = Root Stack View.Bottom + 20.0</li>
+<li>Image View.Height = Image View.Width</li>
+<li>First Name Text Field.Width = Middle Name Text Field.Width</li>
+<li>First Name Text Field.Width = Last Name Text Field.Width</li>
+</ol>
+<h5 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h5><p>每个stack都有自己的一系列属性。这些属性定义了每个stack如何布局自身内容。在属性检查器中，设置如下属性：</p>
+<table>
+<thead>
+<tr>
+<th>Stack</th>
+<th>Axis（坐标轴）</th>
+<th>Alignment（垂直轴方向）</th>
+<th>Distribution（沿轴方向）</th>
+<th>Spacing（间距）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>First Name</td>
+<td>Horizontal</td>
+<td>First Baseline</td>
+<td>Fill</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Middle Name</td>
+<td>Horizontal</td>
+<td>First Baseline</td>
+<td>Fill</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Last Name</td>
+<td>Horizontal</td>
+<td>First Baseline</td>
+<td>Fill</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Name Rows</td>
+<td>Vertical</td>
+<td>Fill</td>
+<td>Fill</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Upper</td>
+<td>Horizontal</td>
+<td>Fill</td>
+<td>Fill</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Button</td>
+<td>Horizontal</td>
+<td>First Baseline</td>
+<td>Fill Equally</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Root</td>
+<td>Vertical</td>
+<td>Fill</td>
+<td>Fill</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+<p>此外，CHCR属性定义了相关视图应该拉伸来填充可用空间。在尺寸检查器中，设置如下CHCR属性：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>Horizontal hugging（水平抗拉伸）</th>
+<th>Vertical hugging（垂直抗拉伸）</th>
+<th>Horizontal resistance（水平抗压缩）</th>
+<th>Vertical resistance（水平抗压缩）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Image View</td>
+<td>250</td>
+<td>250</td>
+<td>48（易被压缩）</td>
+<td>48（易被压缩）</td>
+</tr>
+<tr>
+<td>Text View</td>
+<td>250</td>
+<td>249（易被拉伸）</td>
+<td>250</td>
+<td>250</td>
+</tr>
+<tr>
+<td>First, Middle, and Last Name Labels</td>
+<td>251</td>
+<td>251</td>
+<td>750（不易被压缩）</td>
+<td>750（不易被压缩）</td>
+</tr>
+<tr>
+<td>First, Middle, and Last Name Text Fields</td>
+<td>48（易被拉伸）</td>
+<td>250</td>
+<td>749</td>
+<td>750</td>
+</tr>
+</tbody>
+</table>
+<h5 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h5><p>在此做法中，多个stack view共同作用来处理绝大多数的布局。但是，他们不能仅仅通过自身创建出所有需要的行为。比如，当image view尺寸变化时，图片应该可以保持自身的宽高比。不幸的是，在<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/LayoutUsingStackViews.html#//apple_ref/doc/uid/TP40010853-CH11-SW2" target="_blank" rel="external">单独的Stack View</a>的做法在这里不起作用。布局需要尽可能同时适配图片的尾部和底部边界，且使用按比例适配（Aspect Fit）模式会给某些尺寸上增加额外空白。幸运的是，在本例中，图片的宽高比例总是正方形，所以你可以让图片完整填充image view的边界，并以1:1的比例拉伸image view。</p>
+<blockquote>
+<p><strong>说明</strong></p>
+<p>在Interface Builder，宽高比（Aspect Ratio）约束简单来说就是视图自身宽高的约束。Interface Builder还可以用许多方式显示约束的倍数。一般来说，对于宽高比约束，将其显示为比例。因此，一个<em>View.Width = View.Height</em>约束可以显示为1:1的宽高比。</p>
+</blockquote>
+<p>此外，所有的text field应该拥有相同宽度。不幸的是，他们都在不同的stack view中，所以stack无法处理这种情况。因此，你必须添加明确的等宽约束。</p>
+<p>像单独的stack view一样，你还必须修改一些CHCR属性。这些定义了视图在父视图尺寸改变时如何缩放。</p>
+<p>在垂直方向上，你需要扩大text view，使其填充上部分stack和按钮stack视图以外的空间。因此，text view的垂直抗拉伸优先级必须必其他两者更低才行。</p>
+<p>在水平方向上，所有的label应该以真实内容尺寸进行展示，同时所有的text field需要调整尺寸来填满额外空间。label的默认CHCR属性被Interface Builder调整的很好。它已经将抗拉伸约束设置为251，使其比text field的要高；可是，你还是需要同时调低text field的水平抗拉伸和抗压缩优先级。</p>
+<p>当stack包含name rows时，image view应该压缩以保持相同高度。可是，所有的stack view只是简单的环绕着自身内容。这意味着image view的垂直抗压缩优先级必须非常低，才会使image view压缩而不是将外部的stack view撑大。此外，image view的宽高比约束使布局变复杂，因为它允许了水平和竖直约束进行交互。这意味着text field的水平抗拉伸优先级也必须非常低，否则他们会阻止image view的压缩。综合以上所有情况，将优先级的值设置为48或更低。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;注：本文节选并翻译自&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/LayoutUsingStackViews.html#//apple_ref/doc/uid/TP40010853-CH11-SW1&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Stack Views&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;嵌套的多个Stack-View&quot;&gt;&lt;a href=&quot;#嵌套的多个Stack-View&quot; class=&quot;headerlink&quot; title=&quot;嵌套的多个Stack View&quot;&gt;&lt;/a&gt;嵌套的多个Stack View&lt;/h4&gt;&lt;p&gt;以下做法展示了一个使用多层嵌套stack view组成的复杂布局。但是，此例中，stack view无法单独生成所有的约束。因此，我们额外需要提供更加完整的约束。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Nested_Stack_Views_Screenshot_2x.png&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+&lt;p&gt;在视图层次完成之后，添加约束展示在下一章节，&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/LayoutUsingStackViews.html#//apple_ref/doc/uid/TP40010853-CH11-SW12&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;视图和约束&lt;/a&gt;。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>Autolayout之真实内容尺寸（Intrinsic Content Size）</title>
@@ -1744,63 +1903,6 @@
       &lt;h2 id=&quot;内存管理篇：7-ARC实现之-strong及autorelease优化&quot;&gt;&lt;a href=&quot;#内存管理篇：7-ARC实现之-strong及autorelease优化&quot; class=&quot;headerlink&quot; title=&quot;内存管理篇：7.ARC实现之__strong及autorelease优化&quot;&gt;&lt;/a&gt;内存管理篇：7.ARC实现之__strong及autorelease优化&lt;/h2&gt;&lt;blockquote&gt;
 &lt;p&gt;对于持有非自己创建的对象的情况，我们知道，这种情况是指对于非“alloc、new、copy和mutableCopy”开头的并返回对象实例的方法，接收方不负责内存管理。&lt;br&gt;ARC会在方法实现中将返回值加入到autoreleasePool中，待接收方从中取出使用，延迟释放时机。&lt;/p&gt;
 &lt;/blockquote&gt;
-    
-    </summary>
-    
-    
-      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》6</title>
-    <link href="http://yoursite.com/2019/01/06/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%AF%87%EF%BC%9A%206.%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E9%9D%99%E6%80%81%E5%92%8C%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84%EF%BC%88%E9%9D%9EOC%E9%9B%86%E5%90%88%E5%AF%B9%E8%B1%A1%EF%BC%89/"/>
-    <id>http://yoursite.com/2019/01/06/内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）/</id>
-    <published>2019-01-06T07:51:20.446Z</published>
-    <updated>2019-01-06T07:51:20.446Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="内存管理篇：-6-不要使用静态和动态数组（非OC集合对象）"><a href="#内存管理篇：-6-不要使用静态和动态数组（非OC集合对象）" class="headerlink" title="内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）"></a>内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）</h2><h4 id="静态数组（类似于c数组，非OC的集合对象）："><a href="#静态数组（类似于c数组，非OC的集合对象）：" class="headerlink" title="静态数组（类似于c数组，非OC的集合对象）："></a>静态数组（类似于c数组，非OC的集合对象）：</h4><ul>
-<li>使用<strong>strong、</strong>weak和__autoreleasing修饰的静态数组（如：id objs[10]），其初始值也会自动赋值为nil，且当其释放时，子元素也会自动被释放；</li>
-</ul>
-<a id="more"></a>
-<h4 id="动态数组（对象指针实现）："><a href="#动态数组（对象指针实现）：" class="headerlink" title="动态数组（对象指针实现）："></a>动态数组（对象指针实现）：</h4><ol>
-<li>声明：</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 声明，指向id的指针：</span></div><div class="line">id __strong *<span class="built_in">array</span> = nil;</div><div class="line"><span class="comment">// 或 指向对象的指针</span></div><div class="line"><span class="comment">// NSObject * __strong *array = nil;</span></div></pre></td></tr></table></figure>
-<blockquote>
-<ul>
-<li>动态数组用对象指针表示；</li>
-<li>由于对象指针默认为“<strong>autoreleasing”修饰符，所以需要显示指定为“</strong>strong”；</li>
-<li>对象指针不会被ARC自动置为nil，需要显示指定。</li>
-</ul>
-</blockquote>
-<ol>
-<li>初始化：</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 初始化：</span></div><div class="line"><span class="built_in">array</span> = (id __strong *)<span class="built_in">calloc</span>(entries, <span class="keyword">sizeof</span>(id)); </div><div class="line"><span class="comment">// calloc方法会自动将内存空间写入0数据，比malloc配合memset更为安全且简洁</span></div><div class="line"></div><div class="line"><span class="comment">// 使用malloc和memset的错误方式</span></div><div class="line"><span class="built_in">array</span> = (id __strong *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(id) * entries);</div><div class="line"><span class="keyword">for</span> (NSUInteger i = <span class="number">0</span>; i &lt; entries; ++i) &#123;</div><div class="line">    <span class="built_in">array</span>[i] = nil; <span class="comment">// 错误：在ARC下相当于直接释放</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ol>
-<li>使用：(与静态数组一致，同样不能放入nil)</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">array</span>[<span class="number">0</span>] = [[NSObject alloc] init];</div></pre></td></tr></table></figure>
-<ol>
-<li>释放：</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 1.依次释放子元素</span></div><div class="line"><span class="keyword">for</span> (NSUInteger i = <span class="number">0</span>; i &lt; entries; ++i) &#123;</div><div class="line">    <span class="built_in">array</span>[i] = nil; <span class="comment">// 在ARC下相当于直接释放对象</span></div><div class="line">&#125;</div><div class="line"><span class="comment">// 2.释放动态数组本身</span></div><div class="line"><span class="built_in">free</span>(<span class="built_in">array</span>);</div></pre></td></tr></table></figure>
-<blockquote>
-<p>原因：由于动态数组是在运行期确定，ARC无法在编译器对其进行内存管理，直接释放数组本身会让子元素发生内存泄漏。</p>
-</blockquote>
-<h4 id="补充："><a href="#补充：" class="headerlink" title="补充："></a>补充：</h4><p>使用memcpy拷贝数组中的元素和realloc重新分配内存，都可能导致对象内存泄漏或过度释放，所以ARC下也被禁止使用。</p>
-<hr>
-<h4 id="结论："><a href="#结论：" class="headerlink" title="结论："></a>结论：</h4><blockquote>
-<p>直接使用Foundation的集合对象就好了，不要用这种东西。</p>
-</blockquote>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;内存管理篇：-6-不要使用静态和动态数组（非OC集合对象）&quot;&gt;&lt;a href=&quot;#内存管理篇：-6-不要使用静态和动态数组（非OC集合对象）&quot; class=&quot;headerlink&quot; title=&quot;内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）&quot;&gt;&lt;/a&gt;内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）&lt;/h2&gt;&lt;h4 id=&quot;静态数组（类似于c数组，非OC的集合对象）：&quot;&gt;&lt;a href=&quot;#静态数组（类似于c数组，非OC的集合对象）：&quot; class=&quot;headerlink&quot; title=&quot;静态数组（类似于c数组，非OC的集合对象）：&quot;&gt;&lt;/a&gt;静态数组（类似于c数组，非OC的集合对象）：&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;使用&lt;strong&gt;strong、&lt;/strong&gt;weak和__autoreleasing修饰的静态数组（如：id objs[10]），其初始值也会自动赋值为nil，且当其释放时，子元素也会自动被释放；&lt;/li&gt;
-&lt;/ul&gt;
     
     </summary>
     
