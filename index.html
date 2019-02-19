@@ -178,6 +178,70 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Autolayout之带有真实内容尺寸的视图" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/02/19/Autolayout之带有真实内容尺寸的视图/">Autolayout之带有真实内容尺寸的视图</a>
+    </h1>
+  
+
+        
+        <a href="/2019/02/19/Autolayout之带有真实内容尺寸的视图/" class="archive-article-date">
+  	<time datetime="2019-02-19T03:56:24.828Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>注：本文节选并翻译自<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/ViewswithIntrinsicContentSize.html#//apple_ref/doc/uid/TP40010853-CH13-SW1" target="_blank" rel="external">Views with Intrinsic Content Size</a></p>
+</blockquote>
+<h4 id="动态高度的Label和Text-Field"><a href="#动态高度的Label和Text-Field" class="headerlink" title="动态高度的Label和Text Field"></a>动态高度的Label和Text Field</h4><p><a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/ViewswithIntrinsicContentSize.html#//apple_ref/doc/uid/TP40010853-CH13-SW8" target="_blank" rel="external">简单的Label和Text Field</a>示例中，通过假定text field总是比name label更高简化了布局逻辑。可是，这不总是准确的。如果你增加label的字体大小到一定程度，它将会比text field更高。</p>
+        
+          <a class="article-more-a" href="/2019/02/19/Autolayout之带有真实内容尺寸的视图/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/02/19/Autolayout之带有真实内容尺寸的视图/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-Autolayout之嵌套Stack View的使用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -780,77 +844,6 @@
 
 
   
-    <article id="post-GCD篇：1.GCD的使用要点" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/18/GCD篇：1.GCD的使用要点/">《Objective-C高级编程 iOS与OS X多线程与内存管理》17</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/18/GCD篇：1.GCD的使用要点/" class="archive-article-date">
-  	<time datetime="2019-01-18T05:43:36.161Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-18</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="GCD篇：1-GCD的使用要点"><a href="#GCD篇：1-GCD的使用要点" class="headerlink" title="GCD篇：1.GCD的使用要点"></a>GCD篇：1.GCD的使用要点</h2><h4 id="1-多线程"><a href="#1-多线程" class="headerlink" title="1.多线程"></a>1.多线程</h4><p>一个CPU执行的CPU命令列为<strong>一条无分叉路径</strong>，即为<em>线程</em>。而这种无分叉路径存在多条，即为<em>多线程</em>。</p>
-<ul>
-<li>在多线程中，一个CPU核执行多条不同路径上的不同命令。</li>
-<li>在CPU中，使用寄存器将执行“路径”的状态保存到各自的专用的内存块中。在切换不同目标路径时，从对应的内存块中读取并在CPU中将执行信息复原，继续执行目标路径的命令列。这个过程称为“上下文切换”。</li>
-<li>多线程中需要注意的主要问题：<ul>
-<li>数据竞争：多个线程同时更新相同资源；</li>
-<li>死锁：执行等待事件的多个线程互相持续等待；</li>
-<li>线程过多导致内存占用过大</li>
-</ul>
-</li>
-</ul>
-        
-          <a class="article-more-a" href="/2019/01/18/GCD篇：1.GCD的使用要点/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/18/GCD篇：1.GCD的使用要点/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -951,15 +944,15 @@ return o(t,i(n),arguments.length<3?void 0:u(arguments[2]))}})},function(t,n,r){v
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">react-native</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
             
             <div class="clearfix"></div>

@@ -6,17 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>臭吉吉的瞎记空间</title>
+  <title>Autolayout之带有真实内容尺寸的视图 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="督促自己好好学习哦~">
-<meta property="og:type" content="website">
-<meta property="og:title" content="臭吉吉的瞎记空间">
-<meta property="og:url" content="http://yoursite.com/page/4/index.html">
+  <meta name="description" content="注：本文节选并翻译自Views with Intrinsic Content Size  动态高度的Label和Text Field简单的Label和Text Field示例中，通过假定text field总是比name label更高简化了布局逻辑。可是，这不总是准确的。如果你增加label的字体大小到一定程度，它将会比text field更高。">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Autolayout之带有真实内容尺寸的视图">
+<meta property="og:url" content="http://yoursite.com/2019/02/19/Autolayout之带有真实内容尺寸的视图/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="督促自己好好学习哦~">
+<meta property="og:description" content="注：本文节选并翻译自Views with Intrinsic Content Size  动态高度的Label和Text Field简单的Label和Text Field示例中，通过假定text field总是比name label更高简化了布局逻辑。可是，这不总是准确的。如果你增加label的字体大小到一定程度，它将会比text field更高。">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Label_and_Text_Field_Pair_2x.png">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/dynamic_height_label_and_text_field_2x.png">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Two_Buttons_with_Equal_Spacing_screen_2x.png">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/two_buttons_with_equal_spacing_2x.png">
+<meta property="og:updated_time" content="2019-02-19T03:56:24.828Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="臭吉吉的瞎记空间">
-<meta name="twitter:description" content="督促自己好好学习哦~">
+<meta name="twitter:title" content="Autolayout之带有真实内容尺寸的视图">
+<meta name="twitter:description" content="注：本文节选并翻译自Views with Intrinsic Content Size  动态高度的Label和Text Field简单的Label和Text Field示例中，通过假定text field总是比name label更高简化了布局逻辑。可是，这不总是准确的。如果你增加label的字体大小到一定程度，它将会比text field更高。">
+<meta name="twitter:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Label_and_Text_Field_Pair_2x.png">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -176,22 +183,20 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-单例模式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-Autolayout之带有真实内容尺寸的视图" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/07/单例模式/">iOS中“严谨”的单例模式</a>
+    <h1 class="article-title" itemprop="name">
+      Autolayout之带有真实内容尺寸的视图
     </h1>
   
 
         
-        <a href="/2018/09/07/单例模式/" class="archive-article-date">
-  	<time datetime="2018-09-07T07:34:18.943Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-07</time>
+        <a href="/2019/02/19/Autolayout之带有真实内容尺寸的视图/" class="archive-article-date">
+  	<time datetime="2019-02-19T03:56:24.828Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-19</time>
 </a>
         
       </header>
@@ -199,539 +204,129 @@
     <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
-<p>由于OC中的方法天生就是public的（就算只写到.m中，在运行时也可以调用到。。。），平时使用的单例方法也未必严谨，所以，看了书，受教了~（还好一般老老实实使用类方法创建单例的无所谓）。</p>
+<p>注：本文节选并翻译自<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/ViewswithIntrinsicContentSize.html#//apple_ref/doc/uid/TP40010853-CH13-SW1" target="_blank" rel="external">Views with Intrinsic Content Size</a></p>
 </blockquote>
-<h4 id="实现一个“严谨”的单例类"><a href="#实现一个“严谨”的单例类" class="headerlink" title="实现一个“严谨”的单例类"></a>实现一个“严谨”的单例类</h4><p>一般来说，提供一个类方法入口，使用dispatch_once_t保护，使用静态类变量保存，即可成功一个创建线程安全的单例对象。</p>
-<p>但是，当调用者在不知情的情况下，调用传统的二段式创建、new或者allocWithZone方法分配内存，甚至是调用copy或multableCopy方法时，都可以创建新的实例对象。所以，为了避免，就需要我们对这些方法依次堵住，重写时，直接在方法内部调用单例方法即可。并且，单例方法的实例化对象时，使用[[super allocWithZone:nil] init]来替代默认（自身的方法已经被重写了）。即可得到“严谨”的单例类。</p>
-<h4 id="关于单例类的继承"><a href="#关于单例类的继承" class="headerlink" title="关于单例类的继承"></a>关于单例类的继承</h4><p>平时都不这么用啊。。。确实是。。。不过既然书中提到了，也查阅了一下，说一说哇。。。（当前的示例代码中无法实现此功能）</p>
-<p>书中说，使用NSAllocateObject()函数手动分配内存，可以实现子类创建自己的单例对象，但是由于现在是ARC环境，此函数早已不可用，需要对单例类单独“-fno-objc-arc”来开后门才行。另一篇博文<a href="https://www.jianshu.com/p/e1a3a5525452" target="_blank" rel="external">IOS单例模式下多线程和继承写法总结</a>里面，也有讨论过，通过查找源码的方式（alloc -&gt; allocWithZone: -&gt; class_createInstance() 的过程），直接使用runtime中的创建实例方法也能达到同样的效果（前提也是MRC环境下），d=====(￣▽￣*)b厉害。</p>
-<p>所以，平时不这么用。。。</p>
+<h4 id="动态高度的Label和Text-Field"><a href="#动态高度的Label和Text-Field" class="headerlink" title="动态高度的Label和Text Field"></a>动态高度的Label和Text Field</h4><p><a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/ViewswithIntrinsicContentSize.html#//apple_ref/doc/uid/TP40010853-CH13-SW8" target="_blank" rel="external">简单的Label和Text Field</a>示例中，通过假定text field总是比name label更高简化了布局逻辑。可是，这不总是准确的。如果你增加label的字体大小到一定程度，它将会比text field更高。</p>
+<a id="more"></a>
+<p>本示例通过在运行期间高度最高的控件动态设置了所有控件的垂直间距。当使用标准系统字体是，本示例看起来与<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/ViewswithIntrinsicContentSize.html#//apple_ref/doc/uid/TP40010853-CH13-SW8" target="_blank" rel="external">简单的Label和Text Field</a>相同。可是，当你增加label的字体到36号时，布局的竖直间距会使用label的顶部距离重新计算。</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Label_and_Text_Field_Pair_2x.png" alt="img"></p>
+<p>这当然是一个人为设置的例子。毕竟，如果你增加了label字体大小，通常来说你还应该增加text field的字体大小。可是，在动态类型控件和指定尺寸控件（如图片）同时出现时，如果通过iPhone的辅助功能设置了超级超级大的字体时，此技术就可以证明是有效的。</p>
+<h5 id="视图和约束"><a href="#视图和约束" class="headerlink" title="视图和约束"></a>视图和约束</h5><p>就像<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/ViewswithIntrinsicContentSize.html#//apple_ref/doc/uid/TP40010853-CH13-SW8" target="_blank" rel="external">简单的Label和Text Field</a>中一样设置好视图层级，但是我们使用了稍微复杂一些的约束：</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/dynamic_height_label_and_text_field_2x.png" alt="img"></p>
+<ol>
+<li>Name Label.Leading = Superview.LeadingMargin</li>
+<li>Name Text Field.Trailing = Superview.TrailingMargin</li>
+<li>Name Text Field.Leading = Name Label.Trailing + Standard</li>
+<li>Name Label.Top &gt;= Top Layout Guide.Bottom + 20.0</li>
+<li>Name Label.Top = Top Layout Guide.Bottom + 20.0 (Priority 249)</li>
+<li>Name Text Field.Top &gt;= Top Layout Guide.Bottom + 20.0</li>
+<li>Name Text Field.Top = Top Layout Guide.Bottom + 20.0 (Priority 249)</li>
+<li>Name label.Baseline = Name Text Field.Baseline</li>
+</ol>
+<h5 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h5><p>要让text field拉伸来填满可用空间，它的抗拉伸优先级必须低于label的。默认来说，Interface Builder会自动将label的抗拉伸优先级设置为251，text field的为250.你可以在尺寸检查器中验证这个数值。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>Horizontal hugging</th>
+<th>Vertical hugging</th>
+<th>Horizontal resistance</th>
+<th>Vertical resistance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name Label</td>
+<td>251</td>
+<td>251</td>
+<td>750</td>
+<td>750</td>
+</tr>
+<tr>
+<td>Name Text Field</td>
+<td>250</td>
+<td>250</td>
+<td>750</td>
+<td>750</td>
+</tr>
+</tbody>
+</table>
+<h5 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h5><p>本例中，对每一个控件都是用了一对约束。一个必须的且大于或等于的约束定义了控件自身和布局指导线之间的最小距离，同时，一个可选约束试图将此距离明确设置为20。</p>
+<p>对于尺寸更高的控件，这两个约束全部满足，故系统会会在离布局指导线20点距离的地方放置该控件。可是，对于较矮的那个，只有最小距离约束可以满足。另一个约束会被忽略。这使得在运行期间，当控件的高度改变时，Auto Layout系统可以动态重新计算布局。</p>
 <blockquote>
-<p>示例代码地址：<a href="https://github.com/Choujiji/DesignPatterns_Learning/tree/master/%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA/%E5%8D%95%E4%BE%8B" target="_blank" rel="external">Singleton</a></p>
+<p><strong>说明</strong></p>
+<p>确保将可选约束优先级的值设置得低于默认抗拉伸优先级（250）。否则，系统会破坏抗拉伸约束并拉伸视图而不是重新定位。<br>当使用基线定位进行布局时，某些地方可能会导致特别疑惑，因为只有当文字的相关视图以真实内容尺寸显示时，基线定位才是有效的。尽管包含了一个必要的基线约束，如果系统修改了其中一个视图的尺寸，文字可能就不会正常排列了。</p>
 </blockquote>
-<h4 id="其他资料："><a href="#其他资料：" class="headerlink" title="其他资料："></a>其他资料：</h4><ul>
-<li><a href="https://www.jianshu.com/p/d2d33f519764?utm_source=desktop&amp;utm_medium=timeline" target="_blank" rel="external">iOS中的单例模式</a></li>
-<li><a href="https://www.jianshu.com/p/a92c0283f243" target="_blank" rel="external">iOS 单例模式</a></li>
-<li><a href="https://www.jianshu.com/p/e1a3a5525452" target="_blank" rel="external">IOS单例模式下多线程和继承写法总结</a></li>
-<li><a href="http://justinyan.me/post/1306" target="_blank" rel="external">从 Objective-C 里的 Alloc 和 AllocWithZone 谈起</a></li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/09/07/单例模式/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-设计模式之建造者模式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/05/设计模式之建造者模式/">生成器模式</a>
-    </h1>
-  
-
-        
-        <a href="/2018/09/05/设计模式之建造者模式/" class="archive-article-date">
-  	<time datetime="2018-09-05T04:03:27.472Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="图示："><a href="#图示：" class="headerlink" title="图示："></a>图示：</h3><p>以下分别是类图与时序图<br><img src="http://p8r3sk4om.bkt.clouddn.com/374636-20170808225735589-1433194842.jpg" alt="img"><br><img src="http://p8r3sk4om.bkt.clouddn.com/20170503144820580.png" alt="img"><br>
-        
-          <a class="article-more-a" href="/2018/09/05/设计模式之建造者模式/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/09/05/设计模式之建造者模式/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-测试二下" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/05/15/测试二下/">这只是测试，新的小家（其实是tag）</a>
-    </h1>
-  
-
-        
-        <a href="/2018/05/15/测试二下/" class="archive-article-date">
-  	<time datetime="2018-05-15T02:24:06.602Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">react-native</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/05/15/测试二下/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-使用代码初始化StoryBoard中的ViewController" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/05/15/使用代码初始化StoryBoard中的ViewController/">使用代码初始化StoryBoard中的ViewController</a>
-    </h1>
-  
-
-        
-        <a href="/2018/05/15/使用代码初始化StoryBoard中的ViewController/" class="archive-article-date">
-  	<time datetime="2018-05-15T01:49:33.088Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取StoryBoard对象（这里使用的是默认的主bundle中的文件）</span></div><div class="line">UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@<span class="string">"Main"</span> bundle:nil];</div><div class="line"><span class="comment">// 使用ID在StoryBoard对象中获取并初始化新的ViewController</span></div><div class="line">BasicKVO_ViewController *vc1 = [storyBoard instantiateViewControllerWithIdentifier:@<span class="string">"BasicKVO_VC"</span>];</div></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2018/05/15/使用代码初始化StoryBoard中的ViewController/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/05/15/使用代码初始化StoryBoard中的ViewController/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-KVC基础学习总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/04/KVC基础学习总结/">KVC基础学习总结</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/04/KVC基础学习总结/" class="archive-article-date">
-  	<time datetime="2018-04-04T06:16:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<ul>
-<li><strong>对象属性值的设置和获取</strong></li>
-<li><strong>访问集合属性值的专用API</strong></li>
-<li><strong>使用集合操作符</strong></li>
-<li><strong>描述非对象的值（基本数据类型和结构体等）</strong></li>
-<li><strong>属性类型验证</strong></li>
-<li><strong>访问器的搜索方式</strong></li>
-</ul>
+<h4 id="等间距的两个按钮"><a href="#等间距的两个按钮" class="headerlink" title="等间距的两个按钮"></a>等间距的两个按钮</h4><p>在样式上看，这个例子和<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/ViewswithIntrinsicContentSize.html#//apple_ref/doc/uid/TP40010853-CH13-SW4" target="_blank" rel="external">两个等宽按钮</a>示例（见截图）基本相同。可是，在本例中，按钮的宽度基于带有最长标题的按钮。如果空间足够，所有按钮都会被拉伸直到他们同时满足最长按钮的真实内容尺寸。所有额外的空间会在按钮周围平均分配。</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Two_Buttons_with_Equal_Spacing_screen_2x.png" alt="img"></p>
+<p>在iPhone上，<em>两个等宽按钮</em>和<em>等间距的两个按钮</em>在竖屏状态下的布局基本相同。只有当你把设备旋转到横屏方向时区别才会变得明显（或使用更大的设备，如iPad）。</p>
+<h5 id="视图和约束-1"><a href="#视图和约束-1" class="headerlink" title="视图和约束"></a>视图和约束</h5><p>在Interface Builder，拖拽并放置两个按钮和三个视图对象。把按钮放在视图中间，之后按照如下方式设置约束。</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/two_buttons_with_equal_spacing_2x.png" alt="img"></p>
+<ol>
+<li>Leading Dummy View.Leading = Superview.LeadingMargin</li>
+<li>Short Button.Leading = Leading Dummy View.Trailing</li>
+<li>Center Dummy View.Leading = Short Button.Trailing</li>
+<li>Long Button.Leading = Center Dummy View.Trailing</li>
+<li>Trailing Dummy View.Leading = Long Button.Trailing</li>
+<li>Trailing Dummy View.Trailing = Superview.TrailingMargin</li>
+<li>Bottom Layout Guide.Top = Leading Dummy View.Bottom + 20.0</li>
+<li>Bottom Layout Guide.Top = Short Button.Bottom + 20.0</li>
+<li>Bottom Layout Guide.Top = Center Dummy View.Bottom + 20.0</li>
+<li>Bottom Layout Guide.Top = Long Button.Bottom + 20.0</li>
+<li>Bottom Layout Guide.Top = Trailing Dummy View.Bottom + 20.0</li>
+<li>Short Button.Leading &gt;= Superview.LeadingMargin</li>
+<li>Long Button.Leading &gt;= Short Button.Trailing + Standard</li>
+<li>Superview.TrailingMargin &gt;= Long Button.Trailing</li>
+<li>Leading Dummy View.Width = Center Dummy View.Width</li>
+<li>Leading Dummy View.Width = Trailing Dummy View.Width</li>
+<li>Short Button.Width = Long Button.Width</li>
+<li>Leading Dummy View.Height = 0.0</li>
+<li>Center Dummy View.Height = 0.0</li>
+<li>Trailing Dummy View.Height = 0.0</li>
+</ol>
+<h5 id="属性-1"><a href="#属性-1" class="headerlink" title="属性"></a>属性</h5><p>给按钮设置一个可见的背景色，使在设备旋转时按钮的结构改变可以更容易看出来。此外，给按钮设置不同长度的标题。所有按钮应该基于最长标题来设置尺寸。</p>
+<table>
+<thead>
+<tr>
+<th>视图</th>
+<th>属性</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Short Button</td>
+<td>Background</td>
+<td>Light Gray Color</td>
+</tr>
+<tr>
+<td>Short Button</td>
+<td>Title</td>
+<td>Short</td>
+</tr>
+<tr>
+<td>Long Button</td>
+<td>Background</td>
+<td>Light Gray Color</td>
+</tr>
+<tr>
+<td>Long Button</td>
+<td>Title</td>
+<td>Much Longer Button Title</td>
+</tr>
+</tbody>
+</table>
+<h5 id="讨论-1"><a href="#讨论-1" class="headerlink" title="讨论"></a>讨论</h5><p>如图你看到的一样，这些约束已经变得复杂了。本例只是用来展示指定技术的，在真正的app里你应该考虑使用Stack View。</p>
+<p>在本例中，你想要让空白区域随着父视图尺寸改变而改变。这意味着你需要一组等宽约束来控制空白区域的宽度；可是，你不能在空的地方直接设置约束。你可以设置尺寸约束的至少是一个对象。</p>
+<p>在本例中，你用了几个虚拟视图来代表空白空间。这些视图是UIView类的空实例。在本例中，它们的高度被设置为0来最小化对视图层级的影响。</p>
+<blockquote>
+<p><strong>说明</strong></p>
+<p>虚拟视图会增加布局的性能损耗，所以你应该谨慎使用。如果这些视图非常大，其图形上下文会占用大量的内存，尽管它们没有包含任何有用信息。</p>
+<p>此外，这些视图加入到了视图层级的响应者链中。这意味着它们会响应消息，如触摸检测，这些消息会沿着响应者链进行传递。如果没有小心处理，这些视图可能会打断并响应这些消息，产生难以排查的bug。</p>
 </blockquote>
-        
-          <a class="article-more-a" href="/2018/04/04/KVC基础学习总结/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/04/KVC基础学习总结/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-iOS Protocol（协议）的简单总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/03/iOS Protocol（协议）的简单总结/">iOS Protocol（协议）的简单总结</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/03/iOS Protocol（协议）的简单总结/" class="archive-article-date">
-  	<time datetime="2018-04-03T02:50:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>协议保存在类结构的协议表中，我们可以使用runtime的相关api查看指定类遵循的协议，或动态修改遵循的协议等。</p>
-        
-          <a class="article-more-a" href="/2018/04/03/iOS Protocol（协议）的简单总结/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/03/iOS Protocol（协议）的简单总结/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-Objective-C 2.0 动态绑定和消息转发" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/30/Objective-C 2.0 动态绑定和消息转发/">Objective-C 2.0 方法调用中的动态绑定和消息转发</a>
-    </h1>
-  
-
-        
-        <a href="/2018/03/30/Objective-C 2.0 动态绑定和消息转发/" class="archive-article-date">
-  	<time datetime="2018-03-30T06:06:41.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-30</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<ul>
-<li><strong>OC方法调用的实质</strong></li>
-<li><strong>动态绑定和消息转发的流程</strong></li>
-<li><strong>动态绑定实例（添加实例方法、添加类方法）</strong></li>
-<li><strong>消息转发实例</strong></li>
-<li><strong>消息转发模拟“多继承”以及二者的区别</strong></li>
-<li><strong>使用消息转发代替继承</strong></li>
-</ul>
-</blockquote>
-        
-          <a class="article-more-a" href="/2018/03/30/Objective-C 2.0 动态绑定和消息转发/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/30/Objective-C 2.0 动态绑定和消息转发/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-Objective-C 2.0 category" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/26/Objective-C 2.0 category/">Objective-C 2.0的category</a>
-    </h1>
-  
-
-        
-        <a href="/2018/03/26/Objective-C 2.0 category/" class="archive-article-date">
-  	<time datetime="2018-03-26T14:40:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<ul>
-<li><strong>class和category的数据结构</strong></li>
-<li><strong>为什么category只能添加方法，不能添加属性？</strong></li>
-<li><strong>category为何不要覆盖父类方法？</strong></li>
-<li><strong>多个category覆盖同名方法的执行顺序</strong></li>
-<li><strong>category与extension的区别</strong></li>
-<li><strong>关联对象和其他补充</strong></li>
-</ul>
-</blockquote>
-        
-          <a class="article-more-a" href="/2018/03/26/Objective-C 2.0 category/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/26/Objective-C 2.0 category/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-iOS runtime学习" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/14/iOS runtime学习/">iOS runtime学习</a>
-    </h1>
-  
-
-        
-        <a href="/2018/03/14/iOS runtime学习/" class="archive-article-date">
-  	<time datetime="2018-03-14T03:33:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="开坑，待补-，学习总结"><a href="#开坑，待补-，学习总结" class="headerlink" title="开坑，待补~，学习总结~"></a>开坑，待补~，学习总结~</h3><h3 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h3><ul>
-<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048-CH1-SW1" target="_blank" rel="external">Objective-C Runtime Programming Guide</a></li>
-<li><a href="https://www.jianshu.com/p/0e6eb2f9ed5d" target="_blank" rel="external">iOS-runtime通篇详解-上</a></li>
-<li><a href="https://www.jianshu.com/p/f1544b27d007" target="_blank" rel="external">iOS-runtime通篇详解-下</a></li>
-<li><a href="https://www.jianshu.com/p/efeb33712445#" target="_blank" rel="external">Runtime全方位装逼指南
-</a></li>
-<li><a href="https://www.jianshu.com/p/19f280afcb24" target="_blank" rel="external">iOS 模块详解—「Runtime面试、工作」看我就 🐒 了 ^_^.</a></li>
-</ul>
+<p>或者，你可以使用<a href="https://developer.apple.com/documentation/uikit/uilayoutguide" target="_blank" rel="external">UILayoutGuide</a>类实例来代表空白区域。这个轻量级的类使用一个矩形结构以便可以加入到Auto Layout的约束中。布局指导对象（layout guides）没有图形上下文，并且他们不会加入到视图层级中。这使布局指导对象对于分组项目或是定义空白区域来说特别合适。</p>
+<p>不幸的是，你不能在Interface Builder的场景对象中添加布局指导对象，并且在基于story-board的场景中使用代码创建该对象会变得非常复杂。一般来说，使用StoryBoard和Interface Builder要比使用自定义布局指导对象更好。</p>
+<p>本例使用了<em>大于等于</em>约束来设置按钮间的最小间距。“必须级”约束还确保了按钮一直拥有相同宽度，并且虚拟视图也都拥有相同宽度（虽然，他们与按钮的宽度不同）。剩下的约束通过按钮的CHCR优先级自行管理。如果空间不足，虚拟视图就会被忽略为0宽度，所有按钮会将虚拟视图的空间均分（在按钮之间使用基本间距）。一旦可用空间增加，所有按钮就会扩大直到达到最大按钮的真实内容尺寸为止，之后所有的虚拟视图也开始扩大。虚拟视图会持续扩大来填充所有可用空间。</p>
 
       
 
@@ -754,78 +349,74 @@
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/14/iOS runtime学习/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/02/19/Autolayout之带有真实内容尺寸的视图/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
 
-
-
-
-
   
-    <article id="post-iOS RunLoop学习" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/07/iOS RunLoop学习/">iOS RunLoop学习</a>
-    </h1>
   
-
-        
-        <a href="/2018/03/07/iOS RunLoop学习/" class="archive-article-date">
-  	<time datetime="2018-03-07T06:21:53.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="RunLoop简介及与线程的关系："><a href="#RunLoop简介及与线程的关系：" class="headerlink" title="RunLoop简介及与线程的关系："></a>RunLoop简介及与线程的关系：</h3><p>简而言之，RunLoop就是一个“do-while”循环–一个事件队列循环。循环时，系统会依次从事件队列中取出事件并执行；没有事件处理时，RunLoop会进入休眠，等待事件唤醒处理，以节省系统资源，即“休眠-&gt;事件唤醒-&gt;处理事件-&gt;休眠…”的逻辑。</p>
-<p>在iOS中，RunLoop存在的类为CFRunLoopRef和NSRunLoop。前者为CoreFoundation框架，C语言编写，线程安全；后者是OC封装，线程不安全。</p>
-        
-          <a class="article-more-a" href="/2018/03/07/iOS RunLoop学习/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/07/iOS RunLoop学习/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
+    <a href="/2019/02/17/Autolayout之嵌套Stack View的使用/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Autolayout之嵌套Stack View的使用</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
 
 
 
@@ -833,9 +424,10 @@
 
   
   
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
-    </nav>
+  
+
+  
+
   
 
 
@@ -858,8 +450,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
