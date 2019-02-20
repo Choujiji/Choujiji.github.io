@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-02-20T04:48:00.364Z</updated>
+  <updated>2019-02-20T16:37:10.079Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,43 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>数组中的两数之和为指定的值，求此两数的索引</title>
+    <link href="http://yoursite.com/2019/02/21/%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C%E4%B8%BA%E6%8C%87%E5%AE%9A%E7%9A%84%E5%80%BC%EF%BC%8C%E6%B1%82%E6%AD%A4%E4%B8%A4%E6%95%B0%E7%9A%84%E7%B4%A2%E5%BC%95/"/>
+    <id>http://yoursite.com/2019/02/21/数组中的两数之和为指定的值，求此两数的索引/</id>
+    <published>2019-02-20T16:37:10.079Z</published>
+    <updated>2019-02-20T16:37:10.079Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h4><p>给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。</p>
+<p>你可以假设每种输入只会对应一个答案。但是，你不能重复利用这个数组中同样的元素。</p>
+<a id="more"></a>
+<ul>
+<li>示例：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">给定 nums = [<span class="number">2</span>, <span class="number">7</span>, <span class="number">11</span>, <span class="number">15</span>], target = <span class="number">9</span></div><div class="line">因为 nums[<span class="number">0</span>] + nums[<span class="number">1</span>] = <span class="number">2</span> + <span class="number">7</span> = <span class="number">9</span></div><div class="line">所以返回 [<span class="number">0</span>, <span class="number">1</span>]</div></pre></td></tr></table></figure>
+<h4 id="解法1：暴力法"><a href="#解法1：暴力法" class="headerlink" title="解法1：暴力法"></a>解法1：暴力法</h4><p>依次遍历数组中的每个数据，查看与数组中的其他数据之和是否为指定的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">NSArray&lt;NSNumber *&gt; *getSumIndex1(NSArray&lt;NSNumber *&gt; *nums, NSInteger target) &#123;</div><div class="line">    <span class="comment">// 注意：标准解法需要双重遍历原数组确定索引，时间复杂度为O(n^2)，这里使用NSArray的API进行了简化</span></div><div class="line">    NSArray *sumIndexInfo;</div><div class="line">    <span class="keyword">for</span> (NSNumber *item in nums) &#123;</div><div class="line">        <span class="comment">// 当前索引</span></div><div class="line">        NSInteger currentIndex = [nums indexOfObject:item];</div><div class="line">        <span class="comment">// 获取差值</span></div><div class="line">        NSNumber *result = @(target - item.integerValue);</div><div class="line">        <span class="comment">// 查看是否在数组中</span></div><div class="line">        NSInteger resultIndex = [nums indexOfObject:result];</div><div class="line">        <span class="keyword">if</span> ((resultIndex != NSNotFound)</div><div class="line">            &amp;&amp; (resultIndex != currentIndex)) &#123;</div><div class="line">            <span class="comment">// 找到，得到索引并返回</span></div><div class="line">            sumIndexInfo = @[@(currentIndex), @(resultIndex)];</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> sumIndexInfo;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="解法2：两次遍历哈希表"><a href="#解法2：两次遍历哈希表" class="headerlink" title="解法2：两次遍历哈希表"></a>解法2：两次遍历哈希表</h4><p>这里使用了NSDictionary类进行实现，目的是为了快速查找到数据对应的索引：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">NSArray&lt;NSNumber *&gt; *getSumIndex2(NSArray&lt;NSNumber *&gt; *nums, NSInteger target) &#123;</div><div class="line">    <span class="comment">// 使用哈希表进行存取，加快查找速度</span></div><div class="line">    NSMutableDictionary *hashTable = [@&#123;&#125; mutableCopy];</div><div class="line">    <span class="keyword">for</span> (NSInteger index = <span class="number">0</span>; index &lt; nums.count; index++) &#123;</div><div class="line">        <span class="comment">// key为数据值，value为索引（目的为了快速通过数值查询到索引）</span></div><div class="line">        [hashTable setObject:@(index) forKey:nums[index]];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    NSArray *sumIndexInfo;</div><div class="line">    <span class="keyword">for</span> (NSInteger index = <span class="number">0</span>; index &lt; nums.count; index++) &#123;</div><div class="line">        NSInteger currentValue = [nums[index] integerValue];</div><div class="line">        <span class="comment">// 获取差值</span></div><div class="line">        NSNumber *result = @(target - currentValue);</div><div class="line">        <span class="comment">// 在哈希表中查找对应索引</span></div><div class="line">        NSNumber *resultIndex = [hashTable objectForKey:result];</div><div class="line">        <span class="keyword">if</span> ((resultIndex)</div><div class="line">            &amp;&amp; (resultIndex.integerValue != index)) &#123;</div><div class="line">            sumIndexInfo = @[@(index), resultIndex];</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> sumIndexInfo;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="解法3：一次遍历哈希表"><a href="#解法3：一次遍历哈希表" class="headerlink" title="解法3：一次遍历哈希表"></a>解法3：一次遍历哈希表</h4><p>遍历插入哈希表的同时，直接在表中查询，符合直接返回。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">NSArray&lt;NSNumber *&gt; *getSumIndex3(NSArray&lt;NSNumber *&gt; *nums, NSInteger target) &#123;</div><div class="line">    <span class="comment">// 简化了方法2，一次遍历同时直接查询</span></div><div class="line">    </div><div class="line">    NSArray *sumIndexInfo;</div><div class="line">    <span class="comment">// 使用哈希表进行存取，加快查找速度</span></div><div class="line">    NSMutableDictionary *hashTable = [@&#123;&#125; mutableCopy];</div><div class="line">    <span class="keyword">for</span> (NSInteger index = <span class="number">0</span>; index &lt; nums.count; index++) &#123;</div><div class="line">        NSNumber *currentItem = nums[index];</div><div class="line">        <span class="comment">// 获取差值</span></div><div class="line">        NSNumber *result = @(target - currentItem.integerValue);</div><div class="line">        <span class="comment">// 直接查询当前哈希表中是否已经包含差值对象</span></div><div class="line">        NSNumber *resultIndex = [hashTable objectForKey:result];</div><div class="line">        <span class="keyword">if</span> ((resultIndex)</div><div class="line">            &amp;&amp; (resultIndex.integerValue != index)) &#123;</div><div class="line">            sumIndexInfo = @[@(index), resultIndex];</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// key为数据值，value为索引（目的为了快速通过数值查询到索引）</span></div><div class="line">            [hashTable setObject:@(index) forKey:currentItem];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> sumIndexInfo;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>由于在OC的数组中已经包含了根据元素直接返回索引的高级API，故大幅度简化了解法1，使用哈希表快速返回索引也变得没有那么必要了。</p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;题目&quot;&gt;&lt;a href=&quot;#题目&quot; class=&quot;headerlink&quot; title=&quot;题目&quot;&gt;&lt;/a&gt;题目&lt;/h4&gt;&lt;p&gt;给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。&lt;/p&gt;
+&lt;p&gt;你可以假设每种输入只会对应一个答案。但是，你不能重复利用这个数组中同样的元素。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="算法学习" scheme="http://yoursite.com/tags/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>数组中有重复元素吗？</title>
@@ -1939,42 +1976,6 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-    
-    </summary>
-    
-    
-      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》9</title>
-    <link href="http://yoursite.com/2019/01/06/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%AF%87%EF%BC%9A9.ARC%E5%AE%9E%E7%8E%B0%E4%B9%8B__autoreleasing/"/>
-    <id>http://yoursite.com/2019/01/06/内存管理篇：9.ARC实现之__autoreleasing/</id>
-    <published>2019-01-06T07:54:34.109Z</published>
-    <updated>2019-01-06T07:54:34.109Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="内存管理篇：9-ARC实现之-autoreleasing"><a href="#内存管理篇：9-ARC实现之-autoreleasing" class="headerlink" title="内存管理篇：9.ARC实现之__autoreleasing"></a>内存管理篇：9.ARC实现之__autoreleasing</h2><ol>
-<li>__autoreleasing修饰的变量与在非ARC环境下，对对象调用autorelease方法效果一致：</li>
-</ol>
-<a id="more"></a>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">@autoreleasePool &#123;</div><div class="line">    id __autoreleasing obj = [[NSObject alloc] init];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>转换后的模拟代码为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 创建pool</span></div><div class="line">id pool = objc_autoreleasePoolPush();</div><div class="line"></div><div class="line"><span class="comment">// 创建对象</span></div><div class="line">id obj = objc_msgSend(NSObject, @selector(alloc));</div><div class="line">objc_msgSend(obj, @selector(init));</div><div class="line"></div><div class="line"><span class="comment">// 加入到pool中</span></div><div class="line">objc_autorelease(obj);</div><div class="line"></div><div class="line"><span class="comment">// 释放pool中的对象</span></div><div class="line">objc_autoreleasePoolPop(pool);</div></pre></td></tr></table></figure>
-<ol>
-<li>对于将非调用方创建的对象，加入到autoreleasePool中的情况，生成的代码如下：</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">@autoreleasePool &#123;</div><div class="line">    id __autoreleasing obj = [NSMutableArray <span class="built_in">array</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>转换后的模拟代码为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 创建pool</span></div><div class="line">id pool = objc_autoreleasePoolPush();</div><div class="line"></div><div class="line"><span class="comment">// 创建对象</span></div><div class="line">id obj = objc_msgSend(NSMutableArray, @selector(<span class="built_in">array</span>));</div><div class="line"><span class="comment">// 保留返回的自动释放对象（autorelease优化）</span></div><div class="line">objc_retainAutoreleasedReturnValue(obj);</div><div class="line"></div><div class="line"><span class="comment">// 加入到pool中</span></div><div class="line">objc_autorelease(obj);</div><div class="line"></div><div class="line"><span class="comment">// 释放pool中的对象</span></div><div class="line">objc_autoreleasePoolPop(pool);</div></pre></td></tr></table></figure>
-<p>这里在前面<strong>strong的情况中有说过，<strong>对于函数的返回值，ARC使用objc_autoreleaseReturnValue和objc_retainAutoreleasedReturnValue方法进行优化，避免了将生成的对象在pool中进行进入和取出操作</strong>。但是由于接收变量是使用</strong>autoreleasing修饰的，故直接将其加入到pool中。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;内存管理篇：9-ARC实现之-autoreleasing&quot;&gt;&lt;a href=&quot;#内存管理篇：9-ARC实现之-autoreleasing&quot; class=&quot;headerlink&quot; title=&quot;内存管理篇：9.ARC实现之__autoreleasing&quot;&gt;&lt;/a&gt;内存管理篇：9.ARC实现之__autoreleasing&lt;/h2&gt;&lt;ol&gt;
-&lt;li&gt;__autoreleasing修饰的变量与在非ARC环境下，对对象调用autorelease方法效果一致：&lt;/li&gt;
-&lt;/ol&gt;
     
     </summary>
     

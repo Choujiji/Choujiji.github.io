@@ -6,17 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives | 臭吉吉的瞎记空间</title>
+  <title>数组中的两数之和为指定的值，求此两数的索引 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="督促自己好好学习哦~">
-<meta property="og:type" content="website">
-<meta property="og:title" content="臭吉吉的瞎记空间">
-<meta property="og:url" content="http://yoursite.com/archives/page/4/index.html">
+  <meta name="description" content="题目给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。 你可以假设每种输入只会对应一个答案。但是，你不能重复利用这个数组中同样的元素。">
+<meta name="keywords" content="算法学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数组中的两数之和为指定的值，求此两数的索引">
+<meta property="og:url" content="http://yoursite.com/2019/02/21/数组中的两数之和为指定的值，求此两数的索引/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="督促自己好好学习哦~">
+<meta property="og:description" content="题目给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。 你可以假设每种输入只会对应一个答案。但是，你不能重复利用这个数组中同样的元素。">
+<meta property="og:updated_time" content="2019-02-20T16:37:10.079Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="臭吉吉的瞎记空间">
-<meta name="twitter:description" content="督促自己好好学习哦~">
+<meta name="twitter:title" content="数组中的两数之和为指定的值，求此两数的索引">
+<meta name="twitter:description" content="题目给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。 你可以假设每种输入只会对应一个答案。但是，你不能重复利用这个数组中同样的元素。">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -182,405 +184,143 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-数组中的两数之和为指定的值，求此两数的索引" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      数组中的两数之和为指定的值，求此两数的索引
+    </h1>
+  
+
+        
+        <a href="/2019/02/21/数组中的两数之和为指定的值，求此两数的索引/" class="archive-article-date">
+  	<time datetime="2019-02-20T16:37:10.079Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-21</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h4><p>给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。</p>
+<p>你可以假设每种输入只会对应一个答案。但是，你不能重复利用这个数组中同样的元素。</p>
+<a id="more"></a>
+<ul>
+<li>示例：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">给定 nums = [<span class="number">2</span>, <span class="number">7</span>, <span class="number">11</span>, <span class="number">15</span>], target = <span class="number">9</span></div><div class="line">因为 nums[<span class="number">0</span>] + nums[<span class="number">1</span>] = <span class="number">2</span> + <span class="number">7</span> = <span class="number">9</span></div><div class="line">所以返回 [<span class="number">0</span>, <span class="number">1</span>]</div></pre></td></tr></table></figure>
+<h4 id="解法1：暴力法"><a href="#解法1：暴力法" class="headerlink" title="解法1：暴力法"></a>解法1：暴力法</h4><p>依次遍历数组中的每个数据，查看与数组中的其他数据之和是否为指定的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">NSArray&lt;NSNumber *&gt; *getSumIndex1(NSArray&lt;NSNumber *&gt; *nums, NSInteger target) &#123;</div><div class="line">    <span class="comment">// 注意：标准解法需要双重遍历原数组确定索引，时间复杂度为O(n^2)，这里使用NSArray的API进行了简化</span></div><div class="line">    NSArray *sumIndexInfo;</div><div class="line">    <span class="keyword">for</span> (NSNumber *item in nums) &#123;</div><div class="line">        <span class="comment">// 当前索引</span></div><div class="line">        NSInteger currentIndex = [nums indexOfObject:item];</div><div class="line">        <span class="comment">// 获取差值</span></div><div class="line">        NSNumber *result = @(target - item.integerValue);</div><div class="line">        <span class="comment">// 查看是否在数组中</span></div><div class="line">        NSInteger resultIndex = [nums indexOfObject:result];</div><div class="line">        <span class="keyword">if</span> ((resultIndex != NSNotFound)</div><div class="line">            &amp;&amp; (resultIndex != currentIndex)) &#123;</div><div class="line">            <span class="comment">// 找到，得到索引并返回</span></div><div class="line">            sumIndexInfo = @[@(currentIndex), @(resultIndex)];</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> sumIndexInfo;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="解法2：两次遍历哈希表"><a href="#解法2：两次遍历哈希表" class="headerlink" title="解法2：两次遍历哈希表"></a>解法2：两次遍历哈希表</h4><p>这里使用了NSDictionary类进行实现，目的是为了快速查找到数据对应的索引：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">NSArray&lt;NSNumber *&gt; *getSumIndex2(NSArray&lt;NSNumber *&gt; *nums, NSInteger target) &#123;</div><div class="line">    <span class="comment">// 使用哈希表进行存取，加快查找速度</span></div><div class="line">    NSMutableDictionary *hashTable = [@&#123;&#125; mutableCopy];</div><div class="line">    <span class="keyword">for</span> (NSInteger index = <span class="number">0</span>; index &lt; nums.count; index++) &#123;</div><div class="line">        <span class="comment">// key为数据值，value为索引（目的为了快速通过数值查询到索引）</span></div><div class="line">        [hashTable setObject:@(index) forKey:nums[index]];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    NSArray *sumIndexInfo;</div><div class="line">    <span class="keyword">for</span> (NSInteger index = <span class="number">0</span>; index &lt; nums.count; index++) &#123;</div><div class="line">        NSInteger currentValue = [nums[index] integerValue];</div><div class="line">        <span class="comment">// 获取差值</span></div><div class="line">        NSNumber *result = @(target - currentValue);</div><div class="line">        <span class="comment">// 在哈希表中查找对应索引</span></div><div class="line">        NSNumber *resultIndex = [hashTable objectForKey:result];</div><div class="line">        <span class="keyword">if</span> ((resultIndex)</div><div class="line">            &amp;&amp; (resultIndex.integerValue != index)) &#123;</div><div class="line">            sumIndexInfo = @[@(index), resultIndex];</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> sumIndexInfo;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="解法3：一次遍历哈希表"><a href="#解法3：一次遍历哈希表" class="headerlink" title="解法3：一次遍历哈希表"></a>解法3：一次遍历哈希表</h4><p>遍历插入哈希表的同时，直接在表中查询，符合直接返回。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">NSArray&lt;NSNumber *&gt; *getSumIndex3(NSArray&lt;NSNumber *&gt; *nums, NSInteger target) &#123;</div><div class="line">    <span class="comment">// 简化了方法2，一次遍历同时直接查询</span></div><div class="line">    </div><div class="line">    NSArray *sumIndexInfo;</div><div class="line">    <span class="comment">// 使用哈希表进行存取，加快查找速度</span></div><div class="line">    NSMutableDictionary *hashTable = [@&#123;&#125; mutableCopy];</div><div class="line">    <span class="keyword">for</span> (NSInteger index = <span class="number">0</span>; index &lt; nums.count; index++) &#123;</div><div class="line">        NSNumber *currentItem = nums[index];</div><div class="line">        <span class="comment">// 获取差值</span></div><div class="line">        NSNumber *result = @(target - currentItem.integerValue);</div><div class="line">        <span class="comment">// 直接查询当前哈希表中是否已经包含差值对象</span></div><div class="line">        NSNumber *resultIndex = [hashTable objectForKey:result];</div><div class="line">        <span class="keyword">if</span> ((resultIndex)</div><div class="line">            &amp;&amp; (resultIndex.integerValue != index)) &#123;</div><div class="line">            sumIndexInfo = @[@(index), resultIndex];</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// key为数据值，value为索引（目的为了快速通过数值查询到索引）</span></div><div class="line">            [hashTable setObject:@(index) forKey:currentItem];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> sumIndexInfo;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>由于在OC的数组中已经包含了根据元素直接返回索引的高级API，故大幅度简化了解法1，使用哈希表快速返回索引也变得没有那么必要了。</p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/09/29/mpvue开发微信小程序的准备工作/" class="archive-article-date">
-  	<time datetime="2018-09-29T09:50:05.106Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-29</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/09/29/mpvue开发微信小程序的准备工作/">mpvue开发微信小程序的准备工作</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">微信小程序</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">算法学习</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/02/21/数组中的两数之和为指定的值，求此两数的索引/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/09/29/NSInvocation的莫名crash/" class="archive-article-date">
-  	<time datetime="2018-09-29T09:06:39.676Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-29</time>
-</a>
-        </div>
-    	 
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/09/29/NSInvocation的莫名crash/">NSInvocation的莫名crash</a>
-    </h1>
+  
+    <a href="/2019/02/20/数组中有重复元素吗？/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">数组中有重复元素吗？</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+  
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/09/07/单例模式/" class="archive-article-date">
-  	<time datetime="2018-09-07T07:34:18.943Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-07</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/09/07/单例模式/">iOS中“严谨”的单例模式</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/09/05/设计模式之建造者模式/" class="archive-article-date">
-  	<time datetime="2018-09-05T04:03:27.472Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-05</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/09/05/设计模式之建造者模式/">生成器模式</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/05/15/测试二下/" class="archive-article-date">
-  	<time datetime="2018-05-15T02:24:06.602Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/05/15/测试二下/">这只是测试，新的小家（其实是tag）</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">react-native</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/05/15/使用代码初始化StoryBoard中的ViewController/" class="archive-article-date">
-  	<time datetime="2018-05-15T01:49:33.088Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/05/15/使用代码初始化StoryBoard中的ViewController/">使用代码初始化StoryBoard中的ViewController</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/04/KVC基础学习总结/" class="archive-article-date">
-  	<time datetime="2018-04-04T06:16:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-04</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/04/KVC基础学习总结/">KVC基础学习总结</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/03/iOS Protocol（协议）的简单总结/" class="archive-article-date">
-  	<time datetime="2018-04-03T02:50:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/03/iOS Protocol（协议）的简单总结/">iOS Protocol（协议）的简单总结</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/30/Objective-C 2.0 动态绑定和消息转发/" class="archive-article-date">
-  	<time datetime="2018-03-30T06:06:41.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-30</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/30/Objective-C 2.0 动态绑定和消息转发/">Objective-C 2.0 方法调用中的动态绑定和消息转发</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/26/Objective-C 2.0 category/" class="archive-article-date">
-  	<time datetime="2018-03-26T14:40:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/26/Objective-C 2.0 category/">Objective-C 2.0的category</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/archives/page/3/">&laquo; Prev</a><a class="page-number" href="/archives/">1</a><a class="page-number" href="/archives/page/2/">2</a><a class="page-number" href="/archives/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/archives/page/5/">5</a><a class="page-number" href="/archives/page/6/">6</a><a class="extend next" rel="next" href="/archives/page/5/">Next &raquo;</a>
-    </nav>
   
 
 
@@ -604,8 +344,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: true,

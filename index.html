@@ -184,6 +184,68 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-数组中的两数之和为指定的值，求此两数的索引" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/02/21/数组中的两数之和为指定的值，求此两数的索引/">数组中的两数之和为指定的值，求此两数的索引</a>
+    </h1>
+  
+
+        
+        <a href="/2019/02/21/数组中的两数之和为指定的值，求此两数的索引/" class="archive-article-date">
+  	<time datetime="2019-02-20T16:37:10.079Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-21</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h4><p>给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。</p>
+<p>你可以假设每种输入只会对应一个答案。但是，你不能重复利用这个数组中同样的元素。</p>
+        
+          <a class="article-more-a" href="/2019/02/21/数组中的两数之和为指定的值，求此两数的索引/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">算法学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/02/21/数组中的两数之和为指定的值，求此两数的索引/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-数组中有重复元素吗？" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -772,67 +834,6 @@
 
 
   
-    <article id="post-objc-公共头文件（Public Headers）的基本内容（下）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/">objc-公共头文件（Public Headers）的基本内容（下）</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/" class="archive-article-date">
-  	<time datetime="2019-01-21T09:20:35.940Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-21</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="runtime-h"><a href="#runtime-h" class="headerlink" title="runtime.h"></a>runtime.h</h3><h4 id="1-数据类型定义"><a href="#1-数据类型定义" class="headerlink" title="1.数据类型定义"></a>1.数据类型定义</h4><h5 id="1-1-方法Method"><a href="#1-1-方法Method" class="headerlink" title="1.1 方法Method"></a>1.1 方法Method</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">method_t</span> *<span class="title">Method</span>;</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">method_t</span> &#123;</span></div><div class="line">    SEL name;</div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *types;</div><div class="line">    IMP imp;</div><div class="line"></div><div class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">SortBySELAddress</span> :</span></div><div class="line">        <span class="keyword">public</span> <span class="built_in">std</span>::binary_function&lt;<span class="keyword">const</span> <span class="keyword">method_t</span>&amp;,</div><div class="line">                                    <span class="keyword">const</span> <span class="keyword">method_t</span>&amp;, <span class="keyword">bool</span>&gt;</div><div class="line">    &#123;</div><div class="line">        <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span> <span class="params">(<span class="keyword">const</span> <span class="keyword">method_t</span>&amp; lhs,</span></span></div><div class="line">                         <span class="keyword">const</span> <span class="keyword">method_t</span>&amp; rhs)</div><div class="line">        &#123; <span class="keyword">return</span> lhs.name &lt; rhs.name; &#125;</div><div class="line">    &#125;;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -933,11 +934,11 @@ return o(t,i(n),arguments.length<3?void 0:u(arguments[2]))}})},function(t,n,r){v
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+                <a href="javascript:void(0)" class="js-tag color5">算法学习</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">算法学习</a>
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">

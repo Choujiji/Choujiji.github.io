@@ -184,6 +184,67 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-objc-公共头文件（Public Headers）的基本内容（下）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/">objc-公共头文件（Public Headers）的基本内容（下）</a>
+    </h1>
+  
+
+        
+        <a href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/" class="archive-article-date">
+  	<time datetime="2019-01-21T09:20:35.940Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-21</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="runtime-h"><a href="#runtime-h" class="headerlink" title="runtime.h"></a>runtime.h</h3><h4 id="1-数据类型定义"><a href="#1-数据类型定义" class="headerlink" title="1.数据类型定义"></a>1.数据类型定义</h4><h5 id="1-1-方法Method"><a href="#1-1-方法Method" class="headerlink" title="1.1 方法Method"></a>1.1 方法Method</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">method_t</span> *<span class="title">Method</span>;</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">method_t</span> &#123;</span></div><div class="line">    SEL name;</div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *types;</div><div class="line">    IMP imp;</div><div class="line"></div><div class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">SortBySELAddress</span> :</span></div><div class="line">        <span class="keyword">public</span> <span class="built_in">std</span>::binary_function&lt;<span class="keyword">const</span> <span class="keyword">method_t</span>&amp;,</div><div class="line">                                    <span class="keyword">const</span> <span class="keyword">method_t</span>&amp;, <span class="keyword">bool</span>&gt;</div><div class="line">    &#123;</div><div class="line">        <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span> <span class="params">(<span class="keyword">const</span> <span class="keyword">method_t</span>&amp; lhs,</span></span></div><div class="line">                         <span class="keyword">const</span> <span class="keyword">method_t</span>&amp; rhs)</div><div class="line">        &#123; <span class="keyword">return</span> lhs.name &lt; rhs.name; &#125;</div><div class="line">    &#125;;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-objc-公共头文件（Public Headers）的基本内容（上）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -790,69 +851,6 @@
 
 
   
-    <article id="post-内存管理篇：9.ARC实现之__autoreleasing" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/06/内存管理篇：9.ARC实现之__autoreleasing/">《Objective-C高级编程 iOS与OS X多线程与内存管理》9</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/06/内存管理篇：9.ARC实现之__autoreleasing/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:54:34.109Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="内存管理篇：9-ARC实现之-autoreleasing"><a href="#内存管理篇：9-ARC实现之-autoreleasing" class="headerlink" title="内存管理篇：9.ARC实现之__autoreleasing"></a>内存管理篇：9.ARC实现之__autoreleasing</h2><ol>
-<li>__autoreleasing修饰的变量与在非ARC环境下，对对象调用autorelease方法效果一致：</li>
-</ol>
-        
-          <a class="article-more-a" href="/2019/01/06/内存管理篇：9.ARC实现之__autoreleasing/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/06/内存管理篇：9.ARC实现之__autoreleasing/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -953,11 +951,11 @@ return o(t,i(n),arguments.length<3?void 0:u(arguments[2]))}})},function(t,n,r){v
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+                <a href="javascript:void(0)" class="js-tag color5">算法学习</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">算法学习</a>
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
