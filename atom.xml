@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-02-20T04:32:39.180Z</updated>
+  <updated>2019-02-20T04:48:00.364Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,9 +20,10 @@
     <link href="http://yoursite.com/2019/02/20/%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9C%89%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%E5%90%97%EF%BC%9F/"/>
     <id>http://yoursite.com/2019/02/20/数组中有重复元素吗？/</id>
     <published>2019-02-20T04:32:39.180Z</published>
-    <updated>2019-02-20T04:32:39.180Z</updated>
+    <updated>2019-02-20T04:48:00.364Z</updated>
     
     <content type="html"><![CDATA[<h4 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h4><p>给定一个整数数组，判断是否存在重复元素。如果任何值在数组中出现至少两次，函数返回 true。如果数组中每个元素都不相同，则返回 false。</p>
+<a id="more"></a>
 <ul>
 <li>示例1：</li>
 </ul>
@@ -41,7 +42,7 @@
     
     <summary type="html">
     
-      &lt;h4 id=&quot;题目&quot;&gt;&lt;a href=&quot;#题目&quot; class=&quot;headerlink&quot; title=&quot;题目&quot;&gt;&lt;/a&gt;题目&lt;/h4&gt;&lt;p&gt;给定一个整数数组，判断是否存在重复元素。如果任何值在数组中出现至少两次，函数返回 true。如果数组中每个元素都不相同，则返回 false。
+      &lt;h4 id=&quot;题目&quot;&gt;&lt;a href=&quot;#题目&quot; class=&quot;headerlink&quot; title=&quot;题目&quot;&gt;&lt;/a&gt;题目&lt;/h4&gt;&lt;p&gt;给定一个整数数组，判断是否存在重复元素。如果任何值在数组中出现至少两次，函数返回 true。如果数组中每个元素都不相同，则返回 false。&lt;/p&gt;
     
     </summary>
     
