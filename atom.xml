@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-02-19T03:56:24.828Z</updated>
+  <updated>2019-02-20T04:32:39.180Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,41 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>数组中有重复元素吗？</title>
+    <link href="http://yoursite.com/2019/02/20/%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9C%89%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%E5%90%97%EF%BC%9F/"/>
+    <id>http://yoursite.com/2019/02/20/数组中有重复元素吗？/</id>
+    <published>2019-02-20T04:32:39.180Z</published>
+    <updated>2019-02-20T04:32:39.180Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h4><p>给定一个整数数组，判断是否存在重复元素。如果任何值在数组中出现至少两次，函数返回 true。如果数组中每个元素都不相同，则返回 false。</p>
+<ul>
+<li>示例1：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">输入: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">1</span>]</div><div class="line">输出: <span class="literal">true</span></div></pre></td></tr></table></figure>
+<ul>
+<li>示例2：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">输入: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</div><div class="line">输出: <span class="literal">false</span></div></pre></td></tr></table></figure>
+<h4 id="解法1"><a href="#解法1" class="headerlink" title="解法1"></a>解法1</h4><ol>
+<li>对数组进行排序；</li>
+<li>遍历排序后的数组，若相邻数据相同，则包含重复数据；否则不包含。</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function">BOOL <span class="title">checkDuplicateNumber1</span><span class="params">(NSArray&lt;NSNumber *&gt;* targetInfo)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (targetInfo.count &lt;= <span class="number">1</span>) &#123;</div><div class="line">        <span class="keyword">return</span> NO;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 1.排序</span></div><div class="line">    NSArray *sortedInfo = [targetInfo sortedArrayUsingComparator:^NSComparisonResult(NSNumber* _Nonnull obj1, NSNumber* _Nonnull obj2) &#123;</div><div class="line">        <span class="comment">// obj1比obj2，升序；用obj2比obj1，降序</span></div><div class="line">        <span class="keyword">return</span> [obj1 compare:obj2];</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    <span class="comment">// 2.查看相邻两数是否相同</span></div><div class="line">    NSNumber *lastObj;</div><div class="line">    <span class="keyword">for</span> (NSNumber *currentObj in sortedInfo) &#123;</div><div class="line">        <span class="keyword">if</span> (!lastObj) &#123;</div><div class="line">            lastObj = currentObj;</div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (currentObj.integerValue == lastObj.integerValue) &#123;</div><div class="line">            <span class="keyword">return</span> YES;</div><div class="line">        &#125;</div><div class="line">        lastObj = currentObj;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> NO;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="解法2"><a href="#解法2" class="headerlink" title="解法2"></a>解法2</h4><p>转换为NSSet集合对象，若元素数少于原数组，则包含重复数据。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function">BOOL <span class="title">checkDuplicateNumber2</span><span class="params">(NSArray&lt;NSNumber *&gt;* targetInfo)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (targetInfo.count &lt;= <span class="number">1</span>) &#123;</div><div class="line">        <span class="keyword">return</span> NO;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 转化为NSSet对象，若元素比原数组少，则有相同数据</span></div><div class="line">    NSSet *setInfo = [NSSet setWithArray:targetInfo];</div><div class="line">    <span class="keyword">return</span> setInfo.count != targetInfo.count;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;题目&quot;&gt;&lt;a href=&quot;#题目&quot; class=&quot;headerlink&quot; title=&quot;题目&quot;&gt;&lt;/a&gt;题目&lt;/h4&gt;&lt;p&gt;给定一个整数数组，判断是否存在重复元素。如果任何值在数组中出现至少两次，函数返回 true。如果数组中每个元素都不相同，则返回 false。
+    
+    </summary>
+    
+    
+      <category term="算法学习" scheme="http://yoursite.com/tags/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>Autolayout之带有真实内容尺寸的视图</title>
@@ -1938,80 +1973,6 @@
     
       &lt;h2 id=&quot;内存管理篇：9-ARC实现之-autoreleasing&quot;&gt;&lt;a href=&quot;#内存管理篇：9-ARC实现之-autoreleasing&quot; class=&quot;headerlink&quot; title=&quot;内存管理篇：9.ARC实现之__autoreleasing&quot;&gt;&lt;/a&gt;内存管理篇：9.ARC实现之__autoreleasing&lt;/h2&gt;&lt;ol&gt;
 &lt;li&gt;__autoreleasing修饰的变量与在非ARC环境下，对对象调用autorelease方法效果一致：&lt;/li&gt;
-&lt;/ol&gt;
-    
-    </summary>
-    
-    
-      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》8</title>
-    <link href="http://yoursite.com/2019/01/06/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%AF%87%EF%BC%9A8.ARC%E5%AE%9E%E7%8E%B0%E4%B9%8B__weak/"/>
-    <id>http://yoursite.com/2019/01/06/内存管理篇：8.ARC实现之__weak/</id>
-    <published>2019-01-06T07:53:26.381Z</published>
-    <updated>2019-01-06T07:53:34.144Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="内存管理篇：8-ARC实现之-weak"><a href="#内存管理篇：8-ARC实现之-weak" class="headerlink" title="内存管理篇：8.ARC实现之__weak"></a>内存管理篇：8.ARC实现之__weak</h2><blockquote>
-<p>我们知道，weak修饰的变量，其地址是被存储在一个专用的散列表中，此散列表的键值为原内存的散列值（即对象地址的hash值）。</p>
-</blockquote>
-<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1546747255-weak%E8%A1%A8.jpg" alt="img"></p>
-<p>__weak修饰的变量，其主要存在两大功能：</p>
-<ol>
-<li><strong>当其引用的对象被释放时，此变量自动被赋值为nil</strong>；</li>
-<li><strong>使用__weak修饰的变量时，实际上使用的是添加到autoreleasePool中的对象</strong>。</li>
-</ol>
-<a id="more"></a>
-<h4 id="当-weak变量引用的对象被释放时，其自动被赋值为nil"><a href="#当-weak变量引用的对象被释放时，其自动被赋值为nil" class="headerlink" title="当__weak变量引用的对象被释放时，其自动被赋值为nil"></a>当__weak变量引用的对象被释放时，其自动被赋值为nil</h4><p>先看示例：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="comment">// obj为强引用变量且已经被赋值</span></div><div class="line">    id __weak obj1 = obj;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>编译后的模拟代码为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">id obj1;</div><div class="line">objc_initWeak(&amp;obj1, obj);</div><div class="line">objc_destroyWeak(&amp;obj1);</div></pre></td></tr></table></figure>
-<p>objc_initWeak方法，即为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">obj1 = <span class="number">0</span>;</div><div class="line">objc_storeWeak(&amp;obj1, obj);</div></pre></td></tr></table></figure>
-<p>objc_destroyWeak方法，即为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">objc_storeWeak(&amp;obj1, <span class="number">0</span>);</div></pre></td></tr></table></figure>
-<p>由此可以看出，</p>
-<ol>
-<li><strong>对于初始化的weak变量：为变量赋值为0，并将其地址存储到weak表中，对象内存的散列值所在的地址中</strong>。</li>
-<li><strong>释放weak变量时：则是在weak表中，将对象内存散列值所在地址存储的数据中，将存储的变量清空</strong>。</li>
-</ol>
-<blockquote>
-<p>由于可以使用多个weak变量指向同一对象，所以在weak表中，一个键值的散列地址中可以存储多个weak变量地址。</p>
-</blockquote>
-<p><em>结论：<br>weak对象释放时，自动置为nil的原因</em>：</p>
-<ul>
-<li><strong>在系统调用dealloc释放对象时（最后的objc_clear_deallocating方法），ARC会根据对象的引用状态，去weak表中查询对应的weak变量，将变量地址赋值为nil，并将其记录删除。最后将此键值记录一并删除。</strong></li>
-<li>注意：此过程需要消耗CPU资源，故不要滥用，需要时再使用（如避免delegate和block导致的引用循环）。</li>
-</ul>
-<h4 id="使用-weak修饰的变量时，实际上使用的是添加到autoreleasePool中的对象"><a href="#使用-weak修饰的变量时，实际上使用的是添加到autoreleasePool中的对象" class="headerlink" title="使用__weak修饰的变量时，实际上使用的是添加到autoreleasePool中的对象"></a>使用__weak修饰的变量时，实际上使用的是添加到autoreleasePool中的对象</h4><p>还是先看实例：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="comment">// obj为强引用变量，且已被赋值</span></div><div class="line">    id __weak obj1 = obj;</div><div class="line">    NSLog(@<span class="string">"%@"</span>, obj1);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>编译后的模拟代码为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 初始化weak变量并赋值</span></div><div class="line">id obj1;</div><div class="line">objc_initWeak(&amp;obj1, obj);</div><div class="line"><span class="comment">// ？？？</span></div><div class="line">id tmp = objc_loadWeakRetained(&amp;obj1);</div><div class="line"><span class="comment">// ？？？</span></div><div class="line">objc_autorelease(tmp);</div><div class="line">NSLog(@<span class="string">"%@"</span>, tmp);</div><div class="line"><span class="comment">// 释放weak变量</span></div><div class="line">objc_destroyWeak(&amp;obj1);</div></pre></td></tr></table></figure>
-<p>其中：</p>
-<ol>
-<li><strong>先通过objc_loadWeakRetained方法，将weak变量对应引用的对象取出，并进行retain操作。</strong></li>
-<li><strong>使用objc_autorelease方法，将生成的临时对象加入到autoreleasePool中，即可保证对象的生存期，以便正常使用。</strong></li>
-</ol>
-<p>注意：</p>
-<ul>
-<li>大量使用weak变量，会在autoreleasePool中插入大量临时变量，增加内存开销，并对CPU进行过多无畏的损耗。</li>
-<li>正确的使用方法，是使用strong变量指向weak变量后，再进行使用。</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">id __weak obj1 = obj;</div><div class="line">id tmp = obj1;</div><div class="line">NSLog(@<span class="string">"1.%@"</span>, tmp);</div><div class="line">NSLog(@<span class="string">"2.%@"</span>, tmp);</div><div class="line">NSLog(@<span class="string">"3.%@"</span>, tmp);</div><div class="line">NSLog(@<span class="string">"4.%@"</span>, tmp);</div><div class="line">NSLog(@<span class="string">"5.%@"</span>, tmp);</div><div class="line"><span class="comment">// 这样，autoreleasePool只会将obj1插入一次</span></div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;内存管理篇：8-ARC实现之-weak&quot;&gt;&lt;a href=&quot;#内存管理篇：8-ARC实现之-weak&quot; class=&quot;headerlink&quot; title=&quot;内存管理篇：8.ARC实现之__weak&quot;&gt;&lt;/a&gt;内存管理篇：8.ARC实现之__weak&lt;/h2&gt;&lt;blockquote&gt;
-&lt;p&gt;我们知道，weak修饰的变量，其地址是被存储在一个专用的散列表中，此散列表的键值为原内存的散列值（即对象地址的hash值）。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1546747255-weak%E8%A1%A8.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
-&lt;p&gt;__weak修饰的变量，其主要存在两大功能：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;当其引用的对象被释放时，此变量自动被赋值为nil&lt;/strong&gt;；&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;使用__weak修饰的变量时，实际上使用的是添加到autoreleasePool中的对象&lt;/strong&gt;。&lt;/li&gt;
 &lt;/ol&gt;
     
     </summary>
