@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-02-20T16:37:10.079Z</updated>
+  <updated>2019-02-22T03:51:16.320Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,43 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>元素中有重复元素吗？（2）</title>
+    <link href="http://yoursite.com/2019/02/22/%E5%85%83%E7%B4%A0%E4%B8%AD%E6%9C%89%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%E5%90%97%EF%BC%9F%EF%BC%882%EF%BC%89/"/>
+    <id>http://yoursite.com/2019/02/22/元素中有重复元素吗？（2）/</id>
+    <published>2019-02-22T03:51:16.320Z</published>
+    <updated>2019-02-22T03:51:16.320Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h4><p>给定一个整数数组和一个整数 k，判断数组中是否存在两个不同的索引 i 和 j，使得 nums [i] = nums [j]，并且 i 和 j 的差的绝对值最大为 k。</p>
+<a id="more"></a>
+<ul>
+<li>示例1：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">输入: nums = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">1</span>], k = <span class="number">3</span></div><div class="line">输出: <span class="literal">true</span></div></pre></td></tr></table></figure>
+<ul>
+<li>示例2：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">输入: nums = [<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>], k = <span class="number">1</span></div><div class="line">输出: <span class="literal">true</span></div></pre></td></tr></table></figure>
+<ul>
+<li>示例3：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">输入: nums = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>], k = <span class="number">2</span></div><div class="line">输出: <span class="literal">false</span></div></pre></td></tr></table></figure>
+<h4 id="解法1：暴力法"><a href="#解法1：暴力法" class="headerlink" title="解法1：暴力法"></a>解法1：暴力法</h4><p>双重遍历，依次比较查找，时间复杂度为O(n^2)。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function">BOOL <span class="title">checkTheSameNumberWithSpecificIndex1</span><span class="params">(NSArray&lt;NSNumber *&gt; *nums, NSInteger target)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (nums.count &lt;= <span class="number">1</span>) &#123;</div><div class="line">        <span class="keyword">return</span> NO;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> (NSInteger i = <span class="number">0</span>; i &lt; nums.count; i++) &#123;</div><div class="line">        <span class="comment">// 当前数值</span></div><div class="line">        NSInteger currentValue = [nums[i] integerValue];</div><div class="line">        <span class="comment">// 在依次查看之后的数据值是否相同</span></div><div class="line">        <span class="keyword">for</span> (NSInteger j = i + <span class="number">1</span>; j &lt; nums.count; j++) &#123;</div><div class="line">            NSInteger nextValue = [nums[j] integerValue];</div><div class="line">            <span class="keyword">if</span> (currentValue == nextValue) &#123;</div><div class="line">                <span class="comment">// 索引差是否符合要求</span></div><div class="line">                <span class="keyword">if</span> (<span class="built_in">labs</span>(j - i) &lt;= target) &#123;</div><div class="line">                    <span class="keyword">return</span> YES;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> NO;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="解法2：哈希表"><a href="#解法2：哈希表" class="headerlink" title="解法2：哈希表"></a>解法2：哈希表</h4><p>利用哈希表（OC中使用NSDictionary对象）的快速查找降低了复杂度，同时进行比较并更新。时间复杂度降低为O(n)。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="function">BOOL <span class="title">checkTheSameNumberWithSpecificIndex2</span><span class="params">(NSArray&lt;NSNumber *&gt; *nums, NSInteger target)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (nums.count &lt;= <span class="number">1</span>) &#123;</div><div class="line">        <span class="keyword">return</span> NO;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 插入到哈希表中，同时检查：如果数值对应的key已经存在，则使用其索引与当前索引进行比较。符合要求则返回；不符合则插入新索引，继续向后检查</span></div><div class="line">    NSMutableDictionary *hashTable = [[NSMutableDictionary alloc] initWithCapacity:<span class="number">10</span>];</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> (NSInteger index = <span class="number">0</span>; index &lt; nums.count; index++) &#123;</div><div class="line">        NSNumber *currentItem = nums[index];</div><div class="line">        NSNumber *indexItem = hashTable[currentItem];</div><div class="line">        <span class="keyword">if</span> (!indexItem) &#123;</div><div class="line">            <span class="comment">// 不存在，插入（key为数据值，value为索引）</span></div><div class="line">            hashTable[currentItem] = @(index);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// 存在，取出value索引值，进行比较</span></div><div class="line">            <span class="keyword">if</span>(<span class="built_in">labs</span>(indexItem.integerValue - index) &lt;= target) &#123;</div><div class="line">                <span class="comment">// 符合要求</span></div><div class="line">                <span class="keyword">return</span> YES;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="comment">// 不符合，更新此索引值</span></div><div class="line">                hashTable[currentItem] = @(index);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> NO;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;题目&quot;&gt;&lt;a href=&quot;#题目&quot; class=&quot;headerlink&quot; title=&quot;题目&quot;&gt;&lt;/a&gt;题目&lt;/h4&gt;&lt;p&gt;给定一个整数数组和一个整数 k，判断数组中是否存在两个不同的索引 i 和 j，使得 nums [i] = nums [j]，并且 i 和 j 的差的绝对值最大为 k。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="算法学习" scheme="http://yoursite.com/tags/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>数组中的两数之和为指定的值，求此两数的索引</title>
@@ -1931,51 +1968,6 @@
 &lt;ul&gt;
 &lt;li&gt;Blocks实际上是通过支持Block的编译器，将其转换为标准的C代码进行编译。&lt;/li&gt;
 &lt;li&gt;我们可以使用clang的“-rewrite-objc”命令，将包含Block的源代码转换为C++代码，帮助理解。
-    
-    </summary>
-    
-    
-      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》10</title>
-    <link href="http://yoursite.com/2019/01/15/Blocks%E7%AF%87%EF%BC%9A1.Blocks%E7%9A%84%E5%A3%B0%E6%98%8E/"/>
-    <id>http://yoursite.com/2019/01/15/Blocks篇：1.Blocks的声明/</id>
-    <published>2019-01-15T04:05:21.255Z</published>
-    <updated>2019-01-15T04:05:21.255Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="Blocks篇：1-Blocks的声明"><a href="#Blocks篇：1-Blocks的声明" class="headerlink" title="Blocks篇：1.Blocks的声明"></a>Blocks篇：1.Blocks的声明</h2><blockquote>
-<p><strong>Blocks是带有自动变量值的匿名函数。</strong></p>
-</blockquote>
-<p>写法：</p>
-<ul>
-<li>Blocks变量声明：与C函数指针声明基本相似，将指针符号”*”替换为“^”。</li>
-<li>Blocks主体声明：省略了名称的C函数，在原函数名前添加“^”。<ul>
-<li>无参数Blocks，可以省略参数列表</li>
-<li>无返回值Blocks，可以省略返回值</li>
-</ul>
-</li>
-</ul>
-<a id="more"></a>
-<p>举例子：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 完整声明</span></div><div class="line"><span class="keyword">void</span> (^myBlock)(<span class="keyword">int</span> a) = <span class="keyword">void</span> ^(<span class="keyword">int</span> a) &#123;</div><div class="line">    ...</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 无参数，无返回值</span></div><div class="line"><span class="keyword">void</span> (^myBlock2)(<span class="keyword">void</span>) = ^&#123;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;Blocks篇：1-Blocks的声明&quot;&gt;&lt;a href=&quot;#Blocks篇：1-Blocks的声明&quot; class=&quot;headerlink&quot; title=&quot;Blocks篇：1.Blocks的声明&quot;&gt;&lt;/a&gt;Blocks篇：1.Blocks的声明&lt;/h2&gt;&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;Blocks是带有自动变量值的匿名函数。&lt;/strong&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;写法：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Blocks变量声明：与C函数指针声明基本相似，将指针符号”*”替换为“^”。&lt;/li&gt;
-&lt;li&gt;Blocks主体声明：省略了名称的C函数，在原函数名前添加“^”。&lt;ul&gt;
-&lt;li&gt;无参数Blocks，可以省略参数列表&lt;/li&gt;
-&lt;li&gt;无返回值Blocks，可以省略返回值&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
     
     </summary>
     
