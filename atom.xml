@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-02-22T03:51:16.320Z</updated>
+  <updated>2019-02-24T05:24:02.507Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,78 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Autolayout之调试技巧和提示</title>
+    <link href="http://yoursite.com/2019/02/24/Autolayout%E4%B9%8B%E8%B0%83%E8%AF%95%E6%8A%80%E5%B7%A7%E5%92%8C%E6%8F%90%E7%A4%BA/"/>
+    <id>http://yoursite.com/2019/02/24/Autolayout之调试技巧和提示/</id>
+    <published>2019-02-24T05:23:50.351Z</published>
+    <updated>2019-02-24T05:24:02.507Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>注：本文节选并翻译自<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/DebuggingTricksandTips.html#//apple_ref/doc/uid/TP40010853-CH21-SW1" target="_blank" rel="external">Debugging Tricks and Tips
+</a></p>
+</blockquote>
+<p>以下话题描述了在布局中总结提炼出的信息，同时描述了一些你可能遇到的意料之外的情况。你也许不会再每次布局中都会用到这些技术，但是它们可以在一些难题上给你提供帮助。</p>
+<a id="more"></a>
+<h4 id="理解日志"><a href="#理解日志" class="headerlink" title="理解日志"></a>理解日志</h4><p>视图的信息可以在控制台中输出，也许是因为存在了不满足条件的布局，或是因为你明确使用了<a href="https://developer.apple.com/documentation/uikit/uiview/1622432-constraintsaffectinglayoutforaxi" target="_blank" rel="external">constraintsAffectingLayoutForAxis:</a>或<a href="https://developer.apple.com/documentation/appkit/nsview/1525968-constraintsaffectinglayout" target="_blank" rel="external">constraintsAffectingLayoutForOrientation:</a>的调试方法所致。</p>
+<p>无论哪种方式，你都可以在这些日志中找到许多有用信息。下面是一个关于不满足条件的布局错误的示例输出：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="number">2015</span><span class="number">-08</span><span class="number">-26</span> <span class="number">14</span>:<span class="number">27</span>:<span class="number">54.790</span> Auto Layout Cookbook[<span class="number">10040</span>:<span class="number">1906606</span>] Unable to simultaneously satisfy constraints.</div><div class="line">    Probably at least one of the constraints in the following <span class="built_in">list</span> is one you don't want. Try <span class="keyword">this</span>: (<span class="number">1</span>) look at each constraint <span class="keyword">and</span> <span class="keyword">try</span> to figure out which you don't expect; (<span class="number">2</span>) find the code that added the unwanted constraint <span class="keyword">or</span> constraints <span class="keyword">and</span> fix it. (Note: If you're seeing NSAutoresizingMaskLayoutConstraints that you don't understand, refer to the documentation <span class="keyword">for</span> the UIView property translatesAutoresizingMaskIntoConstraints) </div><div class="line">(</div><div class="line">    <span class="string">"&lt;NSLayoutConstraint:0x7a87b000 H:[UILabel:0x7a8724b0'Name'(&gt;=400)]&gt;"</span>,</div><div class="line">    <span class="string">"&lt;NSLayoutConstraint:0x7a895e30 UILabel:0x7a8724b0'Name'.leading == UIView:0x7a887ee0.leadingMargin&gt;"</span>,</div><div class="line">    <span class="string">"&lt;NSLayoutConstraint:0x7a886d20 H:[UILabel:0x7a8724b0'Name']-(NSSpace(8))-[UITextField:0x7a88cff0]&gt;"</span>,</div><div class="line">    <span class="string">"&lt;NSLayoutConstraint:0x7a87b2e0 UITextField:0x7a88cff0.trailing == UIView:0x7a887ee0.trailingMargin&gt;"</span>,</div><div class="line">    <span class="string">"&lt;NSLayoutConstraint:0x7ac7c430 'UIView-Encapsulated-Layout-Width' H:[UIView:0x7a887ee0(320)]&gt;"</span></div><div class="line">)</div><div class="line"> </div><div class="line">Will attempt to recover by breaking constraint</div><div class="line">&lt;NSLayoutConstraint:<span class="number">0x7a87b000</span> H:[UILabel:<span class="number">0x7a8724b0'</span>Name'(&gt;=<span class="number">400</span>)]&gt;</div><div class="line"> </div><div class="line">Make a symbolic breakpoint at UIViewAlertForUnsatisfiableConstraints to <span class="keyword">catch</span> <span class="keyword">this</span> in the debugger.</div><div class="line">The methods in the UIConstraintBasedLayoutDebugging category on UIView listed in &lt;UIKit/UIView.h&gt; may also be helpful.</div></pre></td></tr></table></figure>
+<p>这个错误消息展示了五个冲突约束。这些约束无法同时满足。你应该要么移除一个，要么把一个约束变成可选约束。</p>
+<p>幸运的是，这个视图层级相对简单。你有一个父视图，它包含着一个label和一个text field。冲突的约束被设置成了如下关系：</p>
+<ol>
+<li>label的宽度大于等于400点。</li>
+<li>label的起始边等于父视图的起始空白区域。</li>
+<li>在label和text field之间包含8个点的空间。</li>
+<li>text field的尾边等于父视图的尾部空白区域。</li>
+<li>父视图的宽度为320点。</li>
+</ol>
+<p>系统试图通过移除label的宽度来恢复正常。</p>
+<blockquote>
+<p><strong>说明</strong></p>
+<p>控制台中写入的约束使用的是可视化语言（Visual Format Language，以后写做VFL）。即使你从不会使用VFL来创建约束，你也必须可以阅读并理解它以便有效调试Auto Layout的问题。要获取更多信息，请看<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/VisualFormatLanguage.html#//apple_ref/doc/uid/TP40010853-CH27-SW1" target="_blank" rel="external">可视化语言</a>。</p>
+</blockquote>
+<p>这些约束当中，最后一个是系统创建的。你不能改变它。并且，它和第一个约束一起产生了一个明显的冲突。如果你的父视图只有320点宽度，你不可能会有一个400点宽度的label。幸运的是，你不必移除首个约束。如果你把它的优先级降到999，系统还是会试图提供一个可选宽度—-尽可能地接近它（400宽度），并同时满足其他约束。</p>
+<p>基于视图的autoresizing mask的约束（例如，当<a href="https://developer.apple.com/documentation/uikit/uiview/1622572-translatesautoresizingmaskintoco" target="_blank" rel="external">translatesAutoresizingMaskIntoConstraints</a>为YES时，约束被创建）在mask上存在额外信息。在约束被定位后，日志字符串会显示”<em>h=</em>“，且其后跟随着三个字符，“<em>v=</em>”后同样跟随三个字符。一个“<em>-</em>”（连字符）字符代表一个确定值，同时一个“<em>&amp;</em>”（与符号）字符代表一个可变值。对于水平方向（<em>h=</em>），三个字符分别代表了左间距、<br>宽度和右间距。在垂直方向上（<em>v=</em>），他们分别代表了顶部间距、高度和底部间距。</p>
+<p>例如，考虑如下日志：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;NSAutoresizingMaskLayoutConstraint:<span class="number">0x7ff28252e480</span> h=--&amp; v=--&amp; H:[UIView:<span class="number">0x7ff282617cc0</span>(<span class="number">50</span>)]&gt;<span class="string">"</span></div></pre></td></tr></table></figure>
+<p>此信息由如下部分组成：</p>
+<ul>
+<li><em>NSAutoresizingMaskLayoutConstraint:0x7ff28252e480</em>：约束的类和地址。本例中，此类说明它基于视图的autoresizing mask。</li>
+<li><em>h=–&amp; v=–&amp;</em>：视图的autoresizing mask。这是默认的mask。在水平方向上它包含一个确定的左间距、一个确定的宽度和一个可变的右间距。在竖直方向上它存在一个确定的顶部间距、一个确定的高度和一个可变的底部间距。换句话说，在父视图尺寸改变时，这个视图的左上角和尺寸保持不变。</li>
+<li><em>H:[UIView:0x7ff282617cc0(50)]</em>：使用VFL描述的约束。在本例中，它描述了一个单独的50点宽度的视图。此描述还包含了约束涉及到的所有视图的类和地址。</li>
+</ul>
+<h4 id="给日志添加识别符号"><a href="#给日志添加识别符号" class="headerlink" title="给日志添加识别符号"></a>给日志添加识别符号</h4><p>虽然前一个例子相对容易理解，越来越长的约束列表很快就变得难以理解。你可以通过给每个视图和约束设置一个有意义的识别符来让日志容易阅读。</p>
+<p>如果视图有一个明显的文字组件，Xcode就直接使用它来做识别符。例如，Xcode使用一个label的文字，一个button的标题，或者一个text field的占位字来识别这些视图。其他情况下，需要在识别检查器（Identity inspector）中设置指定的标签。Interface Builder在交互设置中使用这些识别符。大多数的这些识别符都会在控制台日志中显示。</p>
+<p>对于约束来说，通过代码或者属性检查器（Attribute inspector）来设置<em>identifier</em>属性。当在控制台打印信息时，Auto Layout就会使用这些识别符。</p>
+<p>举例来说，这是一个带有识别符版本的相同的错误约束：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">2015-08-26 14:29:32.870 Auto Layout Cookbook[10208:1918826] Unable to simultaneously satisfy constraints.</div><div class="line">    Probably at least one of the constraints in the following list is one you don't want. Try this: (1) look at each constraint and try to figure out which you don't expect; (2) find the code that added the unwanted constraint or constraints and fix it. (Note: If you're seeing NSAutoresizingMaskLayoutConstraints that you don't understand, refer to the documentation for the UIView property translatesAutoresizingMaskIntoConstraints) </div><div class="line">(</div><div class="line">    "&lt;NSLayoutConstraint:0x7b58bac0 'Label Leading' UILabel:0x7b58b040'Name'.leading == UIView:0x7b590790.leadingMargin&gt;",</div><div class="line">    "&lt;NSLayoutConstraint:0x7b56d020 'Label Width' H:[UILabel:0x7b58b040'Name'(&gt;=400)]&gt;",</div><div class="line">    "&lt;NSLayoutConstraint:0x7b58baf0 'Space Between Controls' H:[UILabel:0x7b58b040'Name']-(NSSpace(8))-[UITextField:0x7b589490]&gt;",</div><div class="line">    "&lt;NSLayoutConstraint:0x7b51cb10 'Text Field Trailing' UITextField:0x7b589490.trailing == UIView:0x7b590790.trailingMargin&gt;",</div><div class="line">    "&lt;NSLayoutConstraint:0x7b0758c0 'UIView-Encapsulated-Layout-Width' H:[UIView:0x7b590790(320)]&gt;"</div><div class="line">)</div><div class="line"> </div><div class="line">Will attempt to recover by breaking constraint</div><div class="line">&lt;NSLayoutConstraint:0x7b56d020 'Label Width' H:[UILabel:0x7b58b040'Name'(&gt;=400)]&gt;</div><div class="line"> </div><div class="line">Make a symbolic breakpoint at UIViewAlertForUnsatisfiableConstraints to catch this in the debugger.</div><div class="line">The methods in the UIConstraintBasedLayoutDebugging category on UIView listed in &lt;UIKit/UIView.h&gt; may also be helpful.</div></pre></td></tr></table></figure>
+<p>正如所见，这些识别符可以让你在日志中快速且容易地识别出约束。</p>
+<h4 id="理解边界案例"><a href="#理解边界案例" class="headerlink" title="理解边界案例"></a>理解边界案例</h4><p>这里有一些可能导致Auto Layout出现不可预料情况的边界案例：</p>
+<ul>
+<li>Auto Layout是基于视图的对齐矩形来定位视图的，而不是frame。大多时候，二者是相等的。可是，在布局计算时，一些视图可能会设置了自定义的对齐矩形进而超出了视图本身（如badges）。<br>  了解更多信息，在<a href="https://developer.apple.com/documentation/uikit/uiview" target="_blank" rel="external">UIView类参考</a>中查看使用Auto Layout对齐视图的相关内容。</li>
+<li>在iOS中，你可以使用视图的<a href="https://developer.apple.com/documentation/uikit/uiview/1622459-transform" target="_blank" rel="external">transform</a>属性来设置尺寸、旋转或移动视图；可是，这些变换根本不会影响Auto Layout的计算。Auto Layout是通过视图未变换时的frame来计算其对齐矩形的。</li>
+<li>一个视图可以在其边界范围之外显示内容。大多时候，视图会正常显示并将其内容限制在边界之内。可是，有时出于性能考虑，这不会被图像引擎强制实现。这意味着该视图（特别是那些自定义绘制的视图）可能会以一个不同于本身frame的尺寸进行绘制。<br>  你可以将视图的<a href="https://developer.apple.com/documentation/uikit/uiview/1622415-clipstobounds" target="_blank" rel="external">clipsToBounds</a>属性置为YES来测试这个问题，或者通过视图的frame进行验证。</li>
+<li>只有当所有视图以它们的真实内容尺寸高度显示时，<a href="https://developer.apple.com/documentation/appkit/nslayoutattribute/nslayoutattributebaseline" target="_blank" rel="external">NSLayoutAttributeBaseline</a>、<a href="https://developer.apple.com/documentation/appkit/nslayoutattribute/nslayoutattributefirstbaseline" target="_blank" rel="external">NSLayoutAttributeFirstBaseline</a>和<a href="https://developer.apple.com/documentation/appkit/nslayoutconstraint/attribute/lastbaseline" target="_blank" rel="external">NSLayoutAttributeLastBaseline</a>属性才会正确对齐文字。如果其中一个视图在竖直方向上被拉伸或压缩，其文字就可能出现在错误的位置上。</li>
+<li>约束优先级会在整个视图层级中作为全局属性出现。你可能会经常使用stack view、layout guide或者虚拟视图将视图进行分组；可是，这种做法并不能将所需的视图优先级封装到内部。Auto Layout会继续将组内的优先级同外面的进行比较（甚至是其他组中的优先级）。</li>
+<li>宽高比约束允许水平和竖直约束进行交互。一般来说，水平和竖直布局是单独计算的。可是，如果你使用一个视图的宽度来约束其高度时，你便创建了一个水平和竖直约束间的连接关系：他们现在会对其他约束产生影响甚至发生冲突。这种交互会明显增加布局的复杂度，并且可能会与一些不相干的布局产生某些不可预期的冲突。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;注：本文节选并翻译自&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/DebuggingTricksandTips.html#//apple_ref/doc/uid/TP40010853-CH21-SW1&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Debugging Tricks and Tips
+&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;以下话题描述了在布局中总结提炼出的信息，同时描述了一些你可能遇到的意料之外的情况。你也许不会再每次布局中都会用到这些技术，但是它们可以在一些难题上给你提供帮助。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>元素中有重复元素吗？（2）</title>
@@ -1891,83 +1963,6 @@
 &lt;p&gt;所谓Blocks捕获变量，即在Block函数体内使用外部声明的变量。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h4 id=&quot;1-捕获局部变量（自动变量）和静态局部变量&quot;&gt;&lt;a href=&quot;#1-捕获局部变量（自动变量）和静态局部变量&quot; class=&quot;headerlink&quot; title=&quot;1. 捕获局部变量（自动变量）和静态局部变量&quot;&gt;&lt;/a&gt;1. 捕获局部变量（自动变量）和静态局部变量&lt;/h4&gt;
-    
-    </summary>
-    
-    
-      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》11</title>
-    <link href="http://yoursite.com/2019/01/15/Blocks%E7%AF%87%EF%BC%9A2.Blocks%E7%9A%84%E8%B0%83%E7%94%A8%E8%BF%87%E7%A8%8B%E5%8F%8A%E5%85%B6%E5%AF%B9%E8%B1%A1%E6%9C%AC%E8%B4%A8/"/>
-    <id>http://yoursite.com/2019/01/15/Blocks篇：2.Blocks的调用过程及其对象本质/</id>
-    <published>2019-01-15T04:06:05.910Z</published>
-    <updated>2019-01-15T04:06:17.824Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="Blocks篇：2-Blocks的调用过程及其对象本质"><a href="#Blocks篇：2-Blocks的调用过程及其对象本质" class="headerlink" title="Blocks篇：2.Blocks的调用过程及其对象本质"></a>Blocks篇：2.Blocks的调用过程及其对象本质</h2><blockquote>
-<ul>
-<li>Blocks实际上是通过支持Block的编译器，将其转换为标准的C代码进行编译。</li>
-<li>我们可以使用clang的“-rewrite-objc”命令，将包含Block的源代码转换为C++代码，帮助理解。<a id="more"></a>
-<h4 id="1-Blocks的调用过程"><a href="#1-Blocks的调用过程" class="headerlink" title="1. Blocks的调用过程"></a>1. Blocks的调用过程</h4>多说无用，来个最简单的栗子说明吧：</li>
-</ul>
-</blockquote>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.m</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">        <span class="comment">// 声明并赋值myBlock</span></div><div class="line">        <span class="keyword">void</span> (^myBlock)(<span class="keyword">void</span>) = ^&#123;</div><div class="line">            <span class="built_in">printf</span>(<span class="string">"Hello Block~\n"</span>);</div><div class="line">        &#125;;</div><div class="line">        <span class="comment">// 调用myBlock</span></div><div class="line">        myBlock();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ol>
-<li>使用”<em>clang -rewrite-objc main.m</em>“转换后的代码为：</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.cpp</span></div><div class="line"></div><div class="line"><span class="comment">/** Block结构体 */</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">block_impl</span> &#123;</span></div><div class="line">  <span class="comment">/** 类型指针 */</span></div><div class="line">  <span class="keyword">void</span> *isa;</div><div class="line">  <span class="keyword">int</span> Flags;</div><div class="line">  <span class="keyword">int</span> Reserved;</div><div class="line">  <span class="comment">/** 函数指针 */</span></div><div class="line">  <span class="keyword">void</span> *FuncPtr;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">/** Block变量完整结构体声明 */</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">main_block_impl_0</span> &#123;</span></div><div class="line">    <span class="comment">/** Block结构体实例 */</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">block_impl</span> <span class="title">impl</span>;</span></div><div class="line">    <span class="comment">/** 描述信息对象指针 */</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">main_block_desc_0</span>* <span class="title">Desc</span>;</span></div><div class="line">    </div><div class="line">    <span class="comment">/** 本结构体的构造函数 */</span></div><div class="line">    __main_block_impl_0(<span class="keyword">void</span> *fp, struct __main_block_desc_0 *desc, <span class="keyword">int</span> flags=<span class="number">0</span>) &#123;</div><div class="line">        impl.isa = &amp;_NSConcreteStackBlock; <span class="comment">// isa指针赋值，即证明了Block是“对象”（由于默认clang没有开启ARC，ARC下这里是__NSGlobalBlock__，即_NSConcreteGlobalBlock）</span></div><div class="line">        impl.Flags = flags;</div><div class="line">        impl.FuncPtr = fp; <span class="comment">// 函数指针赋值</span></div><div class="line">        Desc = desc; <span class="comment">// 描述信息指针赋值</span></div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">/** Block中真正的函数体 */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_func_0(struct __main_block_impl_0 *__cself) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Hello Block~\n"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** Block描述结构体声明，并实例化 */</span></div><div class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> __<span class="title">main_block_desc_0</span> &#123;</span></div><div class="line">    <span class="keyword">size_t</span> reserved;</div><div class="line">    <span class="keyword">size_t</span> Block_size;</div><div class="line">&#125; __main_block_desc_0_DATA = &#123; <span class="number">0</span>, <span class="keyword">sizeof</span>(struct __main_block_impl_0)&#125;;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// 原main函数</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    <span class="comment">/* @autoreleasepool */</span> </div><div class="line">    &#123; </div><div class="line">        __AtAutoreleasePool __autoreleasepool; </div><div class="line">        </div><div class="line">        <span class="comment">// 声明了myBlock的C函数指针</span></div><div class="line">        <span class="comment">// 指向了__main_block_impl_0的结构体实例</span></div><div class="line">        <span class="keyword">void</span> (*myBlock)(<span class="keyword">void</span>) = ((<span class="keyword">void</span> (*)())&amp;__main_block_impl_0((<span class="keyword">void</span> *)__main_block_func_0, &amp;__main_block_desc_0_DATA));</div><div class="line">        </div><div class="line">        <span class="comment">// 使用__block_impl实例中的函数指针FuncPtr进行函数调用（传入__block_impl实例的指针作为参数）</span></div><div class="line">        <span class="comment">// 即为原 myBlock()</span></div><div class="line">        ((<span class="keyword">void</span> (*)(__block_impl *))((__block_impl *)myBlock)-&gt;FuncPtr)((__block_impl *)myBlock);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ol>
-<li>以上代码中，在main函数中，简化后的myBlock声明为：</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 创建 __main_block_impl_0结构体实例</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">main_block_impl_0</span> <span class="title">tmp</span> = __<span class="title">main_block_impl_0</span>(__<span class="title">main_block_func_0</span>, &amp;__<span class="title">main_block_desc_0_DATA</span>);</span></div><div class="line"><span class="comment">// 赋值给__main_block_impl_0结构体的指针</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">main_block_impl_0</span> *<span class="title">myBlock</span> = &amp;<span class="title">tmp</span>;</span></div></pre></td></tr></table></figure>
-<ol>
-<li>简化后的myBlock调用为：</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取结构体实例中的myImpl成员</span></div><div class="line"> __block_impl myImpl = (*myBlock).impl;</div><div class="line"> <span class="comment">// myImpl的FuncPtr成员即为真正的函数指针，直接进行调用并传参</span></div><div class="line"> (myImpl.FuncPtr)(*myBlock);</div></pre></td></tr></table></figure>
-<p>由此，在编译期间，我们了解了<strong>Blocks的声明和整个调用过程</strong>：</p>
-<blockquote>
-<ol>
-<li>系统在原声明Block的生命周期外，生成静态的相关Block结构体、描述信息结构体和执行函数等。</li>
-<li>在原声明Block的生命周期内部，使用相关结构体创建并生成Block的实例。</li>
-<li>根据生成的Block实例，找到其中的C函数指针，进行调用。</li>
-</ol>
-</blockquote>
-<h4 id="2-Blocks是对象"><a href="#2-Blocks是对象" class="headerlink" title="2.Blocks是对象"></a>2.Blocks是对象</h4><p>对于Block变量的本质，上面代码中可以看出：</p>
-<blockquote>
-<ol>
-<li>在Block的结构体__block_impl中，包含了isa成员变量，是（void *）类型；</li>
-<li>isa变量在初始化Block时，赋值的是_NSConcreteStackBlock的地址；</li>
-</ol>
-</blockquote>
-<h5 id="2-1-isa"><a href="#2-1-isa" class="headerlink" title="2.1 isa"></a>2.1 isa</h5><p>我们知道，isa标识的是OC对象的类型。在<em>objc-private.h</em>中可以找到声明：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// objc_object</span></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_object</span> &#123;</span></div><div class="line"><span class="keyword">private</span>:</div><div class="line">    <span class="keyword">isa_t</span> isa;</div><div class="line"></div><div class="line"><span class="keyword">public</span>:</div><div class="line">    ...</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// isa_t</span></div><div class="line"><span class="keyword">union</span> <span class="keyword">isa_t</span> &#123;</div><div class="line">    ...</div><div class="line">    </div><div class="line">    <span class="comment">// 指向的是对应的Class</span></div><div class="line">    Class cls;</div><div class="line">    ...</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** id是objc_object结构体指针（id即为OC对象）*/</span></div><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_object</span> *<span class="title">id</span>;</span></div><div class="line"></div><div class="line"><span class="comment">/** Class是objc_class结构体指针 */</span></div><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> *<span class="title">Class</span>;</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// objc_class</span></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> :</span> objc_object &#123;</div><div class="line">    <span class="comment">// Class ISA;</span></div><div class="line">    Class superclass;</div><div class="line">    </div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在以上代码中可以看到：</p>
-<blockquote>
-<ol>
-<li>id（我们说的OC对象），即objc_object结构体指针，其类型的实质，就是isa联合体的cls成员，也就是指向的Class；</li>
-<li>由于objc_class“继承”了objc_object结构体，故其中也包含了isa成员，即“类”也标识了自己所属的类（metaclass，说多了…）。</li>
-</ol>
-</blockquote>
-<h4 id="2-2-NSConcreteStackBlock类型"><a href="#2-2-NSConcreteStackBlock类型" class="headerlink" title="2.2 _NSConcreteStackBlock类型"></a>2.2 _NSConcreteStackBlock类型</h4><ol>
-<li>对于_NSConcreteStackBlock，我们可以在main.cpp中找到其声明：</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Runtime copy/destroy helper functions (from Block_private.h)</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __OBJC_EXPORT_BLOCKS</span></div><div class="line">...</div><div class="line"><span class="keyword">extern</span> <span class="string">"C"</span> __declspec(dllexport) <span class="keyword">void</span> *_NSConcreteGlobalBlock[<span class="number">32</span>];</div><div class="line"><span class="keyword">extern</span> <span class="string">"C"</span> __declspec(dllexport) <span class="keyword">void</span> *_NSConcreteStackBlock[<span class="number">32</span>];</div><div class="line"><span class="meta">#<span class="meta-keyword">else</span></span></div><div class="line">...</div><div class="line">__OBJC_RW_DLLIMPORT <span class="keyword">void</span> *_NSConcreteGlobalBlock[<span class="number">32</span>];</div><div class="line">__OBJC_RW_DLLIMPORT <span class="keyword">void</span> *_NSConcreteStackBlock[<span class="number">32</span>];</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
-<p>可以看到，_NSConcreteStackBlock声明的是一个数组的指针。</p>
-<ol>
-<li>而在GNUStep的开源版本中，我们找到了直接支持”Block是对象“的证据：</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> _<span class="title">NSConcreteGlobalBlock</span>;</span></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> _<span class="title">NSConcreteStackBlock</span>;</span></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> _<span class="title">NSConcreteMallocBlock</span>;</span></div></pre></td></tr></table></figure>
-<p>故我们可以将Block看做是OC对象。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;Blocks篇：2-Blocks的调用过程及其对象本质&quot;&gt;&lt;a href=&quot;#Blocks篇：2-Blocks的调用过程及其对象本质&quot; class=&quot;headerlink&quot; title=&quot;Blocks篇：2.Blocks的调用过程及其对象本质&quot;&gt;&lt;/a&gt;Blocks篇：2.Blocks的调用过程及其对象本质&lt;/h2&gt;&lt;blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;Blocks实际上是通过支持Block的编译器，将其转换为标准的C代码进行编译。&lt;/li&gt;
-&lt;li&gt;我们可以使用clang的“-rewrite-objc”命令，将包含Block的源代码转换为C++代码，帮助理解。
     
     </summary>
     

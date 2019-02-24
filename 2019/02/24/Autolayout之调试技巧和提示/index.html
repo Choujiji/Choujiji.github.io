@@ -6,21 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Objective-C 2.0的category | 臭吉吉的瞎记空间</title>
+  <title>Autolayout之调试技巧和提示 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="class和category的数据结构 为什么category只能添加方法，不能添加属性？ category为何不要覆盖父类方法？ 多个category覆盖同名方法的执行顺序 category与extension的区别 关联对象和其他补充">
+  <meta name="description" content="注：本文节选并翻译自Debugging Tricks and Tips   以下话题描述了在布局中总结提炼出的信息，同时描述了一些你可能遇到的意料之外的情况。你也许不会再每次布局中都会用到这些技术，但是它们可以在一些难题上给你提供帮助。">
 <meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Objective-C 2.0的category">
-<meta property="og:url" content="http://yoursite.com/2018/03/26/Objective-C 2.0 category/index.html">
+<meta property="og:title" content="Autolayout之调试技巧和提示">
+<meta property="og:url" content="http://yoursite.com/2019/02/24/Autolayout之调试技巧和提示/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="class和category的数据结构 为什么category只能添加方法，不能添加属性？ category为何不要覆盖父类方法？ 多个category覆盖同名方法的执行顺序 category与extension的区别 关联对象和其他补充">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3270116-4fef3651af3f80d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/550">
-<meta property="og:updated_time" content="2018-05-15T02:18:58.508Z">
+<meta property="og:description" content="注：本文节选并翻译自Debugging Tricks and Tips   以下话题描述了在布局中总结提炼出的信息，同时描述了一些你可能遇到的意料之外的情况。你也许不会再每次布局中都会用到这些技术，但是它们可以在一些难题上给你提供帮助。">
+<meta property="og:updated_time" content="2019-02-24T05:24:02.507Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Objective-C 2.0的category">
-<meta name="twitter:description" content="class和category的数据结构 为什么category只能添加方法，不能添加属性？ category为何不要覆盖父类方法？ 多个category覆盖同名方法的执行顺序 category与extension的区别 关联对象和其他补充">
-<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/3270116-4fef3651af3f80d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/550">
+<meta name="twitter:title" content="Autolayout之调试技巧和提示">
+<meta name="twitter:description" content="注：本文节选并翻译自Debugging Tricks and Tips   以下话题描述了在布局中总结提炼出的信息，同时描述了一些你可能遇到的意料之外的情况。你也许不会再每次布局中都会用到这些技术，但是它们可以在一些难题上给你提供帮助。">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -186,20 +184,20 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Objective-C 2.0 category" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-Autolayout之调试技巧和提示" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      Objective-C 2.0的category
+      Autolayout之调试技巧和提示
     </h1>
   
 
         
-        <a href="/2018/03/26/Objective-C 2.0 category/" class="archive-article-date">
-  	<time datetime="2018-03-26T14:40:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-26</time>
+        <a href="/2019/02/24/Autolayout之调试技巧和提示/" class="archive-article-date">
+  	<time datetime="2019-02-24T05:23:50.351Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-24</time>
 </a>
         
       </header>
@@ -207,95 +205,52 @@
     <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
-<ul>
-<li><strong>class和category的数据结构</strong></li>
-<li><strong>为什么category只能添加方法，不能添加属性？</strong></li>
-<li><strong>category为何不要覆盖父类方法？</strong></li>
-<li><strong>多个category覆盖同名方法的执行顺序</strong></li>
-<li><strong>category与extension的区别</strong></li>
-<li><strong>关联对象和其他补充</strong></li>
-</ul>
+<p>注：本文节选并翻译自<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/DebuggingTricksandTips.html#//apple_ref/doc/uid/TP40010853-CH21-SW1" target="_blank" rel="external">Debugging Tricks and Tips
+</a></p>
 </blockquote>
+<p>以下话题描述了在布局中总结提炼出的信息，同时描述了一些你可能遇到的意料之外的情况。你也许不会再每次布局中都会用到这些技术，但是它们可以在一些难题上给你提供帮助。</p>
 <a id="more"></a>
-<h3 id="class和category的数据结构"><a href="#class和category的数据结构" class="headerlink" title="class和category的数据结构"></a>class和category的数据结构</h3><p>在学习runtime时，可以知道，<em>OC的所有数据结构，包括对象、类、方法、协议等等，都是C的结构体</em>。<br>类的实例，即对象，主要只包含了一个isa指针，指向其所属的class。而class的isa指针则指向其元类（meta class），元类的isa指向根原类，根元类isa指向自身。</p>
-<p>来一张转烂了的图，顺便说明isa和super指针的指向关系：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/3270116-4fef3651af3f80d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/550" alt="img"></p>
-<p>class的主要数据结构（元类与其相同）：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> &#123;</span></div><div class="line">	Class isa    OBJC_ISA_AVAILABILITY;</div><div class="line">	</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> !__OBJC2__</span></div><div class="line">	Class super_class;    <span class="comment">// 父类</span></div><div class="line">	<span class="keyword">const</span> <span class="keyword">char</span> *name;    <span class="comment">// 类名</span></div><div class="line">	<span class="keyword">long</span> version;    <span class="comment">// 类版本信息，默认0</span></div><div class="line">	<span class="keyword">long</span> info;    <span class="comment">// 类信息</span></div><div class="line">	<span class="keyword">long</span> instance_size;    <span class="comment">// 类实例变量大小</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_ivar_list</span> *<span class="title">ivars</span>;</span>    <span class="comment">// 成员变量链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_method_list</span> **<span class="title">methodlists</span>;</span>    <span class="comment">// 方法链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_cache</span> *<span class="title">cache</span>;</span>    <span class="comment">// 方法缓存</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">objc_protocol_list</span> *<span class="title">protocols</span>;</span>    <span class="comment">// 遵循的协议链表</span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"></div><div class="line">&#125; OBJC2_UNAVAILABLE;</div></pre></td></tr></table></figure>
-<p>简要说明下：</p>
-<ul>
-<li>根据class的数据结构，即可了解runtime的主要功能：可以在运行时获取类的相关信息，包括实例变量、方法列表、协议列表等，且可以通过相关api对各部分进行增删改查等操作（甚至是修改method的实现）。</li>
-<li>OC中的方法调用，并非在编译期确定调用地址，而是在运行时才会确定调用方法的真正地址（通过objc_msgsend函数进行方法调用）。子类的方法调用，会在methodlist中查找，未找到后，会在父类的methodlist中继续查找，直到找到后调用（未找到后进入消息转发）。找到后，会将此method的地址放入cache中，以加快访问。</li>
-</ul>
-<p>我们主要讨论的category，其结构如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">category_t</span> &#123;</span></div><div class="line">	<span class="keyword">const</span> <span class="keyword">char</span> *name;    <span class="comment">// 类名</span></div><div class="line">	<span class="keyword">classref_t</span> cls;    <span class="comment">// 类</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">method_list_t</span> *<span class="title">instanceMethods</span>;</span>    <span class="comment">// 保存添加的实例方法的链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">method_list_t</span> *<span class="title">classMethods</span>;</span>    <span class="comment">// 保存添加的类方法的链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">protocol_list_t</span> *<span class="title">protocols</span>;</span>    <span class="comment">// 保存实现的协议方法的链表</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">property_list_t</span> *<span class="title">instanceProperties</span>;</span>    <span class="comment">// 保存所有添加的属性</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="为什么category只能添加方法，不能添加属性？"><a href="#为什么category只能添加方法，不能添加属性？" class="headerlink" title="为什么category只能添加方法，不能添加属性？"></a>为什么category只能添加方法，不能添加属性？</h3><p>从category的结构中可以看出，<strong>由于内部只保存了属性，并不包含ivar（成员变量才能保存属性的值），即只生成了setter和getter方法的声明，没有对应实现，更没有对应的成员变量保存</strong>。所以在category中添加属性，需要使用runtime的相关对象（associate_object）进行。<br>而且对于category来说，<strong>添加的方法会在编译后添加到主类的方法列表中（实例方法添加到主类，类方法添加到主类所属的元类中）</strong>。</p>
-<h3 id="category为何不要覆盖父类方法？"><a href="#category为何不要覆盖父类方法？" class="headerlink" title="category为何不要覆盖父类方法？"></a>category为何不要覆盖父类方法？</h3><p>我们都知道，在category中覆盖父类方法时，系统会弹出警告（主类也实现了此方法），且调用原方法时，系统会执行category的实现，从而导致原始方法实现被覆盖。这里是为什么？<br>我们知道，由于category的方法在runtime加载后会添加到本类的方法表中，方法表保存的是方法的SEL，可以推测：</p>
+<h4 id="理解日志"><a href="#理解日志" class="headerlink" title="理解日志"></a>理解日志</h4><p>视图的信息可以在控制台中输出，也许是因为存在了不满足条件的布局，或是因为你明确使用了<a href="https://developer.apple.com/documentation/uikit/uiview/1622432-constraintsaffectinglayoutforaxi" target="_blank" rel="external">constraintsAffectingLayoutForAxis:</a>或<a href="https://developer.apple.com/documentation/appkit/nsview/1525968-constraintsaffectinglayout" target="_blank" rel="external">constraintsAffectingLayoutForOrientation:</a>的调试方法所致。</p>
+<p>无论哪种方式，你都可以在这些日志中找到许多有用信息。下面是一个关于不满足条件的布局错误的示例输出：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="number">2015</span><span class="number">-08</span><span class="number">-26</span> <span class="number">14</span>:<span class="number">27</span>:<span class="number">54.790</span> Auto Layout Cookbook[<span class="number">10040</span>:<span class="number">1906606</span>] Unable to simultaneously satisfy constraints.</div><div class="line">    Probably at least one of the constraints in the following <span class="built_in">list</span> is one you don't want. Try <span class="keyword">this</span>: (<span class="number">1</span>) look at each constraint <span class="keyword">and</span> <span class="keyword">try</span> to figure out which you don't expect; (<span class="number">2</span>) find the code that added the unwanted constraint <span class="keyword">or</span> constraints <span class="keyword">and</span> fix it. (Note: If you're seeing NSAutoresizingMaskLayoutConstraints that you don't understand, refer to the documentation <span class="keyword">for</span> the UIView property translatesAutoresizingMaskIntoConstraints) </div><div class="line">(</div><div class="line">    <span class="string">"&lt;NSLayoutConstraint:0x7a87b000 H:[UILabel:0x7a8724b0'Name'(&gt;=400)]&gt;"</span>,</div><div class="line">    <span class="string">"&lt;NSLayoutConstraint:0x7a895e30 UILabel:0x7a8724b0'Name'.leading == UIView:0x7a887ee0.leadingMargin&gt;"</span>,</div><div class="line">    <span class="string">"&lt;NSLayoutConstraint:0x7a886d20 H:[UILabel:0x7a8724b0'Name']-(NSSpace(8))-[UITextField:0x7a88cff0]&gt;"</span>,</div><div class="line">    <span class="string">"&lt;NSLayoutConstraint:0x7a87b2e0 UITextField:0x7a88cff0.trailing == UIView:0x7a887ee0.trailingMargin&gt;"</span>,</div><div class="line">    <span class="string">"&lt;NSLayoutConstraint:0x7ac7c430 'UIView-Encapsulated-Layout-Width' H:[UIView:0x7a887ee0(320)]&gt;"</span></div><div class="line">)</div><div class="line"> </div><div class="line">Will attempt to recover by breaking constraint</div><div class="line">&lt;NSLayoutConstraint:<span class="number">0x7a87b000</span> H:[UILabel:<span class="number">0x7a8724b0'</span>Name'(&gt;=<span class="number">400</span>)]&gt;</div><div class="line"> </div><div class="line">Make a symbolic breakpoint at UIViewAlertForUnsatisfiableConstraints to <span class="keyword">catch</span> <span class="keyword">this</span> in the debugger.</div><div class="line">The methods in the UIConstraintBasedLayoutDebugging category on UIView listed in &lt;UIKit/UIView.h&gt; may also be helpful.</div></pre></td></tr></table></figure>
+<p>这个错误消息展示了五个冲突约束。这些约束无法同时满足。你应该要么移除一个，要么把一个约束变成可选约束。</p>
+<p>幸运的是，这个视图层级相对简单。你有一个父视图，它包含着一个label和一个text field。冲突的约束被设置成了如下关系：</p>
 <ol>
-<li>原SEL被覆盖</li>
-<li>两个同名方法都被加入到方法表中，调用时只执行了category的</li>
+<li>label的宽度大于等于400点。</li>
+<li>label的起始边等于父视图的起始空白区域。</li>
+<li>在label和text field之间包含8个点的空间。</li>
+<li>text field的尾边等于父视图的尾部空白区域。</li>
+<li>父视图的宽度为320点。</li>
 </ol>
-<p>另一个问题是，runtime在加载时，对于本类和category的加载顺序是什么。</p>
-<p>参照以下代码可以验证：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">// 主类</div><div class="line">#import &lt;Foundation/Foundation.h&gt;</div><div class="line"></div><div class="line">@interface TestClassForCategory : NSObject</div><div class="line"></div><div class="line">- (void)testMethod;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">#import "TestClassForCategory.h"</div><div class="line"></div><div class="line">@implementation TestClassForCategory</div><div class="line"></div><div class="line">+ (void)load &#123;</div><div class="line">    NSLog(@"load === TestClassForCategory");</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)testMethod &#123;</div><div class="line">    NSLog(@"instance method~~~~");</div><div class="line">&#125;</div><div class="line">@end</div><div class="line"></div><div class="line"></div><div class="line">// 分类（category）</div><div class="line">#import "TestClassForCategory.h"</div><div class="line"></div><div class="line">@interface TestClassForCategory (Category1)</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">#import "TestClassForCategory+Category1.h"</div><div class="line"></div><div class="line">@implementation TestClassForCategory (Category1)</div><div class="line"></div><div class="line">+ (void)load &#123;</div><div class="line">    NSLog(@"load === TestClassForCategory+Category1");</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)testMethod &#123;</div><div class="line">    // category的方法会添加到</div><div class="line">    NSLog(@"category1----");</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
-<p>我们可以在自己的测试类中，实例化TestClassForCategory并调用testMethod方法，可以看到输出结果：</p>
+<p>系统试图通过移除label的宽度来恢复正常。</p>
 <blockquote>
-<p>2018-03-27 07:55:10.278999+0800 Runtime_Learning2[3506:4499896] load === TestClassForCategory<br>2018-03-27 07:55:10.280645+0800 Runtime_Learning2[3506:4499896] load === TestClassForCategory+Category1<br>2018-03-27 07:55:14.702309+0800 Runtime_Learning2[3506:4499896] category1—-</p>
+<p><strong>说明</strong></p>
+<p>控制台中写入的约束使用的是可视化语言（Visual Format Language，以后写做VFL）。即使你从不会使用VFL来创建约束，你也必须可以阅读并理解它以便有效调试Auto Layout的问题。要获取更多信息，请看<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/VisualFormatLanguage.html#//apple_ref/doc/uid/TP40010853-CH27-SW1" target="_blank" rel="external">可视化语言</a>。</p>
 </blockquote>
-<p>由此可以证明，<strong>runtime加载时，首先加载主类，然后加载category。</strong></p>
-<p>我们通过runtime的api来获取一下TestClassForCategory的方法表：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 打印TestClassForCategory的methodlist</span></div><div class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> methodlistCount;</div><div class="line">Method *methodlist =  class_copyMethodList([TestClassForCategory class], &amp;methodlistCount);</div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; methodlistCount; i++) &#123;</div><div class="line">    Method method = methodlist[i];</div><div class="line">    SEL sel = method_getName(method);</div><div class="line">    IMP imp = method_getImplementation(method);</div><div class="line">    NSLog(@<span class="string">"method - %@"</span>, NSStringFromSelector(sel));</div><div class="line">    imp();</div><div class="line">&#125;</div><div class="line"><span class="built_in">free</span>(methodlist);</div></pre></td></tr></table></figure>
-<p>执行结果如下：</p>
-<blockquote>
-<p>2018-03-27 07:55:10.683704+0800 Runtime_Learning2[3506:4499896] method - testMethod<br>2018-03-27 07:55:10.683855+0800<br>Runtime_Learning2[3506:4499896] category1—-<br>2018-03-27 07:55:10.683965+0800 Runtime_Learning2[3506:4499896] method - testMethod<br>2018-03-27 07:55:10.684055+0800 Runtime_Learning2[3506:4499896] instance method<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line">&gt; </div><div class="line"></div><div class="line">可以看到，**在主类的方法表中，果然保存了主类和分类两个SEL，且方法实现均可以被调用**。联系着load方法的执行顺序，我们可以知道，**class在方法列表中添加方法时，是依照“头部插入”的方式（“头插法”）来修改链表的**。</div><div class="line">原理如下（转自[iOS OC中分类Category实现原理](http://blog.sina.com.cn/s/blog_14679a7d20102xae4.html)）：</div><div class="line"></div><div class="line">![img](http://img.blog.csdn.net/20180131104524542?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvc2hpaHVib2tl/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)</div><div class="line"></div><div class="line">由此可见，当分类中覆盖了主类的方法后，**由于分类的方法在原方法前部，导致调用方法时，系统查找到第一个方法后，直接返回执行，本类方法不会执行**。所以一般不建议在分类中覆盖主类方法。特别是给系统类添加分类时，由于本类或其父类可能会有相同的方法声明，导致被分类覆盖。</div><div class="line"></div><div class="line">为避免此类问题的出现，可以在分类中声明方法时，添加自定义的方法前缀。</div><div class="line"></div><div class="line">### 多个category覆盖同名方法的执行顺序</div><div class="line"></div><div class="line">我们知道，在类的方法表中添加方法使用的是“头插法”，但当给主类添加多个分类时，分类方法的加载顺序又是如何呢？</div><div class="line">根据代码来看：</div><div class="line"></div><div class="line">``` C</div><div class="line">// 在以上代码的基础上再添加第二个category</div><div class="line">#import &quot;TestClassForCategory.h&quot;</div><div class="line"></div><div class="line">@interface TestClassForCategory (Category2)</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">#import &quot;TestClassForCategory+Category2.h&quot;</div><div class="line"></div><div class="line">@implementation TestClassForCategory (Category2)</div><div class="line"></div><div class="line">+ (void)load &#123;</div><div class="line">    NSLog(@&quot;load === TestClassForCategory+Category2&quot;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)testMethod &#123;</div><div class="line">    // category的方法会添加到</div><div class="line">    NSLog(@&quot;category2----&quot;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div><div class="line">```</div><div class="line">执行结果如下：</div><div class="line">&gt; </div><div class="line">&gt; 2018-03-27 10:58:50.708610+0800 Runtime_Learning2[4434:4568830] load === TestClassForCategory</div><div class="line">&gt; 2018-03-27 10:58:50.711459+0800 Runtime_Learning2[4434:4568830] load === TestClassForCategory+Category1</div><div class="line">&gt; 2018-03-27 10:58:50.712078+0800 Runtime_Learning2[4434:4568830] load === TestClassForCategory+Category2</div><div class="line">&gt; 2018-03-27 10:58:50.927215+0800 Runtime_Learning2[4434:4568830] method - testMethod</div><div class="line">&gt; 2018-03-27 10:58:50.927375+0800 Runtime_Learning2[4434:4568830] category2----</div><div class="line">&gt; 2018-03-27 10:58:50.927585+0800 Runtime_Learning2[4434:4568830] method - testMethod</div><div class="line">&gt; 2018-03-27 10:58:50.928280+0800 Runtime_Learning2[4434:4568830] category1----</div><div class="line">&gt; 2018-03-27 10:58:50.928472+0800 Runtime_Learning2[4434:4568830] method - testMethod</div><div class="line">&gt; 2018-03-27 10:58:50.928653+0800 Runtime_Learning2[4434:4568830] instance method</div></pre></td></tr></table></figure></p>
-<p>2018-03-27 10:58:53.851391+0800 Runtime_Learning2[4434:4568830] category2—-</p>
-</blockquote>
-<p>可以看到，最后加载的category2，则执行方法指向的是category2的方法。原因在哪呢？</p>
-<p>在工程TARGETS -&gt; Build Phases -&gt; Compile Sources中，我们可以看到，自上而下，编译资源的顺序是：Category1.m、Category2.m，我们可以自己上下调整编译顺序并执行，结果显而易见：</p>
-<p><strong>多个category的加载顺序（也是方法的覆盖顺序）是依照Compile Sources的顺序自上而下确定的。</strong></p>
-<p><em>注意，返回值不同的方法也会覆盖，因为SEL与返回值无关。</em></p>
-<p>所以，多个分类同时覆盖主类的方法时，执行结果无法直接确定，可能会出现不可预估的问题。</p>
-<h3 id="category与extension的区别"><a href="#category与extension的区别" class="headerlink" title="category与extension的区别"></a>category与extension的区别</h3><p>一般来说，我们都会认为class extension（类的扩展）是匿名的category，因为语法详尽，且功能相似，但实际上来说，二者可以说是<em>完全不同</em>。</p>
+<p>这些约束当中，最后一个是系统创建的。你不能改变它。并且，它和第一个约束一起产生了一个明显的冲突。如果你的父视图只有320点宽度，你不可能会有一个400点宽度的label。幸运的是，你不必移除首个约束。如果你把它的优先级降到999，系统还是会试图提供一个可选宽度—-尽可能地接近它（400宽度），并同时满足其他约束。</p>
+<p>基于视图的autoresizing mask的约束（例如，当<a href="https://developer.apple.com/documentation/uikit/uiview/1622572-translatesautoresizingmaskintoco" target="_blank" rel="external">translatesAutoresizingMaskIntoConstraints</a>为YES时，约束被创建）在mask上存在额外信息。在约束被定位后，日志字符串会显示”<em>h=</em>“，且其后跟随着三个字符，“<em>v=</em>”后同样跟随三个字符。一个“<em>-</em>”（连字符）字符代表一个确定值，同时一个“<em>&amp;</em>”（与符号）字符代表一个可变值。对于水平方向（<em>h=</em>），三个字符分别代表了左间距、<br>宽度和右间距。在垂直方向上（<em>v=</em>），他们分别代表了顶部间距、高度和底部间距。</p>
+<p>例如，考虑如下日志：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;NSAutoresizingMaskLayoutConstraint:<span class="number">0x7ff28252e480</span> h=--&amp; v=--&amp; H:[UIView:<span class="number">0x7ff282617cc0</span>(<span class="number">50</span>)]&gt;<span class="string">"</span></div></pre></td></tr></table></figure>
+<p>此信息由如下部分组成：</p>
 <ul>
-<li><p>extension: </p>
-<ol>
-<li>它是class的一部分，与interface、implementation三者共同组成class，声明周期与class相同。</li>
-<li>分类是在编译期确定的，内部声明的属性和方法在编译期直接组成class结构体的数据（属性会自动生成ivar并合成setter和getter，分别添加到class的ivar_list和method_list中）。</li>
-<li>分类声明的方法，实现必须在class的implementation中，所以没有本类的源代码无法添加extension。</li>
-</ol>
-</li>
-<li><p>category:</p>
-<ol>
-<li>与class本体无关，可以单独存在。</li>
-<li>扩展是在编译期编译，在运行时加载到类中。category由于其数据结构所限，只能添加方法实现、属性声明和协议实现，内部不包含ivar成员变量，所以无法保存数据（声明的属性不能生成对应的ivar，也不能合成出setter和getter的实现）。</li>
-<li>编译期由于class结构布局和数据已经确定，在运行时，category只能将方法添加到class的方法链表中，其他东西无法修改（class的实例大小等在编译期已确定，无法修改）。</li>
-</ol>
-</li>
+<li><em>NSAutoresizingMaskLayoutConstraint:0x7ff28252e480</em>：约束的类和地址。本例中，此类说明它基于视图的autoresizing mask。</li>
+<li><em>h=–&amp; v=–&amp;</em>：视图的autoresizing mask。这是默认的mask。在水平方向上它包含一个确定的左间距、一个确定的宽度和一个可变的右间距。在竖直方向上它存在一个确定的顶部间距、一个确定的高度和一个可变的底部间距。换句话说，在父视图尺寸改变时，这个视图的左上角和尺寸保持不变。</li>
+<li><em>H:[UIView:0x7ff282617cc0(50)]</em>：使用VFL描述的约束。在本例中，它描述了一个单独的50点宽度的视图。此描述还包含了约束涉及到的所有视图的类和地址。</li>
 </ul>
-<h3 id="关联对象和其他补充"><a href="#关联对象和其他补充" class="headerlink" title="关联对象和其他补充"></a>关联对象和其他补充</h3><ul>
-<li><p>由于在category中添加属性，需要使用关联对象（associate object）进行添加和访问，那关联对象的数据保存在哪里呢？</p>
-<p>  所有的关联对象都由AssociationsManager进行统一管理（添加、删除等），保存在全局map中，其中key是这个相关对象的指针地址，value则是单独的一个AssociationsHashMap，里面保存着key-value对。</p>
-</li>
-<li><p>提问：在class的load方法中，可以调用Category的方法吗？<br>  答：可以。runtime加载class和category等是在load方法调用前执行的，此时Category的方法已经加载到class的方法列表中，可以直接调用。</p>
-</li>
-<li><p>提问：当Category已经覆盖了Class中的方法时，如何调用Class中的原方法？<br>  答：由于使用“头插法”，Category的方法已经在Class的方法列表头部。系统调用方法时是从头开始检索，查到对应Method后即跳转IMP进行调用。我们可以使用runtime的api手动遍历Class的方法表，找到最后一个同名方法，直接调用IMP。</p>
-</li>
-<li><p>扩展一个类的方式：</p>
-<ol>
-<li>子类化</li>
-<li>使用category</li>
-<li>使用协议抽象（如UITableView的delegate和data source，可以给具有显示功能的类进行扩展）</li>
-</ol>
-</li>
-</ul>
-<p>参考内容：</p>
+<h4 id="给日志添加识别符号"><a href="#给日志添加识别符号" class="headerlink" title="给日志添加识别符号"></a>给日志添加识别符号</h4><p>虽然前一个例子相对容易理解，越来越长的约束列表很快就变得难以理解。你可以通过给每个视图和约束设置一个有意义的识别符来让日志容易阅读。</p>
+<p>如果视图有一个明显的文字组件，Xcode就直接使用它来做识别符。例如，Xcode使用一个label的文字，一个button的标题，或者一个text field的占位字来识别这些视图。其他情况下，需要在识别检查器（Identity inspector）中设置指定的标签。Interface Builder在交互设置中使用这些识别符。大多数的这些识别符都会在控制台日志中显示。</p>
+<p>对于约束来说，通过代码或者属性检查器（Attribute inspector）来设置<em>identifier</em>属性。当在控制台打印信息时，Auto Layout就会使用这些识别符。</p>
+<p>举例来说，这是一个带有识别符版本的相同的错误约束：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">2015-08-26 14:29:32.870 Auto Layout Cookbook[10208:1918826] Unable to simultaneously satisfy constraints.</div><div class="line">    Probably at least one of the constraints in the following list is one you don't want. Try this: (1) look at each constraint and try to figure out which you don't expect; (2) find the code that added the unwanted constraint or constraints and fix it. (Note: If you're seeing NSAutoresizingMaskLayoutConstraints that you don't understand, refer to the documentation for the UIView property translatesAutoresizingMaskIntoConstraints) </div><div class="line">(</div><div class="line">    "&lt;NSLayoutConstraint:0x7b58bac0 'Label Leading' UILabel:0x7b58b040'Name'.leading == UIView:0x7b590790.leadingMargin&gt;",</div><div class="line">    "&lt;NSLayoutConstraint:0x7b56d020 'Label Width' H:[UILabel:0x7b58b040'Name'(&gt;=400)]&gt;",</div><div class="line">    "&lt;NSLayoutConstraint:0x7b58baf0 'Space Between Controls' H:[UILabel:0x7b58b040'Name']-(NSSpace(8))-[UITextField:0x7b589490]&gt;",</div><div class="line">    "&lt;NSLayoutConstraint:0x7b51cb10 'Text Field Trailing' UITextField:0x7b589490.trailing == UIView:0x7b590790.trailingMargin&gt;",</div><div class="line">    "&lt;NSLayoutConstraint:0x7b0758c0 'UIView-Encapsulated-Layout-Width' H:[UIView:0x7b590790(320)]&gt;"</div><div class="line">)</div><div class="line"> </div><div class="line">Will attempt to recover by breaking constraint</div><div class="line">&lt;NSLayoutConstraint:0x7b56d020 'Label Width' H:[UILabel:0x7b58b040'Name'(&gt;=400)]&gt;</div><div class="line"> </div><div class="line">Make a symbolic breakpoint at UIViewAlertForUnsatisfiableConstraints to catch this in the debugger.</div><div class="line">The methods in the UIConstraintBasedLayoutDebugging category on UIView listed in &lt;UIKit/UIView.h&gt; may also be helpful.</div></pre></td></tr></table></figure>
+<p>正如所见，这些识别符可以让你在日志中快速且容易地识别出约束。</p>
+<h4 id="理解边界案例"><a href="#理解边界案例" class="headerlink" title="理解边界案例"></a>理解边界案例</h4><p>这里有一些可能导致Auto Layout出现不可预料情况的边界案例：</p>
 <ul>
-<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/CustomizingExistingClasses/CustomizingExistingClasses.html" target="_blank" rel="external">Customizing Existing Classes
-</a></li>
-<li><a href="https://tech.meituan.com/DiveIntoCategory.html" target="_blank" rel="external">深入理解Objective-C：Category
-</a></li>
-<li><a href="http://blog.sina.com.cn/s/blog_14679a7d20102xae4.html" target="_blank" rel="external">iOS OC中分类Category实现原理</a></li>
-<li><a href="https://www.jianshu.com/p/87cfbdda0a68" target="_blank" rel="external">【iOS】category 重写方法的调用</a></li>
+<li>Auto Layout是基于视图的对齐矩形来定位视图的，而不是frame。大多时候，二者是相等的。可是，在布局计算时，一些视图可能会设置了自定义的对齐矩形进而超出了视图本身（如badges）。<br>  了解更多信息，在<a href="https://developer.apple.com/documentation/uikit/uiview" target="_blank" rel="external">UIView类参考</a>中查看使用Auto Layout对齐视图的相关内容。</li>
+<li>在iOS中，你可以使用视图的<a href="https://developer.apple.com/documentation/uikit/uiview/1622459-transform" target="_blank" rel="external">transform</a>属性来设置尺寸、旋转或移动视图；可是，这些变换根本不会影响Auto Layout的计算。Auto Layout是通过视图未变换时的frame来计算其对齐矩形的。</li>
+<li>一个视图可以在其边界范围之外显示内容。大多时候，视图会正常显示并将其内容限制在边界之内。可是，有时出于性能考虑，这不会被图像引擎强制实现。这意味着该视图（特别是那些自定义绘制的视图）可能会以一个不同于本身frame的尺寸进行绘制。<br>  你可以将视图的<a href="https://developer.apple.com/documentation/uikit/uiview/1622415-clipstobounds" target="_blank" rel="external">clipsToBounds</a>属性置为YES来测试这个问题，或者通过视图的frame进行验证。</li>
+<li>只有当所有视图以它们的真实内容尺寸高度显示时，<a href="https://developer.apple.com/documentation/appkit/nslayoutattribute/nslayoutattributebaseline" target="_blank" rel="external">NSLayoutAttributeBaseline</a>、<a href="https://developer.apple.com/documentation/appkit/nslayoutattribute/nslayoutattributefirstbaseline" target="_blank" rel="external">NSLayoutAttributeFirstBaseline</a>和<a href="https://developer.apple.com/documentation/appkit/nslayoutconstraint/attribute/lastbaseline" target="_blank" rel="external">NSLayoutAttributeLastBaseline</a>属性才会正确对齐文字。如果其中一个视图在竖直方向上被拉伸或压缩，其文字就可能出现在错误的位置上。</li>
+<li>约束优先级会在整个视图层级中作为全局属性出现。你可能会经常使用stack view、layout guide或者虚拟视图将视图进行分组；可是，这种做法并不能将所需的视图优先级封装到内部。Auto Layout会继续将组内的优先级同外面的进行比较（甚至是其他组中的优先级）。</li>
+<li>宽高比约束允许水平和竖直约束进行交互。一般来说，水平和竖直布局是单独计算的。可是，如果你使用一个视图的宽度来约束其高度时，你便创建了一个水平和竖直约束间的连接关系：他们现在会对其他约束产生影响甚至发生冲突。这种交互会明显增加布局的复杂度，并且可能会与一些不相干的布局产生某些不可预期的冲突。</li>
 </ul>
 
       
@@ -366,7 +321,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2018/03/26/Objective-C 2.0 category/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/02/24/Autolayout之调试技巧和提示/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -380,18 +335,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2018/03/30/Objective-C 2.0 动态绑定和消息转发/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Objective-C 2.0 方法调用中的动态绑定和消息转发
-        
-      </div>
-    </a>
   
-  
-    <a href="/2018/03/14/iOS runtime学习/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">iOS runtime学习</div>
+    <a href="/2019/02/22/元素中有重复元素吗？（2）/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">元素中有重复元素吗？（2）</div>
       <i class="icon-circle-right"></i>
     </a>
   
