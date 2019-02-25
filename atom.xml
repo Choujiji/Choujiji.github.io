@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-02-24T05:24:02.507Z</updated>
+  <updated>2019-02-25T06:25:24.536Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,37 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>如何排列硬币？</title>
+    <link href="http://yoursite.com/2019/02/25/%E5%A6%82%E4%BD%95%E6%8E%92%E5%88%97%E7%A1%AC%E5%B8%81%EF%BC%9F/"/>
+    <id>http://yoursite.com/2019/02/25/如何排列硬币？/</id>
+    <published>2019-02-25T06:25:24.535Z</published>
+    <updated>2019-02-25T06:25:24.536Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h4><p>你总共有 n 枚硬币，你需要将它们摆成一个阶梯形状，第 k 行就必须正好有 k 枚硬币。给定一个数字 n，找出可形成完整阶梯行的总行数。n 是一个非负整数，并且在32位有符号整型的范围。</p>
+<a id="more"></a>
+<ul>
+<li>示例1：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">n = <span class="number">5</span></div><div class="line"></div><div class="line">硬币可排列成以下几行:</div><div class="line">¤</div><div class="line">¤ ¤</div><div class="line">¤ ¤</div><div class="line"></div><div class="line">因为第三行不完整，所以返回<span class="number">2.</span></div></pre></td></tr></table></figure>
+<ul>
+<li>示例2：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">n = <span class="number">8</span></div><div class="line"></div><div class="line">硬币可排列成以下几行:</div><div class="line">¤</div><div class="line">¤ ¤</div><div class="line">¤ ¤ ¤</div><div class="line">¤ ¤</div><div class="line"></div><div class="line">因为第四行不完整，所以返回<span class="number">3.</span></div></pre></td></tr></table></figure>
+<h4 id="解法1：直接排列"><a href="#解法1：直接排列" class="headerlink" title="解法1：直接排列"></a>解法1：直接排列</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function">NSInteger <span class="title">maxRowCountWithCoins1</span><span class="params">(NSInteger coins)</span> </span>&#123;</div><div class="line">    NSInteger leftCoins = coins;</div><div class="line">    NSInteger rowCount = <span class="number">0</span>;</div><div class="line">    <span class="keyword">while</span> (leftCoins &gt;= rowCount) &#123;</div><div class="line">        rowCount += <span class="number">1</span>;</div><div class="line">        <span class="comment">// 按行数减去相应值</span></div><div class="line">        leftCoins -= rowCount;</div><div class="line">        <span class="keyword">if</span> (leftCoins &lt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="comment">// 不够数，减1</span></div><div class="line">            rowCount -= <span class="number">1</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> rowCount;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="解法2：数学公式"><a href="#解法2：数学公式" class="headerlink" title="解法2：数学公式"></a>解法2：数学公式</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function">NSInteger <span class="title">maxRowCountWithCoins2</span><span class="params">(NSInteger coins)</span> </span>&#123;</div><div class="line">    <span class="comment">// 公式法，由于是等差数列（1，2，3...n，和为coins），使用等差数列求和公式，算出最小的整数n，即为行数</span></div><div class="line">    <span class="comment">// 1. 等差数列求和公式为：((A1 + An) * n) / 2 = Sn，带入公式，得</span></div><div class="line">    <span class="comment">//      ((1 + n) * n) / 2 = coins</span></div><div class="line">    <span class="comment">//      变形得  n^2 + n - 2 * coins = 0，可知此为一元二次方程</span></div><div class="line">    <span class="comment">// 2. 根据一元二次方程的求根公式，x = (-b +- sqrt(b^2 - 4ac)) / 2a，带入公式，得</span></div><div class="line">    <span class="comment">//      n = (-1 +- sqrt(1 + 8 * coins)) / 2</span></div><div class="line">    <span class="comment">//      变形，得 n = sqrt(0.25 + 2 * coins) - 0.5</span></div><div class="line">    <span class="comment">// 3. 故只要求出最小的正整数n即可</span></div><div class="line">    <span class="keyword">return</span> (NSInteger)(<span class="built_in">sqrt</span>(<span class="number">0.25</span> + <span class="number">2</span> * coins) - <span class="number">0.5</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;题目&quot;&gt;&lt;a href=&quot;#题目&quot; class=&quot;headerlink&quot; title=&quot;题目&quot;&gt;&lt;/a&gt;题目&lt;/h4&gt;&lt;p&gt;你总共有 n 枚硬币，你需要将它们摆成一个阶梯形状，第 k 行就必须正好有 k 枚硬币。给定一个数字 n，找出可形成完整阶梯行的总行数。n 是一个非负整数，并且在32位有符号整型的范围。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="算法学习" scheme="http://yoursite.com/tags/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>Autolayout之调试技巧和提示</title>
@@ -1906,63 +1937,6 @@
 &lt;li&gt;_NSConcreteMallocBlock&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;此三种类型的Block对象分别存储在栈区、全局（数据区）和堆区&lt;br&gt;
-    
-    </summary>
-    
-    
-      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》12</title>
-    <link href="http://yoursite.com/2019/01/15/Blocks%E7%AF%87%EF%BC%9A3.Blocks%E4%BD%BF%E7%94%A8%E6%8D%95%E8%8E%B7%E5%88%B0%E7%9A%84%E5%8F%98%E9%87%8F/"/>
-    <id>http://yoursite.com/2019/01/15/Blocks篇：3.Blocks使用捕获到的变量/</id>
-    <published>2019-01-15T04:09:21.983Z</published>
-    <updated>2019-01-15T04:09:33.818Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="Blocks篇：3-Blocks使用捕获到的变量"><a href="#Blocks篇：3-Blocks使用捕获到的变量" class="headerlink" title="Blocks篇：3.Blocks使用捕获到的变量"></a>Blocks篇：3.Blocks使用捕获到的变量</h2><blockquote>
-<p>所谓Blocks捕获变量，即在Block函数体内使用外部声明的变量。</p>
-</blockquote>
-<h4 id="1-捕获局部变量（自动变量）和静态局部变量"><a href="#1-捕获局部变量（自动变量）和静态局部变量" class="headerlink" title="1. 捕获局部变量（自动变量）和静态局部变量"></a>1. 捕获局部变量（自动变量）和静态局部变量</h4><a id="more"></a>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.m</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">        <span class="keyword">int</span> uselessVal = <span class="number">1</span>;</div><div class="line">        <span class="comment">// 局部变量</span></div><div class="line">        <span class="keyword">int</span> val = <span class="number">3</span>;</div><div class="line">        <span class="comment">// 静态局部变量</span></div><div class="line">        <span class="keyword">static</span> <span class="keyword">int</span> staticVal = <span class="number">4</span>;</div><div class="line">        </div><div class="line">        <span class="keyword">void</span> (^myBlock)(<span class="keyword">void</span>) = ^&#123;</div><div class="line">            <span class="comment">// 捕获val和staticVal使用</span></div><div class="line">            <span class="built_in">printf</span>(<span class="string">"val = %d\n"</span>, val);</div><div class="line">            <span class="built_in">printf</span>(<span class="string">"staticVal = %d\n"</span>, staticVal);</div><div class="line">        &#125;;</div><div class="line">        myBlock();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>转换后的C++代码部分如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.cpp</span></div><div class="line"></div><div class="line"><span class="comment">/** Block的完整结构体声明 */</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">main_block_impl_0</span> &#123;</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">block_impl</span> <span class="title">impl</span>;</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">main_block_desc_0</span>* <span class="title">Desc</span>;</span></div><div class="line">    <span class="keyword">int</span> val; <span class="comment">// 内部捕获的局部变量</span></div><div class="line">    <span class="keyword">int</span> *staticVal; <span class="comment">// 内部捕获的静态局部变量</span></div><div class="line">    __main_block_impl_0(<span class="keyword">void</span> *fp, struct __main_block_desc_0 *desc, <span class="keyword">int</span> _val, <span class="keyword">int</span> *_staticVal, <span class="keyword">int</span> flags=<span class="number">0</span>) : val(_val), staticVal(_staticVal) &#123;</div><div class="line">        impl.isa = &amp;_NSConcreteStackBlock; <span class="comment">// 这里只按照MRC编译确定，ARC则不同</span></div><div class="line">        impl.Flags = flags;</div><div class="line">        impl.FuncPtr = fp;</div><div class="line">        Desc = desc;</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">/** Block中函数体转换生成的C函数 */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_func_0(struct __main_block_impl_0 *__cself) &#123;</div><div class="line">    <span class="comment">// 获取Block结构体实例中捕获的变量</span></div><div class="line">    <span class="keyword">int</span> val = __cself-&gt;val; <span class="comment">// bound by copy</span></div><div class="line">    <span class="keyword">int</span> *staticVal = __cself-&gt;staticVal; <span class="comment">// bound by copy</span></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"val = %d\n"</span>, val);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"staticVal = %d\n"</span>, (*staticVal));</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// main函数</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    <span class="comment">/* @autoreleasepool */</span> &#123; __AtAutoreleasePool __autoreleasepool; </div><div class="line">        <span class="keyword">int</span> uselessVal = <span class="number">1</span>;</div><div class="line">        <span class="keyword">int</span> val = <span class="number">3</span>;</div><div class="line">        <span class="keyword">static</span> <span class="keyword">int</span> staticVal = <span class="number">4</span>;</div><div class="line"></div><div class="line">        <span class="keyword">void</span> (*myBlock)(<span class="keyword">void</span>) = ((<span class="keyword">void</span> (*)())&amp;__main_block_impl_0((<span class="keyword">void</span> *)__main_block_func_0, &amp;__main_block_desc_0_DATA, val, &amp;staticVal)); <span class="comment">// 初始化时赋值，将要捕获的变量传递进去</span></div><div class="line">        ((<span class="keyword">void</span> (*)(__block_impl *))((__block_impl *)myBlock)-&gt;FuncPtr)((__block_impl *)myBlock);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>以上可以看出：</p>
-<ol>
-<li><strong>只有Block内部使用的变量才会被捕获；</strong></li>
-<li><strong>普通的局部变量是通过值传递方式进行捕获，静态局部变量是通过指针传递方式进行的；</strong><ul>
-<li>原因：<ol>
-<li><em>由于C函数的声明和实现是在原局部变量的生命周期之外（这里是main函数外部），使用时原变量早已被释放，故需要直接将值保存到Block结构体实例中；</em></li>
-<li><em>对于静态局部变量，由于静态变量是存储在专门的数据区（也就可以理解为全局），在C函数中也可以直接访问，故只需将其指针保存在Block结构体实例中即可。</em></li>
-</ol>
-</li>
-</ul>
-</li>
-<li><strong>C函数内部使用时，通过传递进去的Block指针取出被捕获的变量值。</strong></li>
-<li>补充：<strong>在ARC环境下，对于Block的类型（isa）</strong>，<ul>
-<li><strong>捕获普通局部变量后，在运行时，系统会将Block拷贝到堆上，变为_NSConcreteMallocBlock</strong></li>
-<li><strong>捕获静态局部变量，虽然使用，实际也只是记录该变量的指针，Block为_NSConcreteGlobalBlock</strong></li>
-<li><strong>没有捕获任何变量的Block为_NSConcreteGlobalBlock类型</strong></li>
-</ul>
-</li>
-</ol>
-<h4 id="2-捕获全局变量和全局静态变量"><a href="#2-捕获全局变量和全局静态变量" class="headerlink" title="2. 捕获全局变量和全局静态变量"></a>2. 捕获全局变量和全局静态变量</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.m</span></div><div class="line"></div><div class="line"><span class="keyword">int</span> globalVal = <span class="number">3</span>;</div><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> globalStaticVal = <span class="number">4</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">        <span class="keyword">void</span> (^myBlock)(<span class="keyword">void</span>) = ^&#123;</div><div class="line">            <span class="built_in">printf</span>(<span class="string">"globalVal = %d\n"</span>, globalVal);</div><div class="line">            <span class="built_in">printf</span>(<span class="string">"globalStaticVal = %d\n"</span>, globalStaticVal);</div><div class="line">        &#125;;</div><div class="line">        myBlock();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>转换后的C++部分代码为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.cpp</span></div><div class="line"></div><div class="line"><span class="keyword">int</span> globalVal = <span class="number">3</span>;</div><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> globalStaticVal = <span class="number">4</span>;</div><div class="line"></div><div class="line"><span class="comment">/** Block完整结构体声明 */</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">main_block_impl_0</span> &#123;</span></div><div class="line">    <span class="comment">// 没有保存全局变量</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">block_impl</span> <span class="title">impl</span>;</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">main_block_desc_0</span>* <span class="title">Desc</span>;</span></div><div class="line">    __main_block_impl_0(<span class="keyword">void</span> *fp, struct __main_block_desc_0 *desc, <span class="keyword">int</span> flags=<span class="number">0</span>) &#123;</div><div class="line">        impl.isa = &amp;_NSConcreteStackBlock;</div><div class="line">        impl.Flags = flags;</div><div class="line">        impl.FuncPtr = fp;</div><div class="line">        Desc = desc;</div><div class="line">  &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_func_0(struct __main_block_impl_0 *__cself) &#123;</div><div class="line">    <span class="comment">// 直接使用</span></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"globalVal = %d\n"</span>, globalVal);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"globalStaticVal = %d\n"</span>, globalStaticVal);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>可以看到，</p>
-<ol>
-<li><strong>对于全局变量（包含静态全局变量），由于在Block的C函数中可以直接访问，故无需在Block结构中对其进行额外的保存工作</strong>。</li>
-<li><strong>在ARC环境下，Block的类型（isa）为_NSConcreteGlobalBlock</strong></li>
-</ol>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;Blocks篇：3-Blocks使用捕获到的变量&quot;&gt;&lt;a href=&quot;#Blocks篇：3-Blocks使用捕获到的变量&quot; class=&quot;headerlink&quot; title=&quot;Blocks篇：3.Blocks使用捕获到的变量&quot;&gt;&lt;/a&gt;Blocks篇：3.Blocks使用捕获到的变量&lt;/h2&gt;&lt;blockquote&gt;
-&lt;p&gt;所谓Blocks捕获变量，即在Block函数体内使用外部声明的变量。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h4 id=&quot;1-捕获局部变量（自动变量）和静态局部变量&quot;&gt;&lt;a href=&quot;#1-捕获局部变量（自动变量）和静态局部变量&quot; class=&quot;headerlink&quot; title=&quot;1. 捕获局部变量（自动变量）和静态局部变量&quot;&gt;&lt;/a&gt;1. 捕获局部变量（自动变量）和静态局部变量&lt;/h4&gt;
     
     </summary>
     

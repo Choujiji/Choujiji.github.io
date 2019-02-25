@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》16 | 臭吉吉的瞎记空间</title>
+  <title>如何排列硬币？ | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Blocks篇：7.循环引用问题1.ARC下的Block循环引用1.1 使用weak或unsafe_unretained避免循环引用一般来说，最简单的这种情况即：block对象作为OC对象的成员，而在block函数体内部直接或间接捕获了该OC对象，造成互相强引用。举例来说：">
-<meta name="keywords" content="读书笔记">
+  <meta name="description" content="题目你总共有 n 枚硬币，你需要将它们摆成一个阶梯形状，第 k 行就必须正好有 k 枚硬币。给定一个数字 n，找出可形成完整阶梯行的总行数。n 是一个非负整数，并且在32位有符号整型的范围。">
+<meta name="keywords" content="算法学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="《Objective-C高级编程 iOS与OS X多线程与内存管理》16">
-<meta property="og:url" content="http://yoursite.com/2019/01/15/Blocks篇：7.循环引用问题/index.html">
+<meta property="og:title" content="如何排列硬币？">
+<meta property="og:url" content="http://yoursite.com/2019/02/25/如何排列硬币？/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="Blocks篇：7.循环引用问题1.ARC下的Block循环引用1.1 使用weak或unsafe_unretained避免循环引用一般来说，最简单的这种情况即：block对象作为OC对象的成员，而在block函数体内部直接或间接捕获了该OC对象，造成互相强引用。举例来说：">
-<meta property="og:updated_time" content="2019-01-15T04:12:59.642Z">
+<meta property="og:description" content="题目你总共有 n 枚硬币，你需要将它们摆成一个阶梯形状，第 k 行就必须正好有 k 枚硬币。给定一个数字 n，找出可形成完整阶梯行的总行数。n 是一个非负整数，并且在32位有符号整型的范围。">
+<meta property="og:updated_time" content="2019-02-25T06:25:24.536Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="《Objective-C高级编程 iOS与OS X多线程与内存管理》16">
-<meta name="twitter:description" content="Blocks篇：7.循环引用问题1.ARC下的Block循环引用1.1 使用weak或unsafe_unretained避免循环引用一般来说，最简单的这种情况即：block对象作为OC对象的成员，而在block函数体内部直接或间接捕获了该OC对象，造成互相强引用。举例来说：">
+<meta name="twitter:title" content="如何排列硬币？">
+<meta name="twitter:description" content="题目你总共有 n 枚硬币，你需要将它们摆成一个阶梯形状，第 k 行就必须正好有 k 枚硬币。给定一个数字 n，找出可形成完整阶梯行的总行数。n 是一个非负整数，并且在32位有符号整型的范围。">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -184,93 +184,38 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Blocks篇：7.循环引用问题" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-如何排列硬币？" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      《Objective-C高级编程 iOS与OS X多线程与内存管理》16
+      如何排列硬币？
     </h1>
   
 
         
-        <a href="/2019/01/15/Blocks篇：7.循环引用问题/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:12:59.642Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
+        <a href="/2019/02/25/如何排列硬币？/" class="archive-article-date">
+  	<time datetime="2019-02-25T06:25:24.535Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-25</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="Blocks篇：7-循环引用问题"><a href="#Blocks篇：7-循环引用问题" class="headerlink" title="Blocks篇：7.循环引用问题"></a>Blocks篇：7.循环引用问题</h2><h4 id="1-ARC下的Block循环引用"><a href="#1-ARC下的Block循环引用" class="headerlink" title="1.ARC下的Block循环引用"></a>1.ARC下的Block循环引用</h4><h5 id="1-1-使用weak或unsafe-unretained避免循环引用"><a href="#1-1-使用weak或unsafe-unretained避免循环引用" class="headerlink" title="1.1 使用weak或unsafe_unretained避免循环引用"></a>1.1 使用<strong>weak或</strong>unsafe_unretained避免循环引用</h5><p>一般来说，最简单的这种情况即：<em>block对象作为OC对象的成员，而在block函数体内部直接或间接捕获了该OC对象，造成互相强引用</em>。举例来说：<br><a id="more"></a><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(^MyBlock)</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">@interface TestObject : NSObject &#123;</div><div class="line">    <span class="comment">// block成员</span></div><div class="line">    MyBlock myBlock;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation TestObject</div><div class="line"></div><div class="line">- (instancetype)init &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        <span class="comment">// 初始化block成员</span></div><div class="line">        myBlock = ^&#123;</div><div class="line">            NSLog(@<span class="string">"%@"</span>, self);</div><div class="line">        &#125;;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
-<p>产生循环引用的过程：</p>
-<blockquote>
+        <h4 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h4><p>你总共有 n 枚硬币，你需要将它们摆成一个阶梯形状，第 k 行就必须正好有 k 枚硬币。给定一个数字 n，找出可形成完整阶梯行的总行数。n 是一个非负整数，并且在32位有符号整型的范围。</p>
+<a id="more"></a>
 <ul>
-<li>由于myBlock对象捕获了OC对象（self），myBlock被自动拷贝到堆上，并自动对self产生强引用；</li>
-<li>myBlock是self的成员，当myBlock分配到堆内存后，self负责对其进行内存管理，自动对myBlock对象产生强引用；</li>
-<li>互相保留，引用循环产生</li>
+<li>示例1：</li>
 </ul>
-</blockquote>
-<p>不过这种情况，编译器可以直接识别并给出引用循环警告。我们可以通过所有权修饰符<strong>weak或</strong>unsafe_unretained，使myBlock对象通过保留弱引用或不安全的对象指针，来避免对self产生强引用：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (instancetype)init &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        <span class="comment">// 初始化block成员</span></div><div class="line">        </div><div class="line">        __weak TestObject *weakSelf = self;</div><div class="line"><span class="comment">//        __unsafe_unretained TestObject *unsafeSelf = self;</span></div><div class="line">        myBlock = ^&#123;</div><div class="line">            NSLog(@<span class="string">"%@"</span>, weakSelf);</div><div class="line">        &#125;;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>由于在init方法中不比担心self对象释放的问题，可以安心使用__unsafe_unretained修饰符。</p>
-<h5 id="1-2-通过-block变量，并适时将其释放来解除循环引用"><a href="#1-2-通过-block变量，并适时将其释放来解除循环引用" class="headerlink" title="1.2 通过__block变量，并适时将其释放来解除循环引用"></a>1.2 通过__block变量，并适时将其释放来解除循环引用</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">@implementation TestObject</div><div class="line"></div><div class="line">- (instancetype)init &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        <span class="comment">// 初始化block成员</span></div><div class="line">        </div><div class="line">        __block TestObject *blockSelf = self;</div><div class="line">        myBlock = ^&#123;</div><div class="line">            NSLog(@<span class="string">"blockSelf - %@"</span>, blockSelf);</div><div class="line">            </div><div class="line">            <span class="comment">// 释放__block变量，其释放对self的强引用</span></div><div class="line">            blockSelf = nil;</div><div class="line">        &#125;;</div><div class="line">        <span class="comment">// 通过执行block对象，在内部解除循环引用</span></div><div class="line">        myBlock();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)dealloc &#123;</div><div class="line">    NSLog(@<span class="string">"%@"</span>, NSStringFromSelector(_cmd));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><strong>由于在ARC下，复制到堆内存中的<strong>block对象会对内部的OC对象进行强引用，故可以让block对象捕获</strong>block对象，并在需要时释放__block对象（一般都是执行block时），以间接解除对self的强引用。</strong></p>
-<p>补充：</p>
-<blockquote>
-<p>调用block后，直接将block对象释放也可以解除循环引用。</p>
-</blockquote>
-<p>缺点：</p>
-<blockquote>
-<p>一般来说，<strong>必须执行block后，引用循环才可以被解除</strong>，容易出现遗漏的情况。</p>
-</blockquote>
-<h4 id="2-非ARC下的Block内存控制"><a href="#2-非ARC下的Block内存控制" class="headerlink" title="2.非ARC下的Block内存控制"></a>2.非ARC下的Block内存控制</h4><h5 id="2-1-非ARC下的Block引用循环"><a href="#2-1-非ARC下的Block引用循环" class="headerlink" title="2.1 非ARC下的Block引用循环"></a>2.1 非ARC下的Block引用循环</h5><p>由于<strong>非ARC环境下</strong>，无法使用所有权修饰符，故<strong>只能通过__block变量的方式来解决引用循环问题</strong>：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- (instancetype)init &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        <span class="comment">// 初始化block成员</span></div><div class="line">        </div><div class="line">        __block TestObject *blockSelf = self;</div><div class="line">        myBlock = ^&#123;</div><div class="line">            NSLog(@<span class="string">"blockSelf - %@"</span>, blockSelf);</div><div class="line">        &#125;;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在上述代码中，直接使用__block对象即可，无需释放，即可避免生成引用循环。</p>
-<p>原因：</p>
-<blockquote>
-<p><strong>非ARC环境下，__block变量被分配到堆内存时，不会对内部的OC对象进行强引用</strong>；<br>因此，在block对象函数内部，不会对OC对象发生强引用，相当于ARC下的<strong>weak和</strong>unsafe_unretained的情况。</p>
-</blockquote>
-<h5 id="2-2-非ARC环境下的Block内存使用规则补充"><a href="#2-2-非ARC环境下的Block内存使用规则补充" class="headerlink" title="2.2 非ARC环境下的Block内存使用规则补充"></a>2.2 非ARC环境下的Block内存使用规则补充</h5><ul>
-<li>对不同内存区域的block执行retain和copy操作的结果：</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>block对象所在的内存区域</th>
-<th>执行操作</th>
-<th>效果</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>栈</td>
-<td>retain</td>
-<td>无效</td>
-</tr>
-<tr>
-<td>栈</td>
-<td>copy</td>
-<td>复制到堆内存</td>
-</tr>
-<tr>
-<td>堆</td>
-<td>retain</td>
-<td>产生强引用</td>
-</tr>
-<tr>
-<td>堆</td>
-<td>copy</td>
-<td>产生强引用</td>
-</tr>
-</tbody>
-</table>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">n = <span class="number">5</span></div><div class="line"></div><div class="line">硬币可排列成以下几行:</div><div class="line">¤</div><div class="line">¤ ¤</div><div class="line">¤ ¤</div><div class="line"></div><div class="line">因为第三行不完整，所以返回<span class="number">2.</span></div></pre></td></tr></table></figure>
 <ul>
-<li>在C语言环境下，可以使用Block_copy()和Block_release()对堆内存的block对象进行内存管理。</li>
+<li>示例2：</li>
 </ul>
-
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">n = <span class="number">8</span></div><div class="line"></div><div class="line">硬币可排列成以下几行:</div><div class="line">¤</div><div class="line">¤ ¤</div><div class="line">¤ ¤ ¤</div><div class="line">¤ ¤</div><div class="line"></div><div class="line">因为第四行不完整，所以返回<span class="number">3.</span></div></pre></td></tr></table></figure>
+<h4 id="解法1：直接排列"><a href="#解法1：直接排列" class="headerlink" title="解法1：直接排列"></a>解法1：直接排列</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function">NSInteger <span class="title">maxRowCountWithCoins1</span><span class="params">(NSInteger coins)</span> </span>&#123;</div><div class="line">    NSInteger leftCoins = coins;</div><div class="line">    NSInteger rowCount = <span class="number">0</span>;</div><div class="line">    <span class="keyword">while</span> (leftCoins &gt;= rowCount) &#123;</div><div class="line">        rowCount += <span class="number">1</span>;</div><div class="line">        <span class="comment">// 按行数减去相应值</span></div><div class="line">        leftCoins -= rowCount;</div><div class="line">        <span class="keyword">if</span> (leftCoins &lt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="comment">// 不够数，减1</span></div><div class="line">            rowCount -= <span class="number">1</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> rowCount;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="解法2：数学公式"><a href="#解法2：数学公式" class="headerlink" title="解法2：数学公式"></a>解法2：数学公式</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function">NSInteger <span class="title">maxRowCountWithCoins2</span><span class="params">(NSInteger coins)</span> </span>&#123;</div><div class="line">    <span class="comment">// 公式法，由于是等差数列（1，2，3...n，和为coins），使用等差数列求和公式，算出最小的整数n，即为行数</span></div><div class="line">    <span class="comment">// 1. 等差数列求和公式为：((A1 + An) * n) / 2 = Sn，带入公式，得</span></div><div class="line">    <span class="comment">//      ((1 + n) * n) / 2 = coins</span></div><div class="line">    <span class="comment">//      变形得  n^2 + n - 2 * coins = 0，可知此为一元二次方程</span></div><div class="line">    <span class="comment">// 2. 根据一元二次方程的求根公式，x = (-b +- sqrt(b^2 - 4ac)) / 2a，带入公式，得</span></div><div class="line">    <span class="comment">//      n = (-1 +- sqrt(1 + 8 * coins)) / 2</span></div><div class="line">    <span class="comment">//      变形，得 n = sqrt(0.25 + 2 * coins) - 0.5</span></div><div class="line">    <span class="comment">// 3. 故只要求出最小的正整数n即可</span></div><div class="line">    <span class="keyword">return</span> (NSInteger)(<span class="built_in">sqrt</span>(<span class="number">0.25</span> + <span class="number">2</span> * coins) - <span class="number">0.5</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
       
 
       
@@ -283,7 +228,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">算法学习</a>
         		</li>
       		
 		</ul>
@@ -339,7 +284,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/01/15/Blocks篇：7.循环引用问题/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/02/25/如何排列硬币？/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -353,18 +298,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/01/18/GCD篇：1.GCD的使用要点/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          《Objective-C高级编程 iOS与OS X多线程与内存管理》17
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/01/15/Blocks篇：6.Blocks捕获的OC对象及其内存管理/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">《Objective-C高级编程 iOS与OS X多线程与内存管理》15</div>
+    <a href="/2019/02/24/Autolayout之调试技巧和提示/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Autolayout之调试技巧和提示</div>
       <i class="icon-circle-right"></i>
     </a>
   
