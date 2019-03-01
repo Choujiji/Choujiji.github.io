@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-02-25T06:25:24.536Z</updated>
+  <updated>2019-03-01T03:23:24.037Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,39 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>对数组按需分组</title>
+    <link href="http://yoursite.com/2019/03/01/%E5%AF%B9%E6%95%B0%E7%BB%84%E6%8C%89%E9%9C%80%E5%88%86%E7%BB%84/"/>
+    <id>http://yoursite.com/2019/03/01/对数组按需分组/</id>
+    <published>2019-03-01T03:22:57.720Z</published>
+    <updated>2019-03-01T03:23:24.037Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h4><p>给定长度为 2n 的数组, 你的任务是将这些数分成 n 对, 例如 (a1, b1), (a2, b2), …, (an, bn) ，使得从1 到 n 的 min(ai, bi) 总和最大。</p>
+<a id="more"></a>
+<ul>
+<li>示例：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">输入: [<span class="number">1</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">2</span>]</div><div class="line"></div><div class="line">输出: <span class="number">4</span></div><div class="line">解释: n 等于 <span class="number">2</span>, 最大总和为 <span class="number">4</span> = min(<span class="number">1</span>, <span class="number">2</span>) + min(<span class="number">3</span>, <span class="number">4</span>)。</div></pre></td></tr></table></figure>
+<h4 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h4><p>对于示例数组，所有的分组情况为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 1.</span></div><div class="line">[<span class="number">1</span>, <span class="number">4</span>], [<span class="number">2</span>, <span class="number">3</span>] <span class="comment">// 结果为 1 + 2 = 3</span></div><div class="line"><span class="comment">// 2.</span></div><div class="line">[<span class="number">1</span>, <span class="number">3</span>], [<span class="number">2</span>, <span class="number">4</span>] <span class="comment">// 结果为 1 + 2 = 3</span></div><div class="line"><span class="comment">// 3.</span></div><div class="line">[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>] <span class="comment">// 结果为 1 + 3 = 4</span></div></pre></td></tr></table></figure>
+<p>然而，当数据过多时，无法直接列举出所有情况。<br>因此，我们首先可以考虑将数据进行排序。并且，我们知道，min函数的功能即获取较小的数，忽略较大的数。根据以上列举情况可以也看出，最大和的分组方式即为从小到大依次分组。故可以得出结论：</p>
+<ol>
+<li>升序排列数组，得到有序数据。</li>
+<li>依次间隔获取数据并求和。</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function">NSInteger <span class="title">getMaxSumWithSeparatingArray</span><span class="params">(NSArray &lt;NSNumber *&gt;* info)</span> </span>&#123;</div><div class="line">    <span class="comment">// 1. 升序排列</span></div><div class="line">    NSArray *sortedInfo = [info sortedArrayUsingComparator:^NSComparisonResult(NSNumber *obj1, NSNumber *obj2) &#123;</div><div class="line">        <span class="keyword">return</span> [obj1 compare:obj2];</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    <span class="comment">// 2. 依次对奇数项求和</span></div><div class="line">    NSInteger sum = <span class="number">0</span>;</div><div class="line">    </div><div class="line">    NSInteger index = <span class="number">0</span>;</div><div class="line">    <span class="keyword">while</span> (index &lt; sortedInfo.count) &#123;</div><div class="line">        sum += [sortedInfo[index] integerValue];</div><div class="line">        index += <span class="number">2</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> sum;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;题目&quot;&gt;&lt;a href=&quot;#题目&quot; class=&quot;headerlink&quot; title=&quot;题目&quot;&gt;&lt;/a&gt;题目&lt;/h4&gt;&lt;p&gt;给定长度为 2n 的数组, 你的任务是将这些数分成 n 对, 例如 (a1, b1), (a2, b2), …, (an, bn) ，使得从1 到 n 的 min(ai, bi) 总和最大。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="算法学习" scheme="http://yoursite.com/tags/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>如何排列硬币？</title>
@@ -1832,111 +1865,6 @@
 &lt;li&gt;对于全局变量，由于实质上Block并未对其进行捕获，故可以直接在Block函数体内部进行变量修改；&lt;/li&gt;
 &lt;li&gt;对于局部的静态变量，由于Block捕获的是其指针，故可以通过指针对原变量进行修改；&lt;/li&gt;
 &lt;li&gt;对于普通的局部变量，由于在Block函数体内使用的版本已经不是之前的变量了（是Block结构体中保存的成员），故编译器不支持直接修改。这种情况下，只能通过“__block”修饰变量进行处理。
-    
-    </summary>
-    
-    
-      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》13</title>
-    <link href="http://yoursite.com/2019/01/15/Blocks%E7%AF%87%EF%BC%9A4.Blocks%E7%9A%84%E5%AD%98%E5%82%A8%E5%9F%9F%EF%BC%88ARC%E4%B8%8B_NSConcreteBlock%E7%9A%84%E9%99%B7%E9%98%B1%EF%BC%89/"/>
-    <id>http://yoursite.com/2019/01/15/Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）/</id>
-    <published>2019-01-15T04:10:25.966Z</published>
-    <updated>2019-01-15T04:10:25.966Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="Blocks篇：4-Blocks的存储域（ARC下-NSConcreteBlock的陷阱）"><a href="#Blocks篇：4-Blocks的存储域（ARC下-NSConcreteBlock的陷阱）" class="headerlink" title="Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）"></a>Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）</h2><blockquote>
-<p>在上一节中我们知道，在Block捕获不同种类的变量时，生成的Block对象的类型(isa指针)分为三种：</p>
-<ul>
-<li>_NSConcreteStackBlock</li>
-<li>_NSConcreteGlobalBlock</li>
-<li>_NSConcreteMallocBlock</li>
-</ul>
-<p>此三种类型的Block对象分别存储在栈区、全局（数据区）和堆区<br><a id="more"></a><br>我们知道，<strong>由于Block对象的函数体定义在Block实例化的生命周期外部，故其执行时早已不在原作用域内</strong>。况且，由于在函数中，定义的Block对象也是局部变量，超出作用域也会被自动回收。所以，<strong>要保证Block超出原作用域仍然可以存在的方式，就是将其转化为全局Block，或者复制到堆内存中</strong>，这样才可以保证其内存可控并正确执行Block的函数。在ARC环境下，LLVM在编译期已经可以在绝大多数情况下正确处理这种情况。通过测试，编码时定义的局部Block变量（即_NSConcreteStackBlock对象），在运行时可以得到如下结果：</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>捕获变量情况</th>
-<th>运行期生成的Block对象</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>无</td>
-<td>_NSConcreteGlobalBlock</td>
-</tr>
-<tr>
-<td>全局或静态变量</td>
-<td>_NSConcreteGlobalBlock</td>
-</tr>
-<tr>
-<td>普通局部变量</td>
-<td>_NSConcreteMallocBlock</td>
-</tr>
-</tbody>
-</table>
-<p>但是，发现在一种情况下，ARC不会自动处理，需要我们对Block对象进行手动转换。</p>
-<h4 id="1-ARC下的Blocks陷阱"><a href="#1-ARC下的Blocks陷阱" class="headerlink" title="1.ARC下的Blocks陷阱"></a>1.ARC下的Blocks陷阱</h4><p>先看代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.m</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span><span class="params">(^VoidBlock)</span><span class="params">(<span class="keyword">void</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">/** 返回包含Block对象的集合的函数 */</span></div><div class="line"><span class="function">NSArray *<span class="title">getBlocksArray</span> <span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> myVal = <span class="number">2</span>;</div><div class="line">    <span class="comment">// 内部的Block对象均为__NSConcreteStackBlock对象</span></div><div class="line">    <span class="keyword">return</span> [[NSArray alloc] initWithObjects:</div><div class="line">            ^&#123;NSLog(@<span class="string">"block1~%d"</span>, myVal);&#125;,</div><div class="line">            ^&#123;NSLog(@<span class="string">"block2~%d"</span>, myVal);&#125;,</div><div class="line">            nil</div><div class="line">            ];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">        <span class="comment">// 获取该数组</span></div><div class="line">        NSArray *blocksArray = getBlocksArray();</div><div class="line">        <span class="comment">// 取出Block对象</span></div><div class="line">        VoidBlock voidBlock = blocksArray[<span class="number">0</span>];</div><div class="line">        <span class="comment">// 执行</span></div><div class="line">        voidBlock();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>执行情况，我们可以直接得到个漂亮的“EXC_BAD_ACCESS”。</p>
-<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1547286721-Block%E5%9C%A8%E9%9B%86%E5%90%88%E4%B8%AD%E7%9A%84%E5%9D%91.jpg" alt="Block在集合中的坑"></p>
-<blockquote>
-<p>在图中已经看出，这种情况下，编译器并没有将捕获有变量的Block拷贝至堆中。故在准备执行时，Block对象已经被释放（第一个被转成__NSConcreteMallocBlock的原因是由于NSArray的init方法会自动保留对象，进而发生了Block的copy操作）。当执行完毕后，由于数组对象的释放，在对其内部元素依次释放时访问了野指针，导致崩溃。</p>
-</blockquote>
-<p>所以，在集合中使用Block对象时，为了保证其安全性，我们可以有两种方式：</p>
-<ol>
-<li>手动将Block复制到堆中：</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function">NSArray *<span class="title">getBlocksArray</span> <span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> myVal = <span class="number">2</span>;</div><div class="line">    <span class="keyword">return</span> [[NSArray alloc] initWithObjects:</div><div class="line">            [^&#123;NSLog(@<span class="string">"block1~%d"</span>, myVal);&#125; copy],</div><div class="line">            [^&#123;NSLog(@<span class="string">"block2~%d"</span>, myVal);&#125; copy],</div><div class="line">            nil</div><div class="line">            ];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><strong>由于Block是OC对象，故对其发送copy消息可以直接将其转换为__NSConcreteMallocBlock对象。</strong></p>
-<ol>
-<li>在初始化Block时，利用ARC的特性，<strong>对Block进行显式声明，以获取“<strong>strong”修饰的Block，自动生成</strong>NSConcreteMallocBlock对象</strong>：</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function">NSArray *<span class="title">getBlocksArray</span> <span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> myVal = <span class="number">2</span>;</div><div class="line">    </div><div class="line">    <span class="comment">// 生成了强引用Block变量，自动分配到了堆内存中</span></div><div class="line">    VoidBlock block1 = ^&#123;NSLog(@<span class="string">"block1~%d"</span>, myVal);&#125;;</div><div class="line">    VoidBlock block2 = ^&#123;NSLog(@<span class="string">"block2~%d"</span>, myVal);&#125;;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> [[NSArray alloc] initWithObjects:</div><div class="line">            block1,</div><div class="line">            block2,</div><div class="line">            nil</div><div class="line">            ];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><strong>注意：例外情况</strong></p>
-<blockquote>
-<p>在系统带有Block参数的API中（如GCD或是Animation相关等等），无需手动对Block进行复制（其内部实现已经包含了复制操作）。</p>
-</blockquote>
-<h4 id="2-Blocks的保留操作"><a href="#2-Blocks的保留操作" class="headerlink" title="2.Blocks的保留操作"></a>2.Blocks的保留操作</h4><h5 id="2-1-Blocks的保留解析"><a href="#2-1-Blocks的保留解析" class="headerlink" title="2.1 Blocks的保留解析"></a>2.1 Blocks的保留解析</h5><p>我们知道，在生成__strong修饰的Block对象时，其实隐含的对生成的对象进行了retain操作。此操作实际为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">VoidBlock blockObj = ...;</div><div class="line"><span class="comment">// 对Block进行保留操作</span></div><div class="line">objc_retainBlock(blockObj);</div><div class="line">...</div></pre></td></tr></table></figure>
-<p>在NSObject.mm中，我们找到了此方法的实现：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// NSObject.mm</span></div><div class="line"></div><div class="line"><span class="function">id <span class="title">objc_retainBlock</span><span class="params">(id x)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> (id)_Block_copy(x);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>因此，<strong>对Block进行retain其实也就是进行了copy操作，进而在堆上生成了Block</strong>。</p>
-<h5 id="2-2-Blocks的copy操作"><a href="#2-2-Blocks的copy操作" class="headerlink" title="2.2 Blocks的copy操作"></a>2.2 Blocks的copy操作</h5><p>现在，我们知道了对栈中的Block进行复制或保留操作，会在堆内存上生成对应的Block对象。但对于其他两者呢？</p>
-<table>
-<thead>
-<tr>
-<th>copy对应Block</th>
-<th>效果</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>_NSConcreteGlobalBlock</td>
-<td>无作用</td>
-</tr>
-<tr>
-<td>_NSConcreteMallocBlock</td>
-<td>引用计数 + 1</td>
-</tr>
-</tbody>
-</table>
-<p>对于堆内存中的Block对象，其实是遵循了引用计数的内存管理方式。因此，在使用Block对象时，也要注意引用循环问题。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;Blocks篇：4-Blocks的存储域（ARC下-NSConcreteBlock的陷阱）&quot;&gt;&lt;a href=&quot;#Blocks篇：4-Blocks的存储域（ARC下-NSConcreteBlock的陷阱）&quot; class=&quot;headerlink&quot; title=&quot;Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）&quot;&gt;&lt;/a&gt;Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）&lt;/h2&gt;&lt;blockquote&gt;
-&lt;p&gt;在上一节中我们知道，在Block捕获不同种类的变量时，生成的Block对象的类型(isa指针)分为三种：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;_NSConcreteStackBlock&lt;/li&gt;
-&lt;li&gt;_NSConcreteGlobalBlock&lt;/li&gt;
-&lt;li&gt;_NSConcreteMallocBlock&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;此三种类型的Block对象分别存储在栈区、全局（数据区）和堆区&lt;br&gt;
     
     </summary>
     
