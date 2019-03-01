@@ -6,17 +6,25 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2018/12 | 臭吉吉的瞎记空间</title>
+  <title>Autolayout之指定类型尺寸的布局（Size Class） | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="督促自己好好学习哦~">
-<meta property="og:type" content="website">
-<meta property="og:title" content="臭吉吉的瞎记空间">
-<meta property="og:url" content="http://yoursite.com/archives/2018/12/index.html">
+  <meta name="description" content="注：本文翻译自Size-Class-Specific Layout   Interface Builder中的Storyboard默认使用了尺寸类型（以下写作Size Class）。所有的Size Class都会被赋值给UI元素，如场景和视图等。他们给元素的尺寸提供了一个粗略定义。Interface Builder可以让你基于当前Size Class自定义许多布局特性。布局便可以自动适应Size">
+<meta name="keywords" content="算法学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Autolayout之指定类型尺寸的布局（Size Class）">
+<meta property="og:url" content="http://yoursite.com/2019/03/01/Autolayout之指定类型尺寸的布局（Size Class）/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="督促自己好好学习哦~">
+<meta property="og:description" content="注：本文翻译自Size-Class-Specific Layout   Interface Builder中的Storyboard默认使用了尺寸类型（以下写作Size Class）。所有的Size Class都会被赋值给UI元素，如场景和视图等。他们给元素的尺寸提供了一个粗略定义。Interface Builder可以让你基于当前Size Class自定义许多布局特性。布局便可以自动适应Size">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Size_Class_Tool_2x.png">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Selecting_A__Size_Class_2x.png">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Size-Class_Specific_Attributes_2x.png">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Adding_Size_Class_2x.png">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Setting_Size-Class_Specific_Values_2x.png">
+<meta property="og:updated_time" content="2019-03-01T07:35:41.941Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="臭吉吉的瞎记空间">
-<meta name="twitter:description" content="督促自己好好学习哦~">
+<meta name="twitter:title" content="Autolayout之指定类型尺寸的布局（Size Class）">
+<meta name="twitter:description" content="注：本文翻译自Size-Class-Specific Layout   Interface Builder中的Storyboard默认使用了尺寸类型（以下写作Size Class）。所有的Size Class都会被赋值给UI元素，如场景和视图等。他们给元素的尺寸提供了一个粗略定义。Interface Builder可以让你基于当前Size Class自定义许多布局特性。布局便可以自动适应Size">
+<meta name="twitter:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Size_Class_Tool_2x.png">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -182,60 +190,172 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-Autolayout之指定类型尺寸的布局（Size Class）" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/12/25/《Effective Objective-C 20 编写高质量iOS与OS X代码的52个有效方法》读书笔记/" class="archive-article-date">
-  	<time datetime="2018-12-25T02:49:27.623Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-12-25</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/12/25/《Effective Objective-C 20 编写高质量iOS与OS X代码的52个有效方法》读书笔记/">《Effective Objective-C 20 编写高质量iOS与OS X代码的52个有效方法》读书笔记</a>
+    <h1 class="article-title" itemprop="name">
+      Autolayout之指定类型尺寸的布局（Size Class）
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2019/03/01/Autolayout之指定类型尺寸的布局（Size Class）/" class="archive-article-date">
+  	<time datetime="2019-03-01T07:35:41.941Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>注：本文翻译自<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Size-ClassSpecificLayout.html#//apple_ref/doc/uid/TP40010853-CH26-SW1" target="_blank" rel="external">Size-Class-Specific Layout
+</a></p>
+</blockquote>
+<p>Interface Builder中的Storyboard默认使用了尺寸类型（以下写作Size Class）。所有的Size Class都会被赋值给UI元素，如场景和视图等。他们给元素的尺寸提供了一个粗略定义。Interface Builder可以让你基于当前Size Class自定义许多布局特性。布局便可以自动适应Size Class的改变。特别的是，你可以在每一个Size Class下设置如下特性：</p>
+<a id="more"></a>
+<ul>
+<li>加载（install）或卸载（uninstall）一个视图或控件。</li>
+<li>安装或卸载一个约束。</li>
+<li>设置选中的属性值（如字体或布局边距设置）。</li>
+</ul>
+<p>当系统读取了一个场景对象（scene），它便初始化了所有的视图、控件和约束，并且把这些对象赋值给相应的插口（outlet）上（如果存在）。你可以通过outlet访问任意对象而不必考虑场景当前的Size Class。可是，这些对象只有在当前Size Class中设为为“已加载”（installed）的情况下，系统才会将它们添加到视图层级当中。</p>
+<p>当视图的Size Class改变时（如当你旋转iPhone或在iPad上切换全屏和分隔屏模式时），系统会自动将所需的对象从视图层级上添加或移除。系统还会将视图布局的改变动态的表现出来。</p>
+<blockquote>
+<p><strong>说明</strong></p>
+<p>系统会保持着“已卸载”（uninstalled）对象的关联关系，因此从视图层级中移除后，这些对象不会被释放。</p>
+</blockquote>
+<h4 id="“最终Size-Class”和“基础Size-Class”"><a href="#“最终Size-Class”和“基础Size-Class”" class="headerlink" title="“最终Size Class”和“基础Size Class”"></a>“最终Size Class”和“基础Size Class”</h4><p>Interface Builder区分了九中不同的Size Class。</p>
+<p>其中的四种是“最终Size Class”：<em>Compact-Compact</em>、<em>Compact-Regular</em>、<em>Regular-Compact</em>和<em>Regular-Regular</em>。这些“最终”类型代表了设备显示的实际尺寸。</p>
+<p>剩下的五种是“基础Size Class”：<em>Compact-Any</em>、<em>Regular-Any</em>、<em>Any-Compact</em>、<em>Any-Regular</em>和<em>Any-Any</em>。抽象的尺寸类型，他们代表了能同时代表两种或更多种类的“最终Size Class”。例如，在<em>Compact-Any</em>的Size Class中，“已安装”的对象会同时出现在<em>Compact-Compact</em>和<em>Compact-Regular</em>尺寸的视图中。</p>
+<p>指定Size Class中的设置项总是会覆盖掉通用Size Class中的内容。此外，你必须为九种Size Class提供出无歧义并满足条件的布局。因此，从通用的Size Class到指定的Size Class进行设置是非常容易的。为你的app选择好默认布局，并在<em>Any-Any</em>的Size Class中设置好布局。之后只要根据需要修改其他的”基础“或”最终“Size Class即可。</p>
+<h4 id="使用Size-Class工具"><a href="#使用Size-Class工具" class="headerlink" title="使用Size Class工具"></a>使用Size Class工具</h4><blockquote>
+<p>（注意：本节对应Xcode8）</p>
+</blockquote>
+<p>使用Interface Builder中的Size Class工具，选择你当前编辑中的Size Class。此工具显示在编辑窗口的底部中心位置。默认来说，Interface Builder会将<em>Any-Any</em>作为初始选项。</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Size_Class_Tool_2x.png" alt="img"></p>
+<p>要切换至一个新的Size Class，点击Size Class工具。Interface Builder会弹出一个3 x 3的网格视图。从网格中拖动鼠标来切换Size Class。网格会在顶部显示所选Size Class的名称并在底部显示出描述信息（包含它影响的设备和朝向等）。它还会在被当前Size Class的设置所影响的每一个Size Class中显示出一个绿点。</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Selecting_A__Size_Class_2x.png" alt="img"></p>
+<p>添加到画布中的所有视图和约束都只会在当前Size Class中被加载。当在移除这些对象时，其删除行为会根据原先加载的位置和方式有所不同。</p>
+<ul>
+<li>在画布中或是在整个项目的目录列表中删除一个对象，则会直接删除它。</li>
+<li>在画布中或是在文档缩略图中，使用<em>Command-Delete</em>删除一个对象，系统只会从当前Size Class中卸载它。</li>
+<li>当一个场景对象包含多个Size Class时，除了在画布或目录列表以外，在任何地方删除对象（如，从尺寸检查器中选择并删除约束），只会将其从当前Size Class中卸载掉。</li>
+<li>如果你只编辑了<em>Any-Any</em>的Size Class，那么删除一个对象就是从项目中直接移除了。</li>
+</ul>
+<p>如果你编辑的是除了<em>Any-Any</em>以外的其他Size Class，Interface Builder会将编辑窗口底部的工具栏高亮显示为蓝色。这会使你在指定Size Class下工作时区别更加明显。</p>
+<h4 id="使用检查器"><a href="#使用检查器" class="headerlink" title="使用检查器"></a>使用检查器</h4><p>你还可以在检查器中修改指定Size Class的设置。所有支持指定Size Class的设置项都会在检查器中显示为一个带有”＋“号的选项。</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Size-Class_Specific_Attributes_2x.png" alt="img"></p>
+<p>默认来说，检查器中的值都是在<em>Any-Any</em>的Size Class下设置的。要为指定的Size Class设置不同的值，点击”+“号来新建一个Size Class。同时为这个Size Class选择宽度和高度。</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Adding_Size_Class_2x.png" alt="img"></p>
+<p>检查器现在用单独的一行显示了每一个Size Class—-<em>Any-Any</em>设置在最顶端，其他的Size Class在下面列出。你可以单独编辑每一行的值。</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Setting_Size-Class_Specific_Values_2x.png" alt="img"></p>
+<p>要删除一个自定义Size Class，直接单击每行开头的”x“号即可。</p>
+<p>要了解关于在Interface Builder中使用Size Class的更多信息，请查看Size Class设计帮助。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">算法学习</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/03/01/Autolayout之指定类型尺寸的布局（Size Class）/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2019/03/01/对数组按需分组/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">对数组按需分组</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+  
+  
   
 
-    
+  
+
+  
 
 
           </div>
@@ -258,8 +378,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: true,

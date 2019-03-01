@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-03-01T03:23:24.037Z</updated>
+  <updated>2019-03-01T07:35:41.941Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,74 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Autolayout之指定类型尺寸的布局（Size Class）</title>
+    <link href="http://yoursite.com/2019/03/01/Autolayout%E4%B9%8B%E6%8C%87%E5%AE%9A%E7%B1%BB%E5%9E%8B%E5%B0%BA%E5%AF%B8%E7%9A%84%E5%B8%83%E5%B1%80%EF%BC%88Size%20Class%EF%BC%89/"/>
+    <id>http://yoursite.com/2019/03/01/Autolayout之指定类型尺寸的布局（Size Class）/</id>
+    <published>2019-03-01T07:35:41.941Z</published>
+    <updated>2019-03-01T07:35:41.941Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>注：本文翻译自<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Size-ClassSpecificLayout.html#//apple_ref/doc/uid/TP40010853-CH26-SW1" target="_blank" rel="external">Size-Class-Specific Layout
+</a></p>
+</blockquote>
+<p>Interface Builder中的Storyboard默认使用了尺寸类型（以下写作Size Class）。所有的Size Class都会被赋值给UI元素，如场景和视图等。他们给元素的尺寸提供了一个粗略定义。Interface Builder可以让你基于当前Size Class自定义许多布局特性。布局便可以自动适应Size Class的改变。特别的是，你可以在每一个Size Class下设置如下特性：</p>
+<a id="more"></a>
+<ul>
+<li>加载（install）或卸载（uninstall）一个视图或控件。</li>
+<li>安装或卸载一个约束。</li>
+<li>设置选中的属性值（如字体或布局边距设置）。</li>
+</ul>
+<p>当系统读取了一个场景对象（scene），它便初始化了所有的视图、控件和约束，并且把这些对象赋值给相应的插口（outlet）上（如果存在）。你可以通过outlet访问任意对象而不必考虑场景当前的Size Class。可是，这些对象只有在当前Size Class中设为为“已加载”（installed）的情况下，系统才会将它们添加到视图层级当中。</p>
+<p>当视图的Size Class改变时（如当你旋转iPhone或在iPad上切换全屏和分隔屏模式时），系统会自动将所需的对象从视图层级上添加或移除。系统还会将视图布局的改变动态的表现出来。</p>
+<blockquote>
+<p><strong>说明</strong></p>
+<p>系统会保持着“已卸载”（uninstalled）对象的关联关系，因此从视图层级中移除后，这些对象不会被释放。</p>
+</blockquote>
+<h4 id="“最终Size-Class”和“基础Size-Class”"><a href="#“最终Size-Class”和“基础Size-Class”" class="headerlink" title="“最终Size Class”和“基础Size Class”"></a>“最终Size Class”和“基础Size Class”</h4><p>Interface Builder区分了九中不同的Size Class。</p>
+<p>其中的四种是“最终Size Class”：<em>Compact-Compact</em>、<em>Compact-Regular</em>、<em>Regular-Compact</em>和<em>Regular-Regular</em>。这些“最终”类型代表了设备显示的实际尺寸。</p>
+<p>剩下的五种是“基础Size Class”：<em>Compact-Any</em>、<em>Regular-Any</em>、<em>Any-Compact</em>、<em>Any-Regular</em>和<em>Any-Any</em>。抽象的尺寸类型，他们代表了能同时代表两种或更多种类的“最终Size Class”。例如，在<em>Compact-Any</em>的Size Class中，“已安装”的对象会同时出现在<em>Compact-Compact</em>和<em>Compact-Regular</em>尺寸的视图中。</p>
+<p>指定Size Class中的设置项总是会覆盖掉通用Size Class中的内容。此外，你必须为九种Size Class提供出无歧义并满足条件的布局。因此，从通用的Size Class到指定的Size Class进行设置是非常容易的。为你的app选择好默认布局，并在<em>Any-Any</em>的Size Class中设置好布局。之后只要根据需要修改其他的”基础“或”最终“Size Class即可。</p>
+<h4 id="使用Size-Class工具"><a href="#使用Size-Class工具" class="headerlink" title="使用Size Class工具"></a>使用Size Class工具</h4><blockquote>
+<p>（注意：本节对应Xcode8）</p>
+</blockquote>
+<p>使用Interface Builder中的Size Class工具，选择你当前编辑中的Size Class。此工具显示在编辑窗口的底部中心位置。默认来说，Interface Builder会将<em>Any-Any</em>作为初始选项。</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Size_Class_Tool_2x.png" alt="img"></p>
+<p>要切换至一个新的Size Class，点击Size Class工具。Interface Builder会弹出一个3 x 3的网格视图。从网格中拖动鼠标来切换Size Class。网格会在顶部显示所选Size Class的名称并在底部显示出描述信息（包含它影响的设备和朝向等）。它还会在被当前Size Class的设置所影响的每一个Size Class中显示出一个绿点。</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Selecting_A__Size_Class_2x.png" alt="img"></p>
+<p>添加到画布中的所有视图和约束都只会在当前Size Class中被加载。当在移除这些对象时，其删除行为会根据原先加载的位置和方式有所不同。</p>
+<ul>
+<li>在画布中或是在整个项目的目录列表中删除一个对象，则会直接删除它。</li>
+<li>在画布中或是在文档缩略图中，使用<em>Command-Delete</em>删除一个对象，系统只会从当前Size Class中卸载它。</li>
+<li>当一个场景对象包含多个Size Class时，除了在画布或目录列表以外，在任何地方删除对象（如，从尺寸检查器中选择并删除约束），只会将其从当前Size Class中卸载掉。</li>
+<li>如果你只编辑了<em>Any-Any</em>的Size Class，那么删除一个对象就是从项目中直接移除了。</li>
+</ul>
+<p>如果你编辑的是除了<em>Any-Any</em>以外的其他Size Class，Interface Builder会将编辑窗口底部的工具栏高亮显示为蓝色。这会使你在指定Size Class下工作时区别更加明显。</p>
+<h4 id="使用检查器"><a href="#使用检查器" class="headerlink" title="使用检查器"></a>使用检查器</h4><p>你还可以在检查器中修改指定Size Class的设置。所有支持指定Size Class的设置项都会在检查器中显示为一个带有”＋“号的选项。</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Size-Class_Specific_Attributes_2x.png" alt="img"></p>
+<p>默认来说，检查器中的值都是在<em>Any-Any</em>的Size Class下设置的。要为指定的Size Class设置不同的值，点击”+“号来新建一个Size Class。同时为这个Size Class选择宽度和高度。</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Adding_Size_Class_2x.png" alt="img"></p>
+<p>检查器现在用单独的一行显示了每一个Size Class—-<em>Any-Any</em>设置在最顶端，其他的Size Class在下面列出。你可以单独编辑每一行的值。</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Setting_Size-Class_Specific_Values_2x.png" alt="img"></p>
+<p>要删除一个自定义Size Class，直接单击每行开头的”x“号即可。</p>
+<p>要了解关于在Interface Builder中使用Size Class的更多信息，请查看Size Class设计帮助。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;注：本文翻译自&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Size-ClassSpecificLayout.html#//apple_ref/doc/uid/TP40010853-CH26-SW1&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Size-Class-Specific Layout
+&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Interface Builder中的Storyboard默认使用了尺寸类型（以下写作Size Class）。所有的Size Class都会被赋值给UI元素，如场景和视图等。他们给元素的尺寸提供了一个粗略定义。Interface Builder可以让你基于当前Size Class自定义许多布局特性。布局便可以自动适应Size Class的改变。特别的是，你可以在每一个Size Class下设置如下特性：&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="算法学习" scheme="http://yoursite.com/tags/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>对数组按需分组</title>
@@ -1766,105 +1834,6 @@
     
       &lt;h2 id=&quot;Blocks篇：6-Blocks捕获的OC对象及其内存管理&quot;&gt;&lt;a href=&quot;#Blocks篇：6-Blocks捕获的OC对象及其内存管理&quot; class=&quot;headerlink&quot; title=&quot;Blocks篇：6.Blocks捕获的OC对象及其内存管理&quot;&gt;&lt;/a&gt;Blocks篇：6.Blocks捕获的OC对象及其内存管理&lt;/h2&gt;&lt;blockquote&gt;
 &lt;p&gt;之前所说的，都是Block对象捕获基本数据类型变量时的处理方式。现在我们看一下对于OC对象被Block捕获时的情况。&lt;br&gt;
-    
-    </summary>
-    
-    
-      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》14</title>
-    <link href="http://yoursite.com/2019/01/15/Blocks%E7%AF%87%EF%BC%9A5.Blocks%E4%BF%AE%E6%94%B9%E6%8D%95%E8%8E%B7%E5%88%B0%E7%9A%84%E5%8F%98%E9%87%8F%EF%BC%88__block%E4%BF%AE%E9%A5%B0%E7%AC%A6%EF%BC%89/"/>
-    <id>http://yoursite.com/2019/01/15/Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）/</id>
-    <published>2019-01-15T04:11:24.722Z</published>
-    <updated>2019-01-15T04:11:24.722Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="Blocks篇：5-Blocks修改捕获到的变量（-block修饰符）"><a href="#Blocks篇：5-Blocks修改捕获到的变量（-block修饰符）" class="headerlink" title="Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）"></a>Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）</h2><blockquote>
-<p>我们知道，在Block中，修改捕获变量的方式：</p>
-<ul>
-<li>对于全局变量，由于实质上Block并未对其进行捕获，故可以直接在Block函数体内部进行变量修改；</li>
-<li>对于局部的静态变量，由于Block捕获的是其指针，故可以通过指针对原变量进行修改；</li>
-<li>对于普通的局部变量，由于在Block函数体内使用的版本已经不是之前的变量了（是Block结构体中保存的成员），故编译器不支持直接修改。这种情况下，只能通过“__block”修饰变量进行处理。<a id="more"></a>
-<h4 id="1-block修饰符带来的变化"><a href="#1-block修饰符带来的变化" class="headerlink" title="1.__block修饰符带来的变化"></a>1.__block修饰符带来的变化</h4></li>
-</ul>
-</blockquote>
-<p>由于需修改局部变量，我们将栗子变成这个：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.m</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">        <span class="comment">// 声明__block修饰的局部变量</span></div><div class="line">        __block <span class="keyword">int</span> val = <span class="number">2</span>;</div><div class="line">        </div><div class="line">        <span class="keyword">void</span> (^myBlock)(<span class="keyword">void</span>) = ^&#123;</div><div class="line">            <span class="comment">// 捕获后修改变量的值</span></div><div class="line">            val = <span class="number">3</span>;</div><div class="line">        &#125;;</div><div class="line">        myBlock();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>使用clang转换后，代码如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.cpp</span></div><div class="line"></div><div class="line"><span class="comment">/** Block数据结构体（没变） */</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">block_impl</span> &#123;</span></div><div class="line">    <span class="keyword">void</span> *isa;</div><div class="line">    <span class="keyword">int</span> Flags;</div><div class="line">    <span class="keyword">int</span> Reserved;</div><div class="line">    <span class="keyword">void</span> *FuncPtr;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">/** __block修饰的变量对应的结构体 */</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">Block_byref_val_0</span> &#123;</span></div><div class="line">    <span class="comment">/** 类型 */</span></div><div class="line">    <span class="keyword">void</span> *__isa;</div><div class="line">    <span class="comment">/** 指向自身结构体实例的指针 */</span></div><div class="line">    __Block_byref_val_0 *__forwarding;</div><div class="line">    <span class="keyword">int</span> __flags;</div><div class="line">    <span class="keyword">int</span> __size;</div><div class="line">    <span class="comment">/** 变量真正的值 */</span></div><div class="line">    <span class="keyword">int</span> val;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">/** Block完整结构体 */</span></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">main_block_impl_0</span> &#123;</span></div><div class="line">    <span class="comment">/** Block数据实例 */</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">block_impl</span> <span class="title">impl</span>;</span></div><div class="line">    <span class="comment">/** Block描述信息实例的指针 */</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">main_block_desc_0</span>* <span class="title">Desc</span>;</span></div><div class="line">    <span class="comment">/** __Block_byref_val_0实例的指针 */</span></div><div class="line">    __Block_byref_val_0 *val; <span class="comment">// by ref</span></div><div class="line">    <span class="comment">// 构造函数</span></div><div class="line">    __main_block_impl_0(<span class="keyword">void</span> *fp, struct __main_block_desc_0 *desc, __Block_byref_val_0 *_val, <span class="keyword">int</span> flags=<span class="number">0</span>) : val(_val-&gt;__forwarding) &#123;</div><div class="line">        impl.isa = &amp;_NSConcreteStackBlock;</div><div class="line">        impl.Flags = flags;</div><div class="line">        impl.FuncPtr = fp;</div><div class="line">        Desc = desc;</div><div class="line">  &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">/** Block的函数体 */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_func_0(struct __main_block_impl_0 *__cself) &#123;</div><div class="line">    <span class="comment">// 取出保存的实例</span></div><div class="line">    __Block_byref_val_0 *val = __cself-&gt;val; <span class="comment">// bound by ref</span></div><div class="line">    <span class="comment">// 取出对应的变量真实值？？？</span></div><div class="line">    (val-&gt;__forwarding-&gt;val) = <span class="number">3</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** __block变量对应的copy函数（复制Block对象时调用） */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_copy_0(struct __main_block_impl_0*dst, struct __main_block_impl_0*src) &#123;</div><div class="line">    _Block_object_assign((<span class="keyword">void</span>*)&amp;dst-&gt;val, (<span class="keyword">void</span>*)src-&gt;val, <span class="number">8</span><span class="comment">/*BLOCK_FIELD_IS_BYREF*/</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** __block变量对应的dispose函数（释放Block对象时调用） */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_dispose_0(struct __main_block_impl_0*src) &#123;</div><div class="line">    _Block_object_dispose((<span class="keyword">void</span>*)src-&gt;val, <span class="number">8</span><span class="comment">/*BLOCK_FIELD_IS_BYREF*/</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** Block描述信息结构体实例 */</span></div><div class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> __<span class="title">main_block_desc_0</span> &#123;</span></div><div class="line">    <span class="keyword">size_t</span> reserved;</div><div class="line">    <span class="keyword">size_t</span> Block_size;</div><div class="line">    <span class="comment">/** copy函数指针 */</span></div><div class="line">    <span class="keyword">void</span> (*copy)(struct __main_block_impl_0*, struct __main_block_impl_0*);</div><div class="line">    <span class="comment">/** dispose函数指针 */</span></div><div class="line">    <span class="keyword">void</span> (*dispose)(struct __main_block_impl_0*);</div><div class="line">&#125; __main_block_desc_0_DATA = &#123; </div><div class="line">    <span class="number">0</span>, </div><div class="line">    <span class="keyword">sizeof</span>(struct __main_block_impl_0), </div><div class="line">    __main_block_copy_0, <span class="comment">// 赋值函数</span></div><div class="line">    __main_block_dispose_0 <span class="comment">// 赋值函数</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// main函数</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    <span class="comment">/* @autoreleasepool */</span> </div><div class="line">    &#123; </div><div class="line">        __AtAutoreleasePool __autoreleasepool; </div><div class="line">        </div><div class="line">        <span class="comment">// 创建__block变量对应的__Block_byref_val_0结构体实例</span></div><div class="line">        <span class="comment">// （__attribute__部分表示需要变量为栈上的变量？？？）</span></div><div class="line">        __attribute__((__blocks__(byref))) __Block_byref_val_0 val = &#123;</div><div class="line">            (<span class="keyword">void</span>*)<span class="number">0</span>,</div><div class="line">            (__Block_byref_val_0 *)&amp;val, <span class="comment">// 指向自身实例</span></div><div class="line">            <span class="number">0</span>, </div><div class="line">            <span class="keyword">sizeof</span>(__Block_byref_val_0), </div><div class="line">            <span class="number">2</span> <span class="comment">// 真正的值</span></div><div class="line">        &#125;;</div><div class="line">        </div><div class="line">        <span class="comment">// 创建Block对象，并使用函数指针指向它</span></div><div class="line">        <span class="keyword">void</span> (*myBlock)(<span class="keyword">void</span>) = (</div><div class="line">            (<span class="keyword">void</span> (*)())&amp;__main_block_impl_0(</div><div class="line">                (<span class="keyword">void</span> *)__main_block_func_0, <span class="comment">// 函数指针</span></div><div class="line">                &amp;__main_block_desc_0_DATA, <span class="comment">// 描述信息实例指针</span></div><div class="line">                (__Block_byref_val_0 *)&amp;val, <span class="comment">// 变量实例指针</span></div><div class="line">                <span class="number">570425344</span></div><div class="line">            )</div><div class="line">        );</div><div class="line">        </div><div class="line">        <span class="comment">// 调用Block中的函数</span></div><div class="line">        ((<span class="keyword">void</span> (*)(__block_impl *))((__block_impl *)myBlock)-&gt;FuncPtr)((__block_impl *)myBlock);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在代码中可以看到，</p>
-<ol>
-<li>使用__block修饰的变量，由基本变量转变成了结构体实例；</li>
-<li>当Block使用时，Block需要在其结构中保存此结构体实例的指针；</li>
-<li>提供了copy和dispose函数用于管理捕获的__block变量的内存。</li>
-</ol>
-<h4 id="2-block变量的存储规则"><a href="#2-block变量的存储规则" class="headerlink" title="2.__block变量的存储规则"></a>2.__block变量的存储规则</h4><p>我们知道，当Block对象捕获变量后，ARC会自动将其复制到堆内存中。此时，被捕获的__block变量又会如何变化呢？</p>
-<table>
-<thead>
-<tr>
-<th>__block变量本身的存储域</th>
-<th>Block从栈复制到堆时的影响</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>栈</td>
-<td>复制到堆内存中</td>
-</tr>
-<tr>
-<td>堆</td>
-<td>被该Block持有</td>
-</tr>
-</tbody>
-</table>
-<p>由上表可得出结论：</p>
-<blockquote>
-<ol>
-<li>在Block捕获了__block变量的情况下，当Block在堆内存中生成后，该变量也会被自动拷贝到堆内存中，并继续被Block对象所持有。</li>
-<li>__block变量的内存管理非常类似于引用计数的管理方式：被_NSConcreteMallocBlock对象持有时，变量存在；当没有被任何Block持有后，被系统释放。</li>
-</ol>
-</blockquote>
-<p>现在，我们就可以来解释一下之前的疑问：为何<strong>block变量内部存在指向自身结构实例的</strong>forwarding指针；且取值或修改时，需要通过此指针取出val的值？</p>
-<h5 id="2-1-block变量可以在Block内或外部随意修改"><a href="#2-1-block变量可以在Block内或外部随意修改" class="headerlink" title="2.1 __block变量可以在Block内或外部随意修改"></a>2.1 __block变量可以在Block内或外部随意修改</h5><p>开门见山，直接给出原因：</p>
-<blockquote>
-<p><strong><strong>block变量通过</strong>forwarding可以从任意内存区域访问同一块内存。</strong></p>
-</blockquote>
-<p>我们先来回顾一下__block变量在栈中的大体结构：</p>
-<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1547444843-%E5%AD%98%E5%82%A8%E5%9C%A8%E6%A0%88%E4%B8%AD%E7%9A%84__block%E5%8F%98%E9%87%8F%E7%BB%93%E6%9E%84.jpg" alt="存储在栈中的__block变量结构.jpg"></p>
-<ol>
-<li>我们知道，在普通情况下，Block函数体中的捕获变量是通过值传递复制进去的，其执行时，原变量早已释放；若需要同时可以访问或修改，必然需要该变量为同一块内存。</li>
-<li>故<strong>block变量能够同时修改的原因，必然是在栈和堆中同时存在相同的变量指针，指向同一块内存。所以，根据存储规则，**当栈</strong>block变量被复制到堆内存时，原变量的__forwarding指针必然需要指向堆变量**，以满足此目的。</li>
-</ol>
-<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1547445309-%E5%A4%8D%E5%88%B6%E5%88%B0%E5%A0%86%E5%90%8E__block%E5%8F%98%E9%87%8F%E7%9A%84%E7%BB%93%E6%9E%84.jpg" alt="复制到堆后__block变量的结构.jpg"></p>
-<p>此时，<strong>无论是从栈中或是堆中访问<strong>block变量，均可以通过</strong>forwarding指针来访问到真正的变量值</strong>。如之前的Block函数体：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_func_0(struct __main_block_impl_0 *__cself) &#123;</div><div class="line">    <span class="comment">// 取出保存的实例</span></div><div class="line">    __Block_byref_val_0 *val = __cself-&gt;val; <span class="comment">// bound by ref</span></div><div class="line">    <span class="comment">// 通过__forwarding获取真正的变量实例，并取值</span></div><div class="line">    (val-&gt;__forwarding-&gt;val) = <span class="number">3</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在Block函数体中，由于val已经是<strong>堆<strong>block变量，故其</strong>forwarding指针指向自身</strong>，可以成功取到变量值。</p>
-<p>而在Block外，直接访问或修改val的值：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">val += <span class="number">1</span>;</div></pre></td></tr></table></figure>
-<p>其转换后的代码为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">val-&gt;__forwarding-&gt;val += <span class="number">1</span>;</div></pre></td></tr></table></figure>
-<p>此时，<strong>栈变量val的__forwarding指针指向堆变量val</strong>，故其val与在堆中直接访问相同，均指向同一个val的地址。</p>
-<h4 id="3-Block对象对捕获到的-block变量进行内存管理"><a href="#3-Block对象对捕获到的-block变量进行内存管理" class="headerlink" title="3.Block对象对捕获到的__block变量进行内存管理"></a>3.Block对象对捕获到的__block变量进行内存管理</h4><p>在上述实例中，Block对象的描述结构指定了copy和dispose两个函数：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** copy函数 */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_copy_0(struct __main_block_impl_0*dst, struct __main_block_impl_0*src) &#123;</div><div class="line">    _Block_object_assign((<span class="keyword">void</span>*)&amp;dst-&gt;val, (<span class="keyword">void</span>*)src-&gt;val, <span class="number">8</span><span class="comment">/*BLOCK_FIELD_IS_BYREF*/</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** dispose函数 */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_dispose_0(struct __main_block_impl_0*src) &#123;</div><div class="line">    _Block_object_dispose((<span class="keyword">void</span>*)src-&gt;val, <span class="number">8</span><span class="comment">/*BLOCK_FIELD_IS_BYREF*/</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> __<span class="title">main_block_desc_0</span> &#123;</span></div><div class="line">    <span class="keyword">size_t</span> reserved;</div><div class="line">    <span class="keyword">size_t</span> Block_size;</div><div class="line">    <span class="comment">/** copy指针 */</span></div><div class="line">    <span class="keyword">void</span> (*copy)(struct __main_block_impl_0*, struct __main_block_impl_0*);</div><div class="line">    <span class="comment">/** dispose指针 */</span></div><div class="line">    <span class="keyword">void</span> (*dispose)(struct __main_block_impl_0*);</div><div class="line">&#125; __main_block_desc_0_DATA = &#123; </div><div class="line">    <span class="number">0</span>, </div><div class="line">    <span class="keyword">sizeof</span>(struct __main_block_impl_0),</div><div class="line">    <span class="comment">/** copy指针 */</span></div><div class="line">    __main_block_copy_0, </div><div class="line">    <span class="comment">/** dispose指针 */</span></div><div class="line">    __main_block_dispose_0</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>其中，</p>
-<ul>
-<li><strong>copy方法即为由_NSConcreteStackBlock对象copy生成_NSConcreteMallocBlock对象过程中进行的函数调用</strong>。这里即对捕获的__block变量进行指针复制（传递引用）。</li>
-<li><strong>dispose方法为堆_NSConcreteMallocBlock对象释放时进行调用</strong>，内部即对捕获的__block变量进行释放操作，不再保留。</li>
-</ul>
-<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1547446878-%E6%A0%88Block%E5%A4%8D%E5%88%B6%E4%B8%BA%E5%A0%86Block%E7%9A%84%E8%BF%87%E7%A8%8B.jpg" alt="栈Block复制为堆Block的过程.jpg"></p>
-<p>因此，经过此过程，<strong>堆内存中的Block对象强引用着同样处于堆内存中的<strong>block变量；当自身释放时，被保留的</strong>block变量的强引用失效</strong>。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;Blocks篇：5-Blocks修改捕获到的变量（-block修饰符）&quot;&gt;&lt;a href=&quot;#Blocks篇：5-Blocks修改捕获到的变量（-block修饰符）&quot; class=&quot;headerlink&quot; title=&quot;Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）&quot;&gt;&lt;/a&gt;Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）&lt;/h2&gt;&lt;blockquote&gt;
-&lt;p&gt;我们知道，在Block中，修改捕获变量的方式：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;对于全局变量，由于实质上Block并未对其进行捕获，故可以直接在Block函数体内部进行变量修改；&lt;/li&gt;
-&lt;li&gt;对于局部的静态变量，由于Block捕获的是其指针，故可以通过指针对原变量进行修改；&lt;/li&gt;
-&lt;li&gt;对于普通的局部变量，由于在Block函数体内使用的版本已经不是之前的变量了（是Block结构体中保存的成员），故编译器不支持直接修改。这种情况下，只能通过“__block”修饰变量进行处理。
     
     </summary>
     
