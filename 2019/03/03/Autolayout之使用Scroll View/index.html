@@ -6,17 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2019 | 臭吉吉的瞎记空间</title>
+  <title>Autolayout之使用Scroll View | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="督促自己好好学习哦~">
-<meta property="og:type" content="website">
-<meta property="og:title" content="臭吉吉的瞎记空间">
-<meta property="og:url" content="http://yoursite.com/archives/2019/page/2/index.html">
+  <meta name="description" content="注：本文翻译自Working with Scroll Views  当使用ScrollView时，你需要在父视图内同时定义ScrollView的尺寸和位置，额外还有ScrollView的内容区域。所有的这些特性都可以通过Auto Layout进行设置。">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Autolayout之使用Scroll View">
+<meta property="og:url" content="http://yoursite.com/2019/03/03/Autolayout之使用Scroll View/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="督促自己好好学习哦~">
+<meta property="og:description" content="注：本文翻译自Working with Scroll Views  当使用ScrollView时，你需要在父视图内同时定义ScrollView的尺寸和位置，额外还有ScrollView的内容区域。所有的这些特性都可以通过Auto Layout进行设置。">
+<meta property="og:updated_time" content="2019-03-03T04:19:59.696Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="臭吉吉的瞎记空间">
-<meta name="twitter:description" content="督促自己好好学习哦~">
+<meta name="twitter:title" content="Autolayout之使用Scroll View">
+<meta name="twitter:description" content="注：本文翻译自Working with Scroll Views  当使用ScrollView时，你需要在父视图内同时定义ScrollView的尺寸和位置，额外还有ScrollView的内容区域。所有的这些特性都可以通过Auto Layout进行设置。">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -182,36 +184,69 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-Autolayout之使用Scroll View" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Autolayout之使用Scroll View
+    </h1>
+  
+
+        
+        <a href="/2019/03/03/Autolayout之使用Scroll View/" class="archive-article-date">
+  	<time datetime="2019-03-03T04:19:33.192Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-03</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>注：本文翻译自<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/WorkingwithScrollViews.html#//apple_ref/doc/uid/TP40010853-CH24-SW1" target="_blank" rel="external">Working with Scroll Views</a></p>
+</blockquote>
+<p>当使用ScrollView时，你需要在父视图内同时定义ScrollView的尺寸和位置，额外还有ScrollView的内容区域。所有的这些特性都可以通过Auto Layout进行设置。</p>
+<a id="more"></a>
+<p>为了支持ScrollView，系统会基于约束所处的位置，使用不同的方式来诠释约束。</p>
+<ul>
+<li>就像其他视图一样，在ScrollView和其外部对象之间的约束都会影响ScrollView的frame。</li>
+<li>对于ScrollView和其自身内容之间的约束，其行为就会因属性的约束方式而有所不同：<ul>
+<li>ScrollView的边界分隔和其自身内容之间的约束会影响ScrollView的内容区域。</li>
+<li>高度、宽度或是中心点三者之间的约束会影响ScrollView的frame。</li>
+</ul>
+</li>
+<li>你还可以在ScrollView自身内容和ScrollView外部对象之间设置约束来为ScrollView的内容生成一个可变的位置，以便这些内容看起来就像漂浮在ScrollView上面一样。</li>
+</ul>
+<p>对于大多数通常的布局来说，如果你对ScrollView的内容使用虚拟视图或是组合的方式进行布局，逻辑将会变得非常简单。当使用Interface Builder时，通常的做法如下所示：</p>
+<ol>
+<li>在场景中添加ScrollView</li>
+<li>像平常一样，设置约束来定义ScrollView的尺寸和位置。</li>
+<li>添加一个视图到ScrollView上。设置该视图的Xcode指定标签到ScrollView的内容视图（即ContentView，以下直接使用）上。</li>
+<li>设置ContentView的顶部、底部、头部和尾部边界到ScrollView的对应边界上。ContentView现在决定了ScrollView的内容区域。<blockquote>
+<p>重点：</p>
+<p>此时ContentView还没有一个确定的尺寸。它可以拉伸或压缩来适配任何你放入的视图或控件。</p>
+</blockquote>
+</li>
+<li>（可选）要禁止水平滑动，将ContentView的宽度设置为与ScrollView宽度相同。ContentView现在在水平方向上充满了ScrollView。</li>
+<li>（可选）要禁止垂直滑动，将ContentView的高度设置为与ScrollView高度相同。ContentView现在在竖直方向上充满了ScrollView。</li>
+<li>将ScrollView的内容布局到ContentView内部。像往常一样，在ContentView内部使用约束来设置内容的位置。<blockquote>
+<p>重点：</p>
+<p>你的布局必须完整定义了ContentView的尺寸（除了步骤5和6定义的位置）。要设置基于真实内容尺寸视图的ContentView的高度，你必须从ContentView的顶部到底部设置一个未被打破（broken）的约束和视图链。相似的，要设置该ContentView的宽度，你就必须从ContentView的头部到尾部设置一个未被打破（broken）的约束和视图链。</p>
+<p>如果你的内容控件没有真实内容尺寸，你就必须添加合适的尺寸约束，或者是设置ContentView的，或者就设置内容的。</p>
+<p>当ContentView比ScrollView高时，ScrollView在竖直方向上便可以滑动了。当ContentView比ScrollView宽时，ScrollView在水平方向上就可以滑动了。否则，默认来说ScrollView的滑动是被禁止的。</p>
+</blockquote>
+</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/14/Autolayout之真实内容尺寸（Intrinsic Content Size）/" class="archive-article-date">
-  	<time datetime="2019-02-14T08:56:47.594Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-14</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/14/Autolayout之真实内容尺寸（Intrinsic Content Size）/">Autolayout之真实内容尺寸（Intrinsic Content Size）</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -223,364 +258,88 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/03/03/Autolayout之使用Scroll View/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/30/《a series about Grand Central Dispatch》博客学习笔记/" class="archive-article-date">
-  	<time datetime="2019-01-29T17:13:19.750Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-30</time>
-</a>
-        </div>
-    	 
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/30/《a series about Grand Central Dispatch》博客学习笔记/">《a series about Grand Central Dispatch》博客学习笔记</a>
-    </h1>
+  
+    <a href="/2019/03/01/Autolayout之指定类型尺寸的布局（Size Class）/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Autolayout之指定类型尺寸的布局（Size Class）</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+  
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/26/FDFullscreenPopGesture源码学习/" class="archive-article-date">
-  	<time datetime="2019-01-26T08:24:50.622Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/26/FDFullscreenPopGesture源码学习/">FDFullscreenPopGesture源码学习</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/25/UINavigationController的全屏拖动返回/" class="archive-article-date">
-  	<time datetime="2019-01-25T06:44:59.235Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-25</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/25/UINavigationController的全屏拖动返回/">UINavigationController的全屏拖动返回</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/23/MBProgressHUD源码学习2：实现方式简单分析/" class="archive-article-date">
-  	<time datetime="2019-01-23T10:40:09.240Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-23</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/23/MBProgressHUD源码学习2：实现方式简单分析/">MBProgressHUD源码学习2：实现方式简单分析</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/23/MBProgressHUD源码学习1：公有API介绍/" class="archive-article-date">
-  	<time datetime="2019-01-23T10:39:06.662Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-23</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/23/MBProgressHUD源码学习1：公有API介绍/">MBProgressHUD源码学习1：公有API介绍</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/" class="archive-article-date">
-  	<time datetime="2019-01-21T09:20:35.940Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-21</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/">objc-公共头文件（Public Headers）的基本内容（下）</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（上）/" class="archive-article-date">
-  	<time datetime="2019-01-21T09:19:35.705Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-21</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（上）/">objc-公共头文件（Public Headers）的基本内容（上）</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/18/GCD篇：1.GCD的使用要点/" class="archive-article-date">
-  	<time datetime="2019-01-18T05:43:36.161Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-18</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/18/GCD篇：1.GCD的使用要点/">《Objective-C高级编程 iOS与OS X多线程与内存管理》17</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/15/Blocks篇：7.循环引用问题/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:12:59.642Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/15/Blocks篇：7.循环引用问题/">《Objective-C高级编程 iOS与OS X多线程与内存管理》16</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/archives/2019/">&laquo; Prev</a><a class="page-number" href="/archives/2019/">1</a><span class="page-number current">2</span><a class="page-number" href="/archives/2019/page/3/">3</a><a class="page-number" href="/archives/2019/page/4/">4</a><a class="extend next" rel="next" href="/archives/2019/page/3/">Next &raquo;</a>
-    </nav>
   
 
 
@@ -604,8 +363,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: true,
