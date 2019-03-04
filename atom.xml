@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-03-03T04:19:59.696Z</updated>
+  <updated>2019-03-04T03:53:14.951Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,49 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Autolayout之自定义TableViewCell的尺寸</title>
+    <link href="http://yoursite.com/2019/03/04/Autolayout%E4%B9%8B%E8%87%AA%E5%AE%9A%E4%B9%89TableViewCell%E7%9A%84%E5%B0%BA%E5%AF%B8/"/>
+    <id>http://yoursite.com/2019/03/04/Autolayout之自定义TableViewCell的尺寸/</id>
+    <published>2019-03-04T03:52:42.581Z</published>
+    <updated>2019-03-04T03:53:14.951Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>注：本文翻译自<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/WorkingwithSelf-SizingTableViewCells.html#//apple_ref/doc/uid/TP40010853-CH25-SW1" target="_blank" rel="external">Working with Self-Sizing Table View Cells</a></p>
+</blockquote>
+<p>在iOS中，你可以使用Auto Layout定义TableViewCell的高度；但是，此特性默认没有开启。</p>
+<a id="more"></a>
+<p>一般来说，cell的高度是由tableView代理对象的<a href="https://developer.apple.com/documentation/uikit/uitableviewdelegate/1614998-tableview" target="_blank" rel="external">tableView:heightForRowAtIndexPath:</a>方法来决定的。要实现自定义尺寸的TableViewCell，你必须将tableView的<a href="https://developer.apple.com/documentation/uikit/uitableview/1614852-rowheight" target="_blank" rel="external">rowHeight</a>属性设置为<a href="https://developer.apple.com/documentation/uikit/uitableviewautomaticdimension" target="_blank" rel="external">UITableViewAutomaticDimension</a>。你还需要给<a href="https://developer.apple.com/documentation/uikit/uitableview/1614925-estimatedrowheight" target="_blank" rel="external">estimatedRowHeight</a>属性赋一个值。一旦这两个属性都被设置后，系统就会使用Auto Layout来计算每一行的实际高度。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">tableView.estimatedRowHeight = <span class="number">85.0</span></div><div class="line">tableView.rowHeight = UITableViewAutomaticDimension</div></pre></td></tr></table></figure>
+<p>下一步，在TableViewCell的ContentView中布局相关内容。要定义cell的高度，你需要从ContentView的顶部到底部边界设置一个完整的约束和视图链来填满整个区域。如果你的视图中存在真实内容尺寸高度，系统便会使用这些值。如果没有，你就必须添加相应的高度约束，要么设置到视图上，要么就直接设置到ContentView自身。</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Chain_of_Views_and_Constraints_2x.png" alt="img"></p>
+<p>此外，尽可能让估算的行高精确一些。系统计算的项目，比如滑动条的高度，是基于这个估算值的。估算值越精确，用户体验就会越连贯。</p>
+<blockquote>
+<p><strong>说明</strong></p>
+<p>当使用TableViewCell时，你不能改变预定义内容的布局（如<a href="https://developer.apple.com/documentation/uikit/uitableviewcell/1623210-textlabel" target="_blank" rel="external">textLabel</a>、<a href="https://developer.apple.com/documentation/uikit/uitableviewcell/1623273-detailtextlabel" target="_blank" rel="external">detailTextLabel</a>和<a href="https://developer.apple.com/documentation/uikit/uitableviewcell/1623270-imageview" target="_blank" rel="external">imageView</a>属性）。</p>
+<p>可支持如下约束：</p>
+<ul>
+<li>相对于cell的ContentView来定位子视图的约束。</li>
+<li>相对于cell的bounds来定位子视图的约束。</li>
+<li>相对于预定义内容来定位子视图的约束。</li>
+</ul>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;注：本文翻译自&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/WorkingwithSelf-SizingTableViewCells.html#//apple_ref/doc/uid/TP40010853-CH25-SW1&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Working with Self-Sizing Table View Cells&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;在iOS中，你可以使用Auto Layout定义TableViewCell的高度；但是，此特性默认没有开启。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>Autolayout之使用Scroll View</title>
@@ -1723,92 +1766,6 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-    
-    </summary>
-    
-    
-      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》16</title>
-    <link href="http://yoursite.com/2019/01/15/Blocks%E7%AF%87%EF%BC%9A7.%E5%BE%AA%E7%8E%AF%E5%BC%95%E7%94%A8%E9%97%AE%E9%A2%98/"/>
-    <id>http://yoursite.com/2019/01/15/Blocks篇：7.循环引用问题/</id>
-    <published>2019-01-15T04:12:59.642Z</published>
-    <updated>2019-01-15T04:12:59.642Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="Blocks篇：7-循环引用问题"><a href="#Blocks篇：7-循环引用问题" class="headerlink" title="Blocks篇：7.循环引用问题"></a>Blocks篇：7.循环引用问题</h2><h4 id="1-ARC下的Block循环引用"><a href="#1-ARC下的Block循环引用" class="headerlink" title="1.ARC下的Block循环引用"></a>1.ARC下的Block循环引用</h4><h5 id="1-1-使用weak或unsafe-unretained避免循环引用"><a href="#1-1-使用weak或unsafe-unretained避免循环引用" class="headerlink" title="1.1 使用weak或unsafe_unretained避免循环引用"></a>1.1 使用<strong>weak或</strong>unsafe_unretained避免循环引用</h5><p>一般来说，最简单的这种情况即：<em>block对象作为OC对象的成员，而在block函数体内部直接或间接捕获了该OC对象，造成互相强引用</em>。举例来说：<br><a id="more"></a><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(^MyBlock)</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">@interface TestObject : NSObject &#123;</div><div class="line">    <span class="comment">// block成员</span></div><div class="line">    MyBlock myBlock;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation TestObject</div><div class="line"></div><div class="line">- (instancetype)init &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        <span class="comment">// 初始化block成员</span></div><div class="line">        myBlock = ^&#123;</div><div class="line">            NSLog(@<span class="string">"%@"</span>, self);</div><div class="line">        &#125;;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
-<p>产生循环引用的过程：</p>
-<blockquote>
-<ul>
-<li>由于myBlock对象捕获了OC对象（self），myBlock被自动拷贝到堆上，并自动对self产生强引用；</li>
-<li>myBlock是self的成员，当myBlock分配到堆内存后，self负责对其进行内存管理，自动对myBlock对象产生强引用；</li>
-<li>互相保留，引用循环产生</li>
-</ul>
-</blockquote>
-<p>不过这种情况，编译器可以直接识别并给出引用循环警告。我们可以通过所有权修饰符<strong>weak或</strong>unsafe_unretained，使myBlock对象通过保留弱引用或不安全的对象指针，来避免对self产生强引用：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (instancetype)init &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        <span class="comment">// 初始化block成员</span></div><div class="line">        </div><div class="line">        __weak TestObject *weakSelf = self;</div><div class="line"><span class="comment">//        __unsafe_unretained TestObject *unsafeSelf = self;</span></div><div class="line">        myBlock = ^&#123;</div><div class="line">            NSLog(@<span class="string">"%@"</span>, weakSelf);</div><div class="line">        &#125;;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>由于在init方法中不比担心self对象释放的问题，可以安心使用__unsafe_unretained修饰符。</p>
-<h5 id="1-2-通过-block变量，并适时将其释放来解除循环引用"><a href="#1-2-通过-block变量，并适时将其释放来解除循环引用" class="headerlink" title="1.2 通过__block变量，并适时将其释放来解除循环引用"></a>1.2 通过__block变量，并适时将其释放来解除循环引用</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">@implementation TestObject</div><div class="line"></div><div class="line">- (instancetype)init &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        <span class="comment">// 初始化block成员</span></div><div class="line">        </div><div class="line">        __block TestObject *blockSelf = self;</div><div class="line">        myBlock = ^&#123;</div><div class="line">            NSLog(@<span class="string">"blockSelf - %@"</span>, blockSelf);</div><div class="line">            </div><div class="line">            <span class="comment">// 释放__block变量，其释放对self的强引用</span></div><div class="line">            blockSelf = nil;</div><div class="line">        &#125;;</div><div class="line">        <span class="comment">// 通过执行block对象，在内部解除循环引用</span></div><div class="line">        myBlock();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)dealloc &#123;</div><div class="line">    NSLog(@<span class="string">"%@"</span>, NSStringFromSelector(_cmd));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><strong>由于在ARC下，复制到堆内存中的<strong>block对象会对内部的OC对象进行强引用，故可以让block对象捕获</strong>block对象，并在需要时释放__block对象（一般都是执行block时），以间接解除对self的强引用。</strong></p>
-<p>补充：</p>
-<blockquote>
-<p>调用block后，直接将block对象释放也可以解除循环引用。</p>
-</blockquote>
-<p>缺点：</p>
-<blockquote>
-<p>一般来说，<strong>必须执行block后，引用循环才可以被解除</strong>，容易出现遗漏的情况。</p>
-</blockquote>
-<h4 id="2-非ARC下的Block内存控制"><a href="#2-非ARC下的Block内存控制" class="headerlink" title="2.非ARC下的Block内存控制"></a>2.非ARC下的Block内存控制</h4><h5 id="2-1-非ARC下的Block引用循环"><a href="#2-1-非ARC下的Block引用循环" class="headerlink" title="2.1 非ARC下的Block引用循环"></a>2.1 非ARC下的Block引用循环</h5><p>由于<strong>非ARC环境下</strong>，无法使用所有权修饰符，故<strong>只能通过__block变量的方式来解决引用循环问题</strong>：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- (instancetype)init &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        <span class="comment">// 初始化block成员</span></div><div class="line">        </div><div class="line">        __block TestObject *blockSelf = self;</div><div class="line">        myBlock = ^&#123;</div><div class="line">            NSLog(@<span class="string">"blockSelf - %@"</span>, blockSelf);</div><div class="line">        &#125;;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在上述代码中，直接使用__block对象即可，无需释放，即可避免生成引用循环。</p>
-<p>原因：</p>
-<blockquote>
-<p><strong>非ARC环境下，__block变量被分配到堆内存时，不会对内部的OC对象进行强引用</strong>；<br>因此，在block对象函数内部，不会对OC对象发生强引用，相当于ARC下的<strong>weak和</strong>unsafe_unretained的情况。</p>
-</blockquote>
-<h5 id="2-2-非ARC环境下的Block内存使用规则补充"><a href="#2-2-非ARC环境下的Block内存使用规则补充" class="headerlink" title="2.2 非ARC环境下的Block内存使用规则补充"></a>2.2 非ARC环境下的Block内存使用规则补充</h5><ul>
-<li>对不同内存区域的block执行retain和copy操作的结果：</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>block对象所在的内存区域</th>
-<th>执行操作</th>
-<th>效果</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>栈</td>
-<td>retain</td>
-<td>无效</td>
-</tr>
-<tr>
-<td>栈</td>
-<td>copy</td>
-<td>复制到堆内存</td>
-</tr>
-<tr>
-<td>堆</td>
-<td>retain</td>
-<td>产生强引用</td>
-</tr>
-<tr>
-<td>堆</td>
-<td>copy</td>
-<td>产生强引用</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>在C语言环境下，可以使用Block_copy()和Block_release()对堆内存的block对象进行内存管理。</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;Blocks篇：7-循环引用问题&quot;&gt;&lt;a href=&quot;#Blocks篇：7-循环引用问题&quot; class=&quot;headerlink&quot; title=&quot;Blocks篇：7.循环引用问题&quot;&gt;&lt;/a&gt;Blocks篇：7.循环引用问题&lt;/h2&gt;&lt;h4 id=&quot;1-ARC下的Block循环引用&quot;&gt;&lt;a href=&quot;#1-ARC下的Block循环引用&quot; class=&quot;headerlink&quot; title=&quot;1.ARC下的Block循环引用&quot;&gt;&lt;/a&gt;1.ARC下的Block循环引用&lt;/h4&gt;&lt;h5 id=&quot;1-1-使用weak或unsafe-unretained避免循环引用&quot;&gt;&lt;a href=&quot;#1-1-使用weak或unsafe-unretained避免循环引用&quot; class=&quot;headerlink&quot; title=&quot;1.1 使用weak或unsafe_unretained避免循环引用&quot;&gt;&lt;/a&gt;1.1 使用&lt;strong&gt;weak或&lt;/strong&gt;unsafe_unretained避免循环引用&lt;/h5&gt;&lt;p&gt;一般来说，最简单的这种情况即：&lt;em&gt;block对象作为OC对象的成员，而在block函数体内部直接或间接捕获了该OC对象，造成互相强引用&lt;/em&gt;。举例来说：&lt;br&gt;
     
     </summary>
     
