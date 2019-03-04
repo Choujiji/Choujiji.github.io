@@ -184,6 +184,77 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-GCD篇：1.GCD的使用要点" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/18/GCD篇：1.GCD的使用要点/">《Objective-C高级编程 iOS与OS X多线程与内存管理》17</a>
+    </h1>
+  
+
+        
+        <a href="/2019/01/18/GCD篇：1.GCD的使用要点/" class="archive-article-date">
+  	<time datetime="2019-01-18T05:43:36.161Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-18</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="GCD篇：1-GCD的使用要点"><a href="#GCD篇：1-GCD的使用要点" class="headerlink" title="GCD篇：1.GCD的使用要点"></a>GCD篇：1.GCD的使用要点</h2><h4 id="1-多线程"><a href="#1-多线程" class="headerlink" title="1.多线程"></a>1.多线程</h4><p>一个CPU执行的CPU命令列为<strong>一条无分叉路径</strong>，即为<em>线程</em>。而这种无分叉路径存在多条，即为<em>多线程</em>。</p>
+<ul>
+<li>在多线程中，一个CPU核执行多条不同路径上的不同命令。</li>
+<li>在CPU中，使用寄存器将执行“路径”的状态保存到各自的专用的内存块中。在切换不同目标路径时，从对应的内存块中读取并在CPU中将执行信息复原，继续执行目标路径的命令列。这个过程称为“上下文切换”。</li>
+<li>多线程中需要注意的主要问题：<ul>
+<li>数据竞争：多个线程同时更新相同资源；</li>
+<li>死锁：执行等待事件的多个线程互相持续等待；</li>
+<li>线程过多导致内存占用过大</li>
+</ul>
+</li>
+</ul>
+        
+          <a class="article-more-a" href="/2019/01/18/GCD篇：1.GCD的使用要点/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/01/18/GCD篇：1.GCD的使用要点/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-Blocks篇：7.循环引用问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -773,69 +844,6 @@
 
 
   
-    <article id="post-内存管理篇：7.ARC实现之__strong及autorelease优化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/06/内存管理篇：7.ARC实现之__strong及autorelease优化/">《Objective-C高级编程 iOS与OS X多线程与内存管理》7</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/06/内存管理篇：7.ARC实现之__strong及autorelease优化/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:52:21.263Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="内存管理篇：7-ARC实现之-strong及autorelease优化"><a href="#内存管理篇：7-ARC实现之-strong及autorelease优化" class="headerlink" title="内存管理篇：7.ARC实现之__strong及autorelease优化"></a>内存管理篇：7.ARC实现之__strong及autorelease优化</h2><blockquote>
-<p>对于持有非自己创建的对象的情况，我们知道，这种情况是指对于非“alloc、new、copy和mutableCopy”开头的并返回对象实例的方法，接收方不负责内存管理。<br>ARC会在方法实现中将返回值加入到autoreleasePool中，待接收方从中取出使用，延迟释放时机。</p>
-</blockquote>
-        
-          <a class="article-more-a" href="/2019/01/06/内存管理篇：7.ARC实现之__strong及autorelease优化/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/06/内存管理篇：7.ARC实现之__strong及autorelease优化/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
@@ -944,11 +952,11 @@ return o(t,i(n),arguments.length<3?void 0:u(arguments[2]))}})},function(t,n,r){v
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">react-native</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color3">react-native</a>
               </li>
             
             <div class="clearfix"></div>
