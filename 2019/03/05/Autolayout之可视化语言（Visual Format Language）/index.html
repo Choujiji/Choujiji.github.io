@@ -6,19 +6,29 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>《Objective-C高级编程 iOS与OS X多线程与内存管理》16 | 臭吉吉的瞎记空间</title>
+  <title>Autolayout之可视化语言（Visual Format Language） | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Blocks篇：7.循环引用问题1.ARC下的Block循环引用1.1 使用weak或unsafe_unretained避免循环引用一般来说，最简单的这种情况即：block对象作为OC对象的成员，而在block函数体内部直接或间接捕获了该OC对象，造成互相强引用。举例来说：">
-<meta name="keywords" content="读书笔记">
+  <meta name="description" content="注：本文翻译自Visual Format Language  这篇附录阐述了如何使用Auto Layout可视化语言来设定普通约束，包括标准间距、尺寸、垂直布局和带有不同优先级的约束等。此外，本附录还包含了一个完整的语法说明。">
+<meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
-<meta property="og:title" content="《Objective-C高级编程 iOS与OS X多线程与内存管理》16">
-<meta property="og:url" content="http://yoursite.com/2019/01/15/Blocks篇：7.循环引用问题/index.html">
+<meta property="og:title" content="Autolayout之可视化语言（Visual Format Language）">
+<meta property="og:url" content="http://yoursite.com/2019/03/05/Autolayout之可视化语言（Visual Format Language）/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="Blocks篇：7.循环引用问题1.ARC下的Block循环引用1.1 使用weak或unsafe_unretained避免循环引用一般来说，最简单的这种情况即：block对象作为OC对象的成员，而在block函数体内部直接或间接捕获了该OC对象，造成互相强引用。举例来说：">
-<meta property="og:updated_time" content="2019-01-15T04:12:59.642Z">
+<meta property="og:description" content="注：本文翻译自Visual Format Language  这篇附录阐述了如何使用Auto Layout可视化语言来设定普通约束，包括标准间距、尺寸、垂直布局和带有不同优先级的约束等。此外，本附录还包含了一个完整的语法说明。">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/standardSpace.png">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/widthConstraint.png">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/connectionToSuperview.png">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/verticalLayout.png">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/flushViews.png">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/priority.png">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/equalWidths.png">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/multiplePredicates.png">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/completeLayout.png">
+<meta property="og:updated_time" content="2019-03-05T09:08:32.238Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="《Objective-C高级编程 iOS与OS X多线程与内存管理》16">
-<meta name="twitter:description" content="Blocks篇：7.循环引用问题1.ARC下的Block循环引用1.1 使用weak或unsafe_unretained避免循环引用一般来说，最简单的这种情况即：block对象作为OC对象的成员，而在block函数体内部直接或间接捕获了该OC对象，造成互相强引用。举例来说：">
+<meta name="twitter:title" content="Autolayout之可视化语言（Visual Format Language）">
+<meta name="twitter:description" content="注：本文翻译自Visual Format Language  这篇附录阐述了如何使用Auto Layout可视化语言来设定普通约束，包括标准间距、尺寸、垂直布局和带有不同优先级的约束等。此外，本附录还包含了一个完整的语法说明。">
+<meta name="twitter:image" content="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/standardSpace.png">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -184,93 +194,167 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Blocks篇：7.循环引用问题" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-Autolayout之可视化语言（Visual Format Language）" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      《Objective-C高级编程 iOS与OS X多线程与内存管理》16
+      Autolayout之可视化语言（Visual Format Language）
     </h1>
   
 
         
-        <a href="/2019/01/15/Blocks篇：7.循环引用问题/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:12:59.642Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
+        <a href="/2019/03/05/Autolayout之可视化语言（Visual Format Language）/" class="archive-article-date">
+  	<time datetime="2019-03-05T09:08:02.615Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="Blocks篇：7-循环引用问题"><a href="#Blocks篇：7-循环引用问题" class="headerlink" title="Blocks篇：7.循环引用问题"></a>Blocks篇：7.循环引用问题</h2><h4 id="1-ARC下的Block循环引用"><a href="#1-ARC下的Block循环引用" class="headerlink" title="1.ARC下的Block循环引用"></a>1.ARC下的Block循环引用</h4><h5 id="1-1-使用weak或unsafe-unretained避免循环引用"><a href="#1-1-使用weak或unsafe-unretained避免循环引用" class="headerlink" title="1.1 使用weak或unsafe_unretained避免循环引用"></a>1.1 使用<strong>weak或</strong>unsafe_unretained避免循环引用</h5><p>一般来说，最简单的这种情况即：<em>block对象作为OC对象的成员，而在block函数体内部直接或间接捕获了该OC对象，造成互相强引用</em>。举例来说：<br><a id="more"></a><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(^MyBlock)</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">@interface TestObject : NSObject &#123;</div><div class="line">    <span class="comment">// block成员</span></div><div class="line">    MyBlock myBlock;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation TestObject</div><div class="line"></div><div class="line">- (instancetype)init &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        <span class="comment">// 初始化block成员</span></div><div class="line">        myBlock = ^&#123;</div><div class="line">            NSLog(@<span class="string">"%@"</span>, self);</div><div class="line">        &#125;;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
-<p>产生循环引用的过程：</p>
-<blockquote>
+        <blockquote>
+<p>注：本文翻译自<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/VisualFormatLanguage.html#//apple_ref/doc/uid/TP40010853-CH27-SW1" target="_blank" rel="external">Visual Format Language</a></p>
+</blockquote>
+<p>这篇附录阐述了如何使用Auto Layout可视化语言来设定普通约束，包括标准间距、尺寸、垂直布局和带有不同优先级的约束等。此外，本附录还包含了一个完整的语法说明。</p>
+<a id="more"></a>
+<h4 id="可视化句法"><a href="#可视化句法" class="headerlink" title="可视化句法"></a>可视化句法</h4><p>以下是一些通过可视化格式指定的约束示例。请注意其中文字是如何匹配示意图的。</p>
 <ul>
-<li>由于myBlock对象捕获了OC对象（self），myBlock被自动拷贝到堆上，并自动对self产生强引用；</li>
-<li>myBlock是self的成员，当myBlock分配到堆内存后，self负责对其进行内存管理，自动对myBlock对象产生强引用；</li>
-<li>互相保留，引用循环产生</li>
+<li>标准间距</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[button]-[textField]</div></pre></td></tr></table></figure>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/standardSpace.png" alt="img"></p>
+<ul>
+<li>宽度约束</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[button(&gt;=<span class="number">50</span>)]</div></pre></td></tr></table></figure>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/widthConstraint.png" alt="img"></p>
+<ul>
+<li>连接到父视图</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">|<span class="number">-50</span>-[purpleBox]<span class="number">-50</span>-|</div></pre></td></tr></table></figure>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/connectionToSuperview.png" alt="img"></p>
+<ul>
+<li>垂直布局</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">V:[topField]<span class="number">-10</span>-[bottomField]</div></pre></td></tr></table></figure>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/verticalLayout.png" alt="img"></p>
+<ul>
+<li>对齐的视图</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[maroonView][blueView]</div></pre></td></tr></table></figure>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/flushViews.png" alt="img"></p>
+<ul>
+<li>优先级</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[button(<span class="number">100</span>@<span class="number">20</span>)] <span class="comment">// 这里优先级为20</span></div></pre></td></tr></table></figure>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/priority.png" alt="img"></p>
+<ul>
+<li>等宽</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[button1(==button2)]</div></pre></td></tr></table></figure>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/equalWidths.png" alt="img"></p>
+<ul>
+<li>多项描述</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[flexibleButton(&gt;=<span class="number">70</span>,&lt;=<span class="number">100</span>)]</div></pre></td></tr></table></figure>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/multiplePredicates.png" alt="img"></p>
+<ul>
+<li>完整的一行布局</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">|-[find]-[findNext]-[findField(&gt;=<span class="number">20</span>)]-|</div></pre></td></tr></table></figure>
+<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/completeLayout.png" alt="img"></p>
+<p>这种表示法通过完整的表达式提高了可读性。大多数的可用约束都可以通过可视化格式句法在用户界面中表示出来，但是还是有一些不可以。一种不能表示的约束即指定的宽高比（例如，<em>imageView.width = 2 </em> imageView.height*）。要创建这个约束，你必须使用<a href="https://developer.apple.com/documentation/appkit/nslayoutconstraint/1526954-init" target="_blank" rel="external">constraintWithItem:attribute:relatedBy:toItem:attribute:multiplier:constant:</a>方法。</p>
+<h4 id="可视化格式字符串语法"><a href="#可视化格式字符串语法" class="headerlink" title="可视化格式字符串语法"></a>可视化格式字符串语法</h4><p>可视化格式字符串语法的定义如下（字面量使用<em>代码字体</em>表示，<strong>e</strong>代表空字符串）。</p>
+<blockquote>
+<p>译者注：</p>
+<ul>
+<li>表中的“?”代表修饰项为可选的，</li>
+<li>“*”代表前面的修饰项的个数是任意的</li>
+<li>“替换规则”中的每一项“&lt;…&gt;”可当做变量在“符号”中查找替换</li>
 </ul>
 </blockquote>
-<p>不过这种情况，编译器可以直接识别并给出引用循环警告。我们可以通过所有权修饰符<strong>weak或</strong>unsafe_unretained，使myBlock对象通过保留弱引用或不安全的对象指针，来避免对self产生强引用：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (instancetype)init &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        <span class="comment">// 初始化block成员</span></div><div class="line">        </div><div class="line">        __weak TestObject *weakSelf = self;</div><div class="line"><span class="comment">//        __unsafe_unretained TestObject *unsafeSelf = self;</span></div><div class="line">        myBlock = ^&#123;</div><div class="line">            NSLog(@<span class="string">"%@"</span>, weakSelf);</div><div class="line">        &#125;;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>由于在init方法中不比担心self对象释放的问题，可以安心使用__unsafe_unretained修饰符。</p>
-<h5 id="1-2-通过-block变量，并适时将其释放来解除循环引用"><a href="#1-2-通过-block变量，并适时将其释放来解除循环引用" class="headerlink" title="1.2 通过__block变量，并适时将其释放来解除循环引用"></a>1.2 通过__block变量，并适时将其释放来解除循环引用</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">@implementation TestObject</div><div class="line"></div><div class="line">- (instancetype)init &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        <span class="comment">// 初始化block成员</span></div><div class="line">        </div><div class="line">        __block TestObject *blockSelf = self;</div><div class="line">        myBlock = ^&#123;</div><div class="line">            NSLog(@<span class="string">"blockSelf - %@"</span>, blockSelf);</div><div class="line">            </div><div class="line">            <span class="comment">// 释放__block变量，其释放对self的强引用</span></div><div class="line">            blockSelf = nil;</div><div class="line">        &#125;;</div><div class="line">        <span class="comment">// 通过执行block对象，在内部解除循环引用</span></div><div class="line">        myBlock();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)dealloc &#123;</div><div class="line">    NSLog(@<span class="string">"%@"</span>, NSStringFromSelector(_cmd));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><strong>由于在ARC下，复制到堆内存中的<strong>block对象会对内部的OC对象进行强引用，故可以让block对象捕获</strong>block对象，并在需要时释放__block对象（一般都是执行block时），以间接解除对self的强引用。</strong></p>
-<p>补充：</p>
-<blockquote>
-<p>调用block后，直接将block对象释放也可以解除循环引用。</p>
-</blockquote>
-<p>缺点：</p>
-<blockquote>
-<p>一般来说，<strong>必须执行block后，引用循环才可以被解除</strong>，容易出现遗漏的情况。</p>
-</blockquote>
-<h4 id="2-非ARC下的Block内存控制"><a href="#2-非ARC下的Block内存控制" class="headerlink" title="2.非ARC下的Block内存控制"></a>2.非ARC下的Block内存控制</h4><h5 id="2-1-非ARC下的Block引用循环"><a href="#2-1-非ARC下的Block引用循环" class="headerlink" title="2.1 非ARC下的Block引用循环"></a>2.1 非ARC下的Block引用循环</h5><p>由于<strong>非ARC环境下</strong>，无法使用所有权修饰符，故<strong>只能通过__block变量的方式来解决引用循环问题</strong>：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- (instancetype)init &#123;</div><div class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</div><div class="line">        <span class="comment">// 初始化block成员</span></div><div class="line">        </div><div class="line">        __block TestObject *blockSelf = self;</div><div class="line">        myBlock = ^&#123;</div><div class="line">            NSLog(@<span class="string">"blockSelf - %@"</span>, blockSelf);</div><div class="line">        &#125;;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在上述代码中，直接使用__block对象即可，无需释放，即可避免生成引用循环。</p>
-<p>原因：</p>
-<blockquote>
-<p><strong>非ARC环境下，__block变量被分配到堆内存时，不会对内部的OC对象进行强引用</strong>；<br>因此，在block对象函数内部，不会对OC对象发生强引用，相当于ARC下的<strong>weak和</strong>unsafe_unretained的情况。</p>
-</blockquote>
-<h5 id="2-2-非ARC环境下的Block内存使用规则补充"><a href="#2-2-非ARC环境下的Block内存使用规则补充" class="headerlink" title="2.2 非ARC环境下的Block内存使用规则补充"></a>2.2 非ARC环境下的Block内存使用规则补充</h5><ul>
-<li>对不同内存区域的block执行retain和copy操作的结果：</li>
-</ul>
 <table>
 <thead>
 <tr>
-<th>block对象所在的内存区域</th>
-<th>执行操作</th>
-<th>效果</th>
+<th>符号</th>
+<th>替换规则</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>栈</td>
-<td>retain</td>
-<td>无效</td>
+<td>&lt;可视化格式字符串&gt;</td>
+<td>(&lt;方向&gt;:)?(&lt;父视图&gt;&lt;连接&gt;)?&lt;视图&gt;(&lt;连接&gt;&lt;视图&gt;)*(&lt;连接&gt;&lt;父视图&gt;)?</td>
 </tr>
 <tr>
-<td>栈</td>
-<td>copy</td>
-<td>复制到堆内存</td>
+<td>&lt;方向&gt;</td>
+<td><em>H</em> 或 <em>V</em></td>
 </tr>
 <tr>
-<td>堆</td>
-<td>retain</td>
-<td>产生强引用</td>
+<td>&lt;父视图&gt;</td>
+<td>&#124;</td>
 </tr>
 <tr>
-<td>堆</td>
-<td>copy</td>
-<td>产生强引用</td>
+<td>&lt;视图&gt;</td>
+<td><em>[</em> &lt;视图名&gt;(&lt;带括号的描述列表&gt;)? <em>]</em></td>
+</tr>
+<tr>
+<td>&lt;连接&gt;</td>
+<td><strong>e</strong> 或 <em>-</em>&lt;描述列表&gt;<em>-</em> 或 <em>-</em></td>
+</tr>
+<tr>
+<td>&lt;描述列表&gt;</td>
+<td>&lt;简单描述&gt; 或 &lt;带括号的描述列表&gt;</td>
+</tr>
+<tr>
+<td>&lt;简单描述&gt;</td>
+<td>&lt;度量名称&gt; 或 &lt;确定数字&gt;</td>
+</tr>
+<tr>
+<td>&lt;带括号的描述列表&gt;</td>
+<td><em>(</em> &lt;描述&gt;(,&lt;描述&gt;)<em> </em>)*</td>
+</tr>
+<tr>
+<td>&lt;描述&gt;</td>
+<td>(&lt;关系&gt;)?(&lt;描述的对象&gt;)(<em>@</em>&lt;优先级&gt;)?</td>
+</tr>
+<tr>
+<td>&lt;关系&gt;</td>
+<td><em>==</em> 或 <em>&lt;=</em> 或 <em>&gt;=</em></td>
+</tr>
+<tr>
+<td>&lt;描述的对象&gt;</td>
+<td>&lt;常量值&gt; 或 &lt;视图名称&gt; <em>（见说明）</em></td>
+</tr>
+<tr>
+<td>&lt;优先级&gt;</td>
+<td>&lt;度量名称&gt; 或 &lt;数字&gt;</td>
+</tr>
+<tr>
+<td>&lt;常量值&gt;</td>
+<td>&lt;度量名称&gt; 或 &lt;数字&gt;</td>
+</tr>
+<tr>
+<td>&lt;视图名称&gt;</td>
+<td>解析为C语言符号。此对象必须是传入的视图字典中，一个UIView实例对应的key值。</td>
+</tr>
+<tr>
+<td>&lt;度量名称&gt;</td>
+<td>解析为C语言符号。此对象必须是传入的度量字典中，一个NSNumber实例对应的key值。</td>
+</tr>
+<tr>
+<td>&lt;数字&gt;</td>
+<td>通过<em>strtod_l</em>解析（注：解析成浮点数），使用C语言格式</td>
 </tr>
 </tbody>
 </table>
-<ul>
-<li>在C语言环境下，可以使用Block_copy()和Block_release()对堆内存的block对象进行内存管理。</li>
-</ul>
-
+<blockquote>
+<p><strong>说明</strong></p>
+<p>在<em>描述的对象</em>的生成方式中，只有当描述的对象是<em>视图</em>的宽或高时，<em>视图名称</em>才可以作为其中的一部分。也就是说，你可以使用 <em>[view1(==view2)]</em> 的方式来指定<em>view1</em>和<em>view2</em>拥有相同宽度。</p>
+</blockquote>
+<p>如果你产生了句法错误，系统会抛出异常并带有诊断信息。例如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">Expected <span class="string">':'</span> after <span class="string">'V'</span> to specify vertical arrangement</div><div class="line">V|[backgroundBox]|</div><div class="line"> ^</div><div class="line"> </div><div class="line">A predicate on a view's thickness must end with <span class="string">')'</span> <span class="keyword">and</span> the view must end with <span class="string">']'</span></div><div class="line">|[whiteBox1][blackBox4(blackWidth][redBox]|</div><div class="line">                                 ^</div><div class="line"> </div><div class="line">Unable to find view with name blackBox</div><div class="line">|[whiteBox2][blackBox]</div><div class="line">                     ^</div><div class="line"> </div><div class="line">Unknown relation. Must be ==, &gt;=, <span class="keyword">or</span> &lt;=</div><div class="line">V:|[blackBox4(&gt;<span class="number">30</span>)]|</div></pre></td></tr></table></figure>
       
 
       
@@ -283,7 +367,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
         		</li>
       		
 		</ul>
@@ -339,7 +423,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/01/15/Blocks篇：7.循环引用问题/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/03/05/Autolayout之可视化语言（Visual Format Language）/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -353,18 +437,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/01/18/GCD篇：1.GCD的使用要点/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          《Objective-C高级编程 iOS与OS X多线程与内存管理》17
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/01/15/Blocks篇：6.Blocks捕获的OC对象及其内存管理/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">《Objective-C高级编程 iOS与OS X多线程与内存管理》15</div>
+    <a href="/2019/03/05/《大话数据结构》之算法的时间复杂度/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">《大话数据结构》之算法的时间复杂度</div>
       <i class="icon-circle-right"></i>
     </a>
   
