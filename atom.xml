@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-03-04T08:55:42.105Z</updated>
+  <updated>2019-03-05T07:23:38.227Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,56 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>《大话数据结构》之算法的时间复杂度</title>
+    <link href="http://yoursite.com/2019/03/05/%E3%80%8A%E5%A4%A7%E8%AF%9D%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E3%80%8B%E4%B9%8B%E7%AE%97%E6%B3%95%E7%9A%84%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/"/>
+    <id>http://yoursite.com/2019/03/05/《大话数据结构》之算法的时间复杂度/</id>
+    <published>2019-03-05T07:23:16.914Z</published>
+    <updated>2019-03-05T07:23:38.227Z</updated>
+    
+    <content type="html"><![CDATA[<p>算法的时间复杂度一般是指算法的最坏执行情况（最大执行次数）。</p>
+<h4 id="1-大O表示法"><a href="#1-大O表示法" class="headerlink" title="1. 大O表示法"></a>1. 大O表示法</h4><p>衡量算法的复杂度（一般指时间复杂度）通常使用大O表示法，其推导的一般方式为：</p>
+<ol>
+<li>用常数1取代运行时间中的所有加法常数。</li>
+<li>在修改后的运行次数函数中，只保留最高阶项。</li>
+<li>如果最高阶项存在且不是1，则去除与这个项乘积的常数。</li>
+</ol>
+<p>最终得到的结果就是大O阶。</p>
+<a id="more"></a>
+<h4 id="2-常用的大O阶"><a href="#2-常用的大O阶" class="headerlink" title="2. 常用的大O阶"></a>2. 常用的大O阶</h4><ul>
+<li>常数阶<br>  O(1)：如顺序结构的复杂度或是分支结构（if–else–），执行次数恒定，不会随n变化而变化。</li>
+<li>线性阶<br>  O(n)：如循环结构，根据循环次数决定。</li>
+<li>对数阶<br>  O(logn): 例如如下循环</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> count = <span class="number">1</span>;</div><div class="line"><span class="keyword">while</span>(count &lt; n) &#123;</div><div class="line">    count = count * <span class="number">2</span>;</div><div class="line">    <span class="comment">/** 时间复杂度为O(1)的顺序步骤序列 */</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<pre><code>如上所示，x为执行次数，2^x = n，即x = log2n，故时间复杂度为O(logn)。
+</code></pre><ul>
+<li>平方阶<br>  O(n^2)：如双重嵌套循环。</li>
+</ul>
+<h4 id="3-常见的时间复杂度排列"><a href="#3-常见的时间复杂度排列" class="headerlink" title="3. 常见的时间复杂度排列"></a>3. 常见的时间复杂度排列</h4><p>耗费时间从小到大依次为：</p>
+<blockquote>
+<p>O(1) &lt; O(logn) &lt; O(n) &lt; O(nlogn) &lt; O(n^2) &lt; O(n^3) &lt; O(2^n) &lt; O(n!) &lt; O(n^n)</p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;算法的时间复杂度一般是指算法的最坏执行情况（最大执行次数）。&lt;/p&gt;
+&lt;h4 id=&quot;1-大O表示法&quot;&gt;&lt;a href=&quot;#1-大O表示法&quot; class=&quot;headerlink&quot; title=&quot;1. 大O表示法&quot;&gt;&lt;/a&gt;1. 大O表示法&lt;/h4&gt;&lt;p&gt;衡量算法的复杂度（一般指时间复杂度）通常使用大O表示法，其推导的一般方式为：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;用常数1取代运行时间中的所有加法常数。&lt;/li&gt;
+&lt;li&gt;在修改后的运行次数函数中，只保留最高阶项。&lt;/li&gt;
+&lt;li&gt;如果最高阶项存在且不是1，则去除与这个项乘积的常数。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;最终得到的结果就是大O阶。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>Autolayout之修改约束</title>
@@ -1640,127 +1690,6 @@
     <summary type="html">
     
       &lt;h3 id=&quot;runtime-h&quot;&gt;&lt;a href=&quot;#runtime-h&quot; class=&quot;headerlink&quot; title=&quot;runtime.h&quot;&gt;&lt;/a&gt;runtime.h&lt;/h3&gt;&lt;h4 id=&quot;1-数据类型定义&quot;&gt;&lt;a href=&quot;#1-数据类型定义&quot; class=&quot;headerlink&quot; title=&quot;1.数据类型定义&quot;&gt;&lt;/a&gt;1.数据类型定义&lt;/h4&gt;&lt;h5 id=&quot;1-1-方法Method&quot;&gt;&lt;a href=&quot;#1-1-方法Method&quot; class=&quot;headerlink&quot; title=&quot;1.1 方法Method&quot;&gt;&lt;/a&gt;1.1 方法Method&lt;/h5&gt;&lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;7&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;8&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;9&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;10&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;11&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;12&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;13&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;14&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;15&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;16&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;method_t&lt;/span&gt; *&lt;span class=&quot;title&quot;&gt;Method&lt;/span&gt;;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;method_t&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    SEL name;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;char&lt;/span&gt; *types;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    IMP imp;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;SortBySELAddress&lt;/span&gt; :&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;built_in&quot;&gt;std&lt;/span&gt;::binary_function&amp;lt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;method_t&lt;/span&gt;&amp;amp;,&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                                    &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;method_t&lt;/span&gt;&amp;amp;, &lt;span class=&quot;keyword&quot;&gt;bool&lt;/span&gt;&amp;gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;operator&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;method_t&lt;/span&gt;&amp;amp; lhs,&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                         &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;method_t&lt;/span&gt;&amp;amp; rhs)&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        &amp;#123; &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; lhs.name &amp;lt; rhs.name; &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &amp;#125;;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&amp;#125;;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>objc-公共头文件（Public Headers）的基本内容（上）</title>
-    <link href="http://yoursite.com/2019/01/21/objc-%E5%85%AC%E5%85%B1%E5%A4%B4%E6%96%87%E4%BB%B6%EF%BC%88Public%20Headers%EF%BC%89%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%86%85%E5%AE%B9%EF%BC%88%E4%B8%8A%EF%BC%89/"/>
-    <id>http://yoursite.com/2019/01/21/objc-公共头文件（Public Headers）的基本内容（上）/</id>
-    <published>2019-01-21T09:19:35.705Z</published>
-    <updated>2019-01-21T09:19:35.706Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="1-NSObject-h"><a href="#1-NSObject-h" class="headerlink" title="1. NSObject.h"></a>1. NSObject.h</h3><p>内部主要包含了<strong>NSObject协议</strong>和<strong>NSObject类</strong>。</p>
-<ul>
-<li><p>NSObject协议规定了主要几部分：</p>
-<ul>
-<li>class和self</li>
-<li>执行方法api</li>
-<li>判断所属类和遵循协议的方法</li>
-<li>内存管理方法（ARC下禁止）</li>
-<li>响应方法api</li>
-</ul>
-</li>
-<li><p>NSObject类规定了主要几部分：</p>
-<ul>
-<li>内部结构：isa的Class指针</li>
-<li>load和initialize类方法</li>
-<li>init和dealloc等实例方法</li>
-<li>声明并实现了消息转发的相关方法</li>
-<li>声明了类方法版本的NSObject协议方法<a id="more"></a>
-</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h3 id="2-message-h"><a href="#2-message-h" class="headerlink" title="2. message.h"></a>2. message.h</h3><h4 id="2-1-super关键字对应的objc-super结构体："><a href="#2-1-super关键字对应的objc-super结构体：" class="headerlink" title="2.1 super关键字对应的objc_super结构体："></a>2.1 super关键字对应的<strong>objc_super结构体</strong>：</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_super</span> &#123;</span></div><div class="line">    <span class="comment">/** 接收者，当前类的实例，即使用super的self */</span></div><div class="line">    __unsafe_unretained _Nonnull id receiver;</div><div class="line">    <span class="comment">/** 父类的指针 */</span></div><div class="line">    __unsafe_unretained _Nonnull Class super_class;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="2-2-基本的消息原型"><a href="#2-2-基本的消息原型" class="headerlink" title="2.2 基本的消息原型"></a>2.2 基本的消息原型</h4><p>对象调用方法，即<strong>给对象发消息，调用objc_msgSend方法</strong>，而根据参数类型的不同，系统会自动调用对应的子版本；而<strong>通过对象，调用父类的方法，调用objc_msgSendSuper方法</strong>。</p>
-<ul>
-<li>objc_msgSend函数：</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">id _<span class="function">Nullable <span class="title">objc_msgSend</span><span class="params">(id _Nullable self, SEL _Nullable op, ...)</span></span></div></pre></td></tr></table></figure>
-<p>说明：</p>
-<blockquote>
-<ul>
-<li>self，对象，即为id（指向objc_object实例的指针）</li>
-<li>op即为SEL，objc_selector的实例指针，运行时系统可以通过SEL找到方法实现IMP</li>
-<li>后面为方法调用的参数</li>
-</ul>
-</blockquote>
-<ul>
-<li>objc_msgSendSuper函数：</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">id _<span class="function">Nullable <span class="title">objc_msgSendSuper</span><span class="params">(</span></span></div><div class="line">    struct objc_super * _Nullable super, </div><div class="line">    SEL _Nullable op,</div><div class="line">    ...</div><div class="line">)</div></pre></td></tr></table></figure>
-<p>说明：</p>
-<blockquote>
-<ul>
-<li>super，即为上述objc_super结构体实例的指针</li>
-<li>op为SEL</li>
-<li>后面传入调用参数</li>
-</ul>
-</blockquote>
-<hr>
-<h3 id="3-objc-h"><a href="#3-objc-h" class="headerlink" title="3. objc.h"></a>3. objc.h</h3><h4 id="3-1-Class"><a href="#3-1-Class" class="headerlink" title="3.1 Class"></a>3.1 Class</h4><p>Class，类对象，即objc_class的结构体实例指针：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_class</span> *<span class="title">Class</span>;</span></div></pre></td></tr></table></figure>
-<h4 id="3-2-对象"><a href="#3-2-对象" class="headerlink" title="3.2 对象"></a>3.2 对象</h4><p>对象，指的是Class的实例，默认即为id类型的变量：</p>
-<ul>
-<li>id即objc_object结构体实例的指针：</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_object</span> *<span class="title">id</span>;</span></div></pre></td></tr></table></figure>
-<ul>
-<li>objc_object结构体，即<strong>对象真正的本质：包含类指针的结构体实例</strong></li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">objc_object</span> &#123;</span></div><div class="line">    Class _Nonnull isa;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="3-3-选择器及实现"><a href="#3-3-选择器及实现" class="headerlink" title="3.3 选择器及实现"></a>3.3 选择器及实现</h4><ul>
-<li>选择器SEL：objc_selector结构体实例的指针</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_selector</span> *<span class="title">SEL</span>;</span></div></pre></td></tr></table></figure>
-<ul>
-<li>方法实现IMP：c函数指针，参数为调用对象id、选择器SEL和参数列表</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> id _Nullable (*IMP)(id _Nonnull, SEL _Nonnull, ...)</div></pre></td></tr></table></figure>
-<h4 id="3-4-主要方法API"><a href="#3-4-主要方法API" class="headerlink" title="3.4 主要方法API"></a>3.4 主要方法API</h4><ul>
-<li>获取选择器对应的方法名：</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> * _<span class="function">Nonnull <span class="title">sel_getName</span><span class="params">(SEL _Nonnull sel)</span></span>;</div></pre></td></tr></table></figure>
-<ul>
-<li>根据指定的名称向运行时系统注册选择器：</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SEL _<span class="function">Nonnull <span class="title">sel_registerName</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> * _Nonnull str)</span></span>;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>在将方法添加到类定义中之前，必须先注册SEL</p>
-</blockquote>
-<ul>
-<li>返回对象所属类的名字：</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> * _<span class="function">Nonnull <span class="title">object_getClassName</span><span class="params">(id _Nullable obj)</span></span>;</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;1-NSObject-h&quot;&gt;&lt;a href=&quot;#1-NSObject-h&quot; class=&quot;headerlink&quot; title=&quot;1. NSObject.h&quot;&gt;&lt;/a&gt;1. NSObject.h&lt;/h3&gt;&lt;p&gt;内部主要包含了&lt;strong&gt;NSObject协议&lt;/strong&gt;和&lt;strong&gt;NSObject类&lt;/strong&gt;。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;NSObject协议规定了主要几部分：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;class和self&lt;/li&gt;
-&lt;li&gt;执行方法api&lt;/li&gt;
-&lt;li&gt;判断所属类和遵循协议的方法&lt;/li&gt;
-&lt;li&gt;内存管理方法（ARC下禁止）&lt;/li&gt;
-&lt;li&gt;响应方法api&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;NSObject类规定了主要几部分：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;内部结构：isa的Class指针&lt;/li&gt;
-&lt;li&gt;load和initialize类方法&lt;/li&gt;
-&lt;li&gt;init和dealloc等实例方法&lt;/li&gt;
-&lt;li&gt;声明并实现了消息转发的相关方法&lt;/li&gt;
-&lt;li&gt;声明了类方法版本的NSObject协议方法
     
     </summary>
     

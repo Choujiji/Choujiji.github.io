@@ -184,6 +184,84 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-objc-公共头文件（Public Headers）的基本内容（上）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（上）/">objc-公共头文件（Public Headers）的基本内容（上）</a>
+    </h1>
+  
+
+        
+        <a href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（上）/" class="archive-article-date">
+  	<time datetime="2019-01-21T09:19:35.705Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-21</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-NSObject-h"><a href="#1-NSObject-h" class="headerlink" title="1. NSObject.h"></a>1. NSObject.h</h3><p>内部主要包含了<strong>NSObject协议</strong>和<strong>NSObject类</strong>。</p>
+<ul>
+<li><p>NSObject协议规定了主要几部分：</p>
+<ul>
+<li>class和self</li>
+<li>执行方法api</li>
+<li>判断所属类和遵循协议的方法</li>
+<li>内存管理方法（ARC下禁止）</li>
+<li>响应方法api</li>
+</ul>
+</li>
+<li><p>NSObject类规定了主要几部分：</p>
+<ul>
+<li>内部结构：isa的Class指针</li>
+<li>load和initialize类方法</li>
+<li>init和dealloc等实例方法</li>
+<li>声明并实现了消息转发的相关方法</li>
+<li>声明了类方法版本的NSObject协议方法
+        
+          <a class="article-more-a" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（上）/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（上）/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-GCD篇：1.GCD的使用要点" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -775,75 +853,6 @@
 
 
   
-    <article id="post-内存管理篇：8.ARC实现之__weak" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/06/内存管理篇：8.ARC实现之__weak/">《Objective-C高级编程 iOS与OS X多线程与内存管理》8</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/06/内存管理篇：8.ARC实现之__weak/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:53:26.381Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="内存管理篇：8-ARC实现之-weak"><a href="#内存管理篇：8-ARC实现之-weak" class="headerlink" title="内存管理篇：8.ARC实现之__weak"></a>内存管理篇：8.ARC实现之__weak</h2><blockquote>
-<p>我们知道，weak修饰的变量，其地址是被存储在一个专用的散列表中，此散列表的键值为原内存的散列值（即对象地址的hash值）。</p>
-</blockquote>
-<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1546747255-weak%E8%A1%A8.jpg" alt="img"></p>
-<p>__weak修饰的变量，其主要存在两大功能：</p>
-<ol>
-<li><strong>当其引用的对象被释放时，此变量自动被赋值为nil</strong>；</li>
-<li><strong>使用__weak修饰的变量时，实际上使用的是添加到autoreleasePool中的对象</strong>。</li>
-</ol>
-        
-          <a class="article-more-a" href="/2019/01/06/内存管理篇：8.ARC实现之__weak/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/06/内存管理篇：8.ARC实现之__weak/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
@@ -952,11 +961,11 @@ return o(t,i(n),arguments.length<3?void 0:u(arguments[2]))}})},function(t,n,r){v
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color3">react-native</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">react-native</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
             
             <div class="clearfix"></div>
