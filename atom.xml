@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-03-05T09:08:32.238Z</updated>
+  <updated>2019-03-06T10:55:37.658Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,142 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>《大话数据结构》之线性表</title>
+    <link href="http://yoursite.com/2019/03/06/%E3%80%8A%E5%A4%A7%E8%AF%9D%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E3%80%8B%E4%B9%8B%E7%BA%BF%E6%80%A7%E8%A1%A8/"/>
+    <id>http://yoursite.com/2019/03/06/《大话数据结构》之线性表/</id>
+    <published>2019-03-06T10:55:37.657Z</published>
+    <updated>2019-03-06T10:55:37.658Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="1-线性表的主要类型"><a href="#1-线性表的主要类型" class="headerlink" title="1. 线性表的主要类型"></a>1. 线性表的主要类型</h3><p>线性表在存储方式上划分，可分为：</p>
+<ul>
+<li><strong>顺序存储结构</strong>，如标准数组</li>
+<li><strong>链式存储结构</strong>，如单链表</li>
+</ul>
+<a id="more"></a>
+<h3 id="2-顺序存储结构"><a href="#2-顺序存储结构" class="headerlink" title="2. 顺序存储结构"></a>2. 顺序存储结构</h3><p>所谓顺序存储结构，即使用一段地址连续的存储单依次存储线性表的数据元素。</p>
+<p>我们可以使用数组来描述线性表的顺序存储结构。</p>
+<h4 id="2-1-地址计算方法（读取数据）"><a href="#2-1-地址计算方法（读取数据）" class="headerlink" title="2.1 地址计算方法（读取数据）"></a>2.1 地址计算方法（读取数据）</h4><p>通俗地讲，与数据下标访问的方式类似，后一个数据的地址是前一个地址加上数据大小。对于第i个数据的储存位置，即可使用以下方式得出：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">LOC(a(i + <span class="number">1</span>)) = LOC(a(i)) + (i - <span class="number">1</span>) * c</div></pre></td></tr></table></figure>
+<p>由于任意地址的数据均可以由以上公式一步得出，故<strong>顺序存储结构的存储时间为O(1)，即时间复杂度为常数阶</strong>。</p>
+<h4 id="2-2-插入数据"><a href="#2-2-插入数据" class="headerlink" title="2.2 插入数据"></a>2.2 插入数据</h4><p>主要步骤为：</p>
+<ol>
+<li>查找到要插入的位置i</li>
+<li>将i之后的数据依次后移一个位置</li>
+<li>在i的位置上插入数据e</li>
+<li>表长加1</li>
+</ol>
+<p>总的执行次数为 1 + n + 1 + 1，故<strong>插入操作的时间复杂度为O(n)</strong>。</p>
+<h4 id="2-3-删除数据"><a href="#2-3-删除数据" class="headerlink" title="2.3 删除数据"></a>2.3 删除数据</h4><p>主要步骤为：</p>
+<ol>
+<li>查找到要删除的位置i</li>
+<li>在i的位置上取出数据e</li>
+<li>将i之后的数据依次前移一个位置</li>
+<li>表长减1</li>
+</ol>
+<p>总的执行次数为 1 + 1 + n + 1，故<strong>删除操作的时间复杂度为O(n)</strong>。</p>
+<h4 id="2-4-顺序存储结构的优缺点"><a href="#2-4-顺序存储结构的优缺点" class="headerlink" title="2.4 顺序存储结构的优缺点"></a>2.4 顺序存储结构的优缺点</h4><p>优点：</p>
+<ul>
+<li>无需为数据元素之间的逻辑关系增加额外存储空间</li>
+<li>可以快速读取任一位置的元素</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>插入和删除数据需要移动大量元素</li>
+<li>当线性表长度变化较大时，难以确定存储空间的长度</li>
+<li>造成存储空间的”碎片“</li>
+</ul>
+<h3 id="3-链式存储结构（以单链表为例）"><a href="#3-链式存储结构（以单链表为例）" class="headerlink" title="3. 链式存储结构（以单链表为例）"></a>3. 链式存储结构（以单链表为例）</h3><p>链式存储结构的特点，是使用一组任意的存储单元存储线性表的数据元素。这些存储单元可以是不连续的，任意位置均可。</p>
+<p>链式存储结构中的数据结点（Node），除了包含自身数据（数据域），还需要存储一个后继结点的地址（指针域）。</p>
+<p>当n个数据结点组成一个链表，其中每一个结点都只包含一个指针域时，这种链式结构称为<strong>单链表</strong>。</p>
+<p>我们这里使用单链表来描述线性表的链式存储结构。</p>
+<h4 id="3-1-单链表的基本描述"><a href="#3-1-单链表的基本描述" class="headerlink" title="3.1 单链表的基本描述"></a>3.1 单链表的基本描述</h4><ul>
+<li><strong>头指针</strong>：指向单链表第一个结点存储位置（即第一个结点的地址）的指针。</li>
+<li><strong>头结点</strong>：在第一个结点前设置的一个结点，其指针域为头指针地址。</li>
+<li>线性表最后一个结点的指针域为NULL或^。</li>
+</ul>
+<h4 id="3-2-头指针与头结点的异同"><a href="#3-2-头指针与头结点的异同" class="headerlink" title="3.2 头指针与头结点的异同"></a>3.2 头指针与头结点的异同</h4><p>头指针：</p>
+<ul>
+<li>指链表指向第一个结点的指针，若链表有头结点，则是指向头结点的指针。</li>
+<li>有标识作用，常用头指针冠以链表的名字。</li>
+<li>无论链表是否为空，头指针均不为空。<strong>头指针是链表的必要元素</strong>。</li>
+</ul>
+<p>头结点：</p>
+<ul>
+<li>为了操作统一和方便而设置，放在第一个结点之前，其数据域一般无意义（可以存放链表长度）。</li>
+<li>有了头结点，对在第一个结点前插入结点或删除第一结点，其操作与其他结点完成统一。</li>
+<li><strong>头结点不一定是链表的必须要素</strong>。</li>
+</ul>
+<h4 id="3-3-单链表的读取"><a href="#3-3-单链表的读取" class="headerlink" title="3.3 单链表的读取"></a>3.3 单链表的读取</h4><p>由于每一个结点的存储位置都在前一个结点的指针域中保存，故获取指定位置的结点数据，需要从单链表的头结点开始，依次查找。故其<strong>查找的时间复杂度为O(n)</strong>。</p>
+<p>查找方式，即循环”指针后移“。</p>
+<h4 id="3-4-单链表的插入"><a href="#3-4-单链表的插入" class="headerlink" title="3.4 单链表的插入"></a>3.4 单链表的插入</h4><p>单链表的插入过程，如下图所示：</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1551764374-%E5%8D%95%E9%93%BE%E8%A1%A8%E7%9A%84%E6%8F%92%E5%85%A5.jpg" alt="单链表的插入"></p>
+<p>其中，待插入的结点s（数据e），插入到结点p和p-&gt;next之间（数据a(i)和数据a(i+1)）之间。其关键操作为:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 将插入结点s的指针域指向原后结点p-&gt;next</span></div><div class="line">s-&gt;next = p-&gt;next;</div><div class="line"><span class="comment">// 原结点p的指针域指向插入结点s</span></div><div class="line">p-&gt;next = s;</div></pre></td></tr></table></figure>
+<p>故此插入行为的复杂度为O(1)。</p>
+<p>不过，由于查找插入位置结点的复杂度为O(n)，故最终<strong>单链表插入操作的时间复杂度为O(n)</strong>。</p>
+<h4 id="3-5-单链表的删除"><a href="#3-5-单链表的删除" class="headerlink" title="3.5 单链表的删除"></a>3.5 单链表的删除</h4><p>单链表的删除过程，如下图所示：</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1551764879-%E5%8D%95%E9%93%BE%E8%A1%A8%E7%9A%84%E5%88%A0%E9%99%A4.jpg" alt="单链表的删除"></p>
+<p>其中，a(i)为待删除元素，即p-&gt;next结点。删除后即将结点p的指针域指向a(i+1)元素的结点。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 待删除结点的前一个结点的指针域 指向 待删除结点的后一个结点</span></div><div class="line">p-&gt;next = p-&gt;next-&gt;next;</div><div class="line"></div><div class="line"><span class="comment">// 或</span></div><div class="line"></div><div class="line">q = p-&gt;next;</div><div class="line">p-&gt;next = q-&gt;next;</div><div class="line"></div><div class="line"><span class="comment">// 最后，释放删除结点的内存</span></div><div class="line"><span class="built_in">free</span>(q);</div></pre></td></tr></table></figure>
+<p>故此删除行为的复杂度为O(1)。</p>
+<p>不过，由于查找删除位置结点的复杂度为O(n)，故最终<strong>单链表删除操作的时间复杂度为O(n)</strong>。</p>
+<h4 id="3-6-单链表的整表创建"><a href="#3-6-单链表的整表创建" class="headerlink" title="3.6 单链表的整表创建"></a>3.6 单链表的整表创建</h4><ul>
+<li><strong>头插法</strong>：每次均从头指针插入新结点。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 创建单链表L(空表)</span></div><div class="line">*L = (LinkList)<span class="built_in">malloc</span>(sizeOf(Node));</div><div class="line">(*L-&gt;next) = <span class="literal">NULL</span>;</div><div class="line"></div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</div><div class="line">    <span class="comment">// L为单链表的头结点，p为待插入结点</span></div><div class="line">    p-&gt;next = (*L)-&gt;next;</div><div class="line">    (*L)-&gt;next = p;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li><strong>尾插法</strong>：每次均插入到尾结点的后面。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 创建单链表L(空表)</span></div><div class="line">*L = (LinkList)<span class="built_in">malloc</span>(sizeOf(Node));</div><div class="line">(*L-&gt;next) = <span class="literal">NULL</span>;</div><div class="line"></div><div class="line"><span class="comment">// r为指向尾部的结点</span></div><div class="line">r = *L;</div><div class="line"></div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</div><div class="line">    <span class="comment">// p为待插入结点，插入到尾结点后面</span></div><div class="line">    r-&gt;next = p;</div><div class="line">    <span class="comment">// 新加入结点作为新的尾结点</span></div><div class="line">    r = p;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 尾结点指针域赋值</span></div><div class="line">r-&gt;next = <span class="literal">NULL</span>;</div></pre></td></tr></table></figure>
+<h4 id="3-7-单链表的整表删除"><a href="#3-7-单链表的整表删除" class="headerlink" title="3.7 单链表的整表删除"></a>3.7 单链表的整表删除</h4><p>做法：依次边遍历边删除</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// L为待删除链表，p和q分别指向当前结点</span></div><div class="line"></div><div class="line"><span class="comment">// p指向第一个结点</span></div><div class="line">p = (*L)-&gt;next;</div><div class="line"></div><div class="line"><span class="keyword">while</span>(p) &#123;</div><div class="line">    <span class="comment">// q指向后继结点</span></div><div class="line">    q = p-&gt;next;</div><div class="line">    <span class="comment">// 删除当前结点</span></div><div class="line">    <span class="built_in">free</span>(p);</div><div class="line">    <span class="comment">// p指向后继结点</span></div><div class="line">    p = q;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 循环结束后，p结点已经不存在</span></div><div class="line"><span class="comment">// 置为空表，让头结点的头指针为空</span></div><div class="line">(*L)-&gt;next = <span class="literal">NULL</span>;</div></pre></td></tr></table></figure>
+<h4 id="3-8-单链表与顺序存储结构实用性对比"><a href="#3-8-单链表与顺序存储结构实用性对比" class="headerlink" title="3.8 单链表与顺序存储结构实用性对比"></a>3.8 单链表与顺序存储结构实用性对比</h4><ul>
+<li>在频繁查找，且很少进行插入和删除操作时，可以考虑使用顺序存储结构。若频繁插入或删除，则考虑使用单链表。</li>
+<li>在不确定线性表的元素个数时，可以考虑使用单链表，忽略存储空间的需求问题。</li>
+</ul>
+<h3 id="4-其他类型链表结构"><a href="#4-其他类型链表结构" class="headerlink" title="4. 其他类型链表结构"></a>4. 其他类型链表结构</h3><h4 id="4-1-静态链表"><a href="#4-1-静态链表" class="headerlink" title="4.1 静态链表"></a>4.1 静态链表</h4><p>静态链表是在没有指针的情况下实现的“模拟”单链表，本质上是使用数组进行描述并实现。</p>
+<p>其结构如下所示：</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1551867514-%E9%9D%99%E6%80%81%E9%93%BE%E8%A1%A8.jpg" alt="静态链表"></p>
+<p>其中，数组分为两部分结构：</p>
+<ol>
+<li>以数组的末尾元素为头结点，根据游标（cur）索引，直到元素的游标为0为止，连接而成的结构，也就是真正的<strong>单链表</strong>。</li>
+<li>以数组第一个元素为头结点，根据游标索引，直到元素的游标为末尾元素的下标为止，作为<strong>备用链表</strong>，用于动态分配数据（插入、移除数据使用）。</li>
+</ol>
+<p>主要结构：</p>
+<ul>
+<li>数组的末尾元素：初始状态下，末尾元素的游标指向首元素，即为空表。当插入数据后，其游标永远指向链表第一个数据。</li>
+<li>数组的首元素：初始状态下，其游标指向数组的下一个元素。当插入数据后，其游标总是指向备用链表的第一个数据。</li>
+<li>数组的其他元素：默认情况下，当前元素的游标指向下一个元素。当插入数据后，数据的游标即保存的是下一个插入数据所在数组的下标。单链表最后一个数据的游标保存的是0，即数组首元素下标，标识单链表已结束。</li>
+</ul>
+<blockquote>
+<p><strong>静态链表的优缺点</strong>：</p>
+<p>优点：<br>避免了插入和删除数据时对大量数据的移动，只要修改游标即可实现。</p>
+<p>缺点：</p>
+<ul>
+<li>由于使用数组进行实现，依然无法避免对内存空间进行考虑。</li>
+<li>失去了顺序存储结构随机存取的特性。</li>
+</ul>
+<p>备注：</p>
+<p>静态链表的创建、插入和删除等操作的Objective-C版本实现：<a href="https://github.com/Choujiji/PlayWithDataStructure-Code/tree/master/%E7%BA%BF%E6%80%A7%E8%A1%A8/%E9%9D%99%E6%80%81%E9%93%BE%E8%A1%A8" target="_blank" rel="external">项目地址</a></p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;1-线性表的主要类型&quot;&gt;&lt;a href=&quot;#1-线性表的主要类型&quot; class=&quot;headerlink&quot; title=&quot;1. 线性表的主要类型&quot;&gt;&lt;/a&gt;1. 线性表的主要类型&lt;/h3&gt;&lt;p&gt;线性表在存储方式上划分，可分为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;顺序存储结构&lt;/strong&gt;，如标准数组&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;链式存储结构&lt;/strong&gt;，如单链表&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>Autolayout之可视化语言（Visual Format Language）</title>
@@ -1477,99 +1613,6 @@
 &lt;li&gt;使用KVO更新UI；&lt;/li&gt;
 &lt;li&gt;使用通知方式处理自身视图的朝向变化；&lt;/li&gt;
 &lt;li&gt;总结
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MBProgressHUD源码学习1：公有API介绍</title>
-    <link href="http://yoursite.com/2019/01/23/MBProgressHUD%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A01%EF%BC%9A%E5%85%AC%E6%9C%89API%E4%BB%8B%E7%BB%8D/"/>
-    <id>http://yoursite.com/2019/01/23/MBProgressHUD源码学习1：公有API介绍/</id>
-    <published>2019-01-23T10:39:06.662Z</published>
-    <updated>2019-01-23T10:39:27.847Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<ul>
-<li>源代码基于0.91版本；</li>
-<li>本篇只介绍相关公有API，同时简单说明实现方式</li>
-</ul>
-</blockquote>
-<h3 id="1-用于快速调用HUD的类方法"><a href="#1-用于快速调用HUD的类方法" class="headerlink" title="1. 用于快速调用HUD的类方法"></a>1. 用于快速调用HUD的类方法</h3><h4 id="1-1-在指定视图上显示和移除HUD"><a href="#1-1-在指定视图上显示和移除HUD" class="headerlink" title="1.1 在指定视图上显示和移除HUD"></a>1.1 在指定视图上显示和移除HUD</h4><ul>
-<li><p>在视图中显示HUD，进入等待状态</p>
-<a id="more"></a>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">+ (MB_INSTANCETYPE)showHUDAddedTo:(UIView *)view animated:(BOOL)animated;</div></pre></td></tr></table></figure>
-</li>
-<li><p>在视图上移除HUD，退出等待状态</p>
-</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">+ (BOOL)hideHUDForView:(UIView *)view animated:(BOOL)animated;</div></pre></td></tr></table></figure>
-<p>对于没有特别要求，只需要简单屏蔽用户交互时使用；二者一般成对使用。</p>
-<ul>
-<li>移除视图中的所有HUD，退出等待状态</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">+ (NSUInteger)hideAllHUDsForView:(UIView *)view animated:(BOOL)animated;</div></pre></td></tr></table></figure>
-<p>此方法会遍历查找视图层级中的所有HUD视图并移除。</p>
-<blockquote>
-<p>快速显示和隐藏HUD方法，自动管理HUD的生命周期，故在实现中设置为“隐藏后直接移除视图”，如：</p>
-</blockquote>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 示例的显示HUD方法</span></div><div class="line">+ (MB_INSTANCETYPE)showHUDAddedTo:(UIView *)view animated:(BOOL)animated &#123;</div><div class="line">	MBProgressHUD *hud = [[self alloc] initWithView:view];</div><div class="line">    <span class="comment">// 类方法，只是用于快速显示或隐藏，不关心视图，故消失后直接移除</span></div><div class="line">	hud.removeFromSuperViewOnHide = YES;</div><div class="line">	[view addSubview:hud];</div><div class="line">	[hud show:animated];</div><div class="line">	<span class="keyword">return</span> MB_AUTORELEASE(hud);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="1-2-获取视图中存在的HUD对象"><a href="#1-2-获取视图中存在的HUD对象" class="headerlink" title="1.2 获取视图中存在的HUD对象"></a>1.2 获取视图中存在的HUD对象</h4><ul>
-<li>获取视图中当前显示的HUD对象</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">+ (MB_INSTANCETYPE)HUDForView:(UIView *)view;</div></pre></td></tr></table></figure>
-<p>这里使用了逆序遍历view的子视图的方式，快速获取最上层的HUD对象：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">+ (MB_INSTANCETYPE)HUDForView:(UIView *)view &#123;</div><div class="line">    <span class="comment">// 逆序迭代（符合视图层级）</span></div><div class="line">	NSEnumerator *subviewsEnum = [view.subviews reverseObjectEnumerator];</div><div class="line">	<span class="keyword">for</span> (UIView *subview in subviewsEnum) &#123;</div><div class="line">		<span class="keyword">if</span> ([subview isKindOfClass:self]) &#123;</div><div class="line">			<span class="keyword">return</span> (MBProgressHUD *)subview;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> nil;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>获取视图中所有存在的HUD对象</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">+ (NSArray *)allHUDsForView:(UIView *)view;</div></pre></td></tr></table></figure>
-<h3 id="2-初始化HUD的实例方法"><a href="#2-初始化HUD的实例方法" class="headerlink" title="2 初始化HUD的实例方法"></a>2 初始化HUD的实例方法</h3><h4 id="2-1-使用UIWindow对象尺寸创建HUD"><a href="#2-1-使用UIWindow对象尺寸创建HUD" class="headerlink" title="2.1 使用UIWindow对象尺寸创建HUD"></a>2.1 使用UIWindow对象尺寸创建HUD</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (id)initWithWindow:(UIWindow *)window;</div></pre></td></tr></table></figure>
-<h4 id="2-2-使用UIView对象尺寸创建HUD"><a href="#2-2-使用UIView对象尺寸创建HUD" class="headerlink" title="2.2 使用UIView对象尺寸创建HUD"></a>2.2 使用UIView对象尺寸创建HUD</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (id)initWithView:(UIView *)view;</div></pre></td></tr></table></figure>
-<p>说明：</p>
-<ul>
-<li>二者都是通过调用<em>initWithFrame</em>方法进行实例化，只是参数类型不同；</li>
-<li>需要创建方自主管理HUD的生存周期。</li>
-</ul>
-<p>注意：</p>
-<ul>
-<li><strong>以上初始化方法中的参数只是由于指定HUD视图自身尺寸，并非添加到视图上。</strong></li>
-<li><strong>添加到的父视图需要手动指定。</strong></li>
-</ul>
-<h3 id="3-显示、隐藏HUD的相关实例方法"><a href="#3-显示、隐藏HUD的相关实例方法" class="headerlink" title="3 显示、隐藏HUD的相关实例方法"></a>3 显示、隐藏HUD的相关实例方法</h3><h4 id="3-1-显示HUD视图，进入等待状态"><a href="#3-1-显示HUD视图，进入等待状态" class="headerlink" title="3.1 显示HUD视图，进入等待状态"></a>3.1 显示HUD视图，进入等待状态</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)show:(BOOL)animated;</div></pre></td></tr></table></figure>
-<h4 id="3-2-隐藏HUD视图，退出等待状态"><a href="#3-2-隐藏HUD视图，退出等待状态" class="headerlink" title="3.2 隐藏HUD视图，退出等待状态"></a>3.2 隐藏HUD视图，退出等待状态</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)hide:(BOOL)animated;</div></pre></td></tr></table></figure>
-<h4 id="3-3-在指定时间后，隐藏HUD视图，退出等待状态"><a href="#3-3-在指定时间后，隐藏HUD视图，退出等待状态" class="headerlink" title="3.3 在指定时间后，隐藏HUD视图，退出等待状态"></a>3.3 在指定时间后，隐藏HUD视图，退出等待状态</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)hide:(BOOL)animated afterDelay:(NSTimeInterval)delay;</div></pre></td></tr></table></figure>
-<p>以上方法，都是在通过自己实例化HUD对象后（默认为隐藏状态），自主控制HUD视图的显示与隐藏。</p>
-<h3 id="4-在指定任务执行时，自动显示和隐藏HUD的相关方法"><a href="#4-在指定任务执行时，自动显示和隐藏HUD的相关方法" class="headerlink" title="4 在指定任务执行时，自动显示和隐藏HUD的相关方法"></a>4 在指定任务执行时，自动显示和隐藏HUD的相关方法</h3><h4 id="4-1-使用“target-selector”方式执行后台任务"><a href="#4-1-使用“target-selector”方式执行后台任务" class="headerlink" title="4.1 使用“target - selector”方式执行后台任务"></a>4.1 使用“<em>target - selector</em>”方式执行后台任务</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)showWhileExecuting:(SEL)method onTarget:(id)target withObject:(id)object animated:(BOOL)animated;</div></pre></td></tr></table></figure>
-<p>此方法的实现步骤：</p>
-<ol>
-<li>在后台自动创建新线程，在其中执行预定任务；</li>
-<li>同时在主线程创建并显示HUD；</li>
-<li>任务完成后，在主线程中清理缓存数据，同时移除HUD，结束等待状态。</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)showWhileExecuting:(SEL)method onTarget:(id)target withObject:(id)object animated:(BOOL)animated &#123;</div><div class="line">    <span class="comment">// 保存需要执行的参数对象</span></div><div class="line">	methodForExecution = method;</div><div class="line">	targetForExecution = MB_RETAIN(target);</div><div class="line">	objectForExecution = MB_RETAIN(object);	</div><div class="line">    <span class="comment">// 这里由于是开辟新线程执行任务，故是异步执行</span></div><div class="line">	self.taskInProgress = YES;</div><div class="line">	[NSThread detachNewThreadSelector:@selector(launchExecution) toTarget:self withObject:nil];</div><div class="line">    <span class="comment">// 同时显示HUD视图，进入等待状态</span></div><div class="line">	[self show:animated];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)launchExecution &#123;</div><div class="line">	@autoreleasepool &#123;</div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> clang diagnostic push</span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> clang diagnostic ignored <span class="meta-string">"-Warc-performSelector-leaks"</span></span></div><div class="line">        <span class="comment">// 1.这里由于没有使用返回值，故需要向编译器添加“忽略内存泄漏”要求</span></div><div class="line">        <span class="comment">// 2.此方法在支持完毕前，不会返回（卡住当前执行线程）</span></div><div class="line">		[targetForExecution performSelector:methodForExecution withObject:objectForExecution];</div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> clang diagnostic pop</span></div><div class="line">        <span class="comment">// 执行完毕后，执行主线程的任务</span></div><div class="line">		[self performSelectorOnMainThread:@selector(cleanUp) withObject:nil waitUntilDone:NO];</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)cleanUp &#123;</div><div class="line">    <span class="comment">// 标识任务已结束</span></div><div class="line">	taskInProgress = NO;</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> !__has_feature(objc_arc)</span></div><div class="line">	[targetForExecution release];</div><div class="line">	[objectForExecution release];</div><div class="line"><span class="meta">#<span class="meta-keyword">else</span></span></div><div class="line">    <span class="comment">// 清除保留的执行对象</span></div><div class="line">	targetForExecution = nil;</div><div class="line">	objectForExecution = nil;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">    <span class="comment">// 隐藏HUD视图，退出等待状态</span></div><div class="line">	[self hide:useAnimation];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="4-2-使用“block”方式执行后台任务"><a href="#4-2-使用“block”方式执行后台任务" class="headerlink" title="4.2 使用“block”方式执行后台任务"></a>4.2 使用“<em>block</em>”方式执行后台任务</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)showAnimated:(BOOL)animated whileExecutingBlock:(<span class="keyword">dispatch_block_t</span>)block;</div></pre></td></tr></table></figure>
-<h4 id="4-3-使用“block”方式执行后台任务，并在完成后执行指定任务"><a href="#4-3-使用“block”方式执行后台任务，并在完成后执行指定任务" class="headerlink" title="4.3 使用“block”方式执行后台任务，并在完成后执行指定任务"></a>4.3 使用“<em>block</em>”方式执行后台任务，并在完成后执行指定任务</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)showAnimated:(BOOL)animated whileExecutingBlock:(<span class="keyword">dispatch_block_t</span>)block completionBlock:(MBProgressHUDCompletionBlock)completion;</div></pre></td></tr></table></figure>
-<h4 id="4-4-使用“block”方式执行后台任务，任务在指定的GCD队列中执行"><a href="#4-4-使用“block”方式执行后台任务，任务在指定的GCD队列中执行" class="headerlink" title="4.4 使用“block”方式执行后台任务，任务在指定的GCD队列中执行"></a>4.4 使用“<em>block</em>”方式执行后台任务，任务在指定的GCD队列中执行</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)showAnimated:(BOOL)animated whileExecutingBlock:(<span class="keyword">dispatch_block_t</span>)block onQueue:(<span class="keyword">dispatch_queue_t</span>)<span class="built_in">queue</span>;</div></pre></td></tr></table></figure>
-<h4 id="4-5-使用“block”方式执行后台任务，任务在指定的GCD队列中执行，并在完成后执行指定任务"><a href="#4-5-使用“block”方式执行后台任务，任务在指定的GCD队列中执行，并在完成后执行指定任务" class="headerlink" title="4.5 使用“block”方式执行后台任务，任务在指定的GCD队列中执行，并在完成后执行指定任务"></a>4.5 使用“<em>block</em>”方式执行后台任务，任务在指定的GCD队列中执行，并在完成后执行指定任务</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)showAnimated:(BOOL)animated whileExecutingBlock:(<span class="keyword">dispatch_block_t</span>)block onQueue:(<span class="keyword">dispatch_queue_t</span>)<span class="built_in">queue</span></div><div class="line">		  completionBlock:(MBProgressHUDCompletionBlock)completion;</div></pre></td></tr></table></figure>
-<p>以上通过block方式执行任务的API，都是<strong>通过GCD的方式，在并发队列中执行异步任务</strong>，简化了实现。如<em>1.4.5</em>的方法实现：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 真正的block版本的异步执行函数 */</span></div><div class="line">- (<span class="keyword">void</span>)showAnimated:(BOOL)animated whileExecutingBlock:(<span class="keyword">dispatch_block_t</span>)block onQueue:(<span class="keyword">dispatch_queue_t</span>)<span class="built_in">queue</span></div><div class="line">	 completionBlock:(MBProgressHUDCompletionBlock)completion &#123;</div><div class="line">    <span class="comment">// 标识任务已开始执行</span></div><div class="line">	self.taskInProgress = YES;</div><div class="line">    <span class="comment">// 将block保存到堆内存（由于completion为外部回调，不会捕获当前对象中的变量，防止是栈内存的block被释放，故需要拷贝到堆上）</span></div><div class="line">	self.completionBlock = completion;</div><div class="line">    <span class="comment">// 在队列中异步执行任务</span></div><div class="line">	dispatch_async(<span class="built_in">queue</span>, ^(<span class="keyword">void</span>) &#123;</div><div class="line">		block();</div><div class="line">        <span class="comment">// 完成后，主线程进行清理工作</span></div><div class="line">		dispatch_async(dispatch_get_main_queue(), ^(<span class="keyword">void</span>) &#123;</div><div class="line">			[self cleanUp];</div><div class="line">		&#125;);</div><div class="line">	&#125;);</div><div class="line">    <span class="comment">// 同时，在主线程显示HUD视图，进入等待状态</span></div><div class="line">	[self show:animated];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<hr>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;源代码基于0.91版本；&lt;/li&gt;
-&lt;li&gt;本篇只介绍相关公有API，同时简单说明实现方式&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
-&lt;h3 id=&quot;1-用于快速调用HUD的类方法&quot;&gt;&lt;a href=&quot;#1-用于快速调用HUD的类方法&quot; class=&quot;headerlink&quot; title=&quot;1. 用于快速调用HUD的类方法&quot;&gt;&lt;/a&gt;1. 用于快速调用HUD的类方法&lt;/h3&gt;&lt;h4 id=&quot;1-1-在指定视图上显示和移除HUD&quot;&gt;&lt;a href=&quot;#1-1-在指定视图上显示和移除HUD&quot; class=&quot;headerlink&quot; title=&quot;1.1 在指定视图上显示和移除HUD&quot;&gt;&lt;/a&gt;1.1 在指定视图上显示和移除HUD&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;在视图中显示HUD，进入等待状态&lt;/p&gt;
     
     </summary>
     
