@@ -6,17 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2019 | 臭吉吉的瞎记空间</title>
+  <title>《大话数据结构》之串 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="督促自己好好学习哦~">
-<meta property="og:type" content="website">
-<meta property="og:title" content="臭吉吉的瞎记空间">
-<meta property="og:url" content="http://yoursite.com/archives/2019/page/2/index.html">
+  <meta name="description" content="1. 朴素的字符串匹配方法1.1 比较过程以主串T为基础，根据索引i对每个字符进行遍历，依次与目标串P的每个索引j的字符进行匹配。若字符相同，则两索引均后移，继续匹配；若不相同，则j恢复为0，从头开始，i回溯到开始成功匹配时索引的下一位。">
+<meta name="keywords" content="读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《大话数据结构》之串">
+<meta property="og:url" content="http://yoursite.com/2019/03/17/《大话数据结构》之串/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="督促自己好好学习哦~">
+<meta property="og:description" content="1. 朴素的字符串匹配方法1.1 比较过程以主串T为基础，根据索引i对每个字符进行遍历，依次与目标串P的每个索引j的字符进行匹配。若字符相同，则两索引均后移，继续匹配；若不相同，则j恢复为0，从头开始，i回溯到开始成功匹配时索引的下一位。">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/450996-925461fd2eb0fd34.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/450996-996f2e16ee46bf0d.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/450996-6082a942ee67f143.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/450996-b06de1c2fa5c7f75?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-03-17T10:10:44.688Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="臭吉吉的瞎记空间">
-<meta name="twitter:description" content="督促自己好好学习哦~">
+<meta name="twitter:title" content="《大话数据结构》之串">
+<meta name="twitter:description" content="1. 朴素的字符串匹配方法1.1 比较过程以主串T为基础，根据索引i对每个字符进行遍历，依次与目标串P的每个索引j的字符进行匹配。若字符相同，则两索引均后移，继续匹配；若不相同，则j恢复为0，从头开始，i回溯到开始成功匹配时索引的下一位。">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/450996-925461fd2eb0fd34.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -182,405 +189,192 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-《大话数据结构》之串" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      《大话数据结构》之串
+    </h1>
+  
+
+        
+        <a href="/2019/03/17/《大话数据结构》之串/" class="archive-article-date">
+  	<time datetime="2019-03-17T10:10:44.688Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-17</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-朴素的字符串匹配方法"><a href="#1-朴素的字符串匹配方法" class="headerlink" title="1. 朴素的字符串匹配方法"></a>1. 朴素的字符串匹配方法</h3><h4 id="1-1-比较过程"><a href="#1-1-比较过程" class="headerlink" title="1.1 比较过程"></a>1.1 比较过程</h4><p>以主串T为基础，根据索引i对每个字符进行遍历，依次与目标串P的每个索引j的字符进行匹配。若字符相同，则两索引均后移，继续匹配；若不相同，则j恢复为0，从头开始，i回溯到开始成功匹配时索引的下一位。</p>
+<a id="more"></a>
+<h4 id="1-2-比较结果"><a href="#1-2-比较结果" class="headerlink" title="1.2 比较结果"></a>1.2 比较结果</h4><p>遍历索引i结束之后，若此时j已经达到目标串P的最后，则证明目标串的所有字符均匹配成功，目标串在主串中的位置即length(T) - j；否则匹配失败，P不是T的子串。</p>
+<h4 id="1-3-主要实现"><a href="#1-3-主要实现" class="headerlink" title="1.3 主要实现"></a>1.3 主要实现</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="function">NSInteger <span class="title">findIndex</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *sourceStr, <span class="keyword">const</span> <span class="keyword">char</span> *targetStr)</span> </span>&#123;</div><div class="line">    <span class="comment">// 获取二者长度</span></div><div class="line">    NSInteger sourceLength = <span class="built_in">strlen</span>(sourceStr);</div><div class="line">    NSInteger targetLength = <span class="built_in">strlen</span>(targetStr);</div><div class="line">    </div><div class="line">    NSInteger i = <span class="number">0</span>; <span class="comment">// 主串索引</span></div><div class="line">    NSInteger j = <span class="number">0</span>; <span class="comment">// 目标串索引</span></div><div class="line">    </div><div class="line">    <span class="keyword">while</span> ((i &lt; sourceLength) &amp;&amp; (j &lt; targetLength)) &#123;</div><div class="line">        <span class="keyword">if</span> (sourceStr[i] == targetStr[j]) &#123;</div><div class="line">            <span class="comment">// 字符相同，继续向后</span></div><div class="line">            i += <span class="number">1</span>;</div><div class="line">            j += <span class="number">1</span>;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// 字符不同</span></div><div class="line">            <span class="comment">// 主串索引恢复到开始成功匹配时的下一位</span></div><div class="line">            i = i - j + <span class="number">1</span>;</div><div class="line">            <span class="comment">// 目标串索引恢复到头</span></div><div class="line">            j = <span class="number">0</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 注：这里的大于只是防止最后一位匹配成功后的+1操作</span></div><div class="line">    <span class="keyword">if</span> (j &gt;= targetLength) &#123;</div><div class="line">        <span class="comment">// 主串的最终遍历索引 前移 目标串长度，即为子串的起始位置</span></div><div class="line">        <span class="keyword">return</span> i - targetLength;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> NSNotFound;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="2-KMP的字符串匹配方法"><a href="#2-KMP的字符串匹配方法" class="headerlink" title="2. KMP的字符串匹配方法"></a>2. KMP的字符串匹配方法</h3><p>KMP方法的作用主要是去掉了一些可避免的比较，提高了匹配效率。</p>
+<h4 id="2-1-匹配过程"><a href="#2-1-匹配过程" class="headerlink" title="2.1 匹配过程"></a>2.1 匹配过程</h4><p>KMP的主要匹配过程与朴素一致，都是字符依次比较。优化点是在字符匹配失败时，尽量让主串T的索引i不回溯，目标串的索引j回溯到需要的位置（而不是直接到0）。从而达到减少比较次数的目的。</p>
+<p>如上所述，KMP的核心就是<strong>在任意位置匹配失败时，目标串的索引j回溯到的位置</strong>。</p>
+<p>我们将所有回溯位置的信息保存到数组next中，故最终目的就是计算出next数组的完整信息。</p>
+<h5 id="2-1-1-匹配表（Partial-Match-Table）"><a href="#2-1-1-匹配表（Partial-Match-Table）" class="headerlink" title="2.1.1 匹配表（Partial Match Table）"></a>2.1.1 匹配表（Partial Match Table）</h5><p>要说next数组，就先要了解<strong>匹配表PMT</strong>的含义。以字符串“abababca”为例，其匹配表如下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/450996-925461fd2eb0fd34.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>其中，value行即为PMT的值。其意义是什么呢？</p>
+<p>value的值是子串中<strong>前缀与后缀集合中，最长的公共子串的长度</strong>。例如，下表分别为当index为2和5时，value的得出过程：</p>
+<table>
+<thead>
+<tr>
+<th>索引</th>
+<th>子串</th>
+<th>前缀集合</th>
+<th>后缀集合</th>
+<th>交集</th>
+<th>最长子串长度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>“aba”</td>
+<td>{“a”，“ab”}</td>
+<td>{“ba”，“a”}</td>
+<td>{“a”}</td>
+<td>1</td>
+</tr>
+<tr>
+<td>5</td>
+<td>“ababab”</td>
+<td>{“a”，“ab”，“aba”，“abab”，“ababa”}</td>
+<td>{“b”，“ab”，“bab”，“abab”，“babab”}</td>
+<td>{“ab”，“abab”}</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<p>故目标字符串有几位，就会有几个PMT中对应的值。</p>
+<h5 id="2-1-2-next表（PMT表的修改形式）"><a href="#2-1-2-next表（PMT表的修改形式）" class="headerlink" title="2.1.2 next表（PMT表的修改形式）"></a>2.1.2 next表（PMT表的修改形式）</h5><p>先抛图（主串“ababababca”和子串“abababca”进行匹配的过程之一）。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/450996-996f2e16ee46bf0d.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>如图所示，当在主串的i处匹配失败，其之前长度为6的字符串“ababab”均已匹配成功。此时，由PMT表我们可知，子串“ababab”的value为4，即其四位前缀与四位后缀是一致的。又因为在主串中，i之前的四位与j之前的四位字符均一致。故，目标串的四位前缀与主串中i之前的四位字符一致。我们可以省略对该子串的比较，直接在目标串的j=4的位置与主串的当前位置i继续比较。</p>
+<p>在上面是叙述中，我们发现，匹配失败，并不会导致主串索引i改变，只会影响目标串索引j出现变化。并且，有趣的是，以图中的过程为例，<strong>当j=6时，匹配失败，即最后一个成功匹配的j是5。之后j回溯的位置4正好是PMT表中index为5时的value值</strong>。根据这个原理，我们就可以跳过不需要的比较，只通过修改目标串索引的位置即可进行快速匹配。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/450996-6082a942ee67f143.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>那么，我们引入next表的目的是什么呢？由于在某一位置匹配失败时，都要查看其前一个位置对应的PMT值，故我们将PMT数据均偏移一位，直接对应于当前位置，以便在快速查找下一步时，可以直接得到目标串索引j的位置。因此，我们<strong>把PMT值偏移后的数据叫做next数据</strong>，为了补位，next的首位赋值为-1。</p>
+<p>因此，有了next的方式，我们就可以对朴素匹配法进行优化了。</p>
+<h4 id="2-2-匹配过程"><a href="#2-2-匹配过程" class="headerlink" title="2.2 匹配过程"></a>2.2 匹配过程</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="function">NSInteger <span class="title">KMPFindIndex</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *sourceStr, <span class="keyword">const</span> <span class="keyword">char</span> *targetStr)</span> </span>&#123;</div><div class="line">    <span class="comment">// 获取目标串的next信息，以备匹配时进行回溯（KMP算法核心）</span></div><div class="line">    NSArray *nextInfo = getNextInfo(targetStr);</div><div class="line">    NSLog(@<span class="string">"next - %@"</span>, nextInfo);</div><div class="line">    </div><div class="line">    <span class="comment">// 获取两串长度</span></div><div class="line">    NSInteger sourceLength = <span class="built_in">strlen</span>(sourceStr);</div><div class="line">    NSInteger targetLength = <span class="built_in">strlen</span>(targetStr);</div><div class="line">    </div><div class="line">    <span class="comment">// 主串索引</span></div><div class="line">    NSInteger i = <span class="number">0</span>;</div><div class="line">    <span class="comment">// 目标串索引</span></div><div class="line">    NSInteger j = <span class="number">0</span>;</div><div class="line">    </div><div class="line">    <span class="comment">// 均在范围内查找</span></div><div class="line">    <span class="keyword">while</span> ((i &lt; sourceLength)</div><div class="line">           &amp;&amp; (j &lt; targetLength)) &#123;</div><div class="line">        <span class="keyword">if</span> ((j == <span class="number">-1</span>) </div><div class="line">            || (sourceStr[i] == targetStr[j])) &#123;</div><div class="line">                <span class="comment">// 字符匹配时，索引均后移，准备下一次匹配(j为-1即为了防止出现next[0] = -1的情况出现)</span></div><div class="line">                i += <span class="number">1</span>;</div><div class="line">                j += <span class="number">1</span>;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="comment">// 字符不匹配，i不变，j回溯为next中对应的位置，作为下次匹配的起点</span></div><div class="line">                j = [nextInfo[j] integerValue];</div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (j == tragetLength) &#123;</div><div class="line">        <span class="keyword">return</span> i - j;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> NSNotFound;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="2-3-生成Next数组的过程"><a href="#2-3-生成Next数组的过程" class="headerlink" title="2.3 生成Next数组的过程"></a>2.3 生成Next数组的过程</h4><p>我们知道，生成Next数据的过程，即<strong>在每一个位置上，获取前面子串里，前后缀集合中最长的公共子串的长度</strong>。</p>
+<p>如目标字符串“ABCDABDE”，我们以k作为前缀索引，j为后缀索引。如下图，当在字符索引在“D”时（即j为6时），其子串“ABCDAB”的最长前后缀公共子串长度为2（子串“AB”的长度），故next[6] = 2。我们还可知，在j为5时，next[5] = 1，即在j = 5时，公共子串最大长度为1（子串“A”的长度）。故我们可以得到：<strong>在当前字符存在有效next值时（Pk == Pj时），下一个字符的next即为之前next位置的下一个，即next[j + 1] = next[j] + 1 = k + 1</strong>。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/450996-b06de1c2fa5c7f75?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>若Pk与Pj不相等，如图中k为2，j为6时。按照KMP的思想，<strong>后缀j不变，需要更新前缀k，以便找到另一个字符与Pj相同</strong>。故<strong>将前缀索引k修改为next[k]以继续进行比较（缩小前缀查找范围）</strong>，直到找到相同的字符“D”或没有相同字符为止。</p>
+<p>按照这个思想，生成next数据的实现为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="function">NSArray *<span class="title">getNextInfo</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *targetStr)</span> </span>&#123;</div><div class="line">    <span class="comment">// 创建返回的next数组</span></div><div class="line">    NSMutableArray *nextInfo = [[NSMutableArray alloc] initWithCapacity:<span class="number">10</span>];</div><div class="line">    nextInfo[<span class="number">0</span>] = @(<span class="number">-1</span>); <span class="comment">// 人为指定首位的next值为-1（首位无法回溯，故此值只是占位用）</span></div><div class="line">    </div><div class="line">    <span class="comment">// 获取字符串长度</span></div><div class="line">    NSInteger strLength = strLen(targetStr);</div><div class="line">    </div><div class="line">    NSInteger k = <span class="number">-1</span>; <span class="comment">// 前缀索引初始值</span></div><div class="line">    NSInteger j = <span class="number">0</span>; <span class="comment">// 后缀索引初始值（后缀必须大于前缀才有效）</span></div><div class="line">    </div><div class="line">    <span class="comment">// 以后缀索引作为遍历范围（-1为了防止最后无效的自加1）</span></div><div class="line">    <span class="keyword">while</span> (j &lt; strLength - <span class="number">1</span>) &#123;</div><div class="line">        <span class="keyword">if</span> ((k == <span class="number">-1</span>)</div><div class="line">            || (targetStr[k] == targetStr[j])) &#123;</div><div class="line">                <span class="comment">// 前缀为初值索引时，无条件后移并记录（即没有有效前后缀公共串）</span></div><div class="line">                <span class="comment">// 当前位置的字符相同，即找到了公共前后缀字符串，记录下一个位置的next值</span></div><div class="line">                </div><div class="line">                <span class="comment">// 下一位置的next值即为当前next的索引值k再加1</span></div><div class="line">                k += <span class="number">1</span>;</div><div class="line">                j += <span class="number">1</span>;</div><div class="line">                </div><div class="line">                nextInfo[j] = @(k);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="comment">// 当前位置字符不同</span></div><div class="line">                <span class="comment">// 按照KMP思想，j不回溯，k回溯为下一次的查找索引</span></div><div class="line">                k = [next[k] integerValue];</div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> [nextInfo copy];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>Objective-C实现的代码地址：<a href="https://github.com/Choujiji/PlayWithDataStructure-Code/tree/master/%E4%B8%B2/KMP%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8C%B9%E9%85%8D/SimplyStringCompare" target="_blank" rel="external">点击查看</a></p>
+<p>参考引用：</p>
+<ul>
+<li><a href="https://www.zhihu.com/question/21923021/answer/281346746" target="_blank" rel="external">如何更好的理解和掌握 KMP 算法?</a></li>
+<li><a href="https://www.cnblogs.com/ZuoAndFutureGirl/p/9028287.html" target="_blank" rel="external">很详尽KMP算法（厉害）</a></li>
+</ul>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/25/如何排列硬币？/" class="archive-article-date">
-  	<time datetime="2019-02-25T06:25:24.535Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-25</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/25/如何排列硬币？/">如何排列硬币？</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">算法学习</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/03/17/《大话数据结构》之串/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/24/Autolayout之调试技巧和提示/" class="archive-article-date">
-  	<time datetime="2019-02-24T05:23:50.351Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-24</time>
-</a>
-        </div>
-    	 
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/24/Autolayout之调试技巧和提示/">Autolayout之调试技巧和提示</a>
-    </h1>
+  
+    <a href="/2019/03/11/《大话数据结构》之栈与队列/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">《大话数据结构》之栈与队列</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+  
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/22/元素中有重复元素吗？（2）/" class="archive-article-date">
-  	<time datetime="2019-02-22T03:51:16.320Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-22</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/22/元素中有重复元素吗？（2）/">元素中有重复元素吗？（2）</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">算法学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/21/数组中的两数之和为指定的值，求此两数的索引/" class="archive-article-date">
-  	<time datetime="2019-02-20T16:37:10.079Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-21</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/21/数组中的两数之和为指定的值，求此两数的索引/">数组中的两数之和为指定的值，求此两数的索引</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">算法学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/20/数组中有重复元素吗？/" class="archive-article-date">
-  	<time datetime="2019-02-20T04:32:39.180Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-20</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/20/数组中有重复元素吗？/">数组中有重复元素吗？</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">算法学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/19/Autolayout之带有真实内容尺寸的视图/" class="archive-article-date">
-  	<time datetime="2019-02-19T03:56:24.828Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-19</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/19/Autolayout之带有真实内容尺寸的视图/">Autolayout之带有真实内容尺寸的视图</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/17/Autolayout之嵌套Stack View的使用/" class="archive-article-date">
-  	<time datetime="2019-02-17T09:03:48.866Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-17</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/17/Autolayout之嵌套Stack View的使用/">Autolayout之嵌套Stack View的使用</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/14/Autolayout之真实内容尺寸（Intrinsic Content Size）/" class="archive-article-date">
-  	<time datetime="2019-02-14T08:56:47.594Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-14</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/14/Autolayout之真实内容尺寸（Intrinsic Content Size）/">Autolayout之真实内容尺寸（Intrinsic Content Size）</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/30/《a series about Grand Central Dispatch》博客学习笔记/" class="archive-article-date">
-  	<time datetime="2019-01-29T17:13:19.750Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-30</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/30/《a series about Grand Central Dispatch》博客学习笔记/">《a series about Grand Central Dispatch》博客学习笔记</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/26/FDFullscreenPopGesture源码学习/" class="archive-article-date">
-  	<time datetime="2019-01-26T08:24:50.622Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/26/FDFullscreenPopGesture源码学习/">FDFullscreenPopGesture源码学习</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/archives/2019/">&laquo; Prev</a><a class="page-number" href="/archives/2019/">1</a><span class="page-number current">2</span><a class="page-number" href="/archives/2019/page/3/">3</a><a class="page-number" href="/archives/2019/page/4/">4</a><a class="page-number" href="/archives/2019/page/5/">5</a><a class="extend next" rel="next" href="/archives/2019/page/3/">Next &raquo;</a>
-    </nav>
   
 
 
@@ -604,8 +398,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: true,
