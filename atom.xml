@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-03-17T15:47:25.356Z</updated>
+  <updated>2019-03-19T08:38:38.827Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,73 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Autolayout的生命周期</title>
+    <link href="http://yoursite.com/2019/03/19/Autolayout%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/"/>
+    <id>http://yoursite.com/2019/03/19/Autolayout的生命周期/</id>
+    <published>2019-03-19T08:37:21.285Z</published>
+    <updated>2019-03-19T08:38:38.827Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="https://upload-images.jianshu.io/upload_images/450996-247348e79ae353ff.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Autolayout生命周期.jpg"></p>
+<p>上图即为Autolayout的生命周期过程（截取自<a href="https://developer.apple.com/videos/play/wwdc2015/219/" target="_blank" rel="external">219_mysteries_of_auto_layout_part_2</a>）。</p>
+<a id="more"></a>
+<h4 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h4><ol>
+<li>APP启动后，随着<strong>RunLoop</strong>的运行，系统<strong>在其内部监听着约束变化（Constraints Change）</strong>：如激活或失效约束、修改优先级、修改常量值等任意造成约束方程式修改的操作，甚至是直接添加或删除视图等操作，都可以导致约束发生变化。</li>
+<li>在接收到布局变化后，Layout Engine会根据变化的约束重新计算布局，并将需要更新布局的视图进行标记（<strong>对其父视图调用setNeedsLayout方法</strong>），之后便进入延迟布局阶段（Deffered Layout Pass）。<blockquote>
+<p>注意：</p>
+<p>在进入延迟布局阶段之前，Layout Engine已经将更新的约束计算完毕并将视图的新frame求出。但并不在此时更新视图。</p>
+</blockquote>
+</li>
+<li>延迟布局阶段：此阶段的主要作用是将错误位置的视图重新定位（Reposition misplaced views）。其在视图层级中执行，分为两步：<ul>
+<li>更新约束：<strong>从下往上（子视图到父视图），依次遍历视图层级，调用View的updateConstraints方法（或ViewController的updateViewConstraints方法）来更新约束</strong>（你可以在此覆盖本方法来设置自定义约束，且在此设置时，执行效率最高。记得最后调用父类实现）。</li>
+<li>给视图及子视图重新设定位置（给view的frame赋值）：<strong>从上到下依次调用View的layoutSubViews方法（或ViewController的viewLayoutSubViews方法），从Layout Engine中取出预算好的frame进行赋值</strong>（你可以覆盖此方法实现自定义布局，不过此刻不是稳态，需要在适合时候调用父类实现）。</li>
+</ul>
+</li>
+</ol>
+<h4 id="延迟布局阶段的触发条件"><a href="#延迟布局阶段的触发条件" class="headerlink" title="延迟布局阶段的触发条件"></a>延迟布局阶段的触发条件</h4><table>
+<thead>
+<tr>
+<th>调用方法</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>setNeedsUpdateConstraints</td>
+<td>下一次loop执行updateConstraints</td>
+</tr>
+<tr>
+<td>updateConstraintsIfNeeded</td>
+<td>立即执行updateConstraints</td>
+</tr>
+<tr>
+<td>setNeedsLayout</td>
+<td>下一次loop执行layoutSubViews</td>
+</tr>
+<tr>
+<td>layoutIfNeeded</td>
+<td>立即执行layoutSubViews</td>
+</tr>
+<tr>
+<td>setNeedDisplay</td>
+<td>下一次loop执行draw</td>
+</tr>
+</tbody>
+</table>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/450996-247348e79ae353ff.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;Autolayout生命周期.jpg&quot;&gt;&lt;/p&gt;
+&lt;p&gt;上图即为Autolayout的生命周期过程（截取自&lt;a href=&quot;https://developer.apple.com/videos/play/wwdc2015/219/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;219_mysteries_of_auto_layout_part_2&lt;/a&gt;）。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>《大话数据结构》之串</title>
@@ -1510,164 +1577,6 @@
       &lt;blockquote&gt;
 &lt;p&gt;本篇是&lt;a href=&quot;https://www.humancode.us/2014/07/28/intro-to-gcd.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;a series about Grand Central Dispatch&lt;/a&gt;的学习记录。&lt;br&gt;原文共6篇，循序渐进地介绍了GCD的基本使用及相关规范。&lt;/p&gt;
 &lt;/blockquote&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>FDFullscreenPopGesture源码学习</title>
-    <link href="http://yoursite.com/2019/01/26/FDFullscreenPopGesture%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/"/>
-    <id>http://yoursite.com/2019/01/26/FDFullscreenPopGesture源码学习/</id>
-    <published>2019-01-26T08:24:50.622Z</published>
-    <updated>2019-01-26T08:24:50.622Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>首先附上项目地址：<br><a href="https://github.com/forkingdog/FDFullscreenPopGesture/tree/1.1" target="_blank" rel="external">FDFullscreenPopGesture</a><br>本篇使用1.1版本源码进行学习</p>
-</blockquote>
-<p>此项目以AOP的方式实现了UINavigationController的“一行代码实现全屏滑动返回”功能。其主要功能是通过<em>UINavigationController</em>内置的<em>interactivePopGestureRecognizer</em>手势对象。通过使用自定义的UIPanGestureRecognizer类实例绑定原手势的<em>action</em>及<em>SEL</em>，使响应范围扩大到整个屏幕，巧妙地实现了此功能。详细解释可以查看原博客<a href="https://www.jianshu.com/p/d39f7d22db6c" target="_blank" rel="external">轻松学习之二——iOS利用Runtime自定义控制器POP手势动画</a>或本人的读后解析<a href="https://www.jianshu.com/p/3ed067b2620b" target="_blank" rel="external">UINavigationController的全屏拖动返回
-</a>。</p>
-<a id="more"></a>
-<h4 id="1-主要结构说明"><a href="#1-主要结构说明" class="headerlink" title="1. 主要结构说明"></a>1. 主要结构说明</h4><p>整个项目非常简单，对外只有一组.h及.m文件。代码量也只有区区两三百行，足够轻量且高效，值得我等膜拜学习~</p>
-<h5 id="1-1-头文件的结构说明"><a href="#1-1-头文件的结构说明" class="headerlink" title="1.1 头文件的结构说明"></a>1.1 头文件的结构说明</h5><p>项目对外公开的类及主要功能为：</p>
-<ul>
-<li>UINavigationController的扩展类：<em>UINavigationController + FDFullscreenPopGesture</em></li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>类型</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>fd_fullscreenPopGestureRecognizer</em></td>
-<td>属性</td>
-<td>真正的全屏拖动响应的手势对象</td>
-</tr>
-<tr>
-<td><em>fd_viewControllerBasedNavigationBarAppearanceEnabled</em></td>
-<td>属性</td>
-<td>是否允许ViewController对象自定义导航栏外观（默认为YES）</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>UIViewController的扩展类：<em>UIViewController + FDFullscreenPopGesture</em></li>
-</ul>
-<blockquote>
-<p>主要用于ViewController对象自主控制全屏手势的使能（以便ViewController的视图也处理自定义的拖动手势，防止手势冲突）</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>类型</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>fd_interactivePopDisabled</td>
-<td>属性</td>
-<td>是否允许响应UINavigationController的全屏拖动手势</td>
-</tr>
-<tr>
-<td>fd_prefersNavigationBarHidden</td>
-<td>属性</td>
-<td>表名当前ViewController对象的导航栏是否隐藏（默认为NO）</td>
-</tr>
-</tbody>
-</table>
-<h5 id="1-2-实现文件的结构说明"><a href="#1-2-实现文件的结构说明" class="headerlink" title="1.2 实现文件的结构说明"></a>1.2 实现文件的结构说明</h5><ul>
-<li>遵循<em>UIGestureRecognizerDelegate</em>协议的类：_FDFullscreenPopGestureRecognizerDelegate</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>类型</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>navigationController</td>
-<td>weak属性</td>
-<td>内部需要根据导航器对象做处理</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>内部实现了<em>gestureRecognizerShouldBegin:</em>方法，用于处理不同情况下是否响应拖动手势。<br>设计此类的主要目的是将此功能独立出来，作为<em>UINavigationController + FDFullscreenPopGesture</em>的工具类使用，简化了原类代码，使结构更加清晰。</p>
-</blockquote>
-<ul>
-<li>UIViewController的私有扩展类：<em>UIViewController + FDFullscreenPopGesturePrivate</em></li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>类型</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>fd_willAppearInjectBlock</td>
-<td>block对象，属性</td>
-<td>保存注入的block对象到堆内存，等待合适时机执行【按命名来说，在ViewWillAppear方法中执行】</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>在运行时交换了<em>ViewWillAppear:</em>方法实现，在其中注入执行了block对象。</p>
-</blockquote>
-<ul>
-<li><em>UINavigationController + FDFullscreenPopGesture</em>的实现</li>
-</ul>
-<blockquote>
-<p>交换了<em>pushViewController:animated:</em>方法实现，在内部实现了主要功能：</p>
-<ol>
-<li>使用自定义的UIPanGestureRecognizer对象绑定了原有手势的<em>action</em>和<em>SEL</em>，添加到UINavigationController的切换控制视图上。</li>
-<li>声明并实现了注入的<em>_FDViewControllerWillAppearInjectBlock</em>对象，并赋值给指定的UIViewController对象。</li>
-</ol>
-</blockquote>
-<ul>
-<li><em>UIViewController + FDFullscreenPopGesture</em>的实现</li>
-</ul>
-<blockquote>
-<p>只是对扩展中声明的属性进行实现。</p>
-</blockquote>
-<h4 id="2-使用Category扩展原类，并向指定方法注入新的功能"><a href="#2-使用Category扩展原类，并向指定方法注入新的功能" class="headerlink" title="2. 使用Category扩展原类，并向指定方法注入新的功能"></a>2. 使用Category扩展原类，并向指定方法注入新的功能</h4><p>在OC中，一般是通过Category对Class进行扩展的方式来实现AOP的。本项目即是如此。例如，通过对UINavigationController进行扩展，在load时对方法进行替换，将手势添加到导航器控制视图上，并绑定上原来的<em>target</em>和<em>SEL</em>：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">+ (<span class="keyword">void</span>)load</div><div class="line">&#123;</div><div class="line">    <span class="comment">// 交换push方法实现，用于执行自定义操作</span></div><div class="line">    Method originalMethod = class_getInstanceMethod(self, @selector(pushViewController:animated:));</div><div class="line">    Method swizzledMethod = class_getInstanceMethod(self, @selector(fd_pushViewController:animated:));</div><div class="line">    method_exchangeImplementations(originalMethod, swizzledMethod);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)fd_pushViewController:(UIViewController *)viewController animated:(BOOL)animated</div><div class="line">&#123;</div><div class="line">    <span class="comment">// 检查导航器的切换视图中的手势数组中，是否已经包含全屏拖动手势对象</span></div><div class="line">    <span class="keyword">if</span> (![self.interactivePopGestureRecognizer.view.gestureRecognizers containsObject:self.fd_fullscreenPopGestureRecognizer]) &#123;</div><div class="line">        <span class="comment">// 没有，则向其中添加自定义的拖拽手势</span></div><div class="line">        [self.interactivePopGestureRecognizer.view addGestureRecognizer:self.fd_fullscreenPopGestureRecognizer];</div><div class="line"></div><div class="line">        <span class="comment">// 通过查看运行时期间，手势对象内部的存储结构，获取原手势响应的target和执行的SEL</span></div><div class="line">        NSArray *internalTargets = [self.interactivePopGestureRecognizer valueForKey:@<span class="string">"targets"</span>];</div><div class="line">        id internalTarget = [internalTargets.firstObject valueForKey:@<span class="string">"target"</span>];</div><div class="line">        SEL internalAction = NSSelectorFromString(@<span class="string">"handleNavigationTransition:"</span>);</div><div class="line">        <span class="comment">// 设置自定义的拖拽手势代理，处理不同情况下手势是否响应（故上面的类用于解耦手势的代理方法实现，简化本类代码）</span></div><div class="line">        self.fd_fullscreenPopGestureRecognizer.delegate = self.fd_popGestureRecognizerDelegate;</div><div class="line">        <span class="comment">// 将原手势的action和SEL绑定到自定义的拖拽手势中</span></div><div class="line">        [self.fd_fullscreenPopGestureRecognizer addTarget:internalTarget action:internalAction];</div><div class="line"></div><div class="line">        <span class="comment">// 禁止原手势响应（原手势为边缘拖动手势）</span></div><div class="line">        self.interactivePopGestureRecognizer.enabled = NO;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 处理自定义导航栏外观</span></div><div class="line">    [self fd_setupViewControllerBasedNavigationBarAppearanceIfNeeded:viewController];</div><div class="line">    </div><div class="line">    [self fd_pushViewController:viewController animated:animated];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>如此实现，即可在引入头文件后，对应的UINavigationController实例自动添加全屏返回手势，对原类的耦合性降至最低。</p>
-<p>本项目中，UIViewController的扩展也使用了此方式，以达到在<em>ViewWillAppear:</em>方法中执行注入block，实现运行时对导航栏隐藏设置的修改。充分利用了OC语言的动态性，使代码简洁易用，降低耦合。</p>
-<h4 id="3-防止block对self捕获产生的引用循环，并保证block执行时的完整性"><a href="#3-防止block对self捕获产生的引用循环，并保证block执行时的完整性" class="headerlink" title="3. 防止block对self捕获产生的引用循环，并保证block执行时的完整性"></a>3. 防止block对self捕获产生的引用循环，并保证block执行时的完整性</h4><p>在<em>fd_setupViewControllerBasedNavigationBarAppearanceIfNeeded:</em>方法中，作者初始化了UIViewController对象在<em>ViewWillAppear:</em>方法中需要注入的block。先看代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)fd_setupViewControllerBasedNavigationBarAppearanceIfNeeded:(UIViewController *)appearingViewController</div><div class="line">&#123;</div><div class="line">    <span class="comment">// 检查ViewController对象是否允许自定义导航栏外观</span></div><div class="line">    <span class="keyword">if</span> (!self.fd_viewControllerBasedNavigationBarAppearanceEnabled) &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 声明self弱指针</span></div><div class="line">    __<span class="function">weak <span class="title">typeof</span><span class="params">(self)</span> weakSelf </span>= self;</div><div class="line">    <span class="comment">// 声明并实现注入的block对象</span></div><div class="line">    _FDViewControllerWillAppearInjectBlock block = ^(UIViewController *viewController, BOOL animated) &#123;</div><div class="line">        <span class="comment">// block内部捕获的是self的弱指针，不会对self进行强引用</span></div><div class="line">        __strong typeof(weakSelf) strongSelf = weakSelf;</div><div class="line">        <span class="keyword">if</span> (strongSelf) &#123;</div><div class="line">            <span class="comment">// 根据外部设置，隐藏或显示当前ViewController下的导航栏</span></div><div class="line">            [strongSelf setNavigationBarHidden:viewController.fd_prefersNavigationBarHidden animated:animated];</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">    </div><div class="line">    <span class="comment">// 将block对象赋值给扩展后的ViewController对象（适时调用）</span></div><div class="line">    appearingViewController.fd_willAppearInjectBlock = block;</div><div class="line">    <span class="comment">// 获取导航栈的最后一个ViewController（即当前已显示的，马上要被新的ViewController压到栈中的）</span></div><div class="line">    UIViewController *disappearingViewController = self.viewControllers.lastObject;</div><div class="line">    <span class="keyword">if</span> (disappearingViewController &amp;&amp; !disappearingViewController.fd_willAppearInjectBlock) &#123;</div><div class="line">        <span class="comment">// 即将消失的ViewController若存在（即新push的ViewController不是根视图的情况），也将block赋值给它（以备pop时，前一个ViewController对象也能执行block，viewWillAppear时修改导航栏外观）</span></div><div class="line">        disappearingViewController.fd_willAppearInjectBlock = block;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>其中，最为重要的是：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// block外部声明</span></div><div class="line">__<span class="function">weak <span class="title">typeof</span><span class="params">(self)</span> weakSelf </span>= self;</div><div class="line"></div><div class="line"><span class="comment">// block函数体内部声明</span></div><div class="line"> __<span class="function">strong <span class="title">typeof</span><span class="params">(weakSelf)</span> strongSelf </span>= weakSelf;</div></pre></td></tr></table></figure>
-<p>我们都知道，使用<strong>weak修饰的OC对象，可以防止</strong>NSMallocBlock对象在捕获时对其添加强引用（详见<a href="https://www.jianshu.com/p/46ed0de020f0" target="_blank" rel="external">《Objective-C高级编程 iOS与OS X多线程与内存管理》16</a>），避免产生引用循环。但是这样有一个弊端，就是假设当self释放后，若block在此时执行，self对象自动置为nil，预定的功能可能就无法正常实现了。为了防止这种情况发生，可以<strong>声明一个<strong>strong修饰的局部指针变量，指向捕获的弱对象，既可以保证在block执行过程中self不被释放，还可以避免对self进行强引用（</strong>strong变量会在作用域外被自动release）</strong>。</p>
-<h4 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h4><ul>
-<li>FDFullscreenPopGesture主要通过Category的方式对UINavigationController和UIViewController进行功能扩展，避免了Class继承方式的“笨重”，简化了引入和使用。</li>
-<li>在Category的load方法中，替换了原类的方法实现（原类的load加载要在扩展类之前），在其中注入了指定功能。</li>
-<li>使用KVC的方式，巧妙地进行UIGestureRecognizer对象的替换，近乎“无损”地实现了全屏滑动返回功能，避免了使用传统的交互式动画方式实现自定义的UINavigationController。</li>
-<li>使用<strong>weak对象避免block的引用循环，并用</strong>strong对象保证block执行过程中捕获对象不被释放。</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;首先附上项目地址：&lt;br&gt;&lt;a href=&quot;https://github.com/forkingdog/FDFullscreenPopGesture/tree/1.1&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;FDFullscreenPopGesture&lt;/a&gt;&lt;br&gt;本篇使用1.1版本源码进行学习&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;此项目以AOP的方式实现了UINavigationController的“一行代码实现全屏滑动返回”功能。其主要功能是通过&lt;em&gt;UINavigationController&lt;/em&gt;内置的&lt;em&gt;interactivePopGestureRecognizer&lt;/em&gt;手势对象。通过使用自定义的UIPanGestureRecognizer类实例绑定原手势的&lt;em&gt;action&lt;/em&gt;及&lt;em&gt;SEL&lt;/em&gt;，使响应范围扩大到整个屏幕，巧妙地实现了此功能。详细解释可以查看原博客&lt;a href=&quot;https://www.jianshu.com/p/d39f7d22db6c&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;轻松学习之二——iOS利用Runtime自定义控制器POP手势动画&lt;/a&gt;或本人的读后解析&lt;a href=&quot;https://www.jianshu.com/p/3ed067b2620b&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;UINavigationController的全屏拖动返回
-&lt;/a&gt;。&lt;/p&gt;
     
     </summary>
     
