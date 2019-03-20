@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-03-19T08:38:38.827Z</updated>
+  <updated>2019-03-20T03:01:20.946Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,36 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>出现“ld：library not found for -lPods”的解决办法</title>
+    <link href="http://yoursite.com/2019/03/20/%E5%B7%A5%E7%A8%8B%E5%AE%89%E8%A3%85CocoaPods%E5%90%8E%E9%94%99%E8%AF%AF%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/"/>
+    <id>http://yoursite.com/2019/03/20/工程安装CocoaPods后错误的解决办法/</id>
+    <published>2019-03-20T02:57:18.103Z</published>
+    <updated>2019-03-20T03:01:20.946Z</updated>
+    
+    <content type="html"><![CDATA[<p>有的时候，下载的使用CocoaPods配置的工程时，使用“pod install”后，编译时会遇到“<strong>ld: library not found for -lPods</strong>”错误。可以按如下方式试着解决：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/450996-85fee0ff00dcf0b4.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="ld- library not found for -lPods.jpg"></p>
+<a id="more"></a>
+<p>如图所示，在当前<strong>Target</strong>的<strong>Build Phrase</strong>选项视图中，编辑<strong>Link Binary With Libraries</strong>选项。<strong>移除其中的“libPods.a”</strong>，只保留对应Target打包出的.a文件（添加.a文件时，主工程目录中Frameworks下回自动引入libPods.a依赖，如下图所示）。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/450996-24c7e3e8e4d6a410.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Frameworks目录.jpg"></p>
+<p>再进行编译一般就会解决问题。</p>
+<blockquote>
+<p>注：<br>此问题一般来说是由于原工程使用的是老版本的CocoaPods，通过新版CocoaPods安装配置后出现的问题。</p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;有的时候，下载的使用CocoaPods配置的工程时，使用“pod install”后，编译时会遇到“&lt;strong&gt;ld: library not found for -lPods&lt;/strong&gt;”错误。可以按如下方式试着解决：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/450996-85fee0ff00dcf0b4.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;ld- library not found for -lPods.jpg&quot;&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>Autolayout的生命周期</title>
@@ -1478,105 +1508,6 @@
 &lt;/blockquote&gt;
 &lt;h4 id=&quot;真实内容尺寸&quot;&gt;&lt;a href=&quot;#真实内容尺寸&quot; class=&quot;headerlink&quot; title=&quot;真实内容尺寸&quot;&gt;&lt;/a&gt;真实内容尺寸&lt;/h4&gt;&lt;p&gt;到目前为止，所有的示例都是用约束来定义视图的位置和尺寸的。可是，某些视图会根据当前内容生成出一个自然尺寸。这个尺寸即可参考着叫做&lt;em&gt;真实内容尺寸&lt;/em&gt;。比如，一个按钮的真实内容尺寸就是它的标题加上一个小边缘。&lt;/p&gt;
 &lt;p&gt;不是所有的视图都有真实内容尺寸，对于普通视图来说，真实内容尺寸可以定义出视图的宽、高或者二者全部。下面的表格3-1中列出了一些示例。&lt;br&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《a series about Grand Central Dispatch》博客学习笔记</title>
-    <link href="http://yoursite.com/2019/01/30/%E3%80%8Aa%20series%20about%20Grand%20Central%20Dispatch%E3%80%8B%E5%8D%9A%E5%AE%A2%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    <id>http://yoursite.com/2019/01/30/《a series about Grand Central Dispatch》博客学习笔记/</id>
-    <published>2019-01-29T17:13:19.750Z</published>
-    <updated>2019-01-29T17:13:19.750Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>本篇是<a href="https://www.humancode.us/2014/07/28/intro-to-gcd.html" target="_blank" rel="external">a series about Grand Central Dispatch</a>的学习记录。<br>原文共6篇，循序渐进地介绍了GCD的基本使用及相关规范。</p>
-</blockquote>
-<a id="more"></a>
-<h3 id="1-Why-GCD"><a href="#1-Why-GCD" class="headerlink" title="1. Why GCD?"></a>1. Why GCD?</h3><h4 id="1-1-在GCD出现之前，解决数据竞争的方式"><a href="#1-1-在GCD出现之前，解决数据竞争的方式" class="headerlink" title="1.1 在GCD出现之前，解决数据竞争的方式"></a>1.1 在GCD出现之前，解决数据竞争的方式</h4><ul>
-<li>信号（Semaphore）：只允许使用固定的有限资源。在资源可用之前，线程需要一直等待。</li>
-<li>互斥锁（Mutual Exclusion）：一次只允许一个线程执行。当前线程拥有锁时，其他线程等待。</li>
-<li>条件变量（Condition Variable）：在指定条件为真之前，线程等待。</li>
-</ul>
-<h4 id="1-2-GCD队列"><a href="#1-2-GCD队列" class="headerlink" title="1.2 GCD队列"></a>1.2 GCD队列</h4><p>分为<strong>串行队列、并发队列和主队列</strong>三种。</p>
-<h4 id="1-3-Blocks"><a href="#1-3-Blocks" class="headerlink" title="1.3 Blocks"></a>1.3 Blocks</h4><p>Blocks可以捕获上下文中的变量（保存当时的值）。</p>
-<h4 id="1-4-你好，GCD"><a href="#1-4-你好，GCD" class="headerlink" title="1.4 你好，GCD"></a>1.4 你好，GCD</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 1.</span></div><div class="line">dispatch_main(); </div><div class="line"></div><div class="line"><span class="comment">// 2.</span></div><div class="line">[[NSRunLoop currentRunLoop] run];</div></pre></td></tr></table></figure>
-<p>以上两者均可以启动主线程运行（在main函数中可以使队列不返回，程序不结束。）。但是建议用后者，因为NSRunLoop对象中可以支持NSTimer等资源执行，前者不可以。需要退出当前队列，在对应队列中执行<em>exit(0)</em>即可。</p>
-<h3 id="2-Using-GCD-Queues-For-Synchronization"><a href="#2-Using-GCD-Queues-For-Synchronization" class="headerlink" title="2. Using GCD Queues For Synchronization"></a>2. Using GCD Queues For Synchronization</h3><p>传统情况下，数据竞争（多线程环境下更新同一份数据）需要使用排它锁进行数据更新，使用GCD可以通过串行队列直接解决。</p>
-<h3 id="3-GCD-Concurrent-Queues"><a href="#3-GCD-Concurrent-Queues" class="headerlink" title="3. GCD Concurrent Queues"></a>3. GCD Concurrent Queues</h3><ul>
-<li>GCD的并发队列是代替多线程的一种更好的方式。</li>
-<li>GCD会自动管理在并发队列中运行任务的线程（创建、释放和重用等）。</li>
-<li>使用GCD的栅栏配合并发队列，可以很容易创建读写锁（并发读取，同步写入）。</li>
-</ul>
-<h4 id="4-GCD-Target-Queues"><a href="#4-GCD-Target-Queues" class="headerlink" title="4. GCD Target Queues"></a>4. GCD Target Queues</h4><ul>
-<li>所有我们自定义的队列都有一个目标队列。默认此目标队列即为默认优先级的全局并发队列。</li>
-<li>当进队的block准备执行时，队列将会把此block重进使其进入到目标队列中，由目标队列进行block真正的执行。</li>
-<li>只有全局并发队列和主队列二者才有真正执行block的能力。其他任何队列都是将此二者之一作为目标队列的。</li>
-</ul>
-<h5 id="4-1-使用目标队列规范执行时机"><a href="#4-1-使用目标队列规范执行时机" class="headerlink" title="4.1 使用目标队列规范执行时机"></a>4.1 使用目标队列规范执行时机</h5><p>直接看栗子：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">makeCall</span><span class="params">(<span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span>, NSString *caller, NSArray *callees)</span> </span>&#123;</div><div class="line">    <span class="comment">// 获取随机接通对象</span></div><div class="line">    NSInteger targetIndex = arc4random() % callees.count;</div><div class="line">    NSString *callee = callees[targetIndex];</div><div class="line">    </div><div class="line">    NSLog(@<span class="string">"%@ 正在呼叫 %@..."</span>, caller, callee);</div><div class="line">    sleep(<span class="number">1</span>);</div><div class="line">    NSLog(@<span class="string">"%@ 与 %@ 呼叫完毕！"</span>, caller, callee);</div><div class="line">    </div><div class="line">    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (<span class="keyword">int64_t</span>)(arc4random() % <span class="number">1000</span> * NSEC_PER_SEC)), <span class="built_in">queue</span>, ^&#123;</div><div class="line">        makeCall(<span class="built_in">queue</span>, caller, callees);</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">        NSArray *house1Folks = @[@<span class="string">"小明"</span>, @<span class="string">"小华"</span>, @<span class="string">"小希"</span>];</div><div class="line">        NSArray *house2Folks = @[@<span class="string">"大明"</span>, @<span class="string">"大华"</span>, @<span class="string">"大希"</span>];</div><div class="line">        </div><div class="line">        <span class="comment">// 创建并发队列，用于执行block</span></div><div class="line">        <span class="keyword">dispatch_queue_t</span> house1Queue = dispatch_queue_create(<span class="string">"com.jiji.concurrent"</span>, DISPATCH_QUEUE_CONCURRENT);</div><div class="line">        </div><div class="line">        <span class="comment">// 创建串行队列，作为并发队列的目标队列</span></div><div class="line">        <span class="keyword">dispatch_queue_t</span> targetQueue = dispatch_queue_create(<span class="string">"com.jiji.targetQueue"</span>, DISPATCH_QUEUE_SERIAL);</div><div class="line">        dispatch_set_target_queue(house1Queue, targetQueue);</div><div class="line">        </div><div class="line">        <span class="keyword">for</span> (NSString *caller in house1Folks) &#123;</div><div class="line">            dispatch_async(house1Queue, ^&#123;</div><div class="line">                makeCall(house1Queue, caller, house2Folks);</div><div class="line">            &#125;);</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// 使主队列不返回</span></div><div class="line">        [[NSRunLoop currentRunLoop] run];</div><div class="line"><span class="comment">//        dispatch_main(); // Xcode都无法结束调试</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>执行结果为：</p>
-<blockquote>
-<p>2019-01-28 11:09:09.259488+0800 GCDTest[92057:9310107] 小明 正在呼叫 大明…<br>2019-01-28 11:09:10.260182+0800 GCDTest[92057:9310107] 小明 与 大明 呼叫完毕！<br>2019-01-28 11:09:10.260306+0800 GCDTest[92057:9310107] 小华 正在呼叫 大希…<br>2019-01-28 11:09:11.262624+0800 GCDTest[92057:9310107] 小华 与 大希 呼叫完毕！<br>2019-01-28 11:09:11.262751+0800 GCDTest[92057:9310107] 小希 正在呼叫 大希…<br>2019-01-28 11:09:12.264263+0800 GCDTest[92057:9310107] 小希 与 大希 呼叫完毕！</p>
-</blockquote>
-<p>使用目标队列，在本例中，通过将串行队列设置为house1Queue的目标队列，将本来在并发队列中对于block的无序执行变为了串行执行。故<em>dispatch_set_target_queue</em>可以将原队列的优先级设置为与目标队列相同，在这里即变为了串行执行。而由于自定义的串行队列默认的目标为全局并发队列，故实际上block是在全局队列中重进进队并执行。</p>
-<h5 id="4-2-使指定串行队列作为多个队列的共同目标"><a href="#4-2-使指定串行队列作为多个队列的共同目标" class="headerlink" title="4.2 使指定串行队列作为多个队列的共同目标"></a>4.2 使指定串行队列作为多个队列的共同目标</h5><p>这样设置，可以将子队列设置为同级（实质优先级相同，且执行block时都在目标队列中）。</p>
-<h5 id="4-3-现实当中的应用"><a href="#4-3-现实当中的应用" class="headerlink" title="4.3 现实当中的应用"></a>4.3 现实当中的应用</h5><ul>
-<li><strong>设置多个目标队列目标为一个串行队列，可以让你在多线程环境下，执行任务时变得有序可控</strong>。也就是这里所说的“同一时刻只做一件事”：如数据库访问、硬盘读写或其他硬件资源的访问等。</li>
-<li>当需要在一大堆不同类型的事件资源中进行有序处理，比如“同一时间只做一件事”时，这种模式也非常有用。如，处理定时器、网络事件或文件系统活动等。</li>
-<li>当处理不同框架的不同事件时，在你不方便修改源代码时，使用此模式可能也能解决问题。</li>
-</ul>
-<p>注意：</p>
-<ul>
-<li>对于必须并发执行的操作，使用这种模式时会发生死锁。</li>
-<li><strong>一般来说，直接在串行队列中使用<em>dispatch_async</em>派发block即可代替本模式。</strong></li>
-</ul>
-<h4 id="5-Writing-Thread-Safe-Classes-with-GCD"><a href="#5-Writing-Thread-Safe-Classes-with-GCD" class="headerlink" title="5. Writing Thread-Safe Classes with GCD"></a>5. Writing Thread-Safe Classes with GCD</h4><blockquote>
-<p>线程安全，<em>一般来说，在GCD中都需要使用串行队列或者在并发队列中的派发执行栅栏任务</em>。故一定需要记住一点：<strong>线程安全是以牺牲性能为代价的，一定不要滥用。</strong></p>
-</blockquote>
-<p>使用GCD实现线程安全的类，需要在内部设置上述二者之一的队列。作者以串行队列为例，并以优雅的封装方式进行了阐述。直接贴完整代码：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div></pre></td><td class="code"><pre><div class="line">// 头文件（公共API中没有任何需要调用者额外注意的事件）</div><div class="line"></div><div class="line">@interface Warrior: NSObject</div><div class="line"></div><div class="line">@property (nonatomic, strong) NSString *leftHandEquippedItem;</div><div class="line">@property (nonatomic, strong) NSString *rightHandEquippedItem;</div><div class="line"></div><div class="line">- (void)swapLeftAndRightHandEquippedItems;</div><div class="line">- (NSString *)juggleNewItem:(NSString *)item; // return dropped item</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">// 实现文件</div><div class="line"></div><div class="line">@interface Warrior()</div><div class="line"></div><div class="line">/** 串行队列，线程安全的基础 */</div><div class="line">@property (nonatomic, strong) dispatch_queue_t memberQueue;</div><div class="line">/** 线程安全的内部版本，该命名方式表明需要在队列中使用 */</div><div class="line">@property (nonatomic, strong) NSString *memberQueueLeftHandEquippedItem;</div><div class="line">/** 线程安全的内部版本，该命名方式表明需要在队列中使用 */</div><div class="line">@property (nonatomic, strong) NSString *memberQueueRightHandEquippedItem;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation Warrior</div><div class="line"></div><div class="line">- (id)init &#123;</div><div class="line">    self = [super init];</div><div class="line">    if (self) &#123;</div><div class="line">        // 由于队列对象非常“轻”，实例化时可放心创建</div><div class="line">        _memberQueue = dispatch_queue_create("Queue", DISPATCH_QUEUE_SERIAL);</div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// private的setter（由于内部版本需要在队列中使用，故直接赋值即可）</div><div class="line"></div><div class="line">- (void)setMemberQueueLeftHandEquippedItem:(NSString *)item &#123;</div><div class="line">    NSLog(@"Left hand now holds %@", item);</div><div class="line">    _memberQueueLeftHandEquippedItem = item;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)setMemberQueueRightHandEquippedItem:(NSString *)item &#123;</div><div class="line">    NSLog(@"Right hand now holds %@", item);</div><div class="line">    _memberQueueRightHandEquippedItem = item;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// public的getter（外部API的实现是调用的内部版本，需要在队列中使用，保证线程安全）</div><div class="line"></div><div class="line">- (NSString *)leftHandEquippedItem &#123;</div><div class="line">    __block NSString *retval;</div><div class="line">    dispatch_sync(self.memberQueue, ^&#123;</div><div class="line">        retval = self.memberQueueLeftHandEquippedItem;</div><div class="line">    &#125;);</div><div class="line">    return retval;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (NSString *)rightHandEquippedItem &#123;</div><div class="line">    __block NSString *retval;</div><div class="line">    dispatch_sync(self.memberQueue, ^&#123;</div><div class="line">        retval = self.memberQueueRightHandEquippedItem;</div><div class="line">    &#125;);</div><div class="line">    return retval;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// public的setter（外部API的实现是调用的内部版本，需要在队列中使用，保证线程安全）</div><div class="line"></div><div class="line">- (void)setLeftHandEquippedItem:(NSString *)item &#123;</div><div class="line">    dispatch_sync(self.memberQueue, ^&#123;</div><div class="line">        self.memberQueueLeftHandEquippedItem = item;</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)setRightHandEquippedItem:(NSString *)item &#123;</div><div class="line">    dispatch_sync(self.memberQueue, ^&#123;</div><div class="line">        self.memberQueueRightHandEquippedItem = item;</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">// private的method（由于内部版本需要在队列中使用，故直接赋值即可）</div><div class="line"></div><div class="line">- (void)memberQueueSwapLeftAndRightHandEquippedItems &#123;</div><div class="line">    NSString *oldLeftHandEquippedItem = self.memberQueueLeftHandEquippedItem;</div><div class="line">    self.memberQueueLeftHandEquippedItem = self.memberQueueRightHandEquippedItem;</div><div class="line">    self.memberQueueRightHandEquippedItem = oldLeftHandEquippedItem;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// public的method（外部API的实现是调用的内部版本，需要在队列中使用，保证线程安全）</div><div class="line"></div><div class="line">- (void)swapLeftAndRightHandEquippedItems &#123;</div><div class="line">    dispatch_sync(self.memberQueue, ^&#123;</div><div class="line">        [self memberQueueSwapLeftAndRightHandEquippedItems];</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (NSString *)juggleNewItem:(NSString *)item &#123;</div><div class="line">    __block NSString *retval;</div><div class="line">    // 这里再说一遍，由于在队列中执行，故block内直接使用内部版本的变量和方法</div><div class="line">    dispatch_sync(self.memberQueue, ^&#123;</div><div class="line">        retval = self.memberQueueRightHandEquippedItem;</div><div class="line">        self.memberQueueRightHandEquippedItem = item;</div><div class="line">        // 这里调用外部方法会导致死锁</div><div class="line">        [self memberQueueSwapLeftAndRightHandEquippedItems];</div><div class="line">    &#125;);</div><div class="line">    return retval;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure>
-<p>以上便实现了一个“线程安全”类。其编码方式需要我们学习：</p>
-<ul>
-<li>外部API（即头文件的代码）的声明与普通类无异，使用者无需关心内部实现，直接使用即可。</li>
-<li>内部实现文件中，将对应需要进行线程安全处理的属性和方法等单独声明并实现私有的版本，且在命名上进行区分（如代码中的“<em>memberQueue-</em>”前缀）：不仅增强了代码的可读性（根据命名即可知道是线程安全的版本）；还可以在当类的属性和方法增多，代码量增大时，保证类结构的清晰。</li>
-<li>除了init和dealloc等方法中，尽量不要直接使用实例变量ivar，保证代码的风格统一，可读性不变。</li>
-</ul>
-<h4 id="6-Keeping-Things-Straight-with-GCD"><a href="#6-Keeping-Things-Straight-with-GCD" class="headerlink" title="6. Keeping Things Straight with GCD"></a>6. Keeping Things Straight with GCD</h4><h5 id="6-1-设计线程安全的类或库"><a href="#6-1-设计线程安全的类或库" class="headerlink" title="6.1 设计线程安全的类或库"></a>6.1 设计线程安全的类或库</h5><ul>
-<li><p>设计线程安全的类或者库时，要把“线程安全”的细节设置到实现文件中，头文件或公有API中不要有相关体现（如线程和队列等）。</p>
-</li>
-<li><p>若整个库中的多个类都需要保证“线程安全”，使用同一个串行队列一般即可保证性能。如将此队列设置为私有的公共单例对象：</p>
-</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Bank_Private.h</span></div><div class="line"><span class="keyword">dispatch_queue_t</span> memberQueue();</div><div class="line"></div><div class="line"><span class="comment">// Bank.m</span></div><div class="line"><span class="meta">#import <span class="meta-string">"Bank_Private.h"</span></span></div><div class="line"><span class="keyword">dispatch_queue_t</span> memberQueue() &#123;</div><div class="line">    <span class="keyword">static</span> <span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span>;</div><div class="line">    <span class="keyword">static</span> <span class="keyword">dispatch_once_t</span> onceToken;</div><div class="line">    dispatch_once(&amp;onceToken, ^&#123;</div><div class="line">        <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"member queue"</span>, DISPATCH_QUEUE_SERIAL);</div><div class="line">    &#125;);</div><div class="line">    <span class="keyword">return</span> <span class="built_in">queue</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>在设计“线程安全”的类或者库时，若要时刻保证调用正确，结构清晰，且不出现死锁或数据竞争的情况。需要遵循三条命名原则：<ol>
-<li>必须在队列内访问的变量或方法，其命名必须以该队列的名称做前缀。</li>
-<li>向队列中派发的block，其内部只能访问那些以队列前缀命名的变量或方法。</li>
-<li>在“前缀”命名的方法中，只能访问带有同样前缀的变量或方法。</li>
-</ol>
-</li>
-</ul>
-<h5 id="6-2-使用单个队列的简易性"><a href="#6-2-使用单个队列的简易性" class="headerlink" title="6.2 使用单个队列的简易性"></a>6.2 使用单个队列的简易性</h5><h6 id="6-2-1-创建“读写锁”"><a href="#6-2-1-创建“读写锁”" class="headerlink" title="6.2.1 创建“读写锁”"></a>6.2.1 创建“读写锁”</h6><p>“读写锁”，即“随意读取，写入保护”。在创建时，可以设置两个带有前缀的方法，如“memberQueue<em>”和“memberQueueMutating</em>”。前者只能读取变量的值或调用无修改功能的方法，后者可以对变量进行读写或调用任意方法（包括可修改数据的方法）。</p>
-<ul>
-<li>“memberQueue_”前缀的方法，内部可以随意使用<em>dispatch_sync</em>或是<em>dispatch_async</em>进行配置；</li>
-<li>“memberQueueMutating_”前缀的方法，内部必须使用<em>dispatch_barrier_sync</em>或是<em>dispatch_barrier_async</em>进行配置。</li>
-</ul>
-<h6 id="6-2-2-不要使用多个，嵌套的队列"><a href="#6-2-2-不要使用多个，嵌套的队列" class="headerlink" title="6.2.2 不要使用多个，嵌套的队列"></a>6.2.2 不要使用多个，嵌套的队列</h6><ul>
-<li>自己的类的结构中，最多只需要一个串行队列即可。</li>
-<li>一般来说，如果在一个类中，在需要使用多个串行队列来实现一个功能时，出于性能考虑，可以直接单独使用一个并发队列来进行替换。</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;本篇是&lt;a href=&quot;https://www.humancode.us/2014/07/28/intro-to-gcd.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;a series about Grand Central Dispatch&lt;/a&gt;的学习记录。&lt;br&gt;原文共6篇，循序渐进地介绍了GCD的基本使用及相关规范。&lt;/p&gt;
-&lt;/blockquote&gt;
     
     </summary>
     
