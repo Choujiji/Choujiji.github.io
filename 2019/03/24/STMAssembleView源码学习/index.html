@@ -6,17 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives | 臭吉吉的瞎记空间</title>
+  <title>STMAssembleView源码学习 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="督促自己好好学习哦~">
-<meta property="og:type" content="website">
-<meta property="og:title" content="臭吉吉的瞎记空间">
-<meta property="og:url" content="http://yoursite.com/archives/page/4/index.html">
+  <meta name="description" content="项目地址：STMAssembleView  1. 结构设计简洁 只公开最外层的STMAssembleView类，调用者只需引入一个类即可使用。 将业务与功能解耦，生成对应的类：“View”视图类（STMAssembleView、STMPartView）与“Maker”类（STMAssemvleMaker、STMPartMaker）。“Maker”类负责抽象出支持的功能属性，“View”类通过使用">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STMAssembleView源码学习">
+<meta property="og:url" content="http://yoursite.com/2019/03/24/STMAssembleView源码学习/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="督促自己好好学习哦~">
+<meta property="og:description" content="项目地址：STMAssembleView  1. 结构设计简洁 只公开最外层的STMAssembleView类，调用者只需引入一个类即可使用。 将业务与功能解耦，生成对应的类：“View”视图类（STMAssembleView、STMPartView）与“Maker”类（STMAssemvleMaker、STMPartMaker）。“Maker”类负责抽象出支持的功能属性，“View”类通过使用">
+<meta property="og:updated_time" content="2019-03-24T05:33:53.681Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="臭吉吉的瞎记空间">
-<meta name="twitter:description" content="督促自己好好学习哦~">
+<meta name="twitter:title" content="STMAssembleView源码学习">
+<meta name="twitter:description" content="项目地址：STMAssembleView  1. 结构设计简洁 只公开最外层的STMAssembleView类，调用者只需引入一个类即可使用。 将业务与功能解耦，生成对应的类：“View”视图类（STMAssembleView、STMPartView）与“Maker”类（STMAssemvleMaker、STMPartMaker）。“Maker”类负责抽象出支持的功能属性，“View”类通过使用">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -182,405 +184,154 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-STMAssembleView源码学习" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      STMAssembleView源码学习
+    </h1>
+  
+
+        
+        <a href="/2019/03/24/STMAssembleView源码学习/" class="archive-article-date">
+  	<time datetime="2019-03-24T05:33:40.517Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-24</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>项目地址：<a href="https://github.com/ming1016/STMAssembleView" target="_blank" rel="external">STMAssembleView</a></p>
+</blockquote>
+<h4 id="1-结构设计简洁"><a href="#1-结构设计简洁" class="headerlink" title="1. 结构设计简洁"></a>1. 结构设计简洁</h4><ul>
+<li><strong>只公开最外层的STMAssembleView类，调用者只需引入一个类即可使用</strong>。</li>
+<li><strong>将业务与功能解耦，生成对应的类：“View”视图类（STMAssembleView、STMPartView）与“Maker”类（STMAssemvleMaker、STMPartMaker）</strong>。“Maker”类负责抽象出支持的功能属性，“View”类通过使用Maker，将子功能进行组合并实现最终业务功能（视图配置）。</li>
+</ul>
+<a id="more"></a>
+<h4 id="2-代码设计巧妙"><a href="#2-代码设计巧妙" class="headerlink" title="2. 代码设计巧妙"></a>2. 代码设计巧妙</h4><ul>
+<li>对于“Maker”类，属性用于提供给调用者进行配置调用（即只使用getter），而<strong>属性的setter则另提供配套的设置方法，且设置方法返回的是对应“Maker”类型的Block对象，以实现链式调用</strong>。例如：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// STMAssembleMaker.m</span></div><div class="line"></div><div class="line">- (STMAssembleMaker *(^)(STMAssembleAlignment))alignmentEqualTo &#123;</div><div class="line">    <span class="keyword">return</span> ^STMAssembleMaker *(STMAssembleAlignment alignment) &#123;</div><div class="line">        <span class="comment">// jiji - 设置对齐方式</span></div><div class="line">        self.alignment = alignment;</div><div class="line">        <span class="keyword">return</span> self;</div><div class="line">    &#125;;</div><div class="line">&#125;</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line"><span class="comment">// 调用时</span></div><div class="line">make.alignmentEqualTo(STMAssembleAlignmentCenter);</div></pre></td></tr></table></figure>
+<blockquote>
+<p>如代码所示：</p>
+<p>由于方法<em>alignmentEqualTo</em>返回的是Block对象，调用方法时，通过添加()即直接隐含执行了Block。且由于Block执行后返回的仍然为make自身，可以在后面继续连续调用其他实例方法，实现了链式调用。</p>
+</blockquote>
+<ul>
+<li><strong>使用__weak指针，防止Block对象导致的内存引用循环</strong>。如：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// STMAssembleMaker.m</span></div><div class="line"></div><div class="line">+ (<span class="keyword">void</span>)fsAsync:(NSString *)<span class="built_in">string</span> objects:(NSDictionary *)objs completion:(ParsingFormatStringCompleteBlock)completeBlock&#123;</div><div class="line">    __weak __typeof(<span class="built_in">string</span>) weakString = <span class="built_in">string</span>; <span class="comment">// 弱指针，防止Block执行时对该对象强引用</span></div><div class="line">    __weak __typeof(objs) weakObjs = objs;</div><div class="line">    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, <span class="number">0</span>), ^&#123;</div><div class="line">        __strong __typeof(weakString) strongString = weakString; <span class="comment">// 声明临时的__strong指针并指向__weak指向的对象，可以保证在Block执行过程中该对象不被释放。</span></div><div class="line">        __strong __typeof(weakObjs) strongObjs = weakObjs;</div><div class="line">        <span class="keyword">if</span> (strongString) &#123;</div><div class="line">            [STMAssembleView createViewWithFormatString:strongString objects:strongObjs completion:completeBlock];</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>如代码所示：</p>
+<p>使用<strong>weak和</strong>strong指针的情况在Block声明时具有统一性，可以很好地避免引用循环的产生，且能保证在Block执行时捕获对象的有效性。</p>
+<p>注：在单独使用GCD时，由于dispatch_async的Block会在执行后进行release，理论上可以不必担心循环引用的问题。这里铭神这样做的目的是保证自身不会保留传入的对象，需要调用者自己负责参数的生命周期。</p>
+</blockquote>
+<h4 id="3-知识点："><a href="#3-知识点：" class="headerlink" title="3. 知识点："></a>3. 知识点：</h4><h5 id="3-1-字符串的扫描处理"><a href="#3-1-字符串的扫描处理" class="headerlink" title="3.1 字符串的扫描处理"></a>3.1 字符串的扫描处理</h5><p>使用了<em>NSScanner</em>类对字符串进行扫描，按需将扫描结果进行归类，完成描述字符串的解析（后面根据解析结果调用对应的“View”类进行处理，生成页面）。</p>
+<h5 id="3-2-使用变参合成字符串"><a href="#3-2-使用变参合成字符串" class="headerlink" title="3.2 使用变参合成字符串"></a>3.2 使用变参合成字符串</h5><p>使用va_list指向变参列表的第一个参数地址，通过NSString合成出完整字符串。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//宏</span></div><div class="line"><span class="function">NSString *<span class="title">ASS</span><span class="params">(NSString *format, ...)</span> </span>&#123;</div><div class="line">    <span class="comment">// jiji - 声明变参指针</span></div><div class="line">    va_list args;</div><div class="line">    <span class="keyword">if</span> (format) &#123;</div><div class="line">        <span class="comment">// jiji - 初始化变参指针（指向第一个参数的地址，如这里的format的地址）</span></div><div class="line">        va_start(args, format);</div><div class="line">        </div><div class="line">        <span class="comment">// jiji - NSString直接通过变参指针读取并生成字符串</span></div><div class="line">        NSString *str = [[NSString alloc] initWithFormat:format arguments:args];</div><div class="line">        </div><div class="line">        <span class="comment">// jiji - 清除变参指针对象</span></div><div class="line">        va_end(args);</div><div class="line">        <span class="keyword">return</span> str;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> @<span class="string">""</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/15/Blocks篇：6.Blocks捕获的OC对象及其内存管理/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:12:24.974Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/15/Blocks篇：6.Blocks捕获的OC对象及其内存管理/">《Objective-C高级编程 iOS与OS X多线程与内存管理》15</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/03/24/STMAssembleView源码学习/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/15/Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:11:24.722Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        </div>
-    	 
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/15/Blocks篇：5.Blocks修改捕获到的变量（__block修饰符）/">《Objective-C高级编程 iOS与OS X多线程与内存管理》14</a>
-    </h1>
+  
+    <a href="/2019/03/20/工程安装CocoaPods后错误的解决办法/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">出现“ld：library not found for -lPods”的解决办法</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+  
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/15/Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:10:25.966Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/15/Blocks篇：4.Blocks的存储域（ARC下_NSConcreteBlock的陷阱）/">《Objective-C高级编程 iOS与OS X多线程与内存管理》13</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/15/Blocks篇：3.Blocks使用捕获到的变量/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:09:21.983Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/15/Blocks篇：3.Blocks使用捕获到的变量/">《Objective-C高级编程 iOS与OS X多线程与内存管理》12</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/15/Blocks篇：2.Blocks的调用过程及其对象本质/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:06:05.910Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/15/Blocks篇：2.Blocks的调用过程及其对象本质/">《Objective-C高级编程 iOS与OS X多线程与内存管理》11</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/15/Blocks篇：1.Blocks的声明/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:05:21.255Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/15/Blocks篇：1.Blocks的声明/">《Objective-C高级编程 iOS与OS X多线程与内存管理》10</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/06/内存管理篇：9.ARC实现之__autoreleasing/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:54:34.109Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/06/内存管理篇：9.ARC实现之__autoreleasing/">《Objective-C高级编程 iOS与OS X多线程与内存管理》9</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/06/内存管理篇：8.ARC实现之__weak/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:53:26.381Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/06/内存管理篇：8.ARC实现之__weak/">《Objective-C高级编程 iOS与OS X多线程与内存管理》8</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/06/内存管理篇：7.ARC实现之__strong及autorelease优化/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:52:21.263Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/06/内存管理篇：7.ARC实现之__strong及autorelease优化/">《Objective-C高级编程 iOS与OS X多线程与内存管理》7</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/06/内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:51:20.446Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/06/内存管理篇： 6.不要使用静态和动态数组（非OC集合对象）/">《Objective-C高级编程 iOS与OS X多线程与内存管理》6</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/archives/page/3/">&laquo; Prev</a><a class="page-number" href="/archives/">1</a><a class="page-number" href="/archives/page/2/">2</a><a class="page-number" href="/archives/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/archives/page/5/">5</a><a class="page-number" href="/archives/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/8/">8</a><a class="extend next" rel="next" href="/archives/page/5/">Next &raquo;</a>
-    </nav>
   
 
 
@@ -604,8 +355,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: true,

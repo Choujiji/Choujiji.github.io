@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-03-20T03:01:20.946Z</updated>
+  <updated>2019-03-24T05:33:53.681Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,59 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>STMAssembleView源码学习</title>
+    <link href="http://yoursite.com/2019/03/24/STMAssembleView%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/"/>
+    <id>http://yoursite.com/2019/03/24/STMAssembleView源码学习/</id>
+    <published>2019-03-24T05:33:40.517Z</published>
+    <updated>2019-03-24T05:33:53.681Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>项目地址：<a href="https://github.com/ming1016/STMAssembleView" target="_blank" rel="external">STMAssembleView</a></p>
+</blockquote>
+<h4 id="1-结构设计简洁"><a href="#1-结构设计简洁" class="headerlink" title="1. 结构设计简洁"></a>1. 结构设计简洁</h4><ul>
+<li><strong>只公开最外层的STMAssembleView类，调用者只需引入一个类即可使用</strong>。</li>
+<li><strong>将业务与功能解耦，生成对应的类：“View”视图类（STMAssembleView、STMPartView）与“Maker”类（STMAssemvleMaker、STMPartMaker）</strong>。“Maker”类负责抽象出支持的功能属性，“View”类通过使用Maker，将子功能进行组合并实现最终业务功能（视图配置）。</li>
+</ul>
+<a id="more"></a>
+<h4 id="2-代码设计巧妙"><a href="#2-代码设计巧妙" class="headerlink" title="2. 代码设计巧妙"></a>2. 代码设计巧妙</h4><ul>
+<li>对于“Maker”类，属性用于提供给调用者进行配置调用（即只使用getter），而<strong>属性的setter则另提供配套的设置方法，且设置方法返回的是对应“Maker”类型的Block对象，以实现链式调用</strong>。例如：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// STMAssembleMaker.m</span></div><div class="line"></div><div class="line">- (STMAssembleMaker *(^)(STMAssembleAlignment))alignmentEqualTo &#123;</div><div class="line">    <span class="keyword">return</span> ^STMAssembleMaker *(STMAssembleAlignment alignment) &#123;</div><div class="line">        <span class="comment">// jiji - 设置对齐方式</span></div><div class="line">        self.alignment = alignment;</div><div class="line">        <span class="keyword">return</span> self;</div><div class="line">    &#125;;</div><div class="line">&#125;</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line"><span class="comment">// 调用时</span></div><div class="line">make.alignmentEqualTo(STMAssembleAlignmentCenter);</div></pre></td></tr></table></figure>
+<blockquote>
+<p>如代码所示：</p>
+<p>由于方法<em>alignmentEqualTo</em>返回的是Block对象，调用方法时，通过添加()即直接隐含执行了Block。且由于Block执行后返回的仍然为make自身，可以在后面继续连续调用其他实例方法，实现了链式调用。</p>
+</blockquote>
+<ul>
+<li><strong>使用__weak指针，防止Block对象导致的内存引用循环</strong>。如：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// STMAssembleMaker.m</span></div><div class="line"></div><div class="line">+ (<span class="keyword">void</span>)fsAsync:(NSString *)<span class="built_in">string</span> objects:(NSDictionary *)objs completion:(ParsingFormatStringCompleteBlock)completeBlock&#123;</div><div class="line">    __weak __typeof(<span class="built_in">string</span>) weakString = <span class="built_in">string</span>; <span class="comment">// 弱指针，防止Block执行时对该对象强引用</span></div><div class="line">    __weak __typeof(objs) weakObjs = objs;</div><div class="line">    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, <span class="number">0</span>), ^&#123;</div><div class="line">        __strong __typeof(weakString) strongString = weakString; <span class="comment">// 声明临时的__strong指针并指向__weak指向的对象，可以保证在Block执行过程中该对象不被释放。</span></div><div class="line">        __strong __typeof(weakObjs) strongObjs = weakObjs;</div><div class="line">        <span class="keyword">if</span> (strongString) &#123;</div><div class="line">            [STMAssembleView createViewWithFormatString:strongString objects:strongObjs completion:completeBlock];</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>如代码所示：</p>
+<p>使用<strong>weak和</strong>strong指针的情况在Block声明时具有统一性，可以很好地避免引用循环的产生，且能保证在Block执行时捕获对象的有效性。</p>
+<p>注：在单独使用GCD时，由于dispatch_async的Block会在执行后进行release，理论上可以不必担心循环引用的问题。这里铭神这样做的目的是保证自身不会保留传入的对象，需要调用者自己负责参数的生命周期。</p>
+</blockquote>
+<h4 id="3-知识点："><a href="#3-知识点：" class="headerlink" title="3. 知识点："></a>3. 知识点：</h4><h5 id="3-1-字符串的扫描处理"><a href="#3-1-字符串的扫描处理" class="headerlink" title="3.1 字符串的扫描处理"></a>3.1 字符串的扫描处理</h5><p>使用了<em>NSScanner</em>类对字符串进行扫描，按需将扫描结果进行归类，完成描述字符串的解析（后面根据解析结果调用对应的“View”类进行处理，生成页面）。</p>
+<h5 id="3-2-使用变参合成字符串"><a href="#3-2-使用变参合成字符串" class="headerlink" title="3.2 使用变参合成字符串"></a>3.2 使用变参合成字符串</h5><p>使用va_list指向变参列表的第一个参数地址，通过NSString合成出完整字符串。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//宏</span></div><div class="line"><span class="function">NSString *<span class="title">ASS</span><span class="params">(NSString *format, ...)</span> </span>&#123;</div><div class="line">    <span class="comment">// jiji - 声明变参指针</span></div><div class="line">    va_list args;</div><div class="line">    <span class="keyword">if</span> (format) &#123;</div><div class="line">        <span class="comment">// jiji - 初始化变参指针（指向第一个参数的地址，如这里的format的地址）</span></div><div class="line">        va_start(args, format);</div><div class="line">        </div><div class="line">        <span class="comment">// jiji - NSString直接通过变参指针读取并生成字符串</span></div><div class="line">        NSString *str = [[NSString alloc] initWithFormat:format arguments:args];</div><div class="line">        </div><div class="line">        <span class="comment">// jiji - 清除变参指针对象</span></div><div class="line">        va_end(args);</div><div class="line">        <span class="keyword">return</span> str;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> @<span class="string">""</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;项目地址：&lt;a href=&quot;https://github.com/ming1016/STMAssembleView&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;STMAssembleView&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;1-结构设计简洁&quot;&gt;&lt;a href=&quot;#1-结构设计简洁&quot; class=&quot;headerlink&quot; title=&quot;1. 结构设计简洁&quot;&gt;&lt;/a&gt;1. 结构设计简洁&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;只公开最外层的STMAssembleView类，调用者只需引入一个类即可使用&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;将业务与功能解耦，生成对应的类：“View”视图类（STMAssembleView、STMPartView）与“Maker”类（STMAssemvleMaker、STMPartMaker）&lt;/strong&gt;。“Maker”类负责抽象出支持的功能属性，“View”类通过使用Maker，将子功能进行组合并实现最终业务功能（视图配置）。&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>出现“ld：library not found for -lPods”的解决办法</title>
@@ -1428,86 +1481,6 @@
 &lt;h4 id=&quot;嵌套的多个Stack-View&quot;&gt;&lt;a href=&quot;#嵌套的多个Stack-View&quot; class=&quot;headerlink&quot; title=&quot;嵌套的多个Stack View&quot;&gt;&lt;/a&gt;嵌套的多个Stack View&lt;/h4&gt;&lt;p&gt;以下做法展示了一个使用多层嵌套stack view组成的复杂布局。但是，此例中，stack view无法单独生成所有的约束。因此，我们额外需要提供更加完整的约束。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Nested_Stack_Views_Screenshot_2x.png&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
 &lt;p&gt;在视图层次完成之后，添加约束展示在下一章节，&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/LayoutUsingStackViews.html#//apple_ref/doc/uid/TP40010853-CH11-SW12&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;视图和约束&lt;/a&gt;。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Autolayout之真实内容尺寸（Intrinsic Content Size）</title>
-    <link href="http://yoursite.com/2019/02/14/Autolayout%E4%B9%8B%E7%9C%9F%E5%AE%9E%E5%86%85%E5%AE%B9%E5%B0%BA%E5%AF%B8%EF%BC%88Intrinsic%20Content%20Size%EF%BC%89/"/>
-    <id>http://yoursite.com/2019/02/14/Autolayout之真实内容尺寸（Intrinsic Content Size）/</id>
-    <published>2019-02-14T08:56:47.594Z</published>
-    <updated>2019-02-14T08:56:47.594Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>注：本文节选并翻译自<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/AnatomyofaConstraint.html#//apple_ref/doc/uid/TP40010853-CH9-SW1" target="_blank" rel="external">Anatomy of a Constraint</a></p>
-</blockquote>
-<h4 id="真实内容尺寸"><a href="#真实内容尺寸" class="headerlink" title="真实内容尺寸"></a>真实内容尺寸</h4><p>到目前为止，所有的示例都是用约束来定义视图的位置和尺寸的。可是，某些视图会根据当前内容生成出一个自然尺寸。这个尺寸即可参考着叫做<em>真实内容尺寸</em>。比如，一个按钮的真实内容尺寸就是它的标题加上一个小边缘。</p>
-<p>不是所有的视图都有真实内容尺寸，对于普通视图来说，真实内容尺寸可以定义出视图的宽、高或者二者全部。下面的表格3-1中列出了一些示例。<br><a id="more"></a></p>
-<ul>
-<li><strong>表格3-1</strong> 基本控件的真实内容尺寸</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>视图</th>
-<th>真实内容尺寸</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>UIView和NSView</td>
-<td>无</td>
-</tr>
-<tr>
-<td>Sliders</td>
-<td>只定义了宽度（iOS）</td>
-</tr>
-<tr>
-<td>Labels、buttons、switches和text fields</td>
-<td>同时定义了宽度和高度</td>
-</tr>
-<tr>
-<td>Text views和image views</td>
-<td>不同情况下差别很大</td>
-</tr>
-</tbody>
-</table>
-<p>真实内容尺寸基于视图的当前内容。一个label或button的真实内容尺寸基于显示文字的总量和使用的字体。对于其他视图来说，真实内容尺寸可能会更复杂。例如，一个空的image view没有真实内容尺寸。一旦在上面添加图片之后，它的真实内容尺寸就被设置为图片的尺寸了。</p>
-<p>一个text view的真实内容尺寸有多种不同情况，取决于其内容、是否可以滑动或者是给它添加的其他约束。比如，当可以滑动时，text view没有真实内容尺寸。当不可滑动时，默认来说视图的真实内容尺寸基于不换行的文字计算而来。再例，在文字中如果不存在换行，真实内容尺寸会计算出需要的宽和高，并将内容布局为一个单行文字。如果你添加约束指定了text view的宽，真实内容尺寸就会根据此宽度来定义出需要的高度并进行显示。</p>
-<p>Autolayout通过对每一个尺寸使用一对约束来表示真实内容尺寸。抗拉伸约束（content hugging，内容包裹）把视图向内部推以保证它可以优雅地环抱着其内容。抗压缩约束（compression resistance）把视图向外推以便它不会轻易裁剪其内容。</p>
-<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/intrinsic_content_size_2x.png" alt="img"></p>
-<p>在列表3-5中展示的这些约束通过使用不等式来进行定义。这里，<em>IntrinsicHeight</em>和<em>IntrinsicWidth</em>常量代表了视图真实内容尺寸中的宽和高。</p>
-<ul>
-<li><strong>列表3-5</strong> 抗压缩和抗拉伸约束方程</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 抗压缩</span></div><div class="line">View.height &gt;= <span class="number">0.0</span> * NotAnAttribute + IntrinsicHeight</div><div class="line">View.width &gt;= <span class="number">0.0</span> * NotAnAttribute + IntrinsicWidth</div><div class="line"> </div><div class="line"><span class="comment">// 抗拉伸</span></div><div class="line">View.height &lt;= <span class="number">0.0</span> * NotAnAttribute + IntrinsicHeight</div><div class="line">View.width &lt;= <span class="number">0.0</span> * NotAnAttribute + IntrinsicWidth</div></pre></td></tr></table></figure>
-<p>这些约束中的每一个都有自己的优先级。默认来说，视图使用250优先级来定义抗拉伸约束，而使用750优先级来定义抗压缩约束。因此，对于压缩视图来说，拉伸它更加容易。对大多数的控件来说，这都是默认行为。例如，你可以安全地将一个button拉伸到大于它本身的真实内容尺寸；但是，如果你压缩它，则很可能会裁剪其内容。记住，Interface Builder可能会适当修改这些优先级以避免此种情况发生。了解更多信息，请看<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/WorkingwithConstraintsinInterfaceBuidler.html#//apple_ref/doc/uid/TP40010853-CH10-SW2" target="_blank" rel="external">设置抗拉伸和抗压缩约束的优先级</a>。</p>
-<p>尽可能地在布局中多使用视图的真实内容尺寸。它可以让你的布局动态适配视图内容的变化。它还可以减少约束的数量来创建出明确的、无冲突的布局，但是你需要管理该视图的抗拉伸和抗压缩约束（统称为<em>CHCR</em>）的优先级。这里是一些处理真实内容尺寸的指导建议：</p>
-<ul>
-<li>当拉伸一些列视图来填充空间时，如果所有视图都有相同的抗拉伸优先级，此布局就存在歧义了。Autolayout不知道应该拉伸哪个视图。<br>  一个普遍的例子就是label和text field的组合。一般来说，你想要让text field来拉伸填充额外空间，而label保持它自身的真实内容尺寸。要确保这种情况，要保证text field的水平抗拉伸优先级要低于label。<br>  实际上，这个例子如此普遍，Interface Builder已经可以自动处理此情况，自动将label的抗拉伸优先级设置为251。如果手动编码进行布局，你需要自己修改抗拉伸优先级。</li>
-<li>当一些带有不可见背景的视图（如buttons或labels）被拉伸超过本身真实内容尺寸时，可能经常会显示出怪异或非预期的布局。导致的实际问题可能并不严重，因为文字直接出现在了错误位置上。要避免这种不必要的拉伸，增加抗拉伸优先级即可。</li>
-<li>基准线约束只在那些存在真实内容高度的视图上才有效。如果一个视图被垂直拉伸或压缩，基准线约束便不再正常匹配。</li>
-<li>一些视图，如switches，应该总是以真实内容尺寸进行显示。通过提高CHCR优先级来防止被拉伸或压缩。</li>
-<li>避免给视图设置“必须级”CHCR优先级。对于视图来说错误的显示尺寸要比偶然出现的约束冲突要更好。如果一个视图需要一直保持真实内容尺寸，考虑将其设置为“非常高”（999）优先级。这个接近“满级”的优先级统称可以保证视图不被拉伸或压缩，而且还可以提供出一个紧急值，以免你的视图在一个与你期望的优先级不同的环境下显示。</li>
-</ul>
-<h4 id="真实内容尺寸-VS-合适尺寸"><a href="#真实内容尺寸-VS-合适尺寸" class="headerlink" title="真实内容尺寸 VS 合适尺寸"></a>真实内容尺寸 VS 合适尺寸</h4><p>真实内容尺寸在Autolayout中扮演着输入角色。当一个视图存在真实内容尺寸是，系统会生成对应约束来表示尺寸，并且该约束被用于布局的计算。</p>
-<p>另一方面，合适尺寸，相当于Autolayout发动机的输出。它是一个视图基于约束计算而得出的尺寸。如果一个视图使用Autolayout来布局子视图，系统便会基于其内容（也就是子视图的布局）计算出该视图的合适尺寸。</p>
-<p>UIStackView就是一个好例子。排除任何其他约束，系统会基于其内容和属性计算出stack view的尺寸。从各种角度来看，stack view就好像是存在真实内容尺寸一样：你可以仅仅通过一个单独的垂直约束和一个水平约束就可以定义其位置，进而生成一个完整布局。但是它的尺寸是通过Autolayout进行计算的—-所以尺寸并不是作为Autolayout的输入。设置stack view的CHCR优先级也没有作用，因为实际上stack view并不存在真实内容尺寸。</p>
-<p>如果你想要让stack view与外部其他视图（不是stack view的子视图）进行自适应尺寸适配，要么就创建明确的约束来捕获那些关系，要么就参照外部其他视图来修改stack view子视图的CHCR优先级。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;注：本文节选并翻译自&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/AnatomyofaConstraint.html#//apple_ref/doc/uid/TP40010853-CH9-SW1&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Anatomy of a Constraint&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h4 id=&quot;真实内容尺寸&quot;&gt;&lt;a href=&quot;#真实内容尺寸&quot; class=&quot;headerlink&quot; title=&quot;真实内容尺寸&quot;&gt;&lt;/a&gt;真实内容尺寸&lt;/h4&gt;&lt;p&gt;到目前为止，所有的示例都是用约束来定义视图的位置和尺寸的。可是，某些视图会根据当前内容生成出一个自然尺寸。这个尺寸即可参考着叫做&lt;em&gt;真实内容尺寸&lt;/em&gt;。比如，一个按钮的真实内容尺寸就是它的标题加上一个小边缘。&lt;/p&gt;
-&lt;p&gt;不是所有的视图都有真实内容尺寸，对于普通视图来说，真实内容尺寸可以定义出视图的宽、高或者二者全部。下面的表格3-1中列出了一些示例。&lt;br&gt;
     
     </summary>
     
