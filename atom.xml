@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-03-24T05:33:53.681Z</updated>
+  <updated>2019-04-12T15:10:28.591Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,445 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>《大话数据结构》之树</title>
+    <link href="http://yoursite.com/2019/04/12/%E3%80%8A%E5%A4%A7%E8%AF%9D%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E3%80%8B%E4%B9%8B%E6%A0%91/"/>
+    <id>http://yoursite.com/2019/04/12/《大话数据结构》之树/</id>
+    <published>2019-04-12T15:10:28.591Z</published>
+    <updated>2019-04-12T15:10:28.591Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="1-概念"><a href="#1-概念" class="headerlink" title="1. 概念"></a>1. 概念</h3><p>与线性结构的“一对一”不同，<strong>树是“一对多”的数据结构</strong>。</p>
+<blockquote>
+<p><strong>树是有限个结点n（n &gt;= 0）的集合</strong>。</p>
+<ul>
+<li>n为0时称为空树；</li>
+<li>不为0时，<strong>有且只有一个结点作为树的根结点</strong>。</li>
+<li>n大于1时，除根结点外的其他结点可以分为m（m &gt; 0）个互不相交的有限集合T1…Tm，每个子集合又是一棵树，称为子树。</li>
+</ul>
+</blockquote>
+<a id="more"></a>
+<p>下图即为一棵树：</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1554708278-%E6%A0%91%E7%9A%84%E6%A6%82%E5%BF%B5.jpg" alt="树"></p>
+<h4 id="1-1-树的“度”"><a href="#1-1-树的“度”" class="headerlink" title="1.1 树的“度”"></a>1.1 树的“度”</h4><p><strong>每个结点包含的子结点的个数称为结点的“度”（degree）</strong>。<br>度为0的结点为“<em>叶子结点</em>”或“<em>终端结点</em>”；度不为0的结点称为“<em>分支结点</em>”或“<em>非终端结点</em>”。</p>
+<p>我们将一棵树中所有子结点的“度”中的最大值称作<strong>树的度</strong>。</p>
+<p>示意图中树的度为3（结点D的度最大，是3）。</p>
+<h4 id="1-2-结点间的关系"><a href="#1-2-结点间的关系" class="headerlink" title="1.2 结点间的关系"></a>1.2 结点间的关系</h4><p>结点的子树中的根结点叫做该结点的<strong>孩子（Child）结点</strong>；该结点称为孩子的<strong>双亲（Parent）结点</strong>；同一双亲结点的子结点互为<strong>兄弟（Sibling）结点</strong>。</p>
+<p>例如，在示意图中，结点D是B的孩子结点，C是B的兄弟结点，A是B的双亲结点。</p>
+<blockquote>
+<p>注：以下将双亲结点简称为“父结点”，孩子结点称为“子结点”。</p>
+</blockquote>
+<h4 id="1-3-树的“深度”"><a href="#1-3-树的“深度”" class="headerlink" title="1.3 树的“深度”"></a>1.3 树的“深度”</h4><p>从根结点开始，作为树的第一<strong>层（Level）</strong>；其子结点作为第二层，以此类推。</p>
+<p><strong>树的最大层数称为该树的“深度”（Depth）</strong>。</p>
+<p>由于示意图中的树分为四层，故其深度为4。其中，同一层的结点互为<strong>堂兄弟结点</strong>。如第三层的D、E和F结点。</p>
+<h4 id="1-4-其他概念"><a href="#1-4-其他概念" class="headerlink" title="1.4 其他概念"></a>1.4 其他概念</h4><ol>
+<li>若树从左至右为有序，且各子结点的顺序不可调换，则此树可以称为“<strong>有序树</strong>”。</li>
+<li><strong>森林</strong>（Forest）是m（m &gt;= 0）棵互不相交的树的集合。</li>
+</ol>
+<h4 id="1-5-结构对比"><a href="#1-5-结构对比" class="headerlink" title="1.5 结构对比"></a>1.5 结构对比</h4><p>与线性结构的对比如下：</p>
+<blockquote>
+<p>线性结构：</p>
+<ul>
+<li>头元素：无前驱结点</li>
+<li>尾元素：无后继结点</li>
+<li>中间元素：一个前驱结点，一个后继结点</li>
+</ul>
+<p>树结构：</p>
+<ul>
+<li>根结点：无父结点，唯一</li>
+<li>叶子结点：无子结点，自身可以有多个</li>
+<li>分支结点：有父结点，存在1个或多个子结点</li>
+</ul>
+</blockquote>
+<h3 id="2-存储结构"><a href="#2-存储结构" class="headerlink" title="2. 存储结构"></a>2. 存储结构</h3><p>利用顺序和链式存储方式，我们可以将树的存储方式简单介绍三种：</p>
+<ol>
+<li>双亲表示法</li>
+<li>孩子表示法</li>
+<li>孩子兄弟表示法（二叉树）</li>
+</ol>
+<h4 id="2-1-双亲表示法"><a href="#2-1-双亲表示法" class="headerlink" title="2.1 双亲表示法"></a>2.1 双亲表示法</h4><p>双亲表示法使用顺序存储结构，将所有结点依次存储在连续的空间中。<br>最简单的就是使用一个parent域来标明自身的父结点。其结构如下：</p>
+<table>
+<thead>
+<tr>
+<th>data</th>
+<th>parent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据域</td>
+<td>父结点索引（数组下标）</td>
+</tr>
+</tbody>
+</table>
+<p>以示意图为例，使用双亲表示法可以表示为：</p>
+<table>
+<thead>
+<tr>
+<th>下标</th>
+<th>data</th>
+<th>parent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>A</td>
+<td>-1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>B</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>C</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>D</td>
+<td>1</td>
+</tr>
+<tr>
+<td>4</td>
+<td>E</td>
+<td>2</td>
+</tr>
+<tr>
+<td>5</td>
+<td>F</td>
+<td>2</td>
+</tr>
+<tr>
+<td>6</td>
+<td>G</td>
+<td>3</td>
+</tr>
+<tr>
+<td>7</td>
+<td>H</td>
+<td>3</td>
+</tr>
+<tr>
+<td>8</td>
+<td>I</td>
+<td>3</td>
+</tr>
+<tr>
+<td>9</td>
+<td>J</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<p>根据此存储方式，可以直接<strong>查询出每个子结点的父结点，其时间复杂度固定为O(1)</strong>。</p>
+<p>可以根据需要，对结点的数据结构进行扩展：如添加指向第一个孩子结点的索引域firstChild；添加指向兄弟结点的索引域rightSib等。这种方式可以适时通过扩展并添加存储空间来提高访问效率。</p>
+<h4 id="2-2-孩子表示法"><a href="#2-2-孩子表示法" class="headerlink" title="2.2 孩子表示法"></a>2.2 孩子表示法</h4><p>由于每个结点的子结点个数不确定，可以通过链表来表示每个结点下的子树。且由于我们在需要时可以方便地遍历树中的所有结点，可以考虑将所有结点保存在顺序存储结构中。故<strong>孩子表示法的具体方法为：把每个结点的孩子结点排列起来，以单链表为存储结构，则n个结点有n个孩子链表，如果该结点是叶子结点，则此单链表为空表。然后，将n个头指针又组成一个线性表，以顺序存储结构存储在一个一维数组中</strong>。</p>
+<p>故示意图中的树，使用孩子表示法可以表示为：</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1554713216-%E6%A0%91--%E5%AD%A9%E5%AD%90%E8%A1%A8%E7%A4%BA%E6%B3%95.jpg" alt="树--孩子表示法"></p>
+<p>其中结点分为两种：</p>
+<ul>
+<li>孩子链表中的孩子结点：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>child</th>
+<th>next</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>结点索引（顺序数组的下标）</td>
+<td>兄弟结点索引</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>表头数组的表头结点</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>data</th>
+<th>firstChild</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据域</td>
+<td>头指针域（存储对应孩子链表的头指针）</td>
+</tr>
+</tbody>
+</table>
+<p>对于此存储结构，要查找某结点的孩子结点，或查找某结点的兄弟结点，只要查找对应的孩子结点单链表即可。</p>
+<h4 id="2-3-孩子兄弟表示法"><a href="#2-3-孩子兄弟表示法" class="headerlink" title="2.3 孩子兄弟表示法"></a>2.3 孩子兄弟表示法</h4><p><strong>任意一棵树，它的结点的第一个孩子如果存在就是唯一的，它的右兄弟如果存在也是唯一的</strong>。因此此节点包括两个指针域，分别指向该结点的第一个孩子结点和此结点的右兄弟结点。</p>
+<table>
+<thead>
+<tr>
+<th>data</th>
+<th>firstChild</th>
+<th>rightSib</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据域</td>
+<td>第一个孩子结点的存储地址</td>
+<td>右兄弟结点的存储地址</td>
+</tr>
+</tbody>
+</table>
+<p>故示意图中的树，使用孩子兄弟表示法可以表示为：</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1554728801-%E6%A0%91--%E5%AD%A9%E5%AD%90%E5%85%84%E5%BC%9F%E8%A1%A8%E7%A4%BA%E6%B3%95.jpg" alt="树--孩子兄弟表示法"></p>
+<p>使用此方式，可以很方便地查找某结点的第几个子结点：只要找到该结点的第一个孩子结点后，依次查找其兄弟结点即可。</p>
+<p>通过此种表示方法，我们可以发现，标准的树被转换成了<em>二叉树</em>表示（每个结点最多只有两个子结点）。</p>
+<h3 id="3-二叉树"><a href="#3-二叉树" class="headerlink" title="3. 二叉树"></a>3. 二叉树</h3><h4 id="3-1-定义"><a href="#3-1-定义" class="headerlink" title="3.1 定义"></a>3.1 定义</h4><ul>
+<li><strong>每个结点最多有两棵子树（子结点），故二叉树的度不超过2</strong>。</li>
+<li><strong>左右子树有序，不能颠倒</strong>。</li>
+<li><strong>结点若只有一棵子树，也要区分是左还是右子树</strong>。</li>
+</ul>
+<p>如下图，二者是两棵不同的二叉树：</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1554791292-%E6%A0%91--%E4%BA%8C%E5%8F%89%E6%A0%91%E5%8C%BA%E5%88%86.jpg" alt="树--二叉树区分"></p>
+<h4 id="3-2-存储结构"><a href="#3-2-存储结构" class="headerlink" title="3.2 存储结构"></a>3.2 存储结构</h4><h5 id="3-2-1-顺序存储结构"><a href="#3-2-1-顺序存储结构" class="headerlink" title="3.2.1 顺序存储结构"></a>3.2.1 顺序存储结构</h5><p><strong>二叉树的顺序存储结构一般只适用于<em>完全二叉树</em></strong>。</p>
+<blockquote>
+<p>完全二叉树：</p>
+<ul>
+<li>叶子结点只出现在二叉树的最后两层</li>
+<li>最后一层的叶子结点都是左结点；倒数第二层的叶子结点都是右结点</li>
+<li>满二叉树（只有最后一层存在，且全都是叶子结点的二叉树）属于完全二叉树</li>
+</ul>
+</blockquote>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1554792962-%E6%A0%91--%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%A1%BA%E5%BA%8F%E5%AD%98%E5%82%A8.jpg" alt="树--二叉树的顺序存储"></p>
+<p>如图所示，用一维数组存储二叉树的所有结点，通过数组下标来提现二叉树中结点间的关系。<br>但是，当二叉树中有过多空余结点（如图中的黄色不存在结点）时会导致空间浪费，故一般只使用顺序结构存储完全二叉树。</p>
+<h5 id="3-2-2-链式存储结构–二叉链表"><a href="#3-2-2-链式存储结构–二叉链表" class="headerlink" title="3.2.2 链式存储结构–二叉链表"></a>3.2.2 链式存储结构–二叉链表</h5><p>二叉链表：<strong>每个数据节点包含本身的数据域和两个指针域</strong>，分别指向两个可能的孩子结点，这种结点组成的链表称为二叉链表。</p>
+<p>结点结构如下：</p>
+<table>
+<thead>
+<tr>
+<th>lchild</th>
+<th>data</th>
+<th>rchild</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>左孩子结点的存储地址</td>
+<td>数据域</td>
+<td>右孩子结点的存储地址</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 二叉链表的结点结构体 */</span></div><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">BiTNode</span> &#123;</span></div><div class="line">    TElemType data; <span class="comment">// 数据域</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">BiTNode</span> *<span class="title">lchild</span>;</span> <span class="comment">// 左孩子结点指针</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">BiTNode</span> *<span class="title">rchild</span>;</span> <span class="comment">// 右孩子结点指针</span></div><div class="line">&#125; BiTNode, *BiTree;</div></pre></td></tr></table></figure>
+<p>下图为二叉链表的表述示意图：</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1554794334-%E6%A0%91--%E4%BA%8C%E5%8F%89%E9%93%BE%E8%A1%A8.jpg" alt="树--二叉链表"></p>
+<h4 id="3-3-二叉树的遍历"><a href="#3-3-二叉树的遍历" class="headerlink" title="3.3 二叉树的遍历"></a>3.3 二叉树的遍历</h4><blockquote>
+<p>二叉树的遍历（traversing binary tree）是指从根结点出发，<strong>按照某种次序依次访问</strong>二叉树中的所有结点，使得每个结点被访问一次且仅被访问一次。</p>
+</blockquote>
+<p>若以从左到右方向限定，主要的遍历方式分为以下四种：</p>
+<ul>
+<li>前序遍历</li>
+<li>中序遍历</li>
+<li>后序遍历</li>
+<li>层序遍历</li>
+</ul>
+<p>与定义<strong>二叉树</strong>的方式一样，其遍历也是以<strong>递归</strong>的方式进行。</p>
+<h5 id="3-3-1-前序遍历"><a href="#3-3-1-前序遍历" class="headerlink" title="3.3.1 前序遍历"></a>3.3.1 前序遍历</h5><p>遍历方式：<strong>先访问根节点，然后前序遍历左子树，再前序遍历右子树</strong>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">PreOrderTraverse</span><span class="params">(BiTree T)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (T == <span class="literal">NULL</span>) &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 访问根节点</span></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"%c"</span>, T-&gt;data);</div><div class="line">    <span class="comment">// 遍历左子树</span></div><div class="line">    PreOrderTraverse(T-&gt;lchild);</div><div class="line">    <span class="comment">// 遍历右子树</span></div><div class="line">    PreOrderTraverse(T-&gt;rchild);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="3-3-2-中序遍历"><a href="#3-3-2-中序遍历" class="headerlink" title="3.3.2 中序遍历"></a>3.3.2 中序遍历</h5><p>遍历方式：<strong>先中序遍历根节点的左子树，然后是根节点，再中序遍历右子树</strong>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">InOrderTraverse</span><span class="params">(BiTree T)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (T == <span class="literal">NULL</span>) &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 遍历左子树</span></div><div class="line">    InOrderTraverse(T-&gt;lchild);</div><div class="line">    <span class="comment">// 访问根节点</span></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"%c"</span>, T-&gt;data);</div><div class="line">    <span class="comment">// 遍历右子树</span></div><div class="line">    InOrderTraverse(T-&gt;rchild);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="3-3-3-后续遍历"><a href="#3-3-3-后续遍历" class="headerlink" title="3.3.3 后续遍历"></a>3.3.3 后续遍历</h5><p>遍历方式：<strong>从左到右，先叶子后结点，全部访问完左右子树后，最后访问根结点</strong>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">PostOrderTraverse</span><span class="params">(BiTree T)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (T == <span class="literal">NULL</span>) &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 遍历左子树</span></div><div class="line">    PostOrderTraverse(T-&gt;lchild);</div><div class="line">    <span class="comment">// 遍历右子树</span></div><div class="line">    PostOrderTraverse(T-&gt;rchild);</div><div class="line">    <span class="comment">// 访问根节点</span></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"%c"</span>, T-&gt;data);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="3-4-二叉树的创建"><a href="#3-4-二叉树的创建" class="headerlink" title="3.4 二叉树的创建"></a>3.4 二叉树的创建</h4><p>这里以前序方式创建。与前序遍历相同，创建时按照前序遍历的方式依次递归输入结点数据即可：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 创建二叉树【前序遍历法创建：根--左--右】 */</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">CreateBiTree</span><span class="params">(BiTree *T)</span> </span>&#123;</div><div class="line">    TElemType ch;</div><div class="line">    <span class="built_in">scanf</span>(<span class="string">"%c"</span>, &amp;ch);</div><div class="line">    <span class="keyword">if</span> (ch == <span class="string">'#'</span>) &#123;</div><div class="line">        *T = <span class="literal">NULL</span>; <span class="comment">// 代表此结点位置无数据（数据为空）</span></div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// 分配空间，创建新结点</span></div><div class="line">        *T = (BiTree)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(BiTNode));</div><div class="line">        <span class="comment">// 内存分配失败，退出</span></div><div class="line">        <span class="keyword">if</span> (!*T) &#123;</div><div class="line">            <span class="built_in">exit</span>(OVERFLOW);</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// 前序遍历方式赋值</span></div><div class="line">        </div><div class="line">        <span class="comment">// 1. 赋值根节点</span></div><div class="line">        (*T)-&gt;data = ch;</div><div class="line">        <span class="comment">// 2. 左孩子结点递归</span></div><div class="line">        CreateBiTree(&amp;((*T)-&gt;lchild));</div><div class="line">        <span class="comment">// 3. 右孩子结点递归</span></div><div class="line">        CreateBiTree(&amp;((*T)-&gt;rchild));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如下图所示，依照代码，先<strong>将给定的二叉树转化为<em>扩展二叉树</em></strong>。</p>
+<blockquote>
+<p>扩展二叉树：<br>将给定的二叉树的每个结点的空指针设置一个虚拟结点，并指定一个特殊值（这里定义为“#”）。</p>
+</blockquote>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1554827002-%E6%A0%91--%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%88%9B%E5%BB%BA.jpg" alt="树--二叉树的创建"></p>
+<blockquote>
+<p>二叉树的创建与三种遍历方式，可查看此示例：<a href="https://github.com/Choujiji/PlayWithDataStructure-Code/tree/master/%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%A0%91" target="_blank" rel="external">项目地址</a></p>
+</blockquote>
+<h4 id="3-5-线索二叉树"><a href="#3-5-线索二叉树" class="headerlink" title="3.5 线索二叉树"></a>3.5 线索二叉树</h4><h5 id="3-5-1-线索化过程"><a href="#3-5-1-线索化过程" class="headerlink" title="3.5.1 线索化过程"></a>3.5.1 线索化过程</h5><p>此二叉链表虽然功能强大，但弱点显而易见：就是<strong>每次只能通过指定方式的遍历，才可以确定每个结点的前趋结点和后缀结点</strong>。而且我们可以发现，在下面的二叉链表示意图中，有n+1（即2n个总lchild和rchild指针个数 与 n-1个连线 的差）个空余指针域（存储的是“^”），随着二叉树的增长，浪费的空间会越来越多。</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1554794334-%E6%A0%91--%E4%BA%8C%E5%8F%89%E9%93%BE%E8%A1%A8.jpg" alt="树--二叉链表"></p>
+<p>因此，<strong>我们可以使用这些空余空间来保存每个结点的前趋和后继结点的信息，以解决上述问题。而解决此问题的过程，叫做线索化，线索化后的二叉链表叫做线索链表，对应的树叫做线索二叉树</strong>。</p>
+<p>具体做法是：<strong>在使用某种顺序遍历每个结点时，若没有左孩子结点，其lchild保存的是前趋结点的指针；若没有右孩子结点，其rchild保存的是后继结点的指针</strong>。</p>
+<p>如上图中的二叉树，其中序遍历后的结果为HDIBJEAFCG，根据遍历结果对该二叉链表进行线索化的结果如下：</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1554880420-%E6%A0%91--%E7%BA%BF%E7%B4%A2%E4%BA%8C%E5%8F%89%E6%A0%911.jpg" alt="树--线索二叉树1"></p>
+<p>可以看到，通过线索化，不仅解决了空间浪费问题，还解决了前趋和后继结点的记录问题，提高了访问效率。</p>
+<h5 id="3-5-2-区分结点类型"><a href="#3-5-2-区分结点类型" class="headerlink" title="3.5.2 区分结点类型"></a>3.5.2 区分结点类型</h5><p>此时线索二叉树还存在一个问题：我们<strong>无法区分lchild指向的结点是前趋结点还是左孩子节点</strong>，对于rchild也是如此。</p>
+<p>此时，<strong>需要针对每个指针域分别设置一个布尔类型的数据域，在线索化的过程中，根据实际情况进行区分（是前趋或后继结点时为1，是孩子结点时为0）</strong>。</p>
+<p>结点结构如下：</p>
+<table>
+<thead>
+<tr>
+<th>左孩子结点地址</th>
+<th>左标识符</th>
+<th>数据域</th>
+<th>右标识符</th>
+<th>右孩子结点地址</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lchild</td>
+<td>ltag</td>
+<td>data</td>
+<td>rtag</td>
+<td>rchild</td>
+</tr>
+</tbody>
+</table>
+<p>对应实现如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 枚举变量，用于标识符赋值 */</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">enum</span> &#123;</div><div class="line">    <span class="comment">/** 是孩子结点 */</span></div><div class="line">    Link,</div><div class="line">    <span class="comment">/** 是前趋或后缀结点 */</span></div><div class="line">    Thread</div><div class="line">&#125; PointerTag;</div><div class="line"></div><div class="line"><span class="comment">/** 线索二叉树结点结构 */</span></div><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">BiThrNode</span> &#123;</span></div><div class="line">    <span class="comment">/** 数据域 */</span></div><div class="line">    TElemType data;</div><div class="line">    <span class="comment">/** 左结点指针 */</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">BiThrNode</span> *<span class="title">lchild</span>;</span></div><div class="line">    <span class="comment">/** 左结点标识符 */</span></div><div class="line">    PointerTag LTag;</div><div class="line">    <span class="comment">/** 右结点指针 */</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">BiThrNode</span> *<span class="title">rchild</span>;</span></div><div class="line">    <span class="comment">/** 右结点标识符 */</span></div><div class="line">    PointerTag RTag;</div><div class="line">&#125; BiThrNode, *BiThrTree; <span class="comment">// 定义为线索二叉树结点及线索二叉树指针</span></div></pre></td></tr></table></figure>
+<p>添加结点类型区分后的线索二叉树如下：</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1554886236-%E6%A0%91--%E7%BA%BF%E7%B4%A2%E4%BA%8C%E5%8F%89%E6%A0%912.jpg" alt="树--线索二叉树2"></p>
+<p>这样在访问指定节点时，根据ltag和rtag的值即可区分相邻结点是前趋后继结点或是孩子结点了。</p>
+<p>线索化过程的代码如下（这里使用中序遍历方式）：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 当前访问节点 */</span></div><div class="line">BiThrTree currentP = <span class="literal">NULL</span>;</div><div class="line"></div><div class="line"><span class="comment">/** 中序遍历线索化 */</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">InThreading</span><span class="params">(BiThrTree p)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (!p) &#123;</div><div class="line">        <span class="comment">// 结点不存在，返回</span></div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (!p-&gt;lchild &amp;&amp; !p-&gt;rchild) &#123;</div><div class="line">        <span class="comment">// 左右子结点均不存在，即是叶子结点【防止最后一个结点无修改RTag】</span></div><div class="line">        p-&gt;LTag = Thread;</div><div class="line">        p-&gt;RTag = Thread;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 递归线索化左结点</span></div><div class="line">    InThreading(p-&gt;lchild);</div><div class="line">    </div><div class="line">    <span class="comment">// 自身数据线索化（由于是中序遍历【左--中--右】，此时右结点还没有访问到，故只处理当前和前一个结点即可）</span></div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (!(p-&gt;lchild)) &#123;</div><div class="line">        <span class="comment">// 左结点为空，即没有左孩子，故当前指向前趋结点</span></div><div class="line">        p-&gt;LTag = Thread;</div><div class="line">        p-&gt;lchild = currentP;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// 包含左孩子</span></div><div class="line">        p-&gt;LTag = Link;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (currentP) &#123;</div><div class="line">        <span class="keyword">if</span> (!(currentP-&gt;rchild)) &#123;</div><div class="line">            <span class="comment">// 前一个结点的右结点指针为空，即没有右孩子，故指向后继结点（当前结点）</span></div><div class="line">            currentP-&gt;RTag = Thread;</div><div class="line">            currentP-&gt;rchild = p;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// 包含右孩子</span></div><div class="line">            currentP-&gt;RTag = Link;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="comment">// 记录当前结点</span></div><div class="line">    currentP = p;</div><div class="line">    </div><div class="line">    <span class="comment">// 递归线索化右结点</span></div><div class="line">    InThreading(p-&gt;rchild);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>由上图即可看出，如果在二叉树的根结点之前再插入一个头结点，此时的<strong>线索二叉树实际上就是一个双向链表结构</strong>。其结构示意图如下：</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1554973426-%E6%A0%91--%E7%BA%BF%E7%B4%A2%E4%BA%8C%E5%8F%89%E6%A0%913.jpg" alt="树--线索二叉树3"></p>
+<p>插入头结点的简单方法如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 向线索二叉树中插入头结点 */</span></div><div class="line"><span class="function">BiThrTree <span class="title">insertHeadNodeToBiThrTree</span><span class="params">(BiThrTree biTree)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (biTree == <span class="literal">NULL</span>) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 创建头节点</span></div><div class="line">    BiThrTree headNode = (BiThrTree)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(BiThrNode));</div><div class="line">    <span class="comment">// 左孩子指向线索二叉树的根结点</span></div><div class="line">    headNode-&gt;lchild = biTree;</div><div class="line">    headNode-&gt;LTag = Link;</div><div class="line">    <span class="comment">// 右孩子指向中序遍历的最后一个结点</span></div><div class="line">    BiThrTree inOrderTailNode = biTree;</div><div class="line">    <span class="keyword">while</span> (inOrderTailNode-&gt;RTag == Link) &#123;</div><div class="line">        inOrderTailNode = inOrderTailNode-&gt;rchild;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 此时inOrderTailNode即为最后一个结点</span></div><div class="line">    headNode-&gt;rchild = inOrderTailNode;</div><div class="line">    headNode-&gt;RTag = Thread; <span class="comment">// 并不是右孩子</span></div><div class="line">    </div><div class="line">    <span class="comment">// targetNode的后继结点指向头结点</span></div><div class="line">    inOrderTailNode-&gt;rchild = headNode;</div><div class="line">    </div><div class="line">    <span class="comment">// 中序遍历的第一个结点的前趋结点指向头结点</span></div><div class="line">    BiThrTree inOrderFirstNode = biTree;</div><div class="line">    <span class="keyword">while</span> (inOrderFirstNode-&gt;LTag == Link) &#123;</div><div class="line">        inOrderFirstNode = inOrderFirstNode-&gt;lchild;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 此时inOrderFirstNode即为第一个结点</span></div><div class="line">    inOrderFirstNode-&gt;lchild = headNode;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> headNode;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>最终，通过访问双向链表的方式，中序遍历输出此二叉树的方式如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 中序遍历【扫描二叉链表方式】 */</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">InOrderTraverse_Thr</span><span class="params">(BiThrTree T)</span> </span>&#123;</div><div class="line">    <span class="comment">// 中序遍历，即从头结点开始扫描，</span></div><div class="line">    <span class="comment">// 1. 首先找到最左边的结点（没有左孩子的），</span></div><div class="line">    <span class="comment">// 2. 然后找其后继结点（子树的根），</span></div><div class="line">    <span class="comment">// 3. 最后是其右结点（右孩子或后继）</span></div><div class="line">    <span class="comment">// 直到扫描到的结点是头结点，结束</span></div><div class="line">    </div><div class="line">    <span class="comment">// 指向根结点（从根结点开始）</span></div><div class="line">    BiThrTree currentNode = T-&gt;lchild;</div><div class="line">    </div><div class="line">    <span class="comment">// 遍历结束时，指向头结点</span></div><div class="line">    <span class="keyword">while</span> (currentNode != T) &#123;</div><div class="line">        <span class="comment">// 1. 找到当前子树最左边的结点（没有左孩子的）</span></div><div class="line">        <span class="keyword">while</span> (currentNode-&gt;LTag == Link) &#123;</div><div class="line">            <span class="comment">// 有左孩子，继续查找</span></div><div class="line">            currentNode = currentNode-&gt;lchild;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 找到了最左边的结点，输出</span></div><div class="line">        <span class="built_in">printf</span>(<span class="string">"%hhd "</span>, currentNode-&gt;data);</div><div class="line">        </div><div class="line">        <span class="comment">// 2. 一直向后找到所有后继结点（即对应子树的根）</span></div><div class="line">        <span class="keyword">while</span> (currentNode-&gt;RTag == Thread &amp;&amp; currentNode-&gt;rchild != T) &#123;</div><div class="line">            currentNode = currentNode-&gt;rchild;</div><div class="line">            <span class="comment">// 找到了后继结点，输出</span></div><div class="line">            <span class="built_in">printf</span>(<span class="string">"%hhd "</span>, currentNode-&gt;data);</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// 3. 指向右结点（下一个结点，不管结点类型，准备下次循环）</span></div><div class="line">        currentNode = currentNode-&gt;rchild;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>线索化及遍历的完整过程，可查看此示例：<a href="https://github.com/Choujiji/PlayWithDataStructure-Code/tree/master/%E6%A0%91/%E7%BA%BF%E7%B4%A2%E4%BA%8C%E5%8F%89%E6%A0%91/ThreadedBinaryTree" target="_blank" rel="external">项目地址</a></p>
+</blockquote>
+<h4 id="3-6-树、森林转换为二叉树"><a href="#3-6-树、森林转换为二叉树" class="headerlink" title="3.6 树、森林转换为二叉树"></a>3.6 树、森林转换为二叉树</h4><p>由于二叉树的结构稳定（每个结点只有左右两个孩子），其性质也容易研究，故在某些情况下，将普通的树甚至森林转换为二叉树即可对它们进行问题的研究（如遍历等）。</p>
+<h5 id="3-6-1-树-gt-二叉树"><a href="#3-6-1-树-gt-二叉树" class="headerlink" title="3.6.1 树 =&gt; 二叉树"></a>3.6.1 树 =&gt; 二叉树</h5><p>转换规则：</p>
+<ol>
+<li><strong>在兄弟结点与其左方的结点之间添加连接线</strong>。</li>
+<li><strong>在结点的所有子孩子中，除了左边第一个孩子结点外，其他所有兄弟孩子结点与父结点间的连线去除</strong>。</li>
+<li><strong>调整层次，结点的第一个子孩子作为二叉的左孩子，兄弟孩子作为“前一个”结点的右孩子</strong>。</li>
+</ol>
+<p>示例：</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1555052420-%E6%A0%91--%E6%A0%91%E8%BD%AC%E6%8D%A2%E4%BA%8C%E5%8F%89%E6%A0%91.jpg" alt="树--树转换二叉树"></p>
+<p>转换过程：</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1555052792-%E6%A0%91--%E6%A0%91%E8%BD%AC%E6%8D%A2%E4%BA%8C%E5%8F%89%E6%A0%912.jpg" alt="树--树转换二叉树2"></p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1555052889-%E6%A0%91--%E6%A0%91%E8%BD%AC%E6%8D%A2%E4%BA%8C%E5%8F%89%E6%A0%913.jpg" alt="树--树转换二叉树3"></p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1555053130-%E6%A0%91--%E6%A0%91%E8%BD%AC%E6%8D%A2%E4%BA%8C%E5%8F%89%E6%A0%914.jpg" alt="树--树转换二叉树4"></p>
+<h5 id="3-6-2-森林-gt-二叉树"><a href="#3-6-2-森林-gt-二叉树" class="headerlink" title="3.6.2 森林 =&gt; 二叉树"></a>3.6.2 森林 =&gt; 二叉树</h5><p>可以将森林中的每一棵树看做是兄弟，利用兄弟结点的合并方式（作为前一个结点的右孩子）进行合并，最终合成一棵二叉树：</p>
+<ol>
+<li><strong>把每一棵树转换为二叉树</strong>。</li>
+<li><strong>依次将后一棵树的根结点作为前一棵树的根结点的右孩子。连线完成后，即可得到合成的二叉树</strong>。</li>
+</ol>
+<p>示例：</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1555054041-%E6%A0%91--%E6%A3%AE%E6%9E%97%E8%BD%AC%E4%BA%8C%E5%8F%89%E6%A0%91.jpg" alt="树--森林转二叉树"></p>
+<p>转换过程：</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1555054266-%E6%A0%91--%E6%A3%AE%E6%9E%97%E8%BD%AC%E4%BA%8C%E5%8F%89%E6%A0%912.jpg" alt="树--森林转二叉树2"></p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1555054387-%E6%A0%91--%E6%A3%AE%E6%9E%97%E8%BD%AC%E4%BA%8C%E5%8F%89%E6%A0%913.jpg" alt="树--森林转二叉树3"></p>
+<h4 id="3-7-赫夫曼树及霍夫曼编码"><a href="#3-7-赫夫曼树及霍夫曼编码" class="headerlink" title="3.7 赫夫曼树及霍夫曼编码"></a>3.7 赫夫曼树及霍夫曼编码</h4><h5 id="3-7-1-概念介绍"><a href="#3-7-1-概念介绍" class="headerlink" title="3.7.1 概念介绍"></a>3.7.1 概念介绍</h5><p>赫夫曼树是在二叉树的基础上设计而来。赫夫曼树的每个叶子结点都包含对应的权值（Weight）。<em>两个结点之间经过的所有分支叫做路径，路径上分支的个数叫做路径长度</em>。<strong>树的路径长度就是从<em>根结点</em>到<em>每个叶子结点</em>的路径长度的总和</strong>。</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1555056066-%E6%A0%91--%E8%B5%AB%E5%A4%AB%E6%9B%BC%E6%A0%91.jpg" alt="树--赫夫曼树"></p>
+<p>图中的二叉树的路径长度为（以A-E的顺序）：3 + 3 + 2 + 2 + 2 = 12。</p>
+<p>霍夫曼树需要引入权的概念，故我们得到了带权路径的算法：<br><strong>结点的带权路径 = 结点从根到自身的路径长度 * 自身权重</strong></p>
+<p>因此<strong>树的带权路径长度即为所有叶子结点带权路径的总和</strong>，称作<strong>WPL</strong>。</p>
+<p>图中二叉树的WPL为：3 <em> 5 + 3 </em> 15 + 2 <em> 40 + 2 </em> 30 + 2 * 10 = 220。</p>
+<p><strong>在带有权重的一组叶子结点所组成的二叉树中，WPL最小的可称作霍夫曼树</strong>。</p>
+<h5 id="3-7-2-生成方法"><a href="#3-7-2-生成方法" class="headerlink" title="3.7.2 生成方法"></a>3.7.2 生成方法</h5><ol>
+<li>将所有结点按照权值升序排列，生成有序树集合（每棵树即为单独的叶子结点）。</li>
+<li>取前两棵树（权值最小）作为左右子树，生成新二叉树，其根结点的权值为原两树权值之和。</li>
+<li>在集合中使用新的二叉树替换原始的两棵树并重新排序。</li>
+<li>重复步骤2和3，直到序列只剩下一棵树为止，此树即为霍夫曼树。</li>
+</ol>
+<p>示例：</p>
+<table>
+<thead>
+<tr>
+<th>结点</th>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+<th>E</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>权值</td>
+<td>5</td>
+<td>15</td>
+<td>40</td>
+<td>30</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1555062192-%E6%A0%91--%E7%94%9F%E6%88%90%E9%9C%8D%E5%A4%AB%E6%9B%BC%E6%A0%91.jpg" alt="树--生成霍夫曼树"></p>
+<h5 id="3-7-3-霍夫曼编码"><a href="#3-7-3-霍夫曼编码" class="headerlink" title="3.7.3 霍夫曼编码"></a>3.7.3 霍夫曼编码</h5><p><strong>将霍夫曼树中所有结点（包括合成结点）的权值改为0和1（左分支权值为0，右分支权值为1），这样从根结点到指定叶子结点所生成的0和1序列即为霍夫曼编码</strong>。</p>
+<p>上面的霍夫曼树转换后的结果为：</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1555066450-%E6%A0%91--%E8%BD%AC%E5%8C%96%E5%90%8E%E7%9A%84%E9%9C%8D%E5%A4%AB%E6%9B%BC%E6%A0%91.jpg" alt="树--转化后的霍夫曼树"></p>
+<p>因此，图中每个字符所生成的霍夫曼编码如下：</p>
+<table>
+<thead>
+<tr>
+<th>字符</th>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+<th>E</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>霍夫曼编码</td>
+<td>1000</td>
+<td>101</td>
+<td>0</td>
+<td>11</td>
+<td>1001</td>
+</tr>
+</tbody>
+</table>
+<p><strong>霍夫曼编码可以用来压缩数据，进而提高了传输效率</strong>。</p>
+<p>假设传输”BADBEC“这个字符串，使用传统的等长编码，可能会使用如下方式：</p>
+<table>
+<thead>
+<tr>
+<th>字符</th>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+<th>E</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>等长编码</td>
+<td>100</td>
+<td>101</td>
+<td>010</td>
+<td>011</td>
+<td>110</td>
+</tr>
+</tbody>
+</table>
+<p>故在此方式下，编码后的数据为”101100011101110010“，长度为18位；而使用霍夫曼编码，编码后的数据为”1011000101101110“，长度仅为16位，故数据得到了压缩。且随着编码字符的增多，霍夫曼编码的数据优势会越来越大。</p>
+<p>像霍夫曼编码这样<strong>长短不一的编码方式，由于容易混淆，故必须设计成任一字符的编码都不是其他字符编码的前缀（否则解码时无法区分），这种编码方式叫做前缀编码</strong>。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;1-概念&quot;&gt;&lt;a href=&quot;#1-概念&quot; class=&quot;headerlink&quot; title=&quot;1. 概念&quot;&gt;&lt;/a&gt;1. 概念&lt;/h3&gt;&lt;p&gt;与线性结构的“一对一”不同，&lt;strong&gt;树是“一对多”的数据结构&lt;/strong&gt;。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;树是有限个结点n（n &amp;gt;= 0）的集合&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;n为0时称为空树；&lt;/li&gt;
+&lt;li&gt;不为0时，&lt;strong&gt;有且只有一个结点作为树的根结点&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;n大于1时，除根结点外的其他结点可以分为m（m &amp;gt; 0）个互不相交的有限集合T1…Tm，每个子集合又是一棵树，称为子树。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>STMAssembleView源码学习</title>
@@ -1322,165 +1761,6 @@
 &lt;p&gt;注：本文节选并翻译自&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/ViewswithIntrinsicContentSize.html#//apple_ref/doc/uid/TP40010853-CH13-SW1&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Views with Intrinsic Content Size&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h4 id=&quot;动态高度的Label和Text-Field&quot;&gt;&lt;a href=&quot;#动态高度的Label和Text-Field&quot; class=&quot;headerlink&quot; title=&quot;动态高度的Label和Text Field&quot;&gt;&lt;/a&gt;动态高度的Label和Text Field&lt;/h4&gt;&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/ViewswithIntrinsicContentSize.html#//apple_ref/doc/uid/TP40010853-CH13-SW8&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;简单的Label和Text Field&lt;/a&gt;示例中，通过假定text field总是比name label更高简化了布局逻辑。可是，这不总是准确的。如果你增加label的字体大小到一定程度，它将会比text field更高。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Autolayout之嵌套Stack View的使用</title>
-    <link href="http://yoursite.com/2019/02/17/Autolayout%E4%B9%8B%E5%B5%8C%E5%A5%97Stack%20View%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
-    <id>http://yoursite.com/2019/02/17/Autolayout之嵌套Stack View的使用/</id>
-    <published>2019-02-17T09:03:48.866Z</published>
-    <updated>2019-02-17T09:03:48.866Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>注：本文节选并翻译自<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/LayoutUsingStackViews.html#//apple_ref/doc/uid/TP40010853-CH11-SW1" target="_blank" rel="external">Stack Views</a></p>
-</blockquote>
-<h4 id="嵌套的多个Stack-View"><a href="#嵌套的多个Stack-View" class="headerlink" title="嵌套的多个Stack View"></a>嵌套的多个Stack View</h4><p>以下做法展示了一个使用多层嵌套stack view组成的复杂布局。但是，此例中，stack view无法单独生成所有的约束。因此，我们额外需要提供更加完整的约束。</p>
-<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Nested_Stack_Views_Screenshot_2x.png" alt="img"></p>
-<p>在视图层次完成之后，添加约束展示在下一章节，<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/LayoutUsingStackViews.html#//apple_ref/doc/uid/TP40010853-CH11-SW12" target="_blank" rel="external">视图和约束</a>。</p>
-<a id="more"></a>
-<h5 id="视图和约束"><a href="#视图和约束" class="headerlink" title="视图和约束"></a>视图和约束</h5><p>在使用多个嵌套的stack view时，最容易的使用方式就是“<em>从内到外</em>”。首先，在Interface Builder中布局出名称行。把label和text field放到相对正确的位置上，同时选中，然后依次点击Editor &gt; Embed in &gt; Stack View菜单项。这便创建了一个水平stack view。</p>
-<p>下一步，把这些对象水平放好，全选，再次点击Editor &gt; Embed in &gt; Stack View菜单项。这便创建了一个多行的水平stack view。如下图所示，继续创建界面。</p>
-<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/nested_stack_views_2x.png" alt="img"></p>
-<ol>
-<li>Root Stack View.Leading = Superview.LeadingMargin</li>
-<li>Root Stack View.Trailing = Superview.TrailingMargin</li>
-<li>Root Stack View.Top = Top Layout Guide.Bottom + 20.0</li>
-<li>Bottom Layout Guide.Top = Root Stack View.Bottom + 20.0</li>
-<li>Image View.Height = Image View.Width</li>
-<li>First Name Text Field.Width = Middle Name Text Field.Width</li>
-<li>First Name Text Field.Width = Last Name Text Field.Width</li>
-</ol>
-<h5 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h5><p>每个stack都有自己的一系列属性。这些属性定义了每个stack如何布局自身内容。在属性检查器中，设置如下属性：</p>
-<table>
-<thead>
-<tr>
-<th>Stack</th>
-<th>Axis（坐标轴）</th>
-<th>Alignment（垂直轴方向）</th>
-<th>Distribution（沿轴方向）</th>
-<th>Spacing（间距）</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>First Name</td>
-<td>Horizontal</td>
-<td>First Baseline</td>
-<td>Fill</td>
-<td>8</td>
-</tr>
-<tr>
-<td>Middle Name</td>
-<td>Horizontal</td>
-<td>First Baseline</td>
-<td>Fill</td>
-<td>8</td>
-</tr>
-<tr>
-<td>Last Name</td>
-<td>Horizontal</td>
-<td>First Baseline</td>
-<td>Fill</td>
-<td>8</td>
-</tr>
-<tr>
-<td>Name Rows</td>
-<td>Vertical</td>
-<td>Fill</td>
-<td>Fill</td>
-<td>8</td>
-</tr>
-<tr>
-<td>Upper</td>
-<td>Horizontal</td>
-<td>Fill</td>
-<td>Fill</td>
-<td>8</td>
-</tr>
-<tr>
-<td>Button</td>
-<td>Horizontal</td>
-<td>First Baseline</td>
-<td>Fill Equally</td>
-<td>8</td>
-</tr>
-<tr>
-<td>Root</td>
-<td>Vertical</td>
-<td>Fill</td>
-<td>Fill</td>
-<td>8</td>
-</tr>
-</tbody>
-</table>
-<p>此外，CHCR属性定义了相关视图应该拉伸来填充可用空间。在尺寸检查器中，设置如下CHCR属性：</p>
-<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>Horizontal hugging（水平抗拉伸）</th>
-<th>Vertical hugging（垂直抗拉伸）</th>
-<th>Horizontal resistance（水平抗压缩）</th>
-<th>Vertical resistance（水平抗压缩）</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Image View</td>
-<td>250</td>
-<td>250</td>
-<td>48（易被压缩）</td>
-<td>48（易被压缩）</td>
-</tr>
-<tr>
-<td>Text View</td>
-<td>250</td>
-<td>249（易被拉伸）</td>
-<td>250</td>
-<td>250</td>
-</tr>
-<tr>
-<td>First, Middle, and Last Name Labels</td>
-<td>251</td>
-<td>251</td>
-<td>750（不易被压缩）</td>
-<td>750（不易被压缩）</td>
-</tr>
-<tr>
-<td>First, Middle, and Last Name Text Fields</td>
-<td>48（易被拉伸）</td>
-<td>250</td>
-<td>749</td>
-<td>750</td>
-</tr>
-</tbody>
-</table>
-<h5 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h5><p>在此做法中，多个stack view共同作用来处理绝大多数的布局。但是，他们不能仅仅通过自身创建出所有需要的行为。比如，当image view尺寸变化时，图片应该可以保持自身的宽高比。不幸的是，在<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/LayoutUsingStackViews.html#//apple_ref/doc/uid/TP40010853-CH11-SW2" target="_blank" rel="external">单独的Stack View</a>的做法在这里不起作用。布局需要尽可能同时适配图片的尾部和底部边界，且使用按比例适配（Aspect Fit）模式会给某些尺寸上增加额外空白。幸运的是，在本例中，图片的宽高比例总是正方形，所以你可以让图片完整填充image view的边界，并以1:1的比例拉伸image view。</p>
-<blockquote>
-<p><strong>说明</strong></p>
-<p>在Interface Builder，宽高比（Aspect Ratio）约束简单来说就是视图自身宽高的约束。Interface Builder还可以用许多方式显示约束的倍数。一般来说，对于宽高比约束，将其显示为比例。因此，一个<em>View.Width = View.Height</em>约束可以显示为1:1的宽高比。</p>
-</blockquote>
-<p>此外，所有的text field应该拥有相同宽度。不幸的是，他们都在不同的stack view中，所以stack无法处理这种情况。因此，你必须添加明确的等宽约束。</p>
-<p>像单独的stack view一样，你还必须修改一些CHCR属性。这些定义了视图在父视图尺寸改变时如何缩放。</p>
-<p>在垂直方向上，你需要扩大text view，使其填充上部分stack和按钮stack视图以外的空间。因此，text view的垂直抗拉伸优先级必须必其他两者更低才行。</p>
-<p>在水平方向上，所有的label应该以真实内容尺寸进行展示，同时所有的text field需要调整尺寸来填满额外空间。label的默认CHCR属性被Interface Builder调整的很好。它已经将抗拉伸约束设置为251，使其比text field的要高；可是，你还是需要同时调低text field的水平抗拉伸和抗压缩优先级。</p>
-<p>当stack包含name rows时，image view应该压缩以保持相同高度。可是，所有的stack view只是简单的环绕着自身内容。这意味着image view的垂直抗压缩优先级必须非常低，才会使image view压缩而不是将外部的stack view撑大。此外，image view的宽高比约束使布局变复杂，因为它允许了水平和竖直约束进行交互。这意味着text field的水平抗拉伸优先级也必须非常低，否则他们会阻止image view的压缩。综合以上所有情况，将优先级的值设置为48或更低。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;注：本文节选并翻译自&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/LayoutUsingStackViews.html#//apple_ref/doc/uid/TP40010853-CH11-SW1&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Stack Views&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h4 id=&quot;嵌套的多个Stack-View&quot;&gt;&lt;a href=&quot;#嵌套的多个Stack-View&quot; class=&quot;headerlink&quot; title=&quot;嵌套的多个Stack View&quot;&gt;&lt;/a&gt;嵌套的多个Stack View&lt;/h4&gt;&lt;p&gt;以下做法展示了一个使用多层嵌套stack view组成的复杂布局。但是，此例中，stack view无法单独生成所有的约束。因此，我们额外需要提供更加完整的约束。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Nested_Stack_Views_Screenshot_2x.png&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
-&lt;p&gt;在视图层次完成之后，添加约束展示在下一章节，&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/LayoutUsingStackViews.html#//apple_ref/doc/uid/TP40010853-CH11-SW12&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;视图和约束&lt;/a&gt;。&lt;/p&gt;
     
     </summary>
     
