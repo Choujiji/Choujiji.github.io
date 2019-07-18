@@ -184,6 +184,284 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-MBProgressHUD源码学习1：公有API介绍" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/23/MBProgressHUD源码学习1：公有API介绍/">MBProgressHUD源码学习1：公有API介绍</a>
+    </h1>
+  
+
+        
+        <a href="/2019/01/23/MBProgressHUD源码学习1：公有API介绍/" class="archive-article-date">
+  	<time datetime="2019-01-23T10:39:06.662Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-23</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<ul>
+<li>源代码基于0.91版本；</li>
+<li>本篇只介绍相关公有API，同时简单说明实现方式</li>
+</ul>
+</blockquote>
+<h3 id="1-用于快速调用HUD的类方法"><a href="#1-用于快速调用HUD的类方法" class="headerlink" title="1. 用于快速调用HUD的类方法"></a>1. 用于快速调用HUD的类方法</h3><h4 id="1-1-在指定视图上显示和移除HUD"><a href="#1-1-在指定视图上显示和移除HUD" class="headerlink" title="1.1 在指定视图上显示和移除HUD"></a>1.1 在指定视图上显示和移除HUD</h4><ul>
+<li><p>在视图中显示HUD，进入等待状态</p>
+        
+          <a class="article-more-a" href="/2019/01/23/MBProgressHUD源码学习1：公有API介绍/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/01/23/MBProgressHUD源码学习1：公有API介绍/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article id="post-objc-公共头文件（Public Headers）的基本内容（下）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/">objc-公共头文件（Public Headers）的基本内容（下）</a>
+    </h1>
+  
+
+        
+        <a href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/" class="archive-article-date">
+  	<time datetime="2019-01-21T09:20:35.940Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-21</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="runtime-h"><a href="#runtime-h" class="headerlink" title="runtime.h"></a>runtime.h</h3><h4 id="1-数据类型定义"><a href="#1-数据类型定义" class="headerlink" title="1.数据类型定义"></a>1.数据类型定义</h4><h5 id="1-1-方法Method"><a href="#1-1-方法Method" class="headerlink" title="1.1 方法Method"></a>1.1 方法Method</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">method_t</span> *<span class="title">Method</span>;</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">method_t</span> &#123;</span></div><div class="line">    SEL name;</div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *types;</div><div class="line">    IMP imp;</div><div class="line"></div><div class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">SortBySELAddress</span> :</span></div><div class="line">        <span class="keyword">public</span> <span class="built_in">std</span>::binary_function&lt;<span class="keyword">const</span> <span class="keyword">method_t</span>&amp;,</div><div class="line">                                    <span class="keyword">const</span> <span class="keyword">method_t</span>&amp;, <span class="keyword">bool</span>&gt;</div><div class="line">    &#123;</div><div class="line">        <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span> <span class="params">(<span class="keyword">const</span> <span class="keyword">method_t</span>&amp; lhs,</span></span></div><div class="line">                         <span class="keyword">const</span> <span class="keyword">method_t</span>&amp; rhs)</div><div class="line">        &#123; <span class="keyword">return</span> lhs.name &lt; rhs.name; &#125;</div><div class="line">    &#125;;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（下）/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article id="post-objc-公共头文件（Public Headers）的基本内容（上）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（上）/">objc-公共头文件（Public Headers）的基本内容（上）</a>
+    </h1>
+  
+
+        
+        <a href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（上）/" class="archive-article-date">
+  	<time datetime="2019-01-21T09:19:35.705Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-21</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-NSObject-h"><a href="#1-NSObject-h" class="headerlink" title="1. NSObject.h"></a>1. NSObject.h</h3><p>内部主要包含了<strong>NSObject协议</strong>和<strong>NSObject类</strong>。</p>
+<ul>
+<li><p>NSObject协议规定了主要几部分：</p>
+<ul>
+<li>class和self</li>
+<li>执行方法api</li>
+<li>判断所属类和遵循协议的方法</li>
+<li>内存管理方法（ARC下禁止）</li>
+<li>响应方法api</li>
+</ul>
+</li>
+<li><p>NSObject类规定了主要几部分：</p>
+<ul>
+<li>内部结构：isa的Class指针</li>
+<li>load和initialize类方法</li>
+<li>init和dealloc等实例方法</li>
+<li>声明并实现了消息转发的相关方法</li>
+<li>声明了类方法版本的NSObject协议方法
+        
+          <a class="article-more-a" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（上）/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/01/21/objc-公共头文件（Public Headers）的基本内容（上）/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article id="post-GCD篇：1.GCD的使用要点" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/18/GCD篇：1.GCD的使用要点/">《Objective-C高级编程 iOS与OS X多线程与内存管理》17</a>
+    </h1>
+  
+
+        
+        <a href="/2019/01/18/GCD篇：1.GCD的使用要点/" class="archive-article-date">
+  	<time datetime="2019-01-18T05:43:36.161Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-18</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="GCD篇：1-GCD的使用要点"><a href="#GCD篇：1-GCD的使用要点" class="headerlink" title="GCD篇：1.GCD的使用要点"></a>GCD篇：1.GCD的使用要点</h2><h4 id="1-多线程"><a href="#1-多线程" class="headerlink" title="1.多线程"></a>1.多线程</h4><p>一个CPU执行的CPU命令列为<strong>一条无分叉路径</strong>，即为<em>线程</em>。而这种无分叉路径存在多条，即为<em>多线程</em>。</p>
+<ul>
+<li>在多线程中，一个CPU核执行多条不同路径上的不同命令。</li>
+<li>在CPU中，使用寄存器将执行“路径”的状态保存到各自的专用的内存块中。在切换不同目标路径时，从对应的内存块中读取并在CPU中将执行信息复原，继续执行目标路径的命令列。这个过程称为“上下文切换”。</li>
+<li>多线程中需要注意的主要问题：<ul>
+<li>数据竞争：多个线程同时更新相同资源；</li>
+<li>死锁：执行等待事件的多个线程互相持续等待；</li>
+<li>线程过多导致内存占用过大</li>
+</ul>
+</li>
+</ul>
+        
+          <a class="article-more-a" href="/2019/01/18/GCD篇：1.GCD的使用要点/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/01/18/GCD篇：1.GCD的使用要点/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-Blocks篇：7.循环引用问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -555,273 +833,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/01/15/Blocks篇：2.Blocks的调用过程及其对象本质/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-Blocks篇：1.Blocks的声明" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/15/Blocks篇：1.Blocks的声明/">《Objective-C高级编程 iOS与OS X多线程与内存管理》10</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/15/Blocks篇：1.Blocks的声明/" class="archive-article-date">
-  	<time datetime="2019-01-15T04:05:21.255Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Blocks篇：1-Blocks的声明"><a href="#Blocks篇：1-Blocks的声明" class="headerlink" title="Blocks篇：1.Blocks的声明"></a>Blocks篇：1.Blocks的声明</h2><blockquote>
-<p><strong>Blocks是带有自动变量值的匿名函数。</strong></p>
-</blockquote>
-<p>写法：</p>
-<ul>
-<li>Blocks变量声明：与C函数指针声明基本相似，将指针符号”*”替换为“^”。</li>
-<li>Blocks主体声明：省略了名称的C函数，在原函数名前添加“^”。<ul>
-<li>无参数Blocks，可以省略参数列表</li>
-<li>无返回值Blocks，可以省略返回值</li>
-</ul>
-</li>
-</ul>
-        
-          <a class="article-more-a" href="/2019/01/15/Blocks篇：1.Blocks的声明/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/15/Blocks篇：1.Blocks的声明/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-内存管理篇：9.ARC实现之__autoreleasing" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/06/内存管理篇：9.ARC实现之__autoreleasing/">《Objective-C高级编程 iOS与OS X多线程与内存管理》9</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/06/内存管理篇：9.ARC实现之__autoreleasing/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:54:34.109Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="内存管理篇：9-ARC实现之-autoreleasing"><a href="#内存管理篇：9-ARC实现之-autoreleasing" class="headerlink" title="内存管理篇：9.ARC实现之__autoreleasing"></a>内存管理篇：9.ARC实现之__autoreleasing</h2><ol>
-<li>__autoreleasing修饰的变量与在非ARC环境下，对对象调用autorelease方法效果一致：</li>
-</ol>
-        
-          <a class="article-more-a" href="/2019/01/06/内存管理篇：9.ARC实现之__autoreleasing/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/06/内存管理篇：9.ARC实现之__autoreleasing/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-内存管理篇：8.ARC实现之__weak" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/06/内存管理篇：8.ARC实现之__weak/">《Objective-C高级编程 iOS与OS X多线程与内存管理》8</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/06/内存管理篇：8.ARC实现之__weak/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:53:26.381Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="内存管理篇：8-ARC实现之-weak"><a href="#内存管理篇：8-ARC实现之-weak" class="headerlink" title="内存管理篇：8.ARC实现之__weak"></a>内存管理篇：8.ARC实现之__weak</h2><blockquote>
-<p>我们知道，weak修饰的变量，其地址是被存储在一个专用的散列表中，此散列表的键值为原内存的散列值（即对象地址的hash值）。</p>
-</blockquote>
-<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1546747255-weak%E8%A1%A8.jpg" alt="img"></p>
-<p>__weak修饰的变量，其主要存在两大功能：</p>
-<ol>
-<li><strong>当其引用的对象被释放时，此变量自动被赋值为nil</strong>；</li>
-<li><strong>使用__weak修饰的变量时，实际上使用的是添加到autoreleasePool中的对象</strong>。</li>
-</ol>
-        
-          <a class="article-more-a" href="/2019/01/06/内存管理篇：8.ARC实现之__weak/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/06/内存管理篇：8.ARC实现之__weak/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-内存管理篇：7.ARC实现之__strong及autorelease优化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/06/内存管理篇：7.ARC实现之__strong及autorelease优化/">《Objective-C高级编程 iOS与OS X多线程与内存管理》7</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/06/内存管理篇：7.ARC实现之__strong及autorelease优化/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:52:21.263Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="内存管理篇：7-ARC实现之-strong及autorelease优化"><a href="#内存管理篇：7-ARC实现之-strong及autorelease优化" class="headerlink" title="内存管理篇：7.ARC实现之__strong及autorelease优化"></a>内存管理篇：7.ARC实现之__strong及autorelease优化</h2><blockquote>
-<p>对于持有非自己创建的对象的情况，我们知道，这种情况是指对于非“alloc、new、copy和mutableCopy”开头的并返回对象实例的方法，接收方不负责内存管理。<br>ARC会在方法实现中将返回值加入到autoreleasePool中，待接收方从中取出使用，延迟释放时机。</p>
-</blockquote>
-        
-          <a class="article-more-a" href="/2019/01/06/内存管理篇：7.ARC实现之__strong及autorelease优化/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/06/内存管理篇：7.ARC实现之__strong及autorelease优化/">展开全文 >></a>
         </p>
       
 

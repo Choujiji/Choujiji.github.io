@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-04-12T15:10:28.591Z</updated>
+  <updated>2019-07-18T03:28:39.995Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,230 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Objective-C Runtime编程指南之消息转发</title>
+    <link href="http://yoursite.com/2019/07/18/Objective-C%20Runtime%E7%BC%96%E7%A8%8B%E6%8C%87%E5%8D%97%E4%B9%8B%E6%B6%88%E6%81%AF%E8%BD%AC%E5%8F%91/"/>
+    <id>http://yoursite.com/2019/07/18/Objective-C Runtime编程指南之消息转发/</id>
+    <published>2019-07-18T03:28:28.431Z</published>
+    <updated>2019-07-18T03:28:39.995Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>本文翻译自<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtForwarding.html" target="_blank" rel="external">Message Forwarding</a></p>
+</blockquote>
+<h3 id="消息转发"><a href="#消息转发" class="headerlink" title="消息转发"></a>消息转发</h3><p>给一个对象发送其不能处理的消息会产生错误。可是，在发生错误之前，运行时系统给接收对象一个二次机会来处理这个消息。</p>
+<a id="more"></a>
+<h4 id="转发"><a href="#转发" class="headerlink" title="转发"></a>转发</h4><p>如果你给一个对象发送其不能处理的消息时，在产生错误之前，运行时会发送给对象一个<em>forwardInvocation:</em> 消息，此消息包含一个<em>NSInvocation</em>对象作为唯一参数—-这个<em>NSInvocation</em>对象中包含了之前的原始消息和参数。</p>
+<p>你可以实现<em>forwardInvocation:</em> 方法来提供一个默认消息响应，或者用某种其他方式来避免错误。就像名称所说那样，<em>forwardInvocation:</em> 一般用于将消息转发给其他对象。</p>
+<p>要了解转发的适用范围和目的，设想下面的场景：首先，假设你正在设计一个对象，它可以响应一个叫<em>negotiate</em>的消息，并且你想要它的响应中包含其他种类对象的响应。你可以很容易地完成它：只需要在你的<em>negotiate</em>方法体中，给其他对象再发送一个<em>negotiate</em>消息。</p>
+<p>再想深一点，设想你想要你的对象能够响应<em>negotiate</em>消息，但是其实现却其他类中。完成它的一种方法就是让你的类继承于其他类。可是，这种情况有可能做不到。也许有很多原因导致你的类和实现了<em>negotiate</em>方法的类在不同的继承体系中。</p>
+<p>即使你的类不能继承到<em>negotiate</em>方法，你还可以通过”借“的方式来实现一个特别的版本，就是将这个消息直接传递给一个其他类的实例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">- (id)negotiate</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> ( [someOtherObject respondsTo:@selector(negotiate)] )</div><div class="line">        <span class="keyword">return</span> [someOtherObject negotiate];</div><div class="line">    <span class="keyword">return</span> self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这种方式可能有一点笨，特别是当你想把许多消息都赚给其他对象时。你必须把从其他类借到的方法依次实现。此外，有时候你不太可能处理到那些你不知道的情况，因为你只是写了那些你当时准备转发的消息代码。这一些消息可能取决于运行时，并且很有可能在未来变成一些新的方法和类。</p>
+<p>通过<em>forwardInvocation:</em> 消息提供的第二次机会是一个不太特别的解决方案，而且是个动态方案。其工作过程如下：当一个对象不能响应一个消息时（因为它没有一个可以匹配消息中选择器的方法），运行时系统会给对象发送一个<em>forwardInvocation:</em> 消息。每一个对象都从<em>NSObject</em>类中继承了<em>forwardInvocation:</em> 方法。可是，<em>NSObject</em>的实现版本仅仅调用了<em>doesNotRecognizeSelector:</em> 方法。通过覆盖<em>NSObject</em>的版本并进行你自身的实现，你可以利用这次机会通过<em>forwardInvocation:</em> 将消息转发给其他对象。</p>
+<p>要转发一个消息，所有的<em>forwardInvocation:</em> 方法需要按下面的方式去做：</p>
+<ul>
+<li>决定这个消息要去哪，并且</li>
+<li>带着原始参数给它发送过去</li>
+</ul>
+<p>这个消息可以通过<em>invokeWithTarget:</em> 方法进行发送：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)forwardInvocation:(NSInvocation *)anInvocation</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> ([someOtherObject respondsToSelector:</div><div class="line">            [anInvocation selector]])</div><div class="line">        [anInvocation invokeWithTarget:someOtherObject];</div><div class="line">    <span class="keyword">else</span></div><div class="line">        [super forwardInvocation:anInvocation];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>转发出的消息的返回值会被返回给原始的接收者。所有类型的返回值都可以被传递给接收者，包括id、结构体和双精度浮点数等。</p>
+<p><em>forwardInvocation:</em> 方法对于不能识别的消息扮演着一个分发中心的角色，给这些消息打包发送给不同的接收者。或者它也可以当做一个中转站，发送所有消息到同一个目的地。它可以将一个消息转换为另一个，或者直接”吞掉“某些消息使其不产生响应或错误。一个<em>forwardInvocation:</em> 方法还可以将多个消息合并到一个响应中。<em>forwardInvocation:</em> 方法所做的事情都由实现者决定。可是，它提供的一种将对象链接到到转发链中的机会为程序设计提供了新的可能性。</p>
+<blockquote>
+<p>注意：</p>
+<p><strong>只有当正常的接收者不能调用一个存在的方法时，<em>forwardInvocation:</em> 方法才会收到待处理消息</strong>。例如，如果你想要你的对象转发<em>negotiate</em>消息给另一个对象，那么它自己就不能包含<em>negotiate</em>方法。如果存在此方法，消息就绝不会到达<em>forwardInvocation:</em> 中。</p>
+</blockquote>
+<p>查看更多关于转发和调用的信息，请在Foundation框架参考中查看<em>NSInvocation</em>类的说明。</p>
+<h4 id="转发和多继承"><a href="#转发和多继承" class="headerlink" title="转发和多继承"></a>转发和多继承</h4><p>转发模拟了继承，并且可以被用于在Objective-C程序中实现出一些多继承的效果。如<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtForwarding.html#//apple_ref/doc/uid/TP40008048-CH105-87317" target="_blank" rel="external">图表5-1</a>所示，通过转发来响应消息的对象就好像是从另一个类中”继承“了方法实现一样。</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Art/forwarding.gif" alt="图表5-1"></p>
+<p>在这个插图中，一个Warrior类的实例转发<em>negotiate</em>消息给了一个Diplomat类的实例。Warrior看起来就好像是一个Diplomat一样。就好像它响应了<em>negotiate</em>消息，并且从实际上看，它确实响应了（虽然是一个Diplomat完成的工作）。</p>
+<p>转发消息的对象从而通过两个继承体系的分支中“继承”了方法—-它自己的分支和响应消息的那个对象的分支。在上面的例子中，和自己的父类一样，看起来就好像Warrior类也继承于Diplomat类。</p>
+<p>转发提供了大多数的多继承特性。可是，在二者之间还是存在一点重要的不同：多继承将不同的能力合并在了一个对象中。而转发，却将不同的功能分配给了不同的对象。它将问题分解到小的对象中，却用一种对消息发送者透明的方式将这些对象联系起来。</p>
+<h4 id="替代者对象"><a href="#替代者对象" class="headerlink" title="替代者对象"></a>替代者对象</h4><p>转发不仅模拟了多继承，它还使开发一个可以代表或者“隐藏”大量对象的轻量级对象成为可能。替代者替代了其他对象并且将消息过滤给它们。</p>
+<p><a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjectiveC/Introduction/introObjectiveC.html#//apple_ref/doc/uid/TP30001163" target="_blank" rel="external">The Objective-C Programming Language</a>中的“Remote Messaging”中讨论的代理就是这样一个替代者。代理负责了将消息转发给远程接收者的所有管理细节，确保参数值通在连接中被拷贝和取回，等等。但是它并没有做更多工作；代理并没有复制远程对象的功能，只是简单地给远程对象一个本地地址，即一个可以从其他应用程序中接收消息的位置。</p>
+<p>其他种类的替代者对象也可以做到这些。假设，你有一个可以操作许多数据的对象—-也许它创建了一个复杂的图片或者从磁盘上的文件中读取了内容。创建这个对象也许会非常耗时，所以你更想进行懒加载—-当真的需要时或者是系统资源空闲时。同时，你至少需要一个占位对象来保证应用程序中的其他对象可以正常工作。</p>
+<p>在这种情况下，你并不需要创建一个完整的对象，而是一个轻量级的替代者。此对象可以做一些自己的事情，比如回答关于数据的问题，但多数情况下，它只是为那个大对象占用一个位置，当真的需要时，就转发消息给它。当替代者的<em>forwardInvocation:</em> 收到消息并指向其他对象时，它可以确保改对象存在或者当不存在时可以创建出来。大对象的所有消息都会通过替代者传送过来，因此，无论程序的其他部分如何关心，替代者和大对象都是相同的。</p>
+<h4 id="转发和继承"><a href="#转发和继承" class="headerlink" title="转发和继承"></a>转发和继承</h4><p>虽然转发模拟了继承，但<em>NSObject</em>类从不会将二者弄混。<strong>像<em>respondsToSelector:</em> 和 <em>isKindOfClass:</em> 的这种方法只会在继承体系中查找，而绝不会在转发链中查找</strong>。例如，如果一个Warrior对象被询问是否可以响应<em>negotiate</em>消息时，</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> ( [aWarrior respondsToSelector:@selector(negotiate)] )</div><div class="line">    ...</div></pre></td></tr></table></figure>
+<p>答案是NO，尽管它可以接收<em>negotiate</em>消息，不发生错误并能够进行响应，在某种意义上，通过转发消息给Diplomat对象（见<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtForwarding.html#//apple_ref/doc/uid/TP40008048-CH105-87317" target="_blank" rel="external">图表5-1</a>）。</p>
+<p>在许多情况下，NO就是正确答案。但也可能不是。如果你通过转发来创建一个替代者对象或者扩展类的能力，转发机制应该和继承一样透明。如果你想让你的对象看起来就像真的继承于转发消息的对象，你就需要重新实现<em>respondsToSelector:</em> 和<em>isKindOfClass:</em> 方法，以便包含你的转发规则。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- (BOOL)respondsToSelector:(SEL)aSelector</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> ( [super respondsToSelector:aSelector] )</div><div class="line">        <span class="keyword">return</span> YES;</div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">/* Here, test whether the aSelector message can     *</span></div><div class="line">         * be forwarded to another object and whether that  *</div><div class="line">         * object can respond to it. Return YES if it can.  */</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> NO;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>除了<em>respondsToSelector:</em> 和<em>isKindOfClass:</em> 方法之外，<em>instancesRespondToSelector:</em> 方法也应该模拟转发规则。如果协议被使用了，<em>conformsToProtocol:</em> 方法也应该加到修改列表中。相似地，如果一个对象转发了任何它收到的远程消息，它应该包含一个<em>methodSignatureForSelector:</em> 方法的版本，它可以返回最终要响应的转发消息的准确描述。例如，如果一个对象正要转发消息给它的替代者，你可以向下面这样实现<em>methodSignatureForSelector:</em> ：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (NSMethodSignature*)methodSignatureForSelector:(SEL)selector</div><div class="line">&#123;</div><div class="line">    NSMethodSignature* signature = [super methodSignatureForSelector:selector];</div><div class="line">    <span class="keyword">if</span> (!signature) &#123;</div><div class="line">       signature = [surrogate methodSignatureForSelector:selector];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> signature;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>你还可以考虑将转发规则放到一些私有代码中，并且让所有的待转发方法都调用它（包括<em>forwardInvocation:</em>）。</p>
+<blockquote>
+<p>注意：</p>
+<p>这是一项高级技术，只适合那些没有其他解决方案时的场景。不能用它来代替继承。如果你必须使用此项技术，确保你完整地理解了使用转发的类和转发到的类的所有行为。</p>
+</blockquote>
+<p>在本节中提到的方法都在Foundation框架指南的<a href="https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSObject/Description.html#//apple_ref/occ/cl/NSObject" target="_blank" rel="external">NSObject</a>类的说明中都有描述。要查看<em>invokeWithTarget:</em> 的更多信息，请查看Foundation框架指南的<a href="https://developer.apple.com/documentation/foundation/nsinvocation" target="_blank" rel="external">NSInvocation</a>类的说明。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;本文翻译自&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtForwarding.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Message Forwarding&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;消息转发&quot;&gt;&lt;a href=&quot;#消息转发&quot; class=&quot;headerlink&quot; title=&quot;消息转发&quot;&gt;&lt;/a&gt;消息转发&lt;/h3&gt;&lt;p&gt;给一个对象发送其不能处理的消息会产生错误。可是，在发生错误之前，运行时系统给接收对象一个二次机会来处理这个消息。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Objective-C Runtime编程指南之动态方法解析</title>
+    <link href="http://yoursite.com/2019/07/18/Objective-C%20Runtime%E7%BC%96%E7%A8%8B%E6%8C%87%E5%8D%97%E4%B9%8B%E5%8A%A8%E6%80%81%E6%96%B9%E6%B3%95%E8%A7%A3%E6%9E%90/"/>
+    <id>http://yoursite.com/2019/07/18/Objective-C Runtime编程指南之动态方法解析/</id>
+    <published>2019-07-18T03:27:44.799Z</published>
+    <updated>2019-07-18T03:28:10.383Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>本文翻译自<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtDynamicResolution.html#//apple_ref/doc/uid/TP40008048-CH102-SW1" target="_blank" rel="external">Dynamic Method Resolution</a></p>
+</blockquote>
+<h3 id="动态方法解析"><a href="#动态方法解析" class="headerlink" title="动态方法解析"></a>动态方法解析</h3><p>本章节描述了如何动态地为方法提供实现。</p>
+<a id="more"></a>
+<h4 id="动态方法解析-1"><a href="#动态方法解析-1" class="headerlink" title="动态方法解析"></a>动态方法解析</h4><p>有一些情况下，你可能想要为方法动态地提供实现。比如，声明的Objective-C属性的特性（在<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjectiveC/Introduction/introObjectiveC.html#//apple_ref/doc/uid/TP30001163" target="_blank" rel="external">The Objective-C Programming Language</a>中查看<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjectiveC/Chapters/ocProperties.html#//apple_ref/doc/uid/TP30001163-CH17" target="_blank" rel="external">Declared Properties</a>）中包含了 <em>@dynamic</em> 关键字：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">@dynamic propertyName;</div></pre></td></tr></table></figure>
+<p>它告诉了编译器与属性相关的方法需要动态提供。</p>
+<p>你分别可以通过实现<a href="https://developer.apple.com/documentation/objectivec/nsobject/1418500-resolveinstancemethod" target="_blank" rel="external">resolveInstanceMethod:</a>和<a href="https://developer.apple.com/documentation/objectivec/nsobject/1418889-resolveclassmethod" target="_blank" rel="external">resolveClassMethod:</a>方法为指定的实例方法或类方法的选择器动态地提供实现。</p>
+<p>一个Objective-C方法就是一个至少包含了两个参数的C函数—-<em>self</em> 和 <em>_cmd</em> 。你可以通过使用<a href="https://developer.apple.com/documentation/objectivec/1418901-class_addmethod" target="_blank" rel="external">class_addMethod</a>函数给类添加一个函数。因此，给定了如下函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">dynamicMethodIMP</span><span class="params">(id self, SEL _cmd)</span> </span>&#123;</div><div class="line">    <span class="comment">// implementation ....</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>像下面这样，你可以使用<em>resolveInstanceMethod:</em> 方法来给类动态添加一个方法：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">@implementation MyClass</div><div class="line">+ (BOOL)resolveInstanceMethod:(SEL)aSEL</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> (aSEL == @selector(resolveThisMethodDynamically)) &#123;</div><div class="line">          class_addMethod([self class], aSEL, (IMP) dynamicMethodIMP, <span class="string">"v@:"</span>);</div><div class="line">          <span class="keyword">return</span> YES;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> [super resolveInstanceMethod:aSEL];</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
+<p>转发方法（在<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtForwarding.html#//apple_ref/doc/uid/TP40008048-CH105-SW1" target="_blank" rel="external">Message Forwarding</a>中描述的那样）和动态方法解析是在对立面的。一个类在转发机制进入之前，有机会动态解析出一个方法。如果<a href="https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Protocols/NSObject/Description.html#//apple_ref/occ/intfm/NSObject/respondsToSelector:" target="_blank" rel="external">respondsToSelector:</a>或<a href="https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSObject/Description.html#//apple_ref/occ/clm/NSObject/instancesRespondToSelector:" target="_blank" rel="external">instancesRespondToSelector:</a>被调用，动态方法解析器就会首先给机会让选择器提供一个<em>IMP</em>。如果你实现了<a href="https://developer.apple.com/documentation/objectivec/nsobject/1418500-resolveinstancemethod" target="_blank" rel="external">resolveInstanceMethod:</a>方法，但是想要指定选择器通过转发机制转发走，你可以在那些选择器中返回NO。</p>
+<h4 id="动态加载"><a href="#动态加载" class="headerlink" title="动态加载"></a>动态加载</h4><p>一个Objective-C程序可以在运行的过程中加载和链接新的类和分类。新的代码被添加到程序中并且与在程序开始时加载的类和分类同等对待。</p>
+<p>动态加载可以被用于做许多不同的事情。比如，在系统偏好设置程序中，各种模块都是动态加载的。</p>
+<p>在Cocoa环境中，动态加载普遍用于允许程序的自定义上。第三方可以编写一些在运行时加载的模块—-就像Interface Builder加载自定义调色板或者是OS X系统偏好设置加载自定义设置模块一样。可加载的模块扩展了应用程序的功能。这个功能可以在你允许但是可能没有想到的方式上给应用程序提供帮助。你提供了框架，第三方可以提供代码。</p>
+<p>虽然在Mach-O文件中，有一个运行时函数可以执行Objective-C模块的动态加载（<em>objc_loadModules</em>，定义在<em>objc/objc-load.h</em>文件中），Cocoa的<em>NSBundle</em>类提供了一个更加方便的接口用于动态加载—-一个面向对象的并且与相关服务结合到一起的接口。在Foundation框架参考中查看<a href="https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSBundle/Description.html#//apple_ref/occ/cl/NSBundle" target="_blank" rel="external">NSBundle</a>类的相关说明及使用方法。在OS X的ABI Mach-O文件格式参考中查看Mach-O文件的相关信息。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;本文翻译自&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtDynamicResolution.html#//apple_ref/doc/uid/TP40008048-CH102-SW1&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Dynamic Method Resolution&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;动态方法解析&quot;&gt;&lt;a href=&quot;#动态方法解析&quot; class=&quot;headerlink&quot; title=&quot;动态方法解析&quot;&gt;&lt;/a&gt;动态方法解析&lt;/h3&gt;&lt;p&gt;本章节描述了如何动态地为方法提供实现。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Objective-C Runtime编程指南之发送消息</title>
+    <link href="http://yoursite.com/2019/07/18/Objective-C%20Runtime%E7%BC%96%E7%A8%8B%E6%8C%87%E5%8D%97%E4%B9%8B%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF/"/>
+    <id>http://yoursite.com/2019/07/18/Objective-C Runtime编程指南之发送消息/</id>
+    <published>2019-07-18T03:27:18.831Z</published>
+    <updated>2019-07-18T03:27:18.831Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>本文翻译自<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtHowMessagingWorks.html" target="_blank" rel="external">Messaging</a></p>
+</blockquote>
+<h3 id="发送消息"><a href="#发送消息" class="headerlink" title="发送消息"></a>发送消息</h3><p>本章描述了消息表达式如何被转化为<a href="https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend" target="_blank" rel="external">objc_msgSend</a>函数调用，还有如何通过名字索引到方法。之后解释了你如何利用<em>objc_msgSend</em>，还有—-如果需要—-如何规避动态绑定过程。</p>
+<a id="more"></a>
+<h4 id="objc-msgSend函数"><a href="#objc-msgSend函数" class="headerlink" title="objc_msgSend函数"></a>objc_msgSend函数</h4><p>在Objective-C中，消息直到运行时才会被绑定到方法实现上。编译器将消息表达式进行转换：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[receiver message]</div></pre></td></tr></table></figure>
+<p>转换为消息函数的调用，<a href="https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend" target="_blank" rel="external">objc_msgSend</a>。此函数携带着消息中的<strong>接受者</strong>和<strong>方法名</strong>（即选择器）作为函数的两个必要参数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">objc_msgSend(receiver, selector)</div></pre></td></tr></table></figure>
+<p>消息中传入的其他参数也会被<em>objc_msgSend</em>进行处理：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">objc_msgSend(receiver, selector, arg1, arg2, ...)</div></pre></td></tr></table></figure>
+<p>这个消息函数为动态绑定做了所有必要的事情：</p>
+<ul>
+<li>首先，消息函数查找选择器指向的程序（即方法实现）。由于在不同的类中，相同的方法可以有不同的实现，因此确定的实现取决于查找的接收者的类。</li>
+<li>之后要调用此实现程序，传入接收对象（其数据的指针），方法指定的其他参数也一同传入。</li>
+<li>最后，消息函数将实现程序调用后的返回值传回来，就好像自己的返回值一样。</li>
+</ul>
+<blockquote>
+<p><strong>注意</strong>：</p>
+<p>编译器会自动调用此消息函数。你一定不要在代码中直接调用它。</p>
+</blockquote>
+<p>发送消息的关键在于编译器为每个类和对象构建的结构体。每个类的结构体包含以下两个必要的元素：</p>
+<ul>
+<li><strong>一个指向父类的指针</strong></li>
+<li><strong>一个类的<em>分发表</em>。此表包含一个入口，可以把方法选择器和指定类的方法地址连接在一起</strong>。<em>setOrigin::</em> 方法的选择器和 <em>setOrigin::</em> 的地址（实现程序）连接在了一起，<em>display</em> 方法的选择器和 <em>display</em> 的地址连接在了一起，等等。</li>
+</ul>
+<p>当一个新对象被创建出来时，其内存已经被分配好，其实例变量也已经初始化。此对象中的第一个变量是一个指向它所属类结构体的指针。这个指针，叫做<strong>isa</strong>，给予此对象访问其所属类的能力，并且通过这个类，还可以访问到所有其继承到的类。</p>
+<blockquote>
+<p><strong>注意</strong>：</p>
+<p>虽然不能严格算是编程语言的一部分，但对于一个对象来说，在与Objective-C运行时系统协同工作时，isa指针却是十分必要的。一个对象”等价于“一个包含了定义的所有字段的<strong>objc_object结构体</strong>（定义在<em>objc/objc.h</em>中）。可是，你几乎用不到自己来创建根对象，继承了NSObject和NSProxy类的对象早已自动包含了isa指针。</p>
+</blockquote>
+<p>这些类的元素和对象结构体如插图3-1中所示：</p>
+<p><img src="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Art/messaging1.gif" alt="发送消息框架"></p>
+<p>当消息发送给某个对象时，发送消息函数会沿着对象的isa指针找到该类的结构体，在其中的分发表中查找方法的选择器。如果在这里找不到选择器，<em>objc_msgSend</em>会沿着其父类的指针继续，并试图在父类的分发表中查找该选择器。连续的失败会导致<em>objc_msgSend</em>会沿着类的层级一直向上爬，直到到达<em>NSObject</em>类。一旦锁定了选择器，此函数就会在分发表中进入此方法中进行调用，并且传入接收者对象的数据结构。</p>
+<p>以上就是方法实现在运行时被查找的方式—-或者，用面向对象的行话来说，那个方法被动态绑定到了消息上。</p>
+<p>为了加速消息发送过程，一旦被使用，运行时系统会缓存该方法的选择器和地址。在每个类中都包含一个独立的缓存区域，并且它同样可以包含继承来的方法选择器。在查找分发表之前，消息发送程序会首先检查接收者类中的缓存（理论上来说，一个方法只要被用过一次就极有可能再次被使用）。如果方法选择器在缓存中，消息发送过程就只会比直接的函数调用稍慢一些。一旦程序已经运行足够的时间来给缓存”热身“，几乎所有发送的消息就都可以找到对应的缓存方法。随着程序的运行，缓存会动态增长空间来缓存新保存的消息。</p>
+<h4 id="使用隐藏参数"><a href="#使用隐藏参数" class="headerlink" title="使用隐藏参数"></a>使用隐藏参数</h4><p>当<a href="https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend" target="_blank" rel="external">objc_msgSend</a>找到了方法的实现程序后，它便调用此程序且将消息中包含的所有参数传递进去。它还会传入两个隐藏参数：</p>
+<ul>
+<li>接收者对象</li>
+<li>方法的选择器</li>
+</ul>
+<p>这些参数给每一个方法实现提供了代码调用时方法表达式中的两个明确信息。它们被叫做”隐藏“，是因为在定义的方法中没有声明二者。它们只在代码编译时被插入到实现中。</p>
+<p>虽然这些参数没有明确声明，源码还是可以索引到它们（就像源码可以索引到接收者内部的实例变量一样）。<strong>一个方法把接收者对象称作<em>self</em>，把其自身的选择器称作 <em>_cmd</em></strong>。在下面的例子中，<em>_cmd</em>代表了<em>strange</em>方法的选择器，<em>self</em>则代表了接收<em>strange</em>消息的对象。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">- strange</div><div class="line">&#123;</div><div class="line">    id  target = getTheReceiver();</div><div class="line">    SEL method = getTheMethod();</div><div class="line"> </div><div class="line">    <span class="keyword">if</span> ( target == self || method == _cmd )</div><div class="line">        <span class="keyword">return</span> nil;</div><div class="line">    <span class="keyword">return</span> [target performSelector:method];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在这两个参数中，<em>self</em>更为有用。实际上，对于方法定义来说，<em>self</em>才是将接收者对象的实例变量变为可用的方式。</p>
+<h4 id="获取方法地址"><a href="#获取方法地址" class="headerlink" title="获取方法地址"></a>获取方法地址</h4><p><strong>规避动态绑定过程的唯一方法，就是获取方法的地址，然后直接进行函数调用</strong>。这种情况也许非常罕见，也许只有当某个指定方法要连续执行许多次，并且你希望避免每次执行之前进行的消息发送过程。</p>
+<p>有一个定义在NSObject类中的方法，名为<em>methodForSelector:</em>，你可以设置一个指向方法实现程序的指针，之后使用这个指针来调用程序。<em>methodForSelector:</em> 返回的指针必须被转换成合适的函数类型，返回值和参数类型都必须包含在类型转换中。</p>
+<p>下面的例子展示了<em>setFilled:</em> 方法的实现程序如何是被调用的：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> (*setter)(id, SEL, BOOL);</div><div class="line"><span class="keyword">int</span> i;</div><div class="line"> </div><div class="line">setter = (<span class="keyword">void</span> (*)(id, SEL, BOOL))[target</div><div class="line">    methodForSelector:@selector(setFilled:)];</div><div class="line"><span class="keyword">for</span> ( i = <span class="number">0</span> ; i &lt; <span class="number">1000</span> ; i++ )</div><div class="line">    setter(targetList[i], @selector(setFilled:), YES);</div></pre></td></tr></table></figure>
+<p>传入程序中的前两个参数是接收者对象（self）和方法选择器（_cmd）。这些参数被隐藏在方法的语法中，但在方法被作为函数调用时必须明确声明。</p>
+<p>使用<em>methodForSelector:</em> 来规避动态绑定过程可以节约消息发送过程中的大部分时间。可是，这种时间节约只有在特定的消息被重复执行许多次时才有意义，就像上面的for循环一样。</p>
+<p>注意，<em>methodForSelector:</em> 方法是由Cocoa的运行时系统提供；它并不是Objective-C语言本身的特性。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;本文翻译自&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtHowMessagingWorks.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Messaging&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;发送消息&quot;&gt;&lt;a href=&quot;#发送消息&quot; class=&quot;headerlink&quot; title=&quot;发送消息&quot;&gt;&lt;/a&gt;发送消息&lt;/h3&gt;&lt;p&gt;本章描述了消息表达式如何被转化为&lt;a href=&quot;https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;objc_msgSend&lt;/a&gt;函数调用，还有如何通过名字索引到方法。之后解释了你如何利用&lt;em&gt;objc_msgSend&lt;/em&gt;，还有—-如果需要—-如何规避动态绑定过程。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Objective-C Runtime编程指南之与运行时系统进行交互</title>
+    <link href="http://yoursite.com/2019/07/18/Objective-C%20Runtime%E7%BC%96%E7%A8%8B%E6%8C%87%E5%8D%97%E4%B9%8B%E4%B8%8E%E8%BF%90%E8%A1%8C%E6%97%B6%E7%B3%BB%E7%BB%9F%E8%BF%9B%E8%A1%8C%E4%BA%A4%E4%BA%92/"/>
+    <id>http://yoursite.com/2019/07/18/Objective-C Runtime编程指南之与运行时系统进行交互/</id>
+    <published>2019-07-18T03:26:14.107Z</published>
+    <updated>2019-07-18T03:26:37.012Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>本文翻译自<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtInteracting.html" target="_blank" rel="external">Interacting with the Runtime
+</a></p>
+</blockquote>
+<h3 id="与运行时系统进行交互"><a href="#与运行时系统进行交互" class="headerlink" title="与运行时系统进行交互"></a>与运行时系统进行交互</h3><p>Objective-C程序通过三种不同方式与运行时系统进行交互：通过Objective-C代码；通过<em>Foundation</em>框架中定义在<em>NSObject</em>类中的方法；还有通过直接调用运行时的函数。</p>
+<a id="more"></a>
+<h4 id="Objective-C代码"><a href="#Objective-C代码" class="headerlink" title="Objective-C代码"></a>Objective-C代码</h4><p>对于绝大多数场景下，运行时系统会自动在幕后工作。你需要做的仅仅是编写和编译Objective-C代码即可。</p>
+<p>当你编译包含Objective-C类和方法的代码时，编译器会创建对应的数据结构和方法调用来体现语言的动态性。这些数据结构会捕获到类、分类和协议声明中的相关信息；它们包含着在<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjectiveC/Introduction/introObjectiveC.html#//apple_ref/doc/uid/TP30001163" target="_blank" rel="external">The Objective-C Programming Language</a>中<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjectiveC/Chapters/ocDefiningClasses.html#//apple_ref/doc/uid/TP30001163-CH12" target="_blank" rel="external">Defining a Class</a>和<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjectiveC/Chapters/ocProtocols.html#//apple_ref/doc/uid/TP30001163-CH15" target="_blank" rel="external">Protocols</a>描述的类和协议对象，还有方法选择器、实例变量模板，还有从源代码中提取的其他信息等。最重要的运行时函数就是那个可以发送消息的对象，就像<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtHowMessagingWorks.html#//apple_ref/doc/uid/TP40008048-CH104-SW1" target="_blank" rel="external">Messaging</a>中描述的一样。它通过源代码消息表达式进行调用。</p>
+<h4 id="NSObject的方法"><a href="#NSObject的方法" class="headerlink" title="NSObject的方法"></a>NSObject的方法</h4><p>大多数Cocoa中的对象都是NSObject类的子类，因此大多数对象都继承了其中的方法（例外的是<em>NSProxy</em>类；更多信息请查看<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtForwarding.html#//apple_ref/doc/uid/TP40008048-CH105-SW1" target="_blank" rel="external">Message Forwarding</a>）。因此它的方法会表现出继承的实例和类的默认行为。可是，在某些情况下，NSObject类仅仅是定义了某些事如何做的一个模板；它自身并没有提供所有必要的代码。</p>
+<p>例如，NSObject类定义了<em>description</em>实例方法来返回描述类内容的字符串。这个主要用于调试过程—-GDB对象打印命令打印出此方法返回的字符串。NSObject中此方法的实现并不知道本类包含的内容，因此该方法只返回了包含对象名称和内存地址的字符串。NSObject的子类可以实现此方法来返回更多信息。比如，Foundation的<em>NSArray</em>类会返回其包含的所有对象的描述信息。</p>
+<p>一些NSObject中的方法只是向运行时系统查询信息。这些方法允许对象来进行”自省“（即查看自身的某些信息）。比如这些方法中的<em>class</em>方法，它让对象来识别出自身的类；<em>isKindOfClass:</em>和<em>isMemberOfClass:</em>，可以检测对象在继承链中的位置；<em>respondsToSelector:</em> 可以判定某对象是否可以接收指定消息；<em>conformsToProtocol:</em> 判定某对象是否声明已经实现了指定协议中的方法（即该类是否遵循了协议）；<em>methodForSelector:</em> 提供了方法实现的地址。形如这些方法都给予了对象检查自身的能力。</p>
+<h4 id="运行时的函数"><a href="#运行时的函数" class="headerlink" title="运行时的函数"></a>运行时的函数</h4><p>运行时系统是一个带有公共接口的动态共享库，其内部由一系列函数和数据结构组成，公共接口定义在 <em>/usr/include/objc</em> 目录的头文件中。这些函数中的许多都允许你使用纯C语言来做那些编译器为Objective-C代码所做的事。其他一些则输出形成了NSObject类的基本功能。这些函数使为运行时系统开发其他接口或者为增强开发环境制作工具成为了可能；因为它们无需使用Objective-C进行编码。可是，一小部分的运行时函数也会在编写Objective-C代码时非常有用。所有这些函数都被记录在了<a href="https://developer.apple.com/documentation/objectivec/objective_c_runtime" target="_blank" rel="external">Objective-C Runtime Reference</a>中。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;本文翻译自&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtInteracting.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Interacting with the Runtime
+&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;与运行时系统进行交互&quot;&gt;&lt;a href=&quot;#与运行时系统进行交互&quot; class=&quot;headerlink&quot; title=&quot;与运行时系统进行交互&quot;&gt;&lt;/a&gt;与运行时系统进行交互&lt;/h3&gt;&lt;p&gt;Objective-C程序通过三种不同方式与运行时系统进行交互：通过Objective-C代码；通过&lt;em&gt;Foundation&lt;/em&gt;框架中定义在&lt;em&gt;NSObject&lt;/em&gt;类中的方法；还有通过直接调用运行时的函数。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>《大话数据结构》之树</title>
@@ -1504,263 +1728,6 @@
 &lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;以下话题描述了在布局中总结提炼出的信息，同时描述了一些你可能遇到的意料之外的情况。你也许不会再每次布局中都会用到这些技术，但是它们可以在一些难题上给你提供帮助。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>元素中有重复元素吗？（2）</title>
-    <link href="http://yoursite.com/2019/02/22/%E5%85%83%E7%B4%A0%E4%B8%AD%E6%9C%89%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%E5%90%97%EF%BC%9F%EF%BC%882%EF%BC%89/"/>
-    <id>http://yoursite.com/2019/02/22/元素中有重复元素吗？（2）/</id>
-    <published>2019-02-22T03:51:16.320Z</published>
-    <updated>2019-02-22T03:51:16.320Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h4><p>给定一个整数数组和一个整数 k，判断数组中是否存在两个不同的索引 i 和 j，使得 nums [i] = nums [j]，并且 i 和 j 的差的绝对值最大为 k。</p>
-<a id="more"></a>
-<ul>
-<li>示例1：</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">输入: nums = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">1</span>], k = <span class="number">3</span></div><div class="line">输出: <span class="literal">true</span></div></pre></td></tr></table></figure>
-<ul>
-<li>示例2：</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">输入: nums = [<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>], k = <span class="number">1</span></div><div class="line">输出: <span class="literal">true</span></div></pre></td></tr></table></figure>
-<ul>
-<li>示例3：</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">输入: nums = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>], k = <span class="number">2</span></div><div class="line">输出: <span class="literal">false</span></div></pre></td></tr></table></figure>
-<h4 id="解法1：暴力法"><a href="#解法1：暴力法" class="headerlink" title="解法1：暴力法"></a>解法1：暴力法</h4><p>双重遍历，依次比较查找，时间复杂度为O(n^2)。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function">BOOL <span class="title">checkTheSameNumberWithSpecificIndex1</span><span class="params">(NSArray&lt;NSNumber *&gt; *nums, NSInteger target)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (nums.count &lt;= <span class="number">1</span>) &#123;</div><div class="line">        <span class="keyword">return</span> NO;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> (NSInteger i = <span class="number">0</span>; i &lt; nums.count; i++) &#123;</div><div class="line">        <span class="comment">// 当前数值</span></div><div class="line">        NSInteger currentValue = [nums[i] integerValue];</div><div class="line">        <span class="comment">// 在依次查看之后的数据值是否相同</span></div><div class="line">        <span class="keyword">for</span> (NSInteger j = i + <span class="number">1</span>; j &lt; nums.count; j++) &#123;</div><div class="line">            NSInteger nextValue = [nums[j] integerValue];</div><div class="line">            <span class="keyword">if</span> (currentValue == nextValue) &#123;</div><div class="line">                <span class="comment">// 索引差是否符合要求</span></div><div class="line">                <span class="keyword">if</span> (<span class="built_in">labs</span>(j - i) &lt;= target) &#123;</div><div class="line">                    <span class="keyword">return</span> YES;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> NO;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="解法2：哈希表"><a href="#解法2：哈希表" class="headerlink" title="解法2：哈希表"></a>解法2：哈希表</h4><p>利用哈希表（OC中使用NSDictionary对象）的快速查找降低了复杂度，同时进行比较并更新。时间复杂度降低为O(n)。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="function">BOOL <span class="title">checkTheSameNumberWithSpecificIndex2</span><span class="params">(NSArray&lt;NSNumber *&gt; *nums, NSInteger target)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (nums.count &lt;= <span class="number">1</span>) &#123;</div><div class="line">        <span class="keyword">return</span> NO;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 插入到哈希表中，同时检查：如果数值对应的key已经存在，则使用其索引与当前索引进行比较。符合要求则返回；不符合则插入新索引，继续向后检查</span></div><div class="line">    NSMutableDictionary *hashTable = [[NSMutableDictionary alloc] initWithCapacity:<span class="number">10</span>];</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> (NSInteger index = <span class="number">0</span>; index &lt; nums.count; index++) &#123;</div><div class="line">        NSNumber *currentItem = nums[index];</div><div class="line">        NSNumber *indexItem = hashTable[currentItem];</div><div class="line">        <span class="keyword">if</span> (!indexItem) &#123;</div><div class="line">            <span class="comment">// 不存在，插入（key为数据值，value为索引）</span></div><div class="line">            hashTable[currentItem] = @(index);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// 存在，取出value索引值，进行比较</span></div><div class="line">            <span class="keyword">if</span>(<span class="built_in">labs</span>(indexItem.integerValue - index) &lt;= target) &#123;</div><div class="line">                <span class="comment">// 符合要求</span></div><div class="line">                <span class="keyword">return</span> YES;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="comment">// 不符合，更新此索引值</span></div><div class="line">                hashTable[currentItem] = @(index);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> NO;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h4 id=&quot;题目&quot;&gt;&lt;a href=&quot;#题目&quot; class=&quot;headerlink&quot; title=&quot;题目&quot;&gt;&lt;/a&gt;题目&lt;/h4&gt;&lt;p&gt;给定一个整数数组和一个整数 k，判断数组中是否存在两个不同的索引 i 和 j，使得 nums [i] = nums [j]，并且 i 和 j 的差的绝对值最大为 k。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="算法学习" scheme="http://yoursite.com/tags/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>数组中的两数之和为指定的值，求此两数的索引</title>
-    <link href="http://yoursite.com/2019/02/21/%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C%E4%B8%BA%E6%8C%87%E5%AE%9A%E7%9A%84%E5%80%BC%EF%BC%8C%E6%B1%82%E6%AD%A4%E4%B8%A4%E6%95%B0%E7%9A%84%E7%B4%A2%E5%BC%95/"/>
-    <id>http://yoursite.com/2019/02/21/数组中的两数之和为指定的值，求此两数的索引/</id>
-    <published>2019-02-20T16:37:10.079Z</published>
-    <updated>2019-02-20T16:37:10.079Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h4><p>给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。</p>
-<p>你可以假设每种输入只会对应一个答案。但是，你不能重复利用这个数组中同样的元素。</p>
-<a id="more"></a>
-<ul>
-<li>示例：</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">给定 nums = [<span class="number">2</span>, <span class="number">7</span>, <span class="number">11</span>, <span class="number">15</span>], target = <span class="number">9</span></div><div class="line">因为 nums[<span class="number">0</span>] + nums[<span class="number">1</span>] = <span class="number">2</span> + <span class="number">7</span> = <span class="number">9</span></div><div class="line">所以返回 [<span class="number">0</span>, <span class="number">1</span>]</div></pre></td></tr></table></figure>
-<h4 id="解法1：暴力法"><a href="#解法1：暴力法" class="headerlink" title="解法1：暴力法"></a>解法1：暴力法</h4><p>依次遍历数组中的每个数据，查看与数组中的其他数据之和是否为指定的值。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">NSArray&lt;NSNumber *&gt; *getSumIndex1(NSArray&lt;NSNumber *&gt; *nums, NSInteger target) &#123;</div><div class="line">    <span class="comment">// 注意：标准解法需要双重遍历原数组确定索引，时间复杂度为O(n^2)，这里使用NSArray的API进行了简化</span></div><div class="line">    NSArray *sumIndexInfo;</div><div class="line">    <span class="keyword">for</span> (NSNumber *item in nums) &#123;</div><div class="line">        <span class="comment">// 当前索引</span></div><div class="line">        NSInteger currentIndex = [nums indexOfObject:item];</div><div class="line">        <span class="comment">// 获取差值</span></div><div class="line">        NSNumber *result = @(target - item.integerValue);</div><div class="line">        <span class="comment">// 查看是否在数组中</span></div><div class="line">        NSInteger resultIndex = [nums indexOfObject:result];</div><div class="line">        <span class="keyword">if</span> ((resultIndex != NSNotFound)</div><div class="line">            &amp;&amp; (resultIndex != currentIndex)) &#123;</div><div class="line">            <span class="comment">// 找到，得到索引并返回</span></div><div class="line">            sumIndexInfo = @[@(currentIndex), @(resultIndex)];</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> sumIndexInfo;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="解法2：两次遍历哈希表"><a href="#解法2：两次遍历哈希表" class="headerlink" title="解法2：两次遍历哈希表"></a>解法2：两次遍历哈希表</h4><p>这里使用了NSDictionary类进行实现，目的是为了快速查找到数据对应的索引：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">NSArray&lt;NSNumber *&gt; *getSumIndex2(NSArray&lt;NSNumber *&gt; *nums, NSInteger target) &#123;</div><div class="line">    <span class="comment">// 使用哈希表进行存取，加快查找速度</span></div><div class="line">    NSMutableDictionary *hashTable = [@&#123;&#125; mutableCopy];</div><div class="line">    <span class="keyword">for</span> (NSInteger index = <span class="number">0</span>; index &lt; nums.count; index++) &#123;</div><div class="line">        <span class="comment">// key为数据值，value为索引（目的为了快速通过数值查询到索引）</span></div><div class="line">        [hashTable setObject:@(index) forKey:nums[index]];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    NSArray *sumIndexInfo;</div><div class="line">    <span class="keyword">for</span> (NSInteger index = <span class="number">0</span>; index &lt; nums.count; index++) &#123;</div><div class="line">        NSInteger currentValue = [nums[index] integerValue];</div><div class="line">        <span class="comment">// 获取差值</span></div><div class="line">        NSNumber *result = @(target - currentValue);</div><div class="line">        <span class="comment">// 在哈希表中查找对应索引</span></div><div class="line">        NSNumber *resultIndex = [hashTable objectForKey:result];</div><div class="line">        <span class="keyword">if</span> ((resultIndex)</div><div class="line">            &amp;&amp; (resultIndex.integerValue != index)) &#123;</div><div class="line">            sumIndexInfo = @[@(index), resultIndex];</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> sumIndexInfo;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="解法3：一次遍历哈希表"><a href="#解法3：一次遍历哈希表" class="headerlink" title="解法3：一次遍历哈希表"></a>解法3：一次遍历哈希表</h4><p>遍历插入哈希表的同时，直接在表中查询，符合直接返回。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">NSArray&lt;NSNumber *&gt; *getSumIndex3(NSArray&lt;NSNumber *&gt; *nums, NSInteger target) &#123;</div><div class="line">    <span class="comment">// 简化了方法2，一次遍历同时直接查询</span></div><div class="line">    </div><div class="line">    NSArray *sumIndexInfo;</div><div class="line">    <span class="comment">// 使用哈希表进行存取，加快查找速度</span></div><div class="line">    NSMutableDictionary *hashTable = [@&#123;&#125; mutableCopy];</div><div class="line">    <span class="keyword">for</span> (NSInteger index = <span class="number">0</span>; index &lt; nums.count; index++) &#123;</div><div class="line">        NSNumber *currentItem = nums[index];</div><div class="line">        <span class="comment">// 获取差值</span></div><div class="line">        NSNumber *result = @(target - currentItem.integerValue);</div><div class="line">        <span class="comment">// 直接查询当前哈希表中是否已经包含差值对象</span></div><div class="line">        NSNumber *resultIndex = [hashTable objectForKey:result];</div><div class="line">        <span class="keyword">if</span> ((resultIndex)</div><div class="line">            &amp;&amp; (resultIndex.integerValue != index)) &#123;</div><div class="line">            sumIndexInfo = @[@(index), resultIndex];</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// key为数据值，value为索引（目的为了快速通过数值查询到索引）</span></div><div class="line">            [hashTable setObject:@(index) forKey:currentItem];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> sumIndexInfo;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>由于在OC的数组中已经包含了根据元素直接返回索引的高级API，故大幅度简化了解法1，使用哈希表快速返回索引也变得没有那么必要了。</p>
-</blockquote>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h4 id=&quot;题目&quot;&gt;&lt;a href=&quot;#题目&quot; class=&quot;headerlink&quot; title=&quot;题目&quot;&gt;&lt;/a&gt;题目&lt;/h4&gt;&lt;p&gt;给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。&lt;/p&gt;
-&lt;p&gt;你可以假设每种输入只会对应一个答案。但是，你不能重复利用这个数组中同样的元素。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="算法学习" scheme="http://yoursite.com/tags/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>数组中有重复元素吗？</title>
-    <link href="http://yoursite.com/2019/02/20/%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9C%89%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%E5%90%97%EF%BC%9F/"/>
-    <id>http://yoursite.com/2019/02/20/数组中有重复元素吗？/</id>
-    <published>2019-02-20T04:32:39.180Z</published>
-    <updated>2019-02-20T04:48:00.364Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h4><p>给定一个整数数组，判断是否存在重复元素。如果任何值在数组中出现至少两次，函数返回 true。如果数组中每个元素都不相同，则返回 false。</p>
-<a id="more"></a>
-<ul>
-<li>示例1：</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">输入: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">1</span>]</div><div class="line">输出: <span class="literal">true</span></div></pre></td></tr></table></figure>
-<ul>
-<li>示例2：</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">输入: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</div><div class="line">输出: <span class="literal">false</span></div></pre></td></tr></table></figure>
-<h4 id="解法1"><a href="#解法1" class="headerlink" title="解法1"></a>解法1</h4><ol>
-<li>对数组进行排序；</li>
-<li>遍历排序后的数组，若相邻数据相同，则包含重复数据；否则不包含。</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function">BOOL <span class="title">checkDuplicateNumber1</span><span class="params">(NSArray&lt;NSNumber *&gt;* targetInfo)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (targetInfo.count &lt;= <span class="number">1</span>) &#123;</div><div class="line">        <span class="keyword">return</span> NO;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 1.排序</span></div><div class="line">    NSArray *sortedInfo = [targetInfo sortedArrayUsingComparator:^NSComparisonResult(NSNumber* _Nonnull obj1, NSNumber* _Nonnull obj2) &#123;</div><div class="line">        <span class="comment">// obj1比obj2，升序；用obj2比obj1，降序</span></div><div class="line">        <span class="keyword">return</span> [obj1 compare:obj2];</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    <span class="comment">// 2.查看相邻两数是否相同</span></div><div class="line">    NSNumber *lastObj;</div><div class="line">    <span class="keyword">for</span> (NSNumber *currentObj in sortedInfo) &#123;</div><div class="line">        <span class="keyword">if</span> (!lastObj) &#123;</div><div class="line">            lastObj = currentObj;</div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (currentObj.integerValue == lastObj.integerValue) &#123;</div><div class="line">            <span class="keyword">return</span> YES;</div><div class="line">        &#125;</div><div class="line">        lastObj = currentObj;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> NO;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="解法2"><a href="#解法2" class="headerlink" title="解法2"></a>解法2</h4><p>转换为NSSet集合对象，若元素数少于原数组，则包含重复数据。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function">BOOL <span class="title">checkDuplicateNumber2</span><span class="params">(NSArray&lt;NSNumber *&gt;* targetInfo)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (targetInfo.count &lt;= <span class="number">1</span>) &#123;</div><div class="line">        <span class="keyword">return</span> NO;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 转化为NSSet对象，若元素比原数组少，则有相同数据</span></div><div class="line">    NSSet *setInfo = [NSSet setWithArray:targetInfo];</div><div class="line">    <span class="keyword">return</span> setInfo.count != targetInfo.count;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h4 id=&quot;题目&quot;&gt;&lt;a href=&quot;#题目&quot; class=&quot;headerlink&quot; title=&quot;题目&quot;&gt;&lt;/a&gt;题目&lt;/h4&gt;&lt;p&gt;给定一个整数数组，判断是否存在重复元素。如果任何值在数组中出现至少两次，函数返回 true。如果数组中每个元素都不相同，则返回 false。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="算法学习" scheme="http://yoursite.com/tags/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Autolayout之带有真实内容尺寸的视图</title>
-    <link href="http://yoursite.com/2019/02/19/Autolayout%E4%B9%8B%E5%B8%A6%E6%9C%89%E7%9C%9F%E5%AE%9E%E5%86%85%E5%AE%B9%E5%B0%BA%E5%AF%B8%E7%9A%84%E8%A7%86%E5%9B%BE/"/>
-    <id>http://yoursite.com/2019/02/19/Autolayout之带有真实内容尺寸的视图/</id>
-    <published>2019-02-19T03:56:24.828Z</published>
-    <updated>2019-02-19T03:56:24.828Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>注：本文节选并翻译自<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/ViewswithIntrinsicContentSize.html#//apple_ref/doc/uid/TP40010853-CH13-SW1" target="_blank" rel="external">Views with Intrinsic Content Size</a></p>
-</blockquote>
-<h4 id="动态高度的Label和Text-Field"><a href="#动态高度的Label和Text-Field" class="headerlink" title="动态高度的Label和Text Field"></a>动态高度的Label和Text Field</h4><p><a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/ViewswithIntrinsicContentSize.html#//apple_ref/doc/uid/TP40010853-CH13-SW8" target="_blank" rel="external">简单的Label和Text Field</a>示例中，通过假定text field总是比name label更高简化了布局逻辑。可是，这不总是准确的。如果你增加label的字体大小到一定程度，它将会比text field更高。</p>
-<a id="more"></a>
-<p>本示例通过在运行期间高度最高的控件动态设置了所有控件的垂直间距。当使用标准系统字体是，本示例看起来与<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/ViewswithIntrinsicContentSize.html#//apple_ref/doc/uid/TP40010853-CH13-SW8" target="_blank" rel="external">简单的Label和Text Field</a>相同。可是，当你增加label的字体到36号时，布局的竖直间距会使用label的顶部距离重新计算。</p>
-<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Label_and_Text_Field_Pair_2x.png" alt="img"></p>
-<p>这当然是一个人为设置的例子。毕竟，如果你增加了label字体大小，通常来说你还应该增加text field的字体大小。可是，在动态类型控件和指定尺寸控件（如图片）同时出现时，如果通过iPhone的辅助功能设置了超级超级大的字体时，此技术就可以证明是有效的。</p>
-<h5 id="视图和约束"><a href="#视图和约束" class="headerlink" title="视图和约束"></a>视图和约束</h5><p>就像<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/ViewswithIntrinsicContentSize.html#//apple_ref/doc/uid/TP40010853-CH13-SW8" target="_blank" rel="external">简单的Label和Text Field</a>中一样设置好视图层级，但是我们使用了稍微复杂一些的约束：</p>
-<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/dynamic_height_label_and_text_field_2x.png" alt="img"></p>
-<ol>
-<li>Name Label.Leading = Superview.LeadingMargin</li>
-<li>Name Text Field.Trailing = Superview.TrailingMargin</li>
-<li>Name Text Field.Leading = Name Label.Trailing + Standard</li>
-<li>Name Label.Top &gt;= Top Layout Guide.Bottom + 20.0</li>
-<li>Name Label.Top = Top Layout Guide.Bottom + 20.0 (Priority 249)</li>
-<li>Name Text Field.Top &gt;= Top Layout Guide.Bottom + 20.0</li>
-<li>Name Text Field.Top = Top Layout Guide.Bottom + 20.0 (Priority 249)</li>
-<li>Name label.Baseline = Name Text Field.Baseline</li>
-</ol>
-<h5 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h5><p>要让text field拉伸来填满可用空间，它的抗拉伸优先级必须低于label的。默认来说，Interface Builder会自动将label的抗拉伸优先级设置为251，text field的为250.你可以在尺寸检查器中验证这个数值。</p>
-<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>Horizontal hugging</th>
-<th>Vertical hugging</th>
-<th>Horizontal resistance</th>
-<th>Vertical resistance</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Name Label</td>
-<td>251</td>
-<td>251</td>
-<td>750</td>
-<td>750</td>
-</tr>
-<tr>
-<td>Name Text Field</td>
-<td>250</td>
-<td>250</td>
-<td>750</td>
-<td>750</td>
-</tr>
-</tbody>
-</table>
-<h5 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h5><p>本例中，对每一个控件都是用了一对约束。一个必须的且大于或等于的约束定义了控件自身和布局指导线之间的最小距离，同时，一个可选约束试图将此距离明确设置为20。</p>
-<p>对于尺寸更高的控件，这两个约束全部满足，故系统会会在离布局指导线20点距离的地方放置该控件。可是，对于较矮的那个，只有最小距离约束可以满足。另一个约束会被忽略。这使得在运行期间，当控件的高度改变时，Auto Layout系统可以动态重新计算布局。</p>
-<blockquote>
-<p><strong>说明</strong></p>
-<p>确保将可选约束优先级的值设置得低于默认抗拉伸优先级（250）。否则，系统会破坏抗拉伸约束并拉伸视图而不是重新定位。<br>当使用基线定位进行布局时，某些地方可能会导致特别疑惑，因为只有当文字的相关视图以真实内容尺寸显示时，基线定位才是有效的。尽管包含了一个必要的基线约束，如果系统修改了其中一个视图的尺寸，文字可能就不会正常排列了。</p>
-</blockquote>
-<h4 id="等间距的两个按钮"><a href="#等间距的两个按钮" class="headerlink" title="等间距的两个按钮"></a>等间距的两个按钮</h4><p>在样式上看，这个例子和<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/ViewswithIntrinsicContentSize.html#//apple_ref/doc/uid/TP40010853-CH13-SW4" target="_blank" rel="external">两个等宽按钮</a>示例（见截图）基本相同。可是，在本例中，按钮的宽度基于带有最长标题的按钮。如果空间足够，所有按钮都会被拉伸直到他们同时满足最长按钮的真实内容尺寸。所有额外的空间会在按钮周围平均分配。</p>
-<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/Two_Buttons_with_Equal_Spacing_screen_2x.png" alt="img"></p>
-<p>在iPhone上，<em>两个等宽按钮</em>和<em>等间距的两个按钮</em>在竖屏状态下的布局基本相同。只有当你把设备旋转到横屏方向时区别才会变得明显（或使用更大的设备，如iPad）。</p>
-<h5 id="视图和约束-1"><a href="#视图和约束-1" class="headerlink" title="视图和约束"></a>视图和约束</h5><p>在Interface Builder，拖拽并放置两个按钮和三个视图对象。把按钮放在视图中间，之后按照如下方式设置约束。</p>
-<p><img src="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/two_buttons_with_equal_spacing_2x.png" alt="img"></p>
-<ol>
-<li>Leading Dummy View.Leading = Superview.LeadingMargin</li>
-<li>Short Button.Leading = Leading Dummy View.Trailing</li>
-<li>Center Dummy View.Leading = Short Button.Trailing</li>
-<li>Long Button.Leading = Center Dummy View.Trailing</li>
-<li>Trailing Dummy View.Leading = Long Button.Trailing</li>
-<li>Trailing Dummy View.Trailing = Superview.TrailingMargin</li>
-<li>Bottom Layout Guide.Top = Leading Dummy View.Bottom + 20.0</li>
-<li>Bottom Layout Guide.Top = Short Button.Bottom + 20.0</li>
-<li>Bottom Layout Guide.Top = Center Dummy View.Bottom + 20.0</li>
-<li>Bottom Layout Guide.Top = Long Button.Bottom + 20.0</li>
-<li>Bottom Layout Guide.Top = Trailing Dummy View.Bottom + 20.0</li>
-<li>Short Button.Leading &gt;= Superview.LeadingMargin</li>
-<li>Long Button.Leading &gt;= Short Button.Trailing + Standard</li>
-<li>Superview.TrailingMargin &gt;= Long Button.Trailing</li>
-<li>Leading Dummy View.Width = Center Dummy View.Width</li>
-<li>Leading Dummy View.Width = Trailing Dummy View.Width</li>
-<li>Short Button.Width = Long Button.Width</li>
-<li>Leading Dummy View.Height = 0.0</li>
-<li>Center Dummy View.Height = 0.0</li>
-<li>Trailing Dummy View.Height = 0.0</li>
-</ol>
-<h5 id="属性-1"><a href="#属性-1" class="headerlink" title="属性"></a>属性</h5><p>给按钮设置一个可见的背景色，使在设备旋转时按钮的结构改变可以更容易看出来。此外，给按钮设置不同长度的标题。所有按钮应该基于最长标题来设置尺寸。</p>
-<table>
-<thead>
-<tr>
-<th>视图</th>
-<th>属性</th>
-<th>值</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Short Button</td>
-<td>Background</td>
-<td>Light Gray Color</td>
-</tr>
-<tr>
-<td>Short Button</td>
-<td>Title</td>
-<td>Short</td>
-</tr>
-<tr>
-<td>Long Button</td>
-<td>Background</td>
-<td>Light Gray Color</td>
-</tr>
-<tr>
-<td>Long Button</td>
-<td>Title</td>
-<td>Much Longer Button Title</td>
-</tr>
-</tbody>
-</table>
-<h5 id="讨论-1"><a href="#讨论-1" class="headerlink" title="讨论"></a>讨论</h5><p>如图你看到的一样，这些约束已经变得复杂了。本例只是用来展示指定技术的，在真正的app里你应该考虑使用Stack View。</p>
-<p>在本例中，你想要让空白区域随着父视图尺寸改变而改变。这意味着你需要一组等宽约束来控制空白区域的宽度；可是，你不能在空的地方直接设置约束。你可以设置尺寸约束的至少是一个对象。</p>
-<p>在本例中，你用了几个虚拟视图来代表空白空间。这些视图是UIView类的空实例。在本例中，它们的高度被设置为0来最小化对视图层级的影响。</p>
-<blockquote>
-<p><strong>说明</strong></p>
-<p>虚拟视图会增加布局的性能损耗，所以你应该谨慎使用。如果这些视图非常大，其图形上下文会占用大量的内存，尽管它们没有包含任何有用信息。</p>
-<p>此外，这些视图加入到了视图层级的响应者链中。这意味着它们会响应消息，如触摸检测，这些消息会沿着响应者链进行传递。如果没有小心处理，这些视图可能会打断并响应这些消息，产生难以排查的bug。</p>
-</blockquote>
-<p>或者，你可以使用<a href="https://developer.apple.com/documentation/uikit/uilayoutguide" target="_blank" rel="external">UILayoutGuide</a>类实例来代表空白区域。这个轻量级的类使用一个矩形结构以便可以加入到Auto Layout的约束中。布局指导对象（layout guides）没有图形上下文，并且他们不会加入到视图层级中。这使布局指导对象对于分组项目或是定义空白区域来说特别合适。</p>
-<p>不幸的是，你不能在Interface Builder的场景对象中添加布局指导对象，并且在基于story-board的场景中使用代码创建该对象会变得非常复杂。一般来说，使用StoryBoard和Interface Builder要比使用自定义布局指导对象更好。</p>
-<p>本例使用了<em>大于等于</em>约束来设置按钮间的最小间距。“必须级”约束还确保了按钮一直拥有相同宽度，并且虚拟视图也都拥有相同宽度（虽然，他们与按钮的宽度不同）。剩下的约束通过按钮的CHCR优先级自行管理。如果空间不足，虚拟视图就会被忽略为0宽度，所有按钮会将虚拟视图的空间均分（在按钮之间使用基本间距）。一旦可用空间增加，所有按钮就会扩大直到达到最大按钮的真实内容尺寸为止，之后所有的虚拟视图也开始扩大。虚拟视图会持续扩大来填充所有可用空间。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;注：本文节选并翻译自&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/ViewswithIntrinsicContentSize.html#//apple_ref/doc/uid/TP40010853-CH13-SW1&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Views with Intrinsic Content Size&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h4 id=&quot;动态高度的Label和Text-Field&quot;&gt;&lt;a href=&quot;#动态高度的Label和Text-Field&quot; class=&quot;headerlink&quot; title=&quot;动态高度的Label和Text Field&quot;&gt;&lt;/a&gt;动态高度的Label和Text Field&lt;/h4&gt;&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/ViewswithIntrinsicContentSize.html#//apple_ref/doc/uid/TP40010853-CH13-SW8&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;简单的Label和Text Field&lt;/a&gt;示例中，通过假定text field总是比name label更高简化了布局逻辑。可是，这不总是准确的。如果你增加label的字体大小到一定程度，它将会比text field更高。&lt;/p&gt;
     
     </summary>
     
