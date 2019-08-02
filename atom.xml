@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-08-02T03:17:28.411Z</updated>
+  <updated>2019-08-02T06:25:49.841Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,10 +16,56 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>union 联合体</title>
+    <link href="http://yoursite.com/2019/08/02/union%20%E8%81%94%E5%90%88%E4%BD%93/"/>
+    <id>http://yoursite.com/2019/08/02/union 联合体/</id>
+    <published>2019-08-02T06:25:30.791Z</published>
+    <updated>2019-08-02T06:25:49.841Z</updated>
+    
+    <content type="html"><![CDATA[<p>基本声明：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 声明联合体并创建testUnion实例</span></div><div class="line"><span class="keyword">union</span> U &#123;</div><div class="line">    <span class="keyword">int</span> i;</div><div class="line">    <span class="keyword">double</span> d;</div><div class="line">    <span class="keyword">char</span> c;</div><div class="line">    <span class="keyword">char</span> <span class="built_in">array</span>[<span class="number">9</span>];</div><div class="line">&#125; testUnion;</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<blockquote>
+<p>union是所有内部成员共用同一块内存，所有成员的内存地址相同，与union的起始地址相同。故修改任意成员，会导致其他成员的值都会变化（共享同一块内存）。<br>union的大小（sizeOf）需要可以装下最大尺寸的成员。且由于内存对齐，大小是所有成员尺寸的整数倍。</p>
+</blockquote>
+<p>故testUnion的大小为：<br>i = 4; d = 8; c = 1; array = 9 <em> 1;<br>sizeOf(testUnion) = 16; （最大是double成员的8字节，由于array总共9字节，故需要扩展为2倍，8 </em> 2 = 16字节）。</p>
+<blockquote>
+<p>union与struct的区别：</p>
+<ol>
+<li>struct的大小是所有成员尺寸之和，union是不小于最大成员尺寸。因此union内存使用更加灵活。</li>
+<li>union同时只能保存一个成员的值，struct每个成员的值独立（有独立的内存地址）。</li>
+</ol>
+</blockquote>
+<p>union可以用于数据类型转换（如union实例包含int和array，传入array可以得到int数据）。</p>
+<hr>
+<blockquote>
+<p>相关资料：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/ac81470365ef" target="_blank" rel="external">union联合体与内存对齐</a></li>
+<li><a href="https://www.jianshu.com/p/0355f83ff557" target="_blank" rel="external">内存对齐，大端字节 序小端字节序验证</a></li>
+<li><a href="https://blog.csdn.net/microsues/article/details/6140329" target="_blank" rel="external">struct/class/union内存对齐原则</a></li>
+<li><a href="https://www.jianshu.com/p/3366f8d7cb2b" target="_blank" rel="external">2018-08-27 C语言union 联合体 复习</a></li>
+</ul>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;基本声明：&lt;/p&gt;
+&lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;7&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 声明联合体并创建testUnion实例&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;union&lt;/span&gt; U &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; i;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;double&lt;/span&gt; d;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;char&lt;/span&gt; c;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;built_in&quot;&gt;array&lt;/span&gt;[&lt;span class=&quot;number&quot;&gt;9&lt;/span&gt;];&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&amp;#125; testUnion;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
+  
+  <entry>
     <title>iOS中的锁 笔记</title>
     <link href="http://yoursite.com/2019/08/02/iOS%E4%B8%AD%E7%9A%84%E9%94%81%20%E7%AC%94%E8%AE%B0/"/>
     <id>http://yoursite.com/2019/08/02/iOS中的锁 笔记/</id>
-    <published>2019-08-02T03:17:16.607Z</published>
+    <published>2019-08-02T03:17:16.608Z</published>
     <updated>2019-08-02T03:17:28.411Z</updated>
     
     <content type="html"><![CDATA[<p><strong><u>会阻塞线程的锁，都属于互斥锁</u></strong></p>
@@ -70,8 +116,8 @@
     <title>Aspects源码学习笔记</title>
     <link href="http://yoursite.com/2019/07/30/Aspects%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     <id>http://yoursite.com/2019/07/30/Aspects源码学习笔记/</id>
-    <published>2019-07-30T09:33:09.261Z</published>
-    <updated>2019-08-02T03:16:17.201Z</updated>
+    <published>2019-07-30T09:33:09.262Z</published>
+    <updated>2019-08-02T03:16:17.202Z</updated>
     
     <content type="html"><![CDATA[<p>Aspects是一个可以动态hook指定方法的轻量级的库，AOP思想非常棒的体现。</p>
 <a id="more"></a>
@@ -349,7 +395,7 @@
     <link href="http://yoursite.com/2019/07/18/Objective-C%20Runtime%E7%BC%96%E7%A8%8B%E6%8C%87%E5%8D%97%E4%B9%8B%E6%B6%88%E6%81%AF%E8%BD%AC%E5%8F%91/"/>
     <id>http://yoursite.com/2019/07/18/Objective-C Runtime编程指南之消息转发/</id>
     <published>2019-07-18T03:28:28.431Z</published>
-    <updated>2019-07-18T03:28:39.994Z</updated>
+    <updated>2019-07-18T03:28:39.995Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>本文翻译自<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtForwarding.html" target="_blank" rel="external">Message Forwarding</a></p>
@@ -420,8 +466,8 @@
     <title>Objective-C Runtime编程指南之动态方法解析</title>
     <link href="http://yoursite.com/2019/07/18/Objective-C%20Runtime%E7%BC%96%E7%A8%8B%E6%8C%87%E5%8D%97%E4%B9%8B%E5%8A%A8%E6%80%81%E6%96%B9%E6%B3%95%E8%A7%A3%E6%9E%90/"/>
     <id>http://yoursite.com/2019/07/18/Objective-C Runtime编程指南之动态方法解析/</id>
-    <published>2019-07-18T03:27:44.798Z</published>
-    <updated>2019-07-18T03:28:10.382Z</updated>
+    <published>2019-07-18T03:27:44.799Z</published>
+    <updated>2019-07-18T03:28:10.383Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>本文翻译自<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtDynamicResolution.html#//apple_ref/doc/uid/TP40008048-CH102-SW1" target="_blank" rel="external">Dynamic Method Resolution</a></p>
@@ -537,7 +583,7 @@
     <link href="http://yoursite.com/2019/07/18/Objective-C%20Runtime%E7%BC%96%E7%A8%8B%E6%8C%87%E5%8D%97%E4%B9%8B%E4%B8%8E%E8%BF%90%E8%A1%8C%E6%97%B6%E7%B3%BB%E7%BB%9F%E8%BF%9B%E8%A1%8C%E4%BA%A4%E4%BA%92/"/>
     <id>http://yoursite.com/2019/07/18/Objective-C Runtime编程指南之与运行时系统进行交互/</id>
     <published>2019-07-18T03:26:14.107Z</published>
-    <updated>2019-07-18T03:26:37.011Z</updated>
+    <updated>2019-07-18T03:26:37.012Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>本文翻译自<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtInteracting.html" target="_blank" rel="external">Interacting with the Runtime
@@ -572,8 +618,8 @@
     <title>《大话数据结构》之树</title>
     <link href="http://yoursite.com/2019/04/12/%E3%80%8A%E5%A4%A7%E8%AF%9D%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E3%80%8B%E4%B9%8B%E6%A0%91/"/>
     <id>http://yoursite.com/2019/04/12/《大话数据结构》之树/</id>
-    <published>2019-04-12T15:10:28.590Z</published>
-    <updated>2019-04-12T15:10:28.590Z</updated>
+    <published>2019-04-12T15:10:28.591Z</published>
+    <updated>2019-04-12T15:10:28.591Z</updated>
     
     <content type="html"><![CDATA[<h3 id="1-概念"><a href="#1-概念" class="headerlink" title="1. 概念"></a>1. 概念</h3><p>与线性结构的“一对一”不同，<strong>树是“一对多”的数据结构</strong>。</p>
 <blockquote>
@@ -1064,8 +1110,8 @@
     <title>出现“ld：library not found for -lPods”的解决办法</title>
     <link href="http://yoursite.com/2019/03/20/%E5%B7%A5%E7%A8%8B%E5%AE%89%E8%A3%85CocoaPods%E5%90%8E%E9%94%99%E8%AF%AF%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/"/>
     <id>http://yoursite.com/2019/03/20/工程安装CocoaPods后错误的解决办法/</id>
-    <published>2019-03-20T02:57:18.102Z</published>
-    <updated>2019-03-20T03:01:20.945Z</updated>
+    <published>2019-03-20T02:57:18.103Z</published>
+    <updated>2019-03-20T03:01:20.946Z</updated>
     
     <content type="html"><![CDATA[<p>有的时候，下载的使用CocoaPods配置的工程时，使用“pod install”后，编译时会遇到“<strong>ld: library not found for -lPods</strong>”错误。可以按如下方式试着解决：</p>
 <p><img src="https://upload-images.jianshu.io/upload_images/450996-85fee0ff00dcf0b4.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="ld- library not found for -lPods.jpg"></p>
@@ -1094,7 +1140,7 @@
     <title>Autolayout的生命周期</title>
     <link href="http://yoursite.com/2019/03/19/Autolayout%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/"/>
     <id>http://yoursite.com/2019/03/19/Autolayout的生命周期/</id>
-    <published>2019-03-19T08:37:21.284Z</published>
+    <published>2019-03-19T08:37:21.285Z</published>
     <updated>2019-03-19T08:38:38.827Z</updated>
     
     <content type="html"><![CDATA[<p><img src="https://upload-images.jianshu.io/upload_images/450996-247348e79ae353ff.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Autolayout生命周期.jpg"></p>
@@ -1162,7 +1208,7 @@
     <link href="http://yoursite.com/2019/03/17/%E3%80%8A%E5%A4%A7%E8%AF%9D%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E3%80%8B%E4%B9%8B%E4%B8%B2/"/>
     <id>http://yoursite.com/2019/03/17/《大话数据结构》之串/</id>
     <published>2019-03-17T10:10:44.688Z</published>
-    <updated>2019-03-17T15:47:25.355Z</updated>
+    <updated>2019-03-17T15:47:25.356Z</updated>
     
     <content type="html"><![CDATA[<h3 id="1-朴素的字符串匹配方法"><a href="#1-朴素的字符串匹配方法" class="headerlink" title="1. 朴素的字符串匹配方法"></a>1. 朴素的字符串匹配方法</h3><h4 id="1-1-比较过程"><a href="#1-1-比较过程" class="headerlink" title="1.1 比较过程"></a>1.1 比较过程</h4><p>以主串T为基础，根据索引i对每个字符进行遍历，依次与目标串P的每个索引j的字符进行匹配。若字符相同，则两索引均后移，继续匹配；若不相同，则j恢复为0，从头开始，i回溯到开始成功匹配时索引的下一位。</p>
 <a id="more"></a>
@@ -1261,7 +1307,7 @@
     <link href="http://yoursite.com/2019/03/11/%E3%80%8A%E5%A4%A7%E8%AF%9D%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E3%80%8B%E4%B9%8B%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/"/>
     <id>http://yoursite.com/2019/03/11/《大话数据结构》之栈与队列/</id>
     <published>2019-03-11T14:54:44.101Z</published>
-    <updated>2019-03-11T14:55:05.040Z</updated>
+    <updated>2019-03-11T14:55:05.041Z</updated>
     
     <content type="html"><![CDATA[<h3 id="1-栈"><a href="#1-栈" class="headerlink" title="1. 栈"></a>1. 栈</h3><h4 id="1-1-定义"><a href="#1-1-定义" class="headerlink" title="1.1 定义"></a>1.1 定义</h4><p><strong>栈，即只能在表尾进行插入或删除操作的线性表。</strong></p>
 <p>其中，“表尾”称为“<strong>栈顶</strong>”，另一端则为“栈底”。栈是“<strong>后进先出</strong>”（LIFO）的线性表。</p>
@@ -1480,7 +1526,7 @@
     <link href="http://yoursite.com/2019/03/05/Autolayout%E4%B9%8B%E5%8F%AF%E8%A7%86%E5%8C%96%E8%AF%AD%E8%A8%80%EF%BC%88Visual%20Format%20Language%EF%BC%89/"/>
     <id>http://yoursite.com/2019/03/05/Autolayout之可视化语言（Visual Format Language）/</id>
     <published>2019-03-05T09:08:02.615Z</published>
-    <updated>2019-03-05T09:08:32.237Z</updated>
+    <updated>2019-03-05T09:08:32.238Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>注：本文翻译自<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/VisualFormatLanguage.html#//apple_ref/doc/uid/TP40010853-CH27-SW1" target="_blank" rel="external">Visual Format Language</a></p>
@@ -1642,8 +1688,8 @@
     <title>《大话数据结构》之算法的时间复杂度</title>
     <link href="http://yoursite.com/2019/03/05/%E3%80%8A%E5%A4%A7%E8%AF%9D%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E3%80%8B%E4%B9%8B%E7%AE%97%E6%B3%95%E7%9A%84%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/"/>
     <id>http://yoursite.com/2019/03/05/《大话数据结构》之算法的时间复杂度/</id>
-    <published>2019-03-05T07:23:16.913Z</published>
-    <updated>2019-03-05T07:23:38.226Z</updated>
+    <published>2019-03-05T07:23:16.914Z</published>
+    <updated>2019-03-05T07:23:38.227Z</updated>
     
     <content type="html"><![CDATA[<p>算法的时间复杂度一般是指算法的最坏执行情况（最大执行次数）。</p>
 <h4 id="1-大O表示法"><a href="#1-大O表示法" class="headerlink" title="1. 大O表示法"></a>1. 大O表示法</h4><p>衡量算法的复杂度（一般指时间复杂度）通常使用大O表示法，其推导的一般方式为：</p>
@@ -1807,7 +1853,7 @@
     <title>Autolayout之使用Scroll View</title>
     <link href="http://yoursite.com/2019/03/03/Autolayout%E4%B9%8B%E4%BD%BF%E7%94%A8Scroll%20View/"/>
     <id>http://yoursite.com/2019/03/03/Autolayout之使用Scroll View/</id>
-    <published>2019-03-03T04:19:33.191Z</published>
+    <published>2019-03-03T04:19:33.192Z</published>
     <updated>2019-03-03T04:19:59.696Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
@@ -1866,7 +1912,7 @@
     <link href="http://yoursite.com/2019/03/01/Autolayout%E4%B9%8B%E6%8C%87%E5%AE%9A%E7%B1%BB%E5%9E%8B%E5%B0%BA%E5%AF%B8%E7%9A%84%E5%B8%83%E5%B1%80%EF%BC%88Size%20Class%EF%BC%89/"/>
     <id>http://yoursite.com/2019/03/01/Autolayout之指定类型尺寸的布局（Size Class）/</id>
     <published>2019-03-01T07:35:41.941Z</published>
-    <updated>2019-03-01T07:45:11.645Z</updated>
+    <updated>2019-03-01T07:45:11.646Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>注：本文翻译自<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Size-ClassSpecificLayout.html#//apple_ref/doc/uid/TP40010853-CH26-SW1" target="_blank" rel="external">Size-Class-Specific Layout
@@ -1926,39 +1972,6 @@
     
     
       <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>对数组按需分组</title>
-    <link href="http://yoursite.com/2019/03/01/%E5%AF%B9%E6%95%B0%E7%BB%84%E6%8C%89%E9%9C%80%E5%88%86%E7%BB%84/"/>
-    <id>http://yoursite.com/2019/03/01/对数组按需分组/</id>
-    <published>2019-03-01T03:22:57.719Z</published>
-    <updated>2019-03-01T03:23:24.036Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h4><p>给定长度为 2n 的数组, 你的任务是将这些数分成 n 对, 例如 (a1, b1), (a2, b2), …, (an, bn) ，使得从1 到 n 的 min(ai, bi) 总和最大。</p>
-<a id="more"></a>
-<ul>
-<li>示例：</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">输入: [<span class="number">1</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">2</span>]</div><div class="line"></div><div class="line">输出: <span class="number">4</span></div><div class="line">解释: n 等于 <span class="number">2</span>, 最大总和为 <span class="number">4</span> = min(<span class="number">1</span>, <span class="number">2</span>) + min(<span class="number">3</span>, <span class="number">4</span>)。</div></pre></td></tr></table></figure>
-<h4 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h4><p>对于示例数组，所有的分组情况为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 1.</span></div><div class="line">[<span class="number">1</span>, <span class="number">4</span>], [<span class="number">2</span>, <span class="number">3</span>] <span class="comment">// 结果为 1 + 2 = 3</span></div><div class="line"><span class="comment">// 2.</span></div><div class="line">[<span class="number">1</span>, <span class="number">3</span>], [<span class="number">2</span>, <span class="number">4</span>] <span class="comment">// 结果为 1 + 2 = 3</span></div><div class="line"><span class="comment">// 3.</span></div><div class="line">[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>] <span class="comment">// 结果为 1 + 3 = 4</span></div></pre></td></tr></table></figure>
-<p>然而，当数据过多时，无法直接列举出所有情况。<br>因此，我们首先可以考虑将数据进行排序。并且，我们知道，min函数的功能即获取较小的数，忽略较大的数。根据以上列举情况可以也看出，最大和的分组方式即为从小到大依次分组。故可以得出结论：</p>
-<ol>
-<li>升序排列数组，得到有序数据。</li>
-<li>依次间隔获取数据并求和。</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function">NSInteger <span class="title">getMaxSumWithSeparatingArray</span><span class="params">(NSArray &lt;NSNumber *&gt;* info)</span> </span>&#123;</div><div class="line">    <span class="comment">// 1. 升序排列</span></div><div class="line">    NSArray *sortedInfo = [info sortedArrayUsingComparator:^NSComparisonResult(NSNumber *obj1, NSNumber *obj2) &#123;</div><div class="line">        <span class="keyword">return</span> [obj1 compare:obj2];</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    <span class="comment">// 2. 依次对奇数项求和</span></div><div class="line">    NSInteger sum = <span class="number">0</span>;</div><div class="line">    </div><div class="line">    NSInteger index = <span class="number">0</span>;</div><div class="line">    <span class="keyword">while</span> (index &lt; sortedInfo.count) &#123;</div><div class="line">        sum += [sortedInfo[index] integerValue];</div><div class="line">        index += <span class="number">2</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> sum;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h4 id=&quot;题目&quot;&gt;&lt;a href=&quot;#题目&quot; class=&quot;headerlink&quot; title=&quot;题目&quot;&gt;&lt;/a&gt;题目&lt;/h4&gt;&lt;p&gt;给定长度为 2n 的数组, 你的任务是将这些数分成 n 对, 例如 (a1, b1), (a2, b2), …, (an, bn) ，使得从1 到 n 的 min(ai, bi) 总和最大。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="算法学习" scheme="http://yoursite.com/tags/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/"/>
     
   </entry>
   

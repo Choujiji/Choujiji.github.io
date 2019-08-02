@@ -184,6 +184,69 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-内存管理篇： 3.autorelease" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/06/内存管理篇： 3.autorelease/">《Objective-C高级编程 iOS与OS X多线程与内存管理》3</a>
+    </h1>
+  
+
+        
+        <a href="/2019/01/06/内存管理篇： 3.autorelease/" class="archive-article-date">
+  	<time datetime="2019-01-06T07:43:19.318Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="内存管理篇：-3-autorelease"><a href="#内存管理篇：-3-autorelease" class="headerlink" title="内存管理篇： 3.autorelease"></a>内存管理篇： 3.autorelease</h2><blockquote>
+<p><strong>autorelease的实质：</strong><br><em>将创建的对象加入到NSAutoreleasePool管理“数组”中，并告知ARC系统暂时不要对此对象进行处理。待pool对象在其所属的NSRunLoop循环一次完成，准备释放（drain）时，对“数组”中的所有对象依次调用release方法。此时ARC再对对象进行内存管理。</em></p>
+</blockquote>
+        
+          <a class="article-more-a" href="/2019/01/06/内存管理篇： 3.autorelease/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/01/06/内存管理篇： 3.autorelease/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-内存管理篇： 2.alloc-retain-release-dealloc的实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -197,7 +260,7 @@
 
         
         <a href="/2019/01/06/内存管理篇： 2.alloc-retain-release-dealloc的实现/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:42:32.543Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
+  	<time datetime="2019-01-06T07:42:32.544Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
 </a>
         
       </header>
@@ -258,7 +321,7 @@
 
         
         <a href="/2019/01/06/内存管理篇：1.引用计数的思考方式/" class="archive-article-date">
-  	<time datetime="2019-01-06T07:40:57.231Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
+  	<time datetime="2019-01-06T07:40:57.232Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
 </a>
         
       </header>
@@ -587,7 +650,7 @@
 
         
         <a href="/2018/09/05/设计模式之建造者模式/" class="archive-article-date">
-  	<time datetime="2018-09-05T04:03:27.471Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-05</time>
+  	<time datetime="2018-09-05T04:03:27.472Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-05</time>
 </a>
         
       </header>
@@ -754,79 +817,9 @@
 
 
   
-    <article id="post-KVC基础学习总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/04/KVC基础学习总结/">KVC基础学习总结</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/04/KVC基础学习总结/" class="archive-article-date">
-  	<time datetime="2018-04-04T06:16:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<ul>
-<li><strong>对象属性值的设置和获取</strong></li>
-<li><strong>访问集合属性值的专用API</strong></li>
-<li><strong>使用集合操作符</strong></li>
-<li><strong>描述非对象的值（基本数据类型和结构体等）</strong></li>
-<li><strong>属性类型验证</strong></li>
-<li><strong>访问器的搜索方式</strong></li>
-</ul>
-</blockquote>
-        
-          <a class="article-more-a" href="/2018/04/04/KVC基础学习总结/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/04/KVC基础学习总结/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
     </nav>
   
 
@@ -932,11 +925,11 @@ return o(t,i(n),arguments.length<3?void 0:u(arguments[2]))}})},function(t,n,r){v
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">react-native</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color3">react-native</a>
               </li>
             
             <div class="clearfix"></div>
