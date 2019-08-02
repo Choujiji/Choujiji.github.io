@@ -6,17 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2019/2 | 臭吉吉的瞎记空间</title>
+  <title>iOS中的锁 笔记 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="督促自己好好学习哦~">
-<meta property="og:type" content="website">
-<meta property="og:title" content="臭吉吉的瞎记空间">
-<meta property="og:url" content="http://yoursite.com/archives/2019/02/index.html">
+  <meta name="description" content="会阻塞线程的锁，都属于互斥锁">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS中的锁 笔记">
+<meta property="og:url" content="http://yoursite.com/2019/08/02/iOS中的锁 笔记/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="督促自己好好学习哦~">
+<meta property="og:description" content="会阻塞线程的锁，都属于互斥锁">
+<meta property="og:updated_time" content="2019-08-02T03:17:28.411Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="臭吉吉的瞎记空间">
-<meta name="twitter:description" content="督促自己好好学习哦~">
+<meta name="twitter:title" content="iOS中的锁 笔记">
+<meta name="twitter:description" content="会阻塞线程的锁，都属于互斥锁">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -182,74 +184,65 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-iOS中的锁 笔记" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      iOS中的锁 笔记
+    </h1>
+  
+
+        
+        <a href="/2019/08/02/iOS中的锁 笔记/" class="archive-article-date">
+  	<time datetime="2019-08-02T03:17:16.607Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-02</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong><u>会阻塞线程的锁，都属于互斥锁</u></strong></p>
+<a id="more"></a>
+<h4 id="NSLock"><a href="#NSLock" class="headerlink" title="NSLock"></a>NSLock</h4><p>NSLock的<em>lock</em>方法和<em>lockBeforeDate:</em> 方法会阻塞线程；<em>tryLock</em>方法不会阻塞线程。<br>多个线程同时加锁时，其他请求锁的线程按照先进先出执行。</p>
+<h4 id="NSConditionLock"><a href="#NSConditionLock" class="headerlink" title="NSConditionLock"></a>NSConditionLock</h4><p>NSConditionLock与NSLock行为相似，只不过可以设置条件（condition整数），可以设置为在满足condition时才进行<em>lockWithCondition:</em>、<em>unlockWithCondition:</em>、<em>tryLockWithCondition:</em> 等操作（当然也可以不设置条件）。</p>
+<p>故<strong>可以使用NSConditionLock设置线程（任务）间的依赖关系，用GCD可以结合着使用进行实现</strong>。</p>
+<h4 id="NSRecursiveLock"><a href="#NSRecursiveLock" class="headerlink" title="NSRecursiveLock"></a>NSRecursiveLock</h4><p>递归锁。可以在单个线程中返回加锁或解锁，其自身会记录加锁和解锁的次数，只有次数匹配时，才会真正的解锁，其他线程才可以加锁成功。</p>
+<blockquote>
+<p>NSLock、NSConditionLock和NSRecursiveLock是先轮询，之后再进入waiting状态。</p>
+</blockquote>
+<h4 id="NSCondition"><a href="#NSCondition" class="headerlink" title="NSCondition"></a>NSCondition</h4><p>NSCondition由 一个锁 + 条件检查器 组成。在每个线程中，都可以对condition对象单独进行<em>lock</em>和<em>unlock</em>，不影响其他线程再次加锁或解锁。</p>
+<p>condition对象调用<em>wait</em>后，直接进入waiting状态，阻塞当前线程执行。等待其他线程对condition调用<em>signal</em> 或 <em>broadcast</em> 后，唤醒1个或所有的waiting线程，继续向下执行。</p>
+<blockquote>
+<p>以上四种锁都是遵循<em>NSLocking</em>协议。</p>
+</blockquote>
+<h4 id="synchronized"><a href="#synchronized" class="headerlink" title="@synchronized"></a>@synchronized</h4><p>@synchronized同步锁会将指定的参数对象进行加锁。只有对相同对象进行加锁时，后加锁的线程才会被阻塞。否则无效。</p>
+<h4 id="dispatch-semaphore"><a href="#dispatch-semaphore" class="headerlink" title="dispatch_semaphore"></a>dispatch_semaphore</h4><p>信号量是GCD进行同步的一种方式。<br>通过<em>dispatch_semaphore_create</em>创建信号量（指定信号值，即同时执行的任务数）。<em>dispatch_semaphore_wait</em>函数会对信号值进行检测：当信号值大于1时，信号值减1，继续向下执行任务，在信号值是1的信号量中，相当于加锁操作；当信号值为0时，调用线程被阻塞。只有当其他线程调用<em>dispatch_semaphpre_signal</em>进行信号恢复后（保证信号值重新大于0），被阻塞的线程继续向下执行。</p>
+<blockquote>
+<p>**dispatch_semaphore与NSCondition都是基于信号的锁，区别是信号量会保存发送的信号，NSCondition则不可以（只能signal）。</p>
+</blockquote>
+<h4 id="OSSpinLock"><a href="#OSSpinLock" class="headerlink" title="OSSpinLock"></a>OSSpinLock</h4><p>自旋锁现在已经不建议使用了，具体原因见上面（优先级反转造成死锁）。<br>苹果推荐使用<os lock.h="">中的<em>os_unfair_lock()</em> 锁替代。</os></p>
+<blockquote>
+<p>自旋锁与互斥锁都是抢占式，任何时候都只能有一个保持者。区别是：互斥锁中，调用者在别的运算单元抢占锁后进入睡眠，等待结束后被唤醒进行抢占；自旋锁，调用者在被运算单元抢占锁后不睡眠，循环查看自旋锁是否被释放。<br>故自旋锁适合保持锁时间较短的情况，这种情况下其效率远高于互斥锁。</p>
+</blockquote>
+<p>缺点：需要获取锁的线程优先级相同。如果低优先级的线程获得锁后，高优先级线程会处于busy-wait状态，占用大量CPU。而低优先级线程无法获取CPU时间，导致任务无法完成，也就无法释放锁。造成死锁（优先级反转）。</p>
+<blockquote>
+<p>参考资料：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/ddbe44064ca4" target="_blank" rel="external">iOS 常见知识点（三）：Lock</a></li>
+<li><a href="https://www.jianshu.com/p/a321377c5639" target="_blank" rel="external">线程安全: 互斥锁和自旋锁(10种)</a></li>
+</ul>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/25/如何排列硬币？/" class="archive-article-date">
-  	<time datetime="2019-02-25T06:25:24.535Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-25</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/25/如何排列硬币？/">如何排列硬币？</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">算法学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/24/Autolayout之调试技巧和提示/" class="archive-article-date">
-  	<time datetime="2019-02-24T05:23:50.350Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-24</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/24/Autolayout之调试技巧和提示/">Autolayout之调试技巧和提示</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -261,247 +254,89 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/08/02/iOS中的锁 笔记/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/22/元素中有重复元素吗？（2）/" class="archive-article-date">
-  	<time datetime="2019-02-22T03:51:16.319Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-22</time>
-</a>
-        </div>
-    	 
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/22/元素中有重复元素吗？（2）/">元素中有重复元素吗？（2）</a>
-    </h1>
+  
+    <a href="/2019/07/30/Aspects源码学习笔记/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Aspects源码学习笔记</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+  
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">算法学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/21/数组中的两数之和为指定的值，求此两数的索引/" class="archive-article-date">
-  	<time datetime="2019-02-20T16:37:10.078Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-21</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/21/数组中的两数之和为指定的值，求此两数的索引/">数组中的两数之和为指定的值，求此两数的索引</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">算法学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/20/数组中有重复元素吗？/" class="archive-article-date">
-  	<time datetime="2019-02-20T04:32:39.179Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-20</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/20/数组中有重复元素吗？/">数组中有重复元素吗？</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">算法学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/19/Autolayout之带有真实内容尺寸的视图/" class="archive-article-date">
-  	<time datetime="2019-02-19T03:56:24.827Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-19</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/19/Autolayout之带有真实内容尺寸的视图/">Autolayout之带有真实内容尺寸的视图</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/17/Autolayout之嵌套Stack View的使用/" class="archive-article-date">
-  	<time datetime="2019-02-17T09:03:48.865Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-17</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/17/Autolayout之嵌套Stack View的使用/">Autolayout之嵌套Stack View的使用</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/14/Autolayout之真实内容尺寸（Intrinsic Content Size）/" class="archive-article-date">
-  	<time datetime="2019-02-14T08:56:47.593Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-14</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/14/Autolayout之真实内容尺寸（Intrinsic Content Size）/">Autolayout之真实内容尺寸（Intrinsic Content Size）</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -524,8 +359,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: true,
