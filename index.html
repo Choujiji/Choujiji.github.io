@@ -184,6 +184,70 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-GCD的串行队列同步死锁问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/08/GCD的串行队列同步死锁问题/">GCD的串行队列同步死锁问题</a>
+    </h1>
+  
+
+        
+        <a href="/2019/08/08/GCD的串行队列同步死锁问题/" class="archive-article-date">
+  	<time datetime="2019-08-08T03:38:49.480Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-08</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>《Effective Objective-C 2.0》中“第46条：<em>不要使用dispatch_get_current_queue</em>”笔记</p>
+</blockquote>
+<p>我们都知道，<strong>在串行队列的同步任务中，再次向其中派发同步任务会造成死锁</strong>（向主队列派发同步任务的死锁就是这样）。但是，如果是下面这样呢？</p>
+        
+          <a class="article-more-a" href="/2019/08/08/GCD的串行队列同步死锁问题/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/08/GCD的串行队列同步死锁问题/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-相关对象（AssociateObject）实现学习" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -758,73 +822,6 @@
 
 
   
-    <article id="post-STMAssembleView源码学习" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/03/24/STMAssembleView源码学习/">STMAssembleView源码学习</a>
-    </h1>
-  
-
-        
-        <a href="/2019/03/24/STMAssembleView源码学习/" class="archive-article-date">
-  	<time datetime="2019-03-24T05:33:40.517Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>项目地址：<a href="https://github.com/ming1016/STMAssembleView" target="_blank" rel="external">STMAssembleView</a></p>
-</blockquote>
-<h4 id="1-结构设计简洁"><a href="#1-结构设计简洁" class="headerlink" title="1. 结构设计简洁"></a>1. 结构设计简洁</h4><ul>
-<li><strong>只公开最外层的STMAssembleView类，调用者只需引入一个类即可使用</strong>。</li>
-<li><strong>将业务与功能解耦，生成对应的类：“View”视图类（STMAssembleView、STMPartView）与“Maker”类（STMAssemvleMaker、STMPartMaker）</strong>。“Maker”类负责抽象出支持的功能属性，“View”类通过使用Maker，将子功能进行组合并实现最终业务功能（视图配置）。</li>
-</ul>
-        
-          <a class="article-more-a" href="/2019/03/24/STMAssembleView源码学习/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/03/24/STMAssembleView源码学习/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -933,11 +930,11 @@ return o(t,i(n),arguments.length<3?void 0:u(arguments[2]))}})},function(t,n,r){v
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color3">react-native</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">react-native</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
             
             <div class="clearfix"></div>

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-08-05T15:20:11.312Z</updated>
+  <updated>2019-08-08T03:38:49.480Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,46 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>GCD的串行队列同步死锁问题</title>
+    <link href="http://yoursite.com/2019/08/08/GCD%E7%9A%84%E4%B8%B2%E8%A1%8C%E9%98%9F%E5%88%97%E5%90%8C%E6%AD%A5%E6%AD%BB%E9%94%81%E9%97%AE%E9%A2%98/"/>
+    <id>http://yoursite.com/2019/08/08/GCD的串行队列同步死锁问题/</id>
+    <published>2019-08-08T03:38:49.480Z</published>
+    <updated>2019-08-08T03:38:49.480Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>《Effective Objective-C 2.0》中“第46条：<em>不要使用dispatch_get_current_queue</em>”笔记</p>
+</blockquote>
+<p>我们都知道，<strong>在串行队列的同步任务中，再次向其中派发同步任务会造成死锁</strong>（向主队列派发同步任务的死锁就是这样）。但是，如果是下面这样呢？</p>
+<a id="more"></a>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">dispatch_queue_t</span> queueA = dispatch_queue_create(<span class="string">"com.jiji.serialQueueA"</span>, DISPATCH_QUEUE_SERIAL);</div><div class="line"><span class="built_in">dispatch_queue_t</span> queueB = dispatch_queue_create(<span class="string">"com.jiji.serialQueueB"</span>, DISPATCH_QUEUE_SERIAL);</div><div class="line"></div><div class="line"><span class="built_in">dispatch_sync</span>(queueA, ^&#123;</div><div class="line">    <span class="comment">// 向queueB中派发同步任务</span></div><div class="line">    <span class="built_in">dispatch_sync</span>(queueB, ^&#123;</div><div class="line">        <span class="comment">// 向queueA中派发同步任务</span></div><div class="line">        <span class="built_in">dispatch_sync</span>(queueA, ^&#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"inner----"</span>);</div><div class="line">        &#125;);</div><div class="line">    &#125;);</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"outer-=-=-=-=-=-="</span>);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>结果<strong>同样死锁</strong>。这是因为最内部派发到queueA中的任务需要按队列的方式，等待先入队的最外层任务执行完成，但最外层任务被最内部的任务阻塞无法继续执行，故导致死锁。这在道理上与最简单的死锁没有区别。</p>
+<p>但是，当我们想要使用<em>dispatch_get_current_queue</em>函数，对内部执行队列进行区分，防止死锁时，可以发现此方法早已被标记为了<em>deprecated</em>。也就是说，此函数返回的队列不能作为任务执行队列的判断依据。</p>
+<p>故数组建议我们<strong>使用<em>dispatch_queue_set_specific</em>函数，对队列绑定相关数据。在派发的任务执行时，动态取出绑定数据来判定当前的执行队列</strong>。</p>
+<p>直接看对比示例：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 将queueB的目标队列设置为queueA，即queueB中的任务被派发到queueA中执行</span></div><div class="line">dispatch_set_target_queue(queueB, queueA);</div><div class="line"></div><div class="line"><span class="comment">// 给指定队列绑定相关数据（使用键值对的方式）</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> kQueueSpecific;</div><div class="line"><span class="built_in">CFStringRef</span> queueSpecificValue = <span class="built_in">CFSTR</span>(<span class="string">"queueA"</span>);</div><div class="line">dispatch_queue_set_specific(queueA,</div><div class="line">                            &amp;kQueueSpecific,</div><div class="line">                            (<span class="keyword">void</span> *)queueSpecificValue,</div><div class="line">                            (dispatch_function_t)<span class="built_in">CFRelease</span>);</div><div class="line"></div><div class="line"><span class="built_in">dispatch_sync</span>(queueB, ^&#123;</div><div class="line">    dispatch_block_t block = ^ &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"hahahahaha~~"</span>);</div><div class="line">    &#125;;</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_queue_t</span> currentQueue = dispatch_get_current_queue();</div><div class="line">    <span class="keyword">if</span> (currentQueue == queueA) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"currentQueue == queueA"</span>);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"currentQueue == queueB"</span>);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 在当前队列中取出绑定的相关数据</span></div><div class="line">    <span class="built_in">CFStringRef</span> retrievedValue = dispatch_get_specific(&amp;kQueueSpecific);</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (retrievedValue) &#123;</div><div class="line">        <span class="comment">// 存在相关值，即当前就在绑定的队列中执行，不要再向那个队列派发同步任务，会死锁</span></div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"in queueA"</span>);</div><div class="line">        block();</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// 不存在，证明执行不在指定的那个队列中，可以派发同步任务</span></div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"NOT in queueA"</span>);</div><div class="line">        <span class="built_in">dispatch_sync</span>(queueA, block);</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"><span class="built_in">NSLog</span>(<span class="string">@"finish!!!!"</span>);</div></pre></td></tr></table></figure>
+<p>执行结果：</p>
+<blockquote>
+<p>LockTest[19151:825723] currentQueue == queueB<br>LockTest[19151:825723] in queueA<br>LockTest[19151:825723] hahahahaha~~<br>LockTest[19151:825723] finish!!!!</p>
+</blockquote>
+<p>可以看出，由于设置了目标队列，实际上是有queueA执行派发任务。但是<em>dispatch_get_current_queue</em>只能反映出原始派发任务的队列，而通过<em>dispatch_get_specific</em>函数取到的绑定数据却是根据真实执行任务的队列获取到。故<strong>在同步派发任务时，为了防止死锁，可以使用<em>dispatch_queue_set_specific</em>和<em>dispatch_get_specific</em>配对，来识别当前执行任务的队列</strong>。</p>
+<p>这就是<strong>不要使用dispatch_get_current_queue</strong>的原因。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;《Effective Objective-C 2.0》中“第46条：&lt;em&gt;不要使用dispatch_get_current_queue&lt;/em&gt;”笔记&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;我们都知道，&lt;strong&gt;在串行队列的同步任务中，再次向其中派发同步任务会造成死锁&lt;/strong&gt;（向主队列派发同步任务的死锁就是这样）。但是，如果是下面这样呢？&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>相关对象（AssociateObject）实现学习</title>
@@ -1889,64 +1929,6 @@
 &lt;p&gt;注：本文翻译自&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/WorkingwithSelf-SizingTableViewCells.html#//apple_ref/doc/uid/TP40010853-CH25-SW1&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Working with Self-Sizing Table View Cells&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;在iOS中，你可以使用Auto Layout定义TableViewCell的高度；但是，此特性默认没有开启。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Autolayout之使用Scroll View</title>
-    <link href="http://yoursite.com/2019/03/03/Autolayout%E4%B9%8B%E4%BD%BF%E7%94%A8Scroll%20View/"/>
-    <id>http://yoursite.com/2019/03/03/Autolayout之使用Scroll View/</id>
-    <published>2019-03-03T04:19:33.192Z</published>
-    <updated>2019-03-03T04:19:59.696Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>注：本文翻译自<a href="https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/WorkingwithScrollViews.html#//apple_ref/doc/uid/TP40010853-CH24-SW1" target="_blank" rel="external">Working with Scroll Views</a></p>
-</blockquote>
-<p>当使用ScrollView时，你需要在父视图内同时定义ScrollView的尺寸和位置，额外还有ScrollView的内容区域。所有的这些特性都可以通过Auto Layout进行设置。</p>
-<a id="more"></a>
-<p>为了支持ScrollView，系统会基于约束所处的位置，使用不同的方式来诠释约束。</p>
-<ul>
-<li>就像其他视图一样，在ScrollView和其外部对象之间的约束都会影响ScrollView的frame。</li>
-<li>对于ScrollView和其自身内容之间的约束，其行为就会因属性的约束方式而有所不同：<ul>
-<li>ScrollView的边界分隔和其自身内容之间的约束会影响ScrollView的内容区域。</li>
-<li>高度、宽度或是中心点三者之间的约束会影响ScrollView的frame。</li>
-</ul>
-</li>
-<li>你还可以在ScrollView自身内容和ScrollView外部对象之间设置约束来为ScrollView的内容生成一个可变的位置，以便这些内容看起来就像漂浮在ScrollView上面一样。</li>
-</ul>
-<p>对于大多数通常的布局来说，如果你对ScrollView的内容使用虚拟视图或是组合的方式进行布局，逻辑将会变得非常简单。当使用Interface Builder时，通常的做法如下所示：</p>
-<ol>
-<li>在场景中添加ScrollView</li>
-<li>像平常一样，设置约束来定义ScrollView的尺寸和位置。</li>
-<li>添加一个视图到ScrollView上。设置该视图的Xcode指定标签到ScrollView的内容视图（即ContentView，以下直接使用）上。</li>
-<li>设置ContentView的顶部、底部、头部和尾部边界到ScrollView的对应边界上。ContentView现在决定了ScrollView的内容区域。<blockquote>
-<p>重点：</p>
-<p>此时ContentView还没有一个确定的尺寸。它可以拉伸或压缩来适配任何你放入的视图或控件。</p>
-</blockquote>
-</li>
-<li>（可选）要禁止水平滑动，将ContentView的宽度设置为与ScrollView宽度相同。ContentView现在在水平方向上充满了ScrollView。</li>
-<li>（可选）要禁止垂直滑动，将ContentView的高度设置为与ScrollView高度相同。ContentView现在在竖直方向上充满了ScrollView。</li>
-<li>将ScrollView的内容布局到ContentView内部。像往常一样，在ContentView内部使用约束来设置内容的位置。<blockquote>
-<p>重点：</p>
-<p>你的布局必须完整定义了ContentView的尺寸（除了步骤5和6定义的位置）。要设置基于真实内容尺寸视图的ContentView的高度，你必须从ContentView的顶部到底部设置一个未被打破（broken）的约束和视图链。相似的，要设置该ContentView的宽度，你就必须从ContentView的头部到尾部设置一个未被打破（broken）的约束和视图链。</p>
-<p>如果你的内容控件没有真实内容尺寸，你就必须添加合适的尺寸约束，或者是设置ContentView的，或者就设置内容的。</p>
-<p>当ContentView比ScrollView高时，ScrollView在竖直方向上便可以滑动了。当ContentView比ScrollView宽时，ScrollView在水平方向上就可以滑动了。否则，默认来说ScrollView的滑动是被禁止的。</p>
-</blockquote>
-</li>
-</ol>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;注：本文翻译自&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/WorkingwithScrollViews.html#//apple_ref/doc/uid/TP40010853-CH24-SW1&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Working with Scroll Views&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;当使用ScrollView时，你需要在父视图内同时定义ScrollView的尺寸和位置，额外还有ScrollView的内容区域。所有的这些特性都可以通过Auto Layout进行设置。&lt;/p&gt;
     
     </summary>
     
