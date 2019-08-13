@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-08-13T02:56:18.771Z</updated>
+  <updated>2019-08-13T06:11:30.189Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2019/08/13/%E5%BC%B1%E6%8C%87%E9%92%88weak%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%AD%A6%E4%B9%A0/"/>
     <id>http://yoursite.com/2019/08/13/弱指针weak的实现学习/</id>
     <published>2019-08-12T16:16:12.823Z</published>
-    <updated>2019-08-13T02:56:18.771Z</updated>
+    <updated>2019-08-13T06:11:30.189Z</updated>
     
     <content type="html"><![CDATA[<h4 id="1-weak对象的实现函数"><a href="#1-weak对象的实现函数" class="headerlink" title="1. weak对象的实现函数"></a>1. weak对象的实现函数</h4><p>首先，看个例子（<em>取自《Objective-C高级编程 iOS与OS X多线程和内存管理》的第一部分</em>）：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">id</span> __<span class="keyword">weak</span> weakObj = [[<span class="built_in">NSObject</span> alloc] init];</div></pre></td></tr></table></figure>
@@ -90,6 +90,8 @@
 <h4 id="7-参考资料："><a href="#7-参考资料：" class="headerlink" title="7. 参考资料："></a>7. 参考资料：</h4><ul>
 <li><a href="https://www.jianshu.com/p/ed43b17c8a72" target="_blank" rel="external">读读objc源码(二)：weak类型指针的实现</a></li>
 <li><a href="https://www.jianshu.com/p/ef6d9bf8fe59" target="_blank" rel="external">iOS管理对象内存的数据结构以及操作算法–SideTables、RefcountMap、weak_table_t-一</a></li>
+<li><a href="https://blog.csdn.net/iJason92/article/details/72808387" target="_blank" rel="external">ObjC Runtime 中 Weak 属性的实现 (上)</a></li>
+<li><a href="https://blog.csdn.net/iJason92/article/details/72863699" target="_blank" rel="external">ObjC Runtime 中 Weak 属性的实现 (中)</a></li>
 </ul>
 ]]></content>
     
