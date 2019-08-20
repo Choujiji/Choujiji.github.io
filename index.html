@@ -184,6 +184,71 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-使用__weak变量，指向的对象就会被加到autoreleasepool中？" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/20/使用__weak变量，指向的对象就会被加到autoreleasepool中？/">使用__weak变量，指向的对象就会被加到autoreleasepool中？</a>
+    </h1>
+  
+
+        
+        <a href="/2019/08/20/使用__weak变量，指向的对象就会被加到autoreleasepool中？/" class="archive-article-date">
+  	<time datetime="2019-08-20T06:04:29.479Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在《Objective-C高级编程》的第一部分内存管理中，有这么一节，其中说明了一个结论：</p>
+<blockquote>
+<p>使用附有__weak修饰符的变量，即是使用注册到autoreleasepool中的对象。</p>
+</blockquote>
+<p>按道理来说没有错。在ARC环境下，为了防止在使用过程中__weak指针指向的对象被释放，运行时系统就会自动将对象加入自动释放池中（ <em>-autorelease</em> ），延后释放过程。<br>
+        
+          <a class="article-more-a" href="/2019/08/20/使用__weak变量，指向的对象就会被加到autoreleasepool中？/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/20/使用__weak变量，指向的对象就会被加到autoreleasepool中？/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-iOS内存管理及ARC相关实现学习" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -815,70 +880,6 @@
 
 
   
-    <article id="post-Objective-C Runtime编程指南之发送消息" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/18/Objective-C Runtime编程指南之发送消息/">Objective-C Runtime编程指南之发送消息</a>
-    </h1>
-  
-
-        
-        <a href="/2019/07/18/Objective-C Runtime编程指南之发送消息/" class="archive-article-date">
-  	<time datetime="2019-07-18T03:27:18.831Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-18</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>本文翻译自<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtHowMessagingWorks.html" target="_blank" rel="external">Messaging</a></p>
-</blockquote>
-<h3 id="发送消息"><a href="#发送消息" class="headerlink" title="发送消息"></a>发送消息</h3><p>本章描述了消息表达式如何被转化为<a href="https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend" target="_blank" rel="external">objc_msgSend</a>函数调用，还有如何通过名字索引到方法。之后解释了你如何利用<em>objc_msgSend</em>，还有—-如果需要—-如何规避动态绑定过程。</p>
-        
-          <a class="article-more-a" href="/2019/07/18/Objective-C Runtime编程指南之发送消息/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/07/18/Objective-C Runtime编程指南之发送消息/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -987,11 +988,11 @@ return o(t,i(n),arguments.length<3?void 0:u(arguments[2]))}})},function(t,n,r){v
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">react-native</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color3">react-native</a>
               </li>
             
             <div class="clearfix"></div>

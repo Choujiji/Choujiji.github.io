@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-08-19T09:34:20.798Z</updated>
+  <updated>2019-08-20T06:04:56.099Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,76 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>使用__weak变量，指向的对象就会被加到autoreleasepool中？</title>
+    <link href="http://yoursite.com/2019/08/20/%E4%BD%BF%E7%94%A8__weak%E5%8F%98%E9%87%8F%EF%BC%8C%E6%8C%87%E5%90%91%E7%9A%84%E5%AF%B9%E8%B1%A1%E5%B0%B1%E4%BC%9A%E8%A2%AB%E5%8A%A0%E5%88%B0autoreleasepool%E4%B8%AD%EF%BC%9F/"/>
+    <id>http://yoursite.com/2019/08/20/使用__weak变量，指向的对象就会被加到autoreleasepool中？/</id>
+    <published>2019-08-20T06:04:29.479Z</published>
+    <updated>2019-08-20T06:04:56.099Z</updated>
+    
+    <content type="html"><![CDATA[<p>在《Objective-C高级编程》的第一部分内存管理中，有这么一节，其中说明了一个结论：</p>
+<blockquote>
+<p>使用附有__weak修饰符的变量，即是使用注册到autoreleasepool中的对象。</p>
+</blockquote>
+<p>按道理来说没有错。在ARC环境下，为了防止在使用过程中__weak指针指向的对象被释放，运行时系统就会自动将对象加入自动释放池中（ <em>-autorelease</em> ），延后释放过程。<br><a id="more"></a></p>
+<h4 id="1-对于书中结论的验证"><a href="#1-对于书中结论的验证" class="headerlink" title="1. 对于书中结论的验证"></a>1. 对于书中结论的验证</h4><p>可是，按照书中的验证方式，我并没有发现autoreleasepool的容器中插入了对象。更离奇的是，书中还有说：</p>
+<blockquote>
+<p>如果大量地使用附有__weak修饰符的变量，注册到autoreleasepool的对象也会大量增加。</p>
+</blockquote>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="keyword">id</span> __<span class="keyword">weak</span> o = obj;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"1 %@"</span>, o);</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"2 %@"</span>, o);</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"3 %@"</span>, o);</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"4 %@"</span>, o);</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"5 %@"</span>, o);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>通过调用 <em>_objc_autoreleasePoolPrint()</em> 函数，书中得到的结果是：</p>
+<blockquote>
+<p>#########<br>AUTORELEASE POOLS for thread 0xad0392c0<br>6 releases pending<br>[0x6a85000] ………… PAGE (hot) (cold)<br>[0x6a85028] ############ POOL 0x6a85028<br>[0x6a8502c]       0x6719e40 NSObject<br>[0x6a85030]       0x6719e40 NSObject<br>[0x6a85034]       0x6719e40 NSObject<br>[0x6a85038]       0x6719e40 NSObject<br>[0x6a8503c]       0x6719e40 NSObject</p>
+<p>########</p>
+</blockquote>
+<p>可是实际上，我的到的结果是</p>
+<blockquote>
+<p>objc[4106]: ##############<br>objc[4106]: AUTORELEASE POOLS for thread 0x1000a95c0<br>objc[4106]: 1 releases pending.<br>objc[4106]: [0x102801000]  ……………. PAGE  (hot) (cold)<br>objc[4106]: [0x102801038]  ##############  POOL 0x102801038<br>objc[4106]: ##############</p>
+</blockquote>
+<p>明显不一致。那么问题出在哪呢？</p>
+<p>因为我想，使用<strong>weak对象，即是对</strong>weak对象发消息。因此，换一种方式，调用任意一个方法，比如：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@autoreleasepool</span> &#123;</div><div class="line">    <span class="built_in">NSObject</span> *obj = [[<span class="built_in">NSObject</span> alloc] init];</div><div class="line">    <span class="keyword">id</span> __<span class="keyword">weak</span> weakObj = obj;</div><div class="line">    [weakObj description];</div><div class="line">    [weakObj description];</div><div class="line">    [weakObj description];</div><div class="line">    [weakObj description];</div><div class="line">    [weakObj description];</div><div class="line">    _objc_autoreleasePoolPrint();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>得到的结果是</p>
+<blockquote>
+<p>objc[4279]: ##############<br>objc[4279]: AUTORELEASE POOLS for thread 0x1000a95c0<br>objc[4279]: 6 releases pending.<br>objc[4279]: [0x101003000]  …………….  PAGE  (hot) (cold)<br>objc[4279]: [0x101003038]  ################  POOL 0x101003038<br>objc[4279]: [0x101003040]       0x102025d00  <strong>NSCFString<br>objc[4279]: [0x101003048]       0x1020022e0  </strong>NSCFString<br>objc[4279]: [0x101003050]       0x102025cb0  <strong>NSCFString<br>objc[4279]: [0x101003058]       0x102025db0  </strong>NSCFString<br>objc[4279]: [0x101003060]       0x102025de0  __NSCFString<br>objc[4279]: ##############</p>
+</blockquote>
+<p>这便与书中的结论不谋而合了。</p>
+<p>同时，这也证实了“<u><em>使用附有__weak修饰符的变量，即是使用注册到autoreleasepool中的对象</em></u>”这一结论。</p>
+<p>那么，添加到autoreleasepool的这一过程是如何实现的呢。</p>
+<p>按书中所说，使用<strong>weak对象之前，</strong>weak指针进行了如下操作：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">id</span> tmp = objc_loadWeakRetained(&amp;obj);</div><div class="line">objc_autorelease(tmp);</div></pre></td></tr></table></figure>
+<p>其中，<em>objc_loadWeakRetained</em>实现如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">id</span></div><div class="line">objc_loadWeakRetained(<span class="keyword">id</span> *location)</div><div class="line">&#123;</div><div class="line">    <span class="comment">// id *location即指向对象的指针（也就是weak指针的地址）</span></div><div class="line">    </div><div class="line">    <span class="keyword">id</span> obj;</div><div class="line">    <span class="keyword">id</span> result;</div><div class="line">    Class cls;</div><div class="line"></div><div class="line">    SideTable *table;</div><div class="line">    </div><div class="line"> retry:</div><div class="line">    obj = *location; <span class="comment">// 取出对象</span></div><div class="line">    <span class="keyword">if</span> (!obj) <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line">    <span class="keyword">if</span> (obj-&gt;isTaggedPointer()) <span class="keyword">return</span> obj;</div><div class="line">    </div><div class="line">    table = &amp;SideTables()[obj]; <span class="comment">// 获取对应的SideTable</span></div><div class="line">    </div><div class="line">    table-&gt;lock();</div><div class="line">    <span class="keyword">if</span> (*location != obj) &#123;</div><div class="line">        table-&gt;unlock();</div><div class="line">        <span class="keyword">goto</span> retry;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    result = obj;</div><div class="line"></div><div class="line">    cls = obj-&gt;ISA();</div><div class="line">    <span class="keyword">if</span> (! cls-&gt;hasCustomRR()) &#123;</div><div class="line">        assert(cls-&gt;isInitialized());</div><div class="line">        </div><div class="line">        <span class="comment">// 没有覆盖内存管理的相关方法，</span></div><div class="line">        <span class="comment">// 则对obj进行retain操作</span></div><div class="line">        <span class="keyword">if</span> (! obj-&gt;rootTryRetain()) &#123;</div><div class="line">            <span class="comment">// 不成功，返回nil</span></div><div class="line">            result = <span class="literal">nil</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">if</span> (cls-&gt;isInitialized() || _thisThreadIsInitializingClass(cls)) &#123;</div><div class="line">            <span class="built_in">BOOL</span> (*tryRetain)(<span class="keyword">id</span>, SEL) = (<span class="built_in">BOOL</span>(*)(<span class="keyword">id</span>, SEL))</div><div class="line">                class_getMethodImplementation(cls, SEL_retainWeakReference);</div><div class="line">            <span class="keyword">if</span> ((IMP)tryRetain == _objc_msgForward) &#123;</div><div class="line">                result = <span class="literal">nil</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// tryRetain的IMP存在（函数指针存在）</span></div><div class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (! (*tryRetain)(obj, SEL_retainWeakReference)) &#123;</div><div class="line">                <span class="comment">// 指行retain不成功，返回nil</span></div><div class="line">                result = <span class="literal">nil</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// class没有初始化（首次访问）</span></div><div class="line">            table-&gt;unlock();</div><div class="line">            <span class="comment">// 对cls进行初始化，之后重新检查</span></div><div class="line">            _class_initialize(cls);</div><div class="line">            <span class="keyword">goto</span> retry;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">        </div><div class="line">    table-&gt;unlock();</div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>由代码可知，</p>
+<ol>
+<li>真正的操作即是对weak指向对象的 <em>obj-&gt;rootTryRetain()</em> 操作。在其中根据对象类型进行retain。</li>
+<li>之后，返回的tmp对象即为指向的对象（与obj相同），对其进行autorelease操作，将对象添加到底层当前的AutoReleasePoolPage中，以延后释放。</li>
+<li>最后，才可以正常使用__weak对象进行操作。</li>
+<li>当autoreleasepool准备drain时，才会将weak指向的对象进行release。</li>
+</ol>
+<p>从此过程中，我们可以知道：</p>
+<p><strong>每使用一次<strong>weak对象，运行时系统都会将其指向的原始对象先retain，之后保存到自动释放池中（ <em>AutoReleasePoolPage的add()</em> 函数）。因此如果大量调用</strong>weak对象，则会重复进行此工作。不仅耗费无意义的性能（重复存储同一对象），还会使内存在短时间内大量增长</strong>。</p>
+<h4 id="2-NSLog引发的猜想"><a href="#2-NSLog引发的猜想" class="headerlink" title="2. NSLog引发的猜想"></a>2. NSLog引发的猜想</h4><p>虽然过程明白了，但是还有一个问题，为什么按照书中，使用<em>NSLog</em>函数访问__weak对象，就不会将指向的对象加入到autoreleasepool中呢？</p>
+<p><img src="http://jiji-blog-image.oss-cn-beijing.aliyuncs.com/1566280780-NSLog%E8%AE%BF%E9%97%AEweak%E5%8F%98%E9%87%8F.jpg" alt="NSLog访问weak变量"></p>
+<p>如图，在调试代码过程中，偶然发现，在每次执行<em>NSLog</em>语句时，都会触发调用<em>objc_autoreleasePoolPush</em>函数，调用完成之后，还会执行<em>objc_autoreleasePoolPop</em>函数。这不就是明显的 @autoreleasepool{} 的实现吗？</p>
+<p>通过调试不难发现，通过NSLog访问<strong>weak对象并不是不触发添加到自动释放池的过程，而是<strong>在NSLog自身实现中，包含了自己的autoreleasepool</strong>，在调用过程中，**</strong>weak指向的对象被retain后，加入到了此内部的autoreleasepool中**。待NSLog执行完成后，autoreleasepool在RunLoop的循环中被释放，其内部的对象也被移除出autoreleasepool后被执行release了。<br>因此，在外部方法执行过程中，__weak指针指向的对象的引用计数不发生变化，且所在的autoreleasepool中并不包含此对象就不难理解了。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在《Objective-C高级编程》的第一部分内存管理中，有这么一节，其中说明了一个结论：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;使用附有__weak修饰符的变量，即是使用注册到autoreleasepool中的对象。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;按道理来说没有错。在ARC环境下，为了防止在使用过程中__weak指针指向的对象被释放，运行时系统就会自动将对象加入自动释放池中（ &lt;em&gt;-autorelease&lt;/em&gt; ），延后释放过程。&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>iOS内存管理及ARC相关实现学习</title>
@@ -2097,56 +2167,6 @@
     
     
       <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《大话数据结构》之算法的时间复杂度</title>
-    <link href="http://yoursite.com/2019/03/05/%E3%80%8A%E5%A4%A7%E8%AF%9D%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E3%80%8B%E4%B9%8B%E7%AE%97%E6%B3%95%E7%9A%84%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/"/>
-    <id>http://yoursite.com/2019/03/05/《大话数据结构》之算法的时间复杂度/</id>
-    <published>2019-03-05T07:23:16.914Z</published>
-    <updated>2019-03-05T07:23:38.227Z</updated>
-    
-    <content type="html"><![CDATA[<p>算法的时间复杂度一般是指算法的最坏执行情况（最大执行次数）。</p>
-<h4 id="1-大O表示法"><a href="#1-大O表示法" class="headerlink" title="1. 大O表示法"></a>1. 大O表示法</h4><p>衡量算法的复杂度（一般指时间复杂度）通常使用大O表示法，其推导的一般方式为：</p>
-<ol>
-<li>用常数1取代运行时间中的所有加法常数。</li>
-<li>在修改后的运行次数函数中，只保留最高阶项。</li>
-<li>如果最高阶项存在且不是1，则去除与这个项乘积的常数。</li>
-</ol>
-<p>最终得到的结果就是大O阶。</p>
-<a id="more"></a>
-<h4 id="2-常用的大O阶"><a href="#2-常用的大O阶" class="headerlink" title="2. 常用的大O阶"></a>2. 常用的大O阶</h4><ul>
-<li>常数阶<br>  O(1)：如顺序结构的复杂度或是分支结构（if–else–），执行次数恒定，不会随n变化而变化。</li>
-<li>线性阶<br>  O(n)：如循环结构，根据循环次数决定。</li>
-<li>对数阶<br>  O(logn): 例如如下循环</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> count = <span class="number">1</span>;</div><div class="line"><span class="keyword">while</span>(count &lt; n) &#123;</div><div class="line">    count = count * <span class="number">2</span>;</div><div class="line">    <span class="comment">/** 时间复杂度为O(1)的顺序步骤序列 */</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<pre><code>如上所示，x为执行次数，2^x = n，即x = log2n，故时间复杂度为O(logn)。
-</code></pre><ul>
-<li>平方阶<br>  O(n^2)：如双重嵌套循环。</li>
-</ul>
-<h4 id="3-常见的时间复杂度排列"><a href="#3-常见的时间复杂度排列" class="headerlink" title="3. 常见的时间复杂度排列"></a>3. 常见的时间复杂度排列</h4><p>耗费时间从小到大依次为：</p>
-<blockquote>
-<p>O(1) &lt; O(logn) &lt; O(n) &lt; O(nlogn) &lt; O(n^2) &lt; O(n^3) &lt; O(2^n) &lt; O(n!) &lt; O(n^n)</p>
-</blockquote>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;算法的时间复杂度一般是指算法的最坏执行情况（最大执行次数）。&lt;/p&gt;
-&lt;h4 id=&quot;1-大O表示法&quot;&gt;&lt;a href=&quot;#1-大O表示法&quot; class=&quot;headerlink&quot; title=&quot;1. 大O表示法&quot;&gt;&lt;/a&gt;1. 大O表示法&lt;/h4&gt;&lt;p&gt;衡量算法的复杂度（一般指时间复杂度）通常使用大O表示法，其推导的一般方式为：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;用常数1取代运行时间中的所有加法常数。&lt;/li&gt;
-&lt;li&gt;在修改后的运行次数函数中，只保留最高阶项。&lt;/li&gt;
-&lt;li&gt;如果最高阶项存在且不是1，则去除与这个项乘积的常数。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;最终得到的结果就是大O阶。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
