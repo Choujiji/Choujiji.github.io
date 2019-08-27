@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-08-27T06:07:16.472Z</updated>
+  <updated>2019-08-27T06:12:41.395Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,12 +20,12 @@
     <link href="http://yoursite.com/2019/08/27/%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B%E6%8C%87%E5%8D%97----%E5%85%B3%E4%BA%8E%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%BC%96%E7%A8%8B/"/>
     <id>http://yoursite.com/2019/08/27/线程编程指南----关于线程的编程/</id>
     <published>2019-08-27T06:07:16.472Z</published>
-    <updated>2019-08-27T06:07:16.472Z</updated>
+    <updated>2019-08-27T06:12:41.395Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>注：本文翻译自<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/AboutThreads/AboutThreads.html#//apple_ref/doc/uid/10000057i-CH6-SW2" target="_blank" rel="external">About Threaded Programming</a></p>
 </blockquote>
-<h3 id="关于线程的编程"><a href="#关于线程的编程" class="headerlink" title="关于线程的编程"></a>关于线程的编程</h3><p>多年来，几乎所有的电脑性能都被单核处理器的运算速度限制地非常严重。当单个处理器的运行速度达到瓶颈之后，芯片就切换到了多核设计，这就为电脑提供了可以同时执行多个任务的机会。虽然OS X在执行系统相关的任务时已经利用好了多核心处理器，但你的应用也需要通过线程来利用好它们。</p>
+<h3 id="关于线程的编程"><a href="#关于线程的编程" class="headerlink" title="关于线程的编程"></a>关于线程的编程</h3><p>多年来，几乎所有的电脑性能都被单核处理器的运算速度限制地非常严重。当单个处理器的运行速度达到瓶颈之后，芯片就切换到了多核设计，这就为电脑提供了可以同时执行多个任务的机会。虽然OS X在执行系统相关的任务时已经利用好了多核心处理器，但你的应用也需要通过线程来利用好它们。<br><a id="more"></a></p>
 <h4 id="什么是线程？"><a href="#什么是线程？" class="headerlink" title="什么是线程？"></a>什么是线程？</h4><p>线程是一种在应用程序中相对轻量级地实现多条路径执行指令的方式。在系统层面，所有程序一个接一个地执行，系统会根据需要为每一个程序腾出执行时间并同时满足其他程序。但是，在每一个程序内部，存在着一个或多个线程，它们被用于同时或几乎同时去执行多个任务。实际上系统自身管理着这些线程，根据需要调度它们到可用核心中或主动打断它们的执行来允许其他线程执行。</p>
 <p>从技术的角度来看，一个线程就是一个核心级和应用级数据结构的组合用以管理代码的执行。核心级结构将事件派发给指定线程并使用此线程抢占可用核心。应用级结构包含了用于存储函数调用的调用栈和应用程序需要的数据结构，用它来管理并控制线程的属性和状态。</p>
 <p>在一个非并发的应用中，只有唯一一个线程在执行。此线程随着应用的主程序从开始到结束，一个接一个地从不同的方法或函数中切换分支，来实现应用的所有行为。作为对比差异，支持并发的应用以一个线程开始，之后根据需要添加更多的线程来创建额外的执行路径。每一个新路径都有它自己的开始程序，且此程序与应用的主程序相对独立。在应用中包含多个线程可以提供两个非常重要的优点：</p>
@@ -184,7 +184,9 @@
     <summary type="html">
     
       &lt;blockquote&gt;
-&lt;p&gt;注：本文翻译自&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/AboutThreads/About
+&lt;p&gt;注：本文翻译自&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/AboutThreads/AboutThreads.html#//apple_ref/doc/uid/10000057i-CH6-SW2&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;About Threaded Programming&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;关于线程的编程&quot;&gt;&lt;a href=&quot;#关于线程的编程&quot; class=&quot;headerlink&quot; title=&quot;关于线程的编程&quot;&gt;&lt;/a&gt;关于线程的编程&lt;/h3&gt;&lt;p&gt;多年来，几乎所有的电脑性能都被单核处理器的运算速度限制地非常严重。当单个处理器的运行速度达到瓶颈之后，芯片就切换到了多核设计，这就为电脑提供了可以同时执行多个任务的机会。虽然OS X在执行系统相关的任务时已经利用好了多核心处理器，但你的应用也需要通过线程来利用好它们。&lt;br&gt;
     
     </summary>
     
