@@ -184,6 +184,71 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-RunLoop学习记录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/30/RunLoop学习记录/">RunLoop学习记录</a>
+    </h1>
+  
+
+        
+        <a href="/2019/08/30/RunLoop学习记录/" class="archive-article-date">
+  	<time datetime="2019-08-29T17:00:43.218Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>注：以Core Foundation的实现作为参考（版本为CF-855.17）。</p>
+</blockquote>
+<h4 id="1-相关数据结构"><a href="#1-相关数据结构" class="headerlink" title="1. 相关数据结构"></a>1. 相关数据结构</h4><h5 id="1-1-run-loop的基本结构"><a href="#1-1-run-loop的基本结构" class="headerlink" title="1.1 run loop的基本结构"></a>1.1 run loop的基本结构</h5><p>CFRunLoopRef，是__CFRunLoop的结构体指针：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> __<span class="title">CFRunLoop</span> * <span class="title">CFRunLoopRef</span>;</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">CFRunLoop</span> &#123;</span></div><div class="line">    CFRuntimeBase _base; <span class="comment">// CF对象类型，相当于OC对象的isa</span></div><div class="line">    </div><div class="line">    <span class="keyword">pthread_mutex_t</span> _lock; <span class="comment">// 访问mode列表时保证同步</span></div><div class="line">    __CFPort _wakeUpPort; <span class="comment">// 线程被唤醒时使用 </span></div><div class="line">    Boolean _unused;</div><div class="line">    <span class="keyword">volatile</span> _per_run_data *_perRunData; <span class="comment">// 每次运行的相关状态数据</span></div><div class="line">    <span class="keyword">pthread_t</span> _pthread; <span class="comment">// 绑定的线程</span></div><div class="line">    <span class="keyword">uint32_t</span> _winthread;</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="comment">// 标记为“common”的mode的名称组成的集合</span></div><div class="line">    CFMutableSetRef _commonModes;</div><div class="line">    <span class="comment">// “common”的mode对应的统一item的集合</span></div><div class="line">    CFMutableSetRef _commonModeItems;</div><div class="line">    <span class="comment">// runloop当前所处的mode</span></div><div class="line">    CFRunLoopModeRef _currentMode;</div><div class="line">    <span class="comment">// 所有的mode的集合</span></div><div class="line">    CFMutableSetRef _modes;</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="class"><span class="keyword">struct</span> _<span class="title">block_item</span> *_<span class="title">blocks_head</span>;</span></div><div class="line">    <span class="class"><span class="keyword">struct</span> _<span class="title">block_item</span> *_<span class="title">blocks_tail</span>;</span></div><div class="line">    CFTypeRef _counterpart;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2019/08/30/RunLoop学习记录/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/30/RunLoop学习记录/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-线程编程指南----关于线程的编程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -803,67 +868,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/08/02/iOS中的锁 笔记/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-Aspects源码学习笔记" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/30/Aspects源码学习笔记/">Aspects源码学习笔记</a>
-    </h1>
-  
-
-        
-        <a href="/2019/07/30/Aspects源码学习笔记/" class="archive-article-date">
-  	<time datetime="2019-07-30T09:33:09.262Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-30</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Aspects是一个可以动态hook指定方法的轻量级的库，AOP思想非常棒的体现。</p>
-        
-          <a class="article-more-a" href="/2019/07/30/Aspects源码学习笔记/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/07/30/Aspects源码学习笔记/">展开全文 >></a>
         </p>
       
 
