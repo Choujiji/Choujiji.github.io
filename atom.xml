@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-08-29T17:00:43.219Z</updated>
+  <updated>2019-09-02T06:35:38.957Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,54 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>分组并翻转链表</title>
+    <link href="http://yoursite.com/2019/09/02/%E5%88%86%E7%BB%84%E5%B9%B6%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/"/>
+    <id>http://yoursite.com/2019/09/02/分组并翻转链表/</id>
+    <published>2019-09-02T06:35:38.957Z</published>
+    <updated>2019-09-02T06:35:38.957Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h4><p>给定一个单链表的头节点 head,实现一个调整单链表的函数，使得每K个节点之间为一组进行逆序，并且从链表的尾部开始组起，头部剩余节点数量不够一组的不需要逆序。（不能使用队列或者栈作为辅助）<br><a id="more"></a><br>例如：</p>
+<blockquote>
+<p>链表:1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;6-&gt;7-&gt;8-&gt;null, K = 3。<br>那么 6-&gt;7-&gt;8，3-&gt;4-&gt;5，1-&gt;2各为一组。<br>调整后：1-&gt;2-&gt;5-&gt;4-&gt;3-&gt;8-&gt;7-&gt;6-&gt;null。<br>其中 1，2不调整，因为不够一组。</p>
+</blockquote>
+<h4 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h4><p>首先，这里先分为几个子部分进行分析：</p>
+<h5 id="1-翻转链表"><a href="#1-翻转链表" class="headerlink" title="1. 翻转链表"></a>1. 翻转链表</h5><p>整体使用递归的思想。</p>
+<p>若size为1时，翻转不发生，返回自身。</p>
+<p>若size为2时，翻转的方式为：tail-&gt;next = head; head-&gt;next = nil; 然后返回tail。</p>
+<p>若size大于2，则将head后面的子链表继续递归，之后与head进行操作：result-&gt;next = head; head-&gt;next = nil; 最后返回result。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 翻转链表 */</span></div><div class="line">LinkNode *reverseLinkList(LinkNode *linkList) &#123;</div><div class="line">    <span class="comment">// 只有自身一个</span></div><div class="line">    <span class="keyword">if</span> (!linkList.data || !linkList.next) &#123;</div><div class="line">        <span class="comment">// 直接返回自身</span></div><div class="line">        <span class="keyword">return</span> linkList;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 超过一个的，子链表递归翻转</span></div><div class="line">    LinkNode *result = reverseLinkList(linkList.next);</div><div class="line">    </div><div class="line">    <span class="comment">// 头结点的next这时已经指向的是，翻转后result链表的尾部节点，</span></div><div class="line">    <span class="comment">// 让尾部节点的next指向原头节点</span></div><div class="line">    linkList.next.next = linkList;</div><div class="line">    <span class="comment">// 原头节点作为尾部节点</span></div><div class="line">    linkList.next = <span class="literal">nil</span>;</div><div class="line">    </div><div class="line">    <span class="comment">// 返回反转后的头节点</span></div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="2-链表分组。"><a href="#2-链表分组。" class="headerlink" title="2. 链表分组。"></a>2. 链表分组。</h5><p>还是使用递归的思想。</p>
+<p>从头遍历链表，取出指定索引为k的子链表。</p>
+<p>若子链表个数不够，根据题目要求，不翻转，直接返回。</p>
+<p>若子链表符合要求，将此子表与其他部分分割为两个链表。</p>
+<p>将子表翻转并返回；其他部分则继续进行递归操作。</p>
+<p>最后，合并两部分，则得到最终结果链表。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 分组并翻转链表 */</span></div><div class="line">LinkNode *groupAndReverseLinkList(LinkNode *linkList, <span class="built_in">NSInteger</span> groupSize) &#123;</div><div class="line">    <span class="comment">// 声明头指针</span></div><div class="line">    LinkNode *head = linkList;</div><div class="line">    </div><div class="line">    <span class="comment">// 取出一组</span></div><div class="line">    <span class="keyword">for</span> (<span class="built_in">NSInteger</span> index = <span class="number">1</span>; index &lt; groupSize &amp;&amp; head; index += <span class="number">1</span>) &#123;</div><div class="line">        head = head.next;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (!head) &#123;</div><div class="line">        <span class="comment">// 不足一组（不足groupSize时，当前node已经为空）</span></div><div class="line">        <span class="comment">// 不做反转，直接返回</span></div><div class="line">        <span class="keyword">return</span> linkList;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 够一组，将此组与后面链表分隔</span></div><div class="line">    </div><div class="line">    <span class="comment">// 后面的子表</span></div><div class="line">    LinkNode *tail = head.next;</div><div class="line">    </div><div class="line">    <span class="comment">// 原满足的组作为单独组</span></div><div class="line">    head.next = <span class="literal">nil</span>;</div><div class="line">    <span class="comment">// 将满足的组进行反转</span></div><div class="line">    LinkNode *resultHead = reverseLinkList(linkList);</div><div class="line">    </div><div class="line">    <span class="comment">// 子表继续递归操作</span></div><div class="line">    LinkNode *result = groupAndReverseLinkList(tail, groupSize);</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="comment">// 连接两部分（反转后的满足组，尾部节点为原头节点）</span></div><div class="line">    linkList.next = result;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> resultHead;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="3-从前向后-gt-从后向前"><a href="#3-从前向后-gt-从后向前" class="headerlink" title="3. 从前向后 -&gt; 从后向前"></a>3. 从前向后 -&gt; 从后向前</h5><p>由于单链表访问的局限性，我们只能从头向后访问，因此，此题目我们转化为从前向后的分组翻转（两次翻转，负负得正）：</p>
+<ol>
+<li>整体链表翻转。</li>
+<li>从前向后进行分组操作。</li>
+<li>将结果链表再次整体翻转，得到最终结果。</li>
+</ol>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// head为头结点，没有实际意义</span></div><div class="line"></div><div class="line"><span class="comment">// 翻转链表</span></div><div class="line">head.next = reverseLinkList(head.next);</div><div class="line"></div><div class="line"><span class="comment">// 从前向后进行分组翻转，3个为一组</span></div><div class="line">LinkNode *result = groupAndReverseLinkList(head.next, <span class="number">3</span>);</div><div class="line"></div><div class="line"><span class="comment">// 翻转链表（得到从后向前的分组结果）</span></div><div class="line">head.next = reverseLinkList(result);</div></pre></td></tr></table></figure>
+<blockquote>
+<p>代码地址：<a href="https://github.com/Choujiji/Coding-in-iOS-interview/tree/master/%E7%AE%97%E6%B3%95%E9%83%A8%E5%88%86/%E9%93%BE%E8%A1%A8/GroupAndReverse" target="_blank" rel="external">GroupAndReverse</a></p>
+<p>参考链接：<br><a href="https://www.jianshu.com/p/3dc5e73ab69c" target="_blank" rel="external">一道字节跳动的算法面试题，你能做出来吗？</a></p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;题目&quot;&gt;&lt;a href=&quot;#题目&quot; class=&quot;headerlink&quot; title=&quot;题目&quot;&gt;&lt;/a&gt;题目&lt;/h4&gt;&lt;p&gt;给定一个单链表的头节点 head,实现一个调整单链表的函数，使得每K个节点之间为一组进行逆序，并且从链表的尾部开始组起，头部剩余节点数量不够一组的不需要逆序。（不能使用队列或者栈作为辅助）&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="算法学习" scheme="http://yoursite.com/tags/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>RunLoop学习记录</title>
@@ -2145,105 +2193,6 @@
     
     
       <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《大话数据结构》之串</title>
-    <link href="http://yoursite.com/2019/03/17/%E3%80%8A%E5%A4%A7%E8%AF%9D%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E3%80%8B%E4%B9%8B%E4%B8%B2/"/>
-    <id>http://yoursite.com/2019/03/17/《大话数据结构》之串/</id>
-    <published>2019-03-17T10:10:44.688Z</published>
-    <updated>2019-03-17T15:47:25.356Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="1-朴素的字符串匹配方法"><a href="#1-朴素的字符串匹配方法" class="headerlink" title="1. 朴素的字符串匹配方法"></a>1. 朴素的字符串匹配方法</h3><h4 id="1-1-比较过程"><a href="#1-1-比较过程" class="headerlink" title="1.1 比较过程"></a>1.1 比较过程</h4><p>以主串T为基础，根据索引i对每个字符进行遍历，依次与目标串P的每个索引j的字符进行匹配。若字符相同，则两索引均后移，继续匹配；若不相同，则j恢复为0，从头开始，i回溯到开始成功匹配时索引的下一位。</p>
-<a id="more"></a>
-<h4 id="1-2-比较结果"><a href="#1-2-比较结果" class="headerlink" title="1.2 比较结果"></a>1.2 比较结果</h4><p>遍历索引i结束之后，若此时j已经达到目标串P的最后，则证明目标串的所有字符均匹配成功，目标串在主串中的位置即length(T) - j；否则匹配失败，P不是T的子串。</p>
-<h4 id="1-3-主要实现"><a href="#1-3-主要实现" class="headerlink" title="1.3 主要实现"></a>1.3 主要实现</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="function">NSInteger <span class="title">findIndex</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *sourceStr, <span class="keyword">const</span> <span class="keyword">char</span> *targetStr)</span> </span>&#123;</div><div class="line">    <span class="comment">// 获取二者长度</span></div><div class="line">    NSInteger sourceLength = <span class="built_in">strlen</span>(sourceStr);</div><div class="line">    NSInteger targetLength = <span class="built_in">strlen</span>(targetStr);</div><div class="line">    </div><div class="line">    NSInteger i = <span class="number">0</span>; <span class="comment">// 主串索引</span></div><div class="line">    NSInteger j = <span class="number">0</span>; <span class="comment">// 目标串索引</span></div><div class="line">    </div><div class="line">    <span class="keyword">while</span> ((i &lt; sourceLength) &amp;&amp; (j &lt; targetLength)) &#123;</div><div class="line">        <span class="keyword">if</span> (sourceStr[i] == targetStr[j]) &#123;</div><div class="line">            <span class="comment">// 字符相同，继续向后</span></div><div class="line">            i += <span class="number">1</span>;</div><div class="line">            j += <span class="number">1</span>;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// 字符不同</span></div><div class="line">            <span class="comment">// 主串索引恢复到开始成功匹配时的下一位</span></div><div class="line">            i = i - j + <span class="number">1</span>;</div><div class="line">            <span class="comment">// 目标串索引恢复到头</span></div><div class="line">            j = <span class="number">0</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 注：这里的大于只是防止最后一位匹配成功后的+1操作</span></div><div class="line">    <span class="keyword">if</span> (j &gt;= targetLength) &#123;</div><div class="line">        <span class="comment">// 主串的最终遍历索引 前移 目标串长度，即为子串的起始位置</span></div><div class="line">        <span class="keyword">return</span> i - targetLength;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> NSNotFound;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="2-KMP的字符串匹配方法"><a href="#2-KMP的字符串匹配方法" class="headerlink" title="2. KMP的字符串匹配方法"></a>2. KMP的字符串匹配方法</h3><p>KMP方法的作用主要是去掉了一些可避免的比较，提高了匹配效率。</p>
-<h4 id="2-1-匹配过程"><a href="#2-1-匹配过程" class="headerlink" title="2.1 匹配过程"></a>2.1 匹配过程</h4><p>KMP的主要匹配过程与朴素一致，都是字符依次比较。优化点是在字符匹配失败时，尽量让主串T的索引i不回溯，目标串的索引j回溯到需要的位置（而不是直接到0）。从而达到减少比较次数的目的。</p>
-<p>如上所述，KMP的核心就是<strong>在任意位置匹配失败时，目标串的索引j回溯到的位置</strong>。</p>
-<p>我们将所有回溯位置的信息保存到数组next中，故最终目的就是计算出next数组的完整信息。</p>
-<h5 id="2-1-1-匹配表（Partial-Match-Table）"><a href="#2-1-1-匹配表（Partial-Match-Table）" class="headerlink" title="2.1.1 匹配表（Partial Match Table）"></a>2.1.1 匹配表（Partial Match Table）</h5><p>要说next数组，就先要了解<strong>匹配表PMT</strong>的含义。以字符串“abababca”为例，其匹配表如下：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/450996-925461fd2eb0fd34.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
-<p>其中，value行即为PMT的值。其意义是什么呢？</p>
-<p>value的值是子串中<strong>前缀与后缀集合中，最长的公共子串的长度</strong>。例如，下表分别为当index为2和5时，value的得出过程：</p>
-<table>
-<thead>
-<tr>
-<th>索引</th>
-<th>子串</th>
-<th>前缀集合</th>
-<th>后缀集合</th>
-<th>交集</th>
-<th>最长子串长度</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>2</td>
-<td>“aba”</td>
-<td>{“a”，“ab”}</td>
-<td>{“ba”，“a”}</td>
-<td>{“a”}</td>
-<td>1</td>
-</tr>
-<tr>
-<td>5</td>
-<td>“ababab”</td>
-<td>{“a”，“ab”，“aba”，“abab”，“ababa”}</td>
-<td>{“b”，“ab”，“bab”，“abab”，“babab”}</td>
-<td>{“ab”，“abab”}</td>
-<td>4</td>
-</tr>
-</tbody>
-</table>
-<p>故目标字符串有几位，就会有几个PMT中对应的值。</p>
-<h5 id="2-1-2-next表（PMT表的修改形式）"><a href="#2-1-2-next表（PMT表的修改形式）" class="headerlink" title="2.1.2 next表（PMT表的修改形式）"></a>2.1.2 next表（PMT表的修改形式）</h5><p>先抛图（主串“ababababca”和子串“abababca”进行匹配的过程之一）。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/450996-996f2e16ee46bf0d.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
-<p>如图所示，当在主串的i处匹配失败，其之前长度为6的字符串“ababab”均已匹配成功。此时，由PMT表我们可知，子串“ababab”的value为4，即其四位前缀与四位后缀是一致的。又因为在主串中，i之前的四位与j之前的四位字符均一致。故，目标串的四位前缀与主串中i之前的四位字符一致。我们可以省略对该子串的比较，直接在目标串的j=4的位置与主串的当前位置i继续比较。</p>
-<p>在上面是叙述中，我们发现，匹配失败，并不会导致主串索引i改变，只会影响目标串索引j出现变化。并且，有趣的是，以图中的过程为例，<strong>当j=6时，匹配失败，即最后一个成功匹配的j是5。之后j回溯的位置4正好是PMT表中index为5时的value值</strong>。根据这个原理，我们就可以跳过不需要的比较，只通过修改目标串索引的位置即可进行快速匹配。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/450996-6082a942ee67f143.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
-<p>那么，我们引入next表的目的是什么呢？由于在某一位置匹配失败时，都要查看其前一个位置对应的PMT值，故我们将PMT数据均偏移一位，直接对应于当前位置，以便在快速查找下一步时，可以直接得到目标串索引j的位置。因此，我们<strong>把PMT值偏移后的数据叫做next数据</strong>，为了补位，next的首位赋值为-1。</p>
-<p>因此，有了next的方式，我们就可以对朴素匹配法进行优化了。</p>
-<h4 id="2-2-匹配过程"><a href="#2-2-匹配过程" class="headerlink" title="2.2 匹配过程"></a>2.2 匹配过程</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="function">NSInteger <span class="title">KMPFindIndex</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *sourceStr, <span class="keyword">const</span> <span class="keyword">char</span> *targetStr)</span> </span>&#123;</div><div class="line">    <span class="comment">// 获取目标串的next信息，以备匹配时进行回溯（KMP算法核心）</span></div><div class="line">    NSArray *nextInfo = getNextInfo(targetStr);</div><div class="line">    NSLog(@<span class="string">"next - %@"</span>, nextInfo);</div><div class="line">    </div><div class="line">    <span class="comment">// 获取两串长度</span></div><div class="line">    NSInteger sourceLength = <span class="built_in">strlen</span>(sourceStr);</div><div class="line">    NSInteger targetLength = <span class="built_in">strlen</span>(targetStr);</div><div class="line">    </div><div class="line">    <span class="comment">// 主串索引</span></div><div class="line">    NSInteger i = <span class="number">0</span>;</div><div class="line">    <span class="comment">// 目标串索引</span></div><div class="line">    NSInteger j = <span class="number">0</span>;</div><div class="line">    </div><div class="line">    <span class="comment">// 均在范围内查找</span></div><div class="line">    <span class="keyword">while</span> ((i &lt; sourceLength)</div><div class="line">           &amp;&amp; (j &lt; targetLength)) &#123;</div><div class="line">        <span class="keyword">if</span> ((j == <span class="number">-1</span>) </div><div class="line">            || (sourceStr[i] == targetStr[j])) &#123;</div><div class="line">                <span class="comment">// 字符匹配时，索引均后移，准备下一次匹配(j为-1即为了防止出现next[0] = -1的情况出现)</span></div><div class="line">                i += <span class="number">1</span>;</div><div class="line">                j += <span class="number">1</span>;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="comment">// 字符不匹配，i不变，j回溯为next中对应的位置，作为下次匹配的起点</span></div><div class="line">                j = [nextInfo[j] integerValue];</div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (j == tragetLength) &#123;</div><div class="line">        <span class="keyword">return</span> i - j;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> NSNotFound;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="2-3-生成Next数组的过程"><a href="#2-3-生成Next数组的过程" class="headerlink" title="2.3 生成Next数组的过程"></a>2.3 生成Next数组的过程</h4><p>我们知道，生成Next数据的过程，即<strong>在每一个位置上，获取前面子串里，前后缀集合中最长的公共子串的长度</strong>。</p>
-<p>如目标字符串“ABCDABDE”，我们以k作为前缀索引，j为后缀索引。如下图，当在字符索引在“D”时（即j为6时），其子串“ABCDAB”的最长前后缀公共子串长度为2（子串“AB”的长度），故next[6] = 2。我们还可知，在j为5时，next[5] = 1，即在j = 5时，公共子串最大长度为1（子串“A”的长度）。故我们可以得到：<strong>在当前字符存在有效next值时（Pk == Pj时），下一个字符的next即为之前next位置的下一个，即next[j + 1] = next[j] + 1 = k + 1</strong>。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/450996-b06de1c2fa5c7f75?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
-<p>若Pk与Pj不相等，如图中k为2，j为6时。按照KMP的思想，<strong>后缀j不变，需要更新前缀k，以便找到另一个字符与Pj相同</strong>。故<strong>将前缀索引k修改为next[k]以继续进行比较（缩小前缀查找范围）</strong>，直到找到相同的字符“D”或没有相同字符为止。</p>
-<p>按照这个思想，生成next数据的实现为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="function">NSArray *<span class="title">getNextInfo</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *targetStr)</span> </span>&#123;</div><div class="line">    <span class="comment">// 创建返回的next数组</span></div><div class="line">    NSMutableArray *nextInfo = [[NSMutableArray alloc] initWithCapacity:<span class="number">10</span>];</div><div class="line">    nextInfo[<span class="number">0</span>] = @(<span class="number">-1</span>); <span class="comment">// 人为指定首位的next值为-1（首位无法回溯，故此值只是占位用）</span></div><div class="line">    </div><div class="line">    <span class="comment">// 获取字符串长度</span></div><div class="line">    NSInteger strLength = strLen(targetStr);</div><div class="line">    </div><div class="line">    NSInteger k = <span class="number">-1</span>; <span class="comment">// 前缀索引初始值</span></div><div class="line">    NSInteger j = <span class="number">0</span>; <span class="comment">// 后缀索引初始值（后缀必须大于前缀才有效）</span></div><div class="line">    </div><div class="line">    <span class="comment">// 以后缀索引作为遍历范围（-1为了防止最后无效的自加1）</span></div><div class="line">    <span class="keyword">while</span> (j &lt; strLength - <span class="number">1</span>) &#123;</div><div class="line">        <span class="keyword">if</span> ((k == <span class="number">-1</span>)</div><div class="line">            || (targetStr[k] == targetStr[j])) &#123;</div><div class="line">                <span class="comment">// 前缀为初值索引时，无条件后移并记录（即没有有效前后缀公共串）</span></div><div class="line">                <span class="comment">// 当前位置的字符相同，即找到了公共前后缀字符串，记录下一个位置的next值</span></div><div class="line">                </div><div class="line">                <span class="comment">// 下一位置的next值即为当前next的索引值k再加1</span></div><div class="line">                k += <span class="number">1</span>;</div><div class="line">                j += <span class="number">1</span>;</div><div class="line">                </div><div class="line">                nextInfo[j] = @(k);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="comment">// 当前位置字符不同</span></div><div class="line">                <span class="comment">// 按照KMP思想，j不回溯，k回溯为下一次的查找索引</span></div><div class="line">                k = [next[k] integerValue];</div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> [nextInfo copy];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>Objective-C实现的代码地址：<a href="https://github.com/Choujiji/PlayWithDataStructure-Code/tree/master/%E4%B8%B2/KMP%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8C%B9%E9%85%8D/SimplyStringCompare" target="_blank" rel="external">点击查看</a></p>
-</blockquote>
-<h4 id="2-4-Next数组的优化"><a href="#2-4-Next数组的优化" class="headerlink" title="2.4 Next数组的优化"></a>2.4 Next数组的优化</h4><p>我们设想一下这种情况：目标串为“abcabc”，主串为“abacababc”，其中一种比较情况如下图：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/450996-037df26c5e3b176f.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
-<p>即此时，第四位比较失败（“c”与“b”不同）。我们知道，此时目标串下一次比较的索引j为next[j]，即第二位。也就是目标串右移j-next[j]位（2位）。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/450996-a8288306a47b5796.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
-<p>如图所示，由于移动后，第二位的字符仍然为“b”，显然比较失败。在这种情况下，本次比较实际上是没有意义的。那么应该如何避免这种比较呢？</p>
-<p>其实，在正常情况下，当匹配失败时，我们还会进一步缩小匹配范围（j = next[j]），故<strong>在这种情况下（next[j]指向的字符与当前字符相同时），我们只需再次递归next[j]，跳过相同字符即可</strong>。</p>
-<p>因此，解决办法就是，<strong>在生成next数组时，在当前Pk和Pj相同的情况下，若下一位的j与k指向的字符相同，直接设置该位置的next为next[k]即可</strong>：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="function">NSArray *<span class="title">getNextInfo</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *targetStr)</span> </span>&#123;</div><div class="line">    NSMutableArray *nextInfo = [[NSMutableArray alloc] initWithCapacity:<span class="number">10</span>];</div><div class="line">    nextInfo[<span class="number">0</span>] = @(<span class="number">-1</span>); </div><div class="line">    </div><div class="line">    NSInteger strLength = strLen(targetStr);</div><div class="line">    </div><div class="line">    NSInteger k = <span class="number">-1</span>; <span class="comment">// 前缀索引初始值</span></div><div class="line">    NSInteger j = <span class="number">0</span>; <span class="comment">// 后缀索引初始值（后缀必须大于前缀才有效）</span></div><div class="line">    </div><div class="line">    <span class="comment">// 以后缀索引作为遍历范围</span></div><div class="line">    <span class="keyword">while</span> (j &lt; strLength - <span class="number">1</span>) &#123;</div><div class="line">        <span class="keyword">if</span> ((k == <span class="number">-1</span>)</div><div class="line">            || (targetStr[k] == targetStr[j])) &#123;</div><div class="line">                <span class="comment">// 前缀为初值索引时，无条件后移并记录（即没有有效前后缀公共串）</span></div><div class="line">                <span class="comment">// 当前位置的字符相同，即找到了公共前后缀字符串，记录下一个位置的next值</span></div><div class="line">                </div><div class="line">                k += <span class="number">1</span>;</div><div class="line">                j += <span class="number">1</span>;</div><div class="line">                </div><div class="line">                <span class="comment">// nextInfo[j] = @(k); // 修改</span></div><div class="line">                </div><div class="line">                <span class="keyword">if</span> (targetStr[k] == targetStr[j]) &#123;</div><div class="line">                    <span class="comment">// 下一位的前后缀字符相同</span></div><div class="line">                    nextInfo[j] = @(nextInfo[k]); <span class="comment">// next跳过当前的前缀位置，直接指向前缀位置的next位置</span></div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                    <span class="comment">// 下一位的前后缀字符不同（正常情况）</span></div><div class="line">                    nextInfo[j] = @(k); <span class="comment">// 原始匹配，next指向前缀后面的位置</span></div><div class="line">                &#125;</div><div class="line">                </div><div class="line">                </div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="comment">// 当前位置字符不同</span></div><div class="line">                k = [next[k] integerValue];</div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> [nextInfo copy];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>最终，优化后的next数组信息如下表所示（以目标串“abab”为例）：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/450996-daddb3d9b0bbd0b0.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
-<p>使用优化后的next数组，可以再次减少一些不必要的比较。</p>
-<h4 id="2-5-时间复杂度"><a href="#2-5-时间复杂度" class="headerlink" title="2.5 时间复杂度"></a>2.5 时间复杂度</h4><p>KMP方式的运算次数为<em>计算next数组的次数</em>与<em>匹配主串的次数</em>之和，即O(m + n)。</p>
-<blockquote>
-<p>参考引用：</p>
-<ul>
-<li><a href="https://www.zhihu.com/question/21923021/answer/281346746" target="_blank" rel="external">如何更好的理解和掌握 KMP 算法?</a></li>
-<li><a href="https://www.cnblogs.com/ZuoAndFutureGirl/p/9028287.html" target="_blank" rel="external">很详尽KMP算法（厉害）</a></li>
-</ul>
-</blockquote>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;1-朴素的字符串匹配方法&quot;&gt;&lt;a href=&quot;#1-朴素的字符串匹配方法&quot; class=&quot;headerlink&quot; title=&quot;1. 朴素的字符串匹配方法&quot;&gt;&lt;/a&gt;1. 朴素的字符串匹配方法&lt;/h3&gt;&lt;h4 id=&quot;1-1-比较过程&quot;&gt;&lt;a href=&quot;#1-1-比较过程&quot; class=&quot;headerlink&quot; title=&quot;1.1 比较过程&quot;&gt;&lt;/a&gt;1.1 比较过程&lt;/h4&gt;&lt;p&gt;以主串T为基础，根据索引i对每个字符进行遍历，依次与目标串P的每个索引j的字符进行匹配。若字符相同，则两索引均后移，继续匹配；若不相同，则j恢复为0，从头开始，i回溯到开始成功匹配时索引的下一位。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   

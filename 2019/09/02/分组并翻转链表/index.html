@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>线程编程指南----关于线程的编程 | 臭吉吉的瞎记空间</title>
+  <title>分组并翻转链表 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="注：本文翻译自About Threaded Programming  关于线程的编程多年来，几乎所有的电脑性能都被单核处理器的运算速度限制地非常严重。当单个处理器的运行速度达到瓶颈之后，芯片就切换到了多核设计，这就为电脑提供了可以同时执行多个任务的机会。虽然OS X在执行系统相关的任务时已经利用好了多核心处理器，但你的应用也需要通过线程来利用好它们。">
-<meta name="keywords" content="iOS">
+  <meta name="description" content="题目给定一个单链表的头节点 head,实现一个调整单链表的函数，使得每K个节点之间为一组进行逆序，并且从链表的尾部开始组起，头部剩余节点数量不够一组的不需要逆序。（不能使用队列或者栈作为辅助）">
+<meta name="keywords" content="算法学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="线程编程指南----关于线程的编程">
-<meta property="og:url" content="http://yoursite.com/2019/08/27/线程编程指南----关于线程的编程/index.html">
+<meta property="og:title" content="分组并翻转链表">
+<meta property="og:url" content="http://yoursite.com/2019/09/02/分组并翻转链表/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="注：本文翻译自About Threaded Programming  关于线程的编程多年来，几乎所有的电脑性能都被单核处理器的运算速度限制地非常严重。当单个处理器的运行速度达到瓶颈之后，芯片就切换到了多核设计，这就为电脑提供了可以同时执行多个任务的机会。虽然OS X在执行系统相关的任务时已经利用好了多核心处理器，但你的应用也需要通过线程来利用好它们。">
-<meta property="og:updated_time" content="2019-08-27T06:12:41.395Z">
+<meta property="og:description" content="题目给定一个单链表的头节点 head,实现一个调整单链表的函数，使得每K个节点之间为一组进行逆序，并且从链表的尾部开始组起，头部剩余节点数量不够一组的不需要逆序。（不能使用队列或者栈作为辅助）">
+<meta property="og:updated_time" content="2019-09-02T06:35:38.957Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="线程编程指南----关于线程的编程">
-<meta name="twitter:description" content="注：本文翻译自About Threaded Programming  关于线程的编程多年来，几乎所有的电脑性能都被单核处理器的运算速度限制地非常严重。当单个处理器的运行速度达到瓶颈之后，芯片就切换到了多核设计，这就为电脑提供了可以同时执行多个任务的机会。虽然OS X在执行系统相关的任务时已经利用好了多核心处理器，但你的应用也需要通过线程来利用好它们。">
+<meta name="twitter:title" content="分组并翻转链表">
+<meta name="twitter:description" content="题目给定一个单链表的头节点 head,实现一个调整单链表的函数，使得每K个节点之间为一组进行逆序，并且从链表的尾部开始组起，头部剩余节点数量不够一组的不需要逆序。（不能使用队列或者栈作为辅助）">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -184,183 +184,54 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-线程编程指南----关于线程的编程" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-分组并翻转链表" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      线程编程指南----关于线程的编程
+      分组并翻转链表
     </h1>
   
 
         
-        <a href="/2019/08/27/线程编程指南----关于线程的编程/" class="archive-article-date">
-  	<time datetime="2019-08-27T06:07:16.472Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-27</time>
+        <a href="/2019/09/02/分组并翻转链表/" class="archive-article-date">
+  	<time datetime="2019-09-02T06:35:38.957Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-02</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>注：本文翻译自<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/AboutThreads/AboutThreads.html#//apple_ref/doc/uid/10000057i-CH6-SW2" target="_blank" rel="external">About Threaded Programming</a></p>
-</blockquote>
-<h3 id="关于线程的编程"><a href="#关于线程的编程" class="headerlink" title="关于线程的编程"></a>关于线程的编程</h3><p>多年来，几乎所有的电脑性能都被单核处理器的运算速度限制地非常严重。当单个处理器的运行速度达到瓶颈之后，芯片就切换到了多核设计，这就为电脑提供了可以同时执行多个任务的机会。虽然OS X在执行系统相关的任务时已经利用好了多核心处理器，但你的应用也需要通过线程来利用好它们。<br><a id="more"></a></p>
-<h4 id="什么是线程？"><a href="#什么是线程？" class="headerlink" title="什么是线程？"></a>什么是线程？</h4><p>线程是一种在应用程序中相对轻量级地实现多条路径执行指令的方式。在系统层面，所有程序一个接一个地执行，系统会根据需要为每一个程序腾出执行时间并同时满足其他程序。但是，在每一个程序内部，存在着一个或多个线程，它们被用于同时或几乎同时去执行多个任务。实际上系统自身管理着这些线程，根据需要调度它们到可用核心中或主动打断它们的执行来允许其他线程执行。</p>
-<p>从技术的角度来看，一个线程就是一个核心级和应用级数据结构的组合用以管理代码的执行。核心级结构将事件派发给指定线程并使用此线程抢占可用核心。应用级结构包含了用于存储函数调用的调用栈和应用程序需要的数据结构，用它来管理并控制线程的属性和状态。</p>
-<p>在一个非并发的应用中，只有唯一一个线程在执行。此线程随着应用的主程序从开始到结束，一个接一个地从不同的方法或函数中切换分支，来实现应用的所有行为。作为对比差异，支持并发的应用以一个线程开始，之后根据需要添加更多的线程来创建额外的执行路径。每一个新路径都有它自己的开始程序，且此程序与应用的主程序相对独立。在应用中包含多个线程可以提供两个非常重要的优点：</p>
-<ul>
-<li>多线程可以提升应用的响应性。</li>
-<li>多线程可以在多核心系统中提高应用的实时性能。</li>
-</ul>
-<p>如果你的应用只有一个线程，此线程就必须做每一件事。它必须响应事件、更新应用的窗口并执行所有需要的运算来实现应用的行为。但只有一个线程的问题在于同一时刻只能做一件事。所以当一个计算任务花费时间过长会发生什么？当你的代码正在忙于计算需要的值时，你的应用会停止响应用户的事件并停止更新窗口。如果这个行为持续太长时间，用户可能就认为你的应用已经卡死并试图强退了。如果你把这个自定的计算任务放到一个单独线程中去执行，应用的主线程就会被释放以一个比较实时地状态来响应用户的交互。</p>
-<p>随着多核心电脑普及的这些日子，线程提供了一种方式为某些类型的应用提升了性能。执行不同任务的线程可以在不同的处理器核心上同时执行，使一个应用在指定时间内完成更多任务成为了可能。</p>
-<p>当然，线程也不是解决应用性能问题的万能药。随着线程带来的性能提升也带来了一些潜在问题。在应用中的多个执行路径会让你的代码更加复杂。每个线程都要与其他线程定位好对应的行为来防止应用的状态信息被搞乱。因为在一个应用中的所有线程会在同一时间共享相同的内存空间，一个线程可能会覆盖了其他线程的修改最终导致了结果数据的混乱。虽然在指定位置进行了适当保护，你还是需要警惕编译器对代码的优化可能引入的微小概率的bug。</p>
-<h4 id="线程术语"><a href="#线程术语" class="headerlink" title="线程术语"></a>线程术语</h4><p>在深入讨论线程之前，关于线程和支持的技术，有必要定义一些基本的术语。</p>
-<p>如果你比较熟悉UNIX系统，你可能会发现“任务”这个术语在此文档中用于不同的目的。在UNIX系统中，“任务”被用于指代一个正在执行的进程。</p>
-<p>本文中使用了如下术语：</p>
-<ul>
-<li><em>线程</em> 被用于指代一个执行代码的单独路径。</li>
-<li><em>进程</em> 被用于指代一个正在执行的，包含多个线程的可执行程序。</li>
-<li><em>任务</em> 被用于指代一个需要被执行的工作的抽象概念。</li>
-</ul>
-<h4 id="线程的替代方案"><a href="#线程的替代方案" class="headerlink" title="线程的替代方案"></a>线程的替代方案</h4><p>自己创建线程的一个问题是它们会给你的代码带来不确定性。线程是一种的相对底层且比较复杂的方式来为应用添加并发能力。如果你没有完全理解你定义的选择方式，你可能会很容易就遇到同步或者时间上的问题，这几种问题可以将微小的修改变为应用程序的崩溃或者用户数据的混乱。</p>
-<p>另一个考虑的因素就是你是否真的需要多线程或者并发功能。线程可以解决指定的问题，如在一个进程中同时执行多个路径的代码。也许存在一些情况，比如，大多情况下，你所执行的工作并不是并发的。线程会给你的进程引入大量的额外工作，包括内存占用和CPU时间占用。你要考虑好对于本来任务引入的这些额外工作，或者是否存在其他方式可以更容易地实现。</p>
-<p>表1-1列出了一些对于线程的替代方案。这个表不仅包含了对于多线程的替代技术（如operation对象和GCD），还包含了使用单线程也能提高效率的替代方案。</p>
-<table>
-<thead>
-<tr>
-<th>技术</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Operation对象</td>
-<td>OS X v10.5引入，一个operation对象是一个任务的封装，可以在次要线程中执行。此封装隐藏了执行任务时的线程管理方面，让你专注于任务自身。你只需要结合着一个操作队列对象使用operation对象，这个操作队列会在一个或多个线程中管理着operation的执行。 （查看<a href="https://developer.apple.com/library/archive/documentation/General/Conceptual/ConcurrencyProgrammingGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008091" target="_blank" rel="external">并发编程指南</a>以学习如何使用）</td>
-</tr>
-<tr>
-<td>大中枢派发（GCD）</td>
-<td>OS X v10.6引入，大中枢派发是另一个线程的替代方案，可以让你专注于需要的任务而不是线程的管理。使用GCD，你定义好需要执行的任务并将其添加到工作队列中，此队列负责将你的任务调度到合适的线程中。工作队列专注于可用核心数和当前加载并执行的任务，这比你自己使用线程进行处理要更加高效。 （查看<a href="https://developer.apple.com/library/archive/documentation/General/Conceptual/ConcurrencyProgrammingGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008091" target="_blank" rel="external">并发编程指南</a>以学习如何使用）</td>
-</tr>
-<tr>
-<td>闲时通知（Idle-time notifications）</td>
-<td>对于那些相对短时间且低优先级的任务来说，闲时通知可以让你在应用不忙时执行任务。Cocoa提供了<a href="https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSNotificationQueue/Description.html#//apple_ref/occ/cl/NSNotificationQueue" target="_blank" rel="external">NSNotificationQueue</a>对象来支持闲时通知。要要请求一个闲时通知，使用<a href="https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/TypesAndConstants/FoundationTypesConstants/Description.html#//apple_ref/c/econst/NSPostWhenIdle" target="_blank" rel="external">NSPostWhenIdle</a>参数，发送一个notification给默认的NSNotificationQueue对象。直到运行循环（run loop）空闲时，队列则传递你的notification对象。  （查看<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Notifications/Introduction/introNotifications.html#//apple_ref/doc/uid/10000043i" target="_blank" rel="external">通知编程指南</a>以获取更多信息）</td>
-</tr>
-<tr>
-<td>异步函数</td>
-<td>系统接口中包含了许多异步函数可以提供自动并发功能。这些API可以用于系统进程或者创建自定义线程来执行任务并返回结果给你。（实际实现无关紧要，因为它们与你的代码是分隔开的。）在你开发应用时，查找一下提供异步功能的函数并考虑使用它们，从而避免在一个自定义线程中使用等价的同步函数。</td>
-</tr>
-<tr>
-<td>定时器</td>
-<td>在任务没有重要到需要创建线程时，你可以在应用的主线程中使用定时器来执行周期性的任务，但是定时器依然需要遵循正常的间隔。 （查看<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW21" target="_blank" rel="external">定时器资源</a>来获取更多信息）</td>
-</tr>
-<tr>
-<td>独立进程</td>
-<td>虽然要比线程更重，但是当指定任务与你的应用基本无关时，创建一个独立进程也许更有用。如果一个任务需要分配一块重要的内存或者必须使用根权限执行时，你可以使用一个进程来实现。举例来说，你可以使用一个64位的服务器进程来计算大数据集，而使用一个32位的应用将结果显示给用户。</td>
-</tr>
-</tbody>
-</table>
-<h4 id="线程支持"><a href="#线程支持" class="headerlink" title="线程支持"></a>线程支持</h4><p>如果你有使用线程的现有代码，在你的应用中，OS X和iOS已经提供了几种技术来创建线程。此外，此两种系统都提供了对于在多线程中进行管理和同步的功能。下面的小结描述了一些关键技术，在OS X和iOS中使用线程时，这些技术你都需要了解。</p>
-<h5 id="线程的封装"><a href="#线程的封装" class="headerlink" title="线程的封装"></a>线程的封装</h5><p>虽然对于线程来说，底层的实现机制是Mach线程，你几乎不会在Mach层级去使用线程。相反，你经常使用更方便的POSIX API或者是派生子对象。可是，Mach的实现确实提供了所有线程的基本特性，包括主动抢占式执行模型和调度线程的能力，因此他们彼此独立。</p>
-<p>表1-2列出了你可以在应用中使用的线程技术。</p>
-<table>
-<thead>
-<tr>
-<th>技术</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Cocoa线程</td>
-<td>Cocoa使用<a href="https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSThread/Description.html#//apple_ref/occ/cl/NSThread" target="_blank" rel="external">NSThread</a>类实现了线程。Cocoa还在NSObject中提供了创建新线程的功能和在已经运行的线程上执行代码的功能。（更多信息请查看<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/CreatingThreads/CreatingThreads.html#//apple_ref/doc/uid/10000057i-CH15-SW11" target="_blank" rel="external">使用NSThread</a>和<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/CreatingThreads/CreatingThreads.html#//apple_ref/doc/uid/10000057i-CH15-SW13" target="_blank" rel="external">使用NSObject创建一个新线程</a>）</td>
-</tr>
-<tr>
-<td>POSIX线程</td>
-<td>POSIX线程提供了一个基于C的接口来创建线程。如果你没有编写Cocoa应用，这就是创建线程的最好选择。对于线程的配置，POSIX接口相对简单易用且提供了足够的扩展性。（更多信息请查看<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/CreatingThreads/CreatingThreads.html#//apple_ref/doc/uid/10000057i-CH15-SW12" target="_blank" rel="external">使用POSIX线程</a>）</td>
-</tr>
-<tr>
-<td>多进程服务</td>
-<td>多进程服务是从老版本Mac OS中转换应用时遗留下的基于C的接口。这项技术只在OS X中可用且在新的开发中应当避免使用。作为替代，你应该使用NSThread类或是POSIX线程。（更多信息请查看<a href="https://developer.apple.com/library/archive/documentation/Carbon/Conceptual/Multitasking_MultiproServ/01introduction/introduction.html#//apple_ref/doc/uid/TP40000853" target="_blank" rel="external">多核心服务编程指南</a>）</td>
-</tr>
-</tbody>
-</table>
-<p>在应用程序级来看，所有线程的行为看起来就和在其他平台上看起来一样。在开启一个线程之后，线程就会处于三种状态：运行态、就绪态和阻塞态。如果一个线程当前没处在运行态，那么它或者是被阻塞了正在等待输入，或者是准备好运行但是还没有被调度。线程会继续返回并执行第四个状态（就是循环会开始状态）直到它最终退出并且变为终止状态。</p>
-<p>当你创建一个新线程时，你必须为线程指定一个入口点函数（在Cocoa的线程中为入口点方法）。此入口点函数组成了你要在线程中执行的代码。当函数返回时，或者当你主动结束此线程时，线程会永久停止且会被系统回收。由于线程的创建在内存和时间上的开销比较大，因此建议让你的入口点函数做一些重要的工作或者配置一个运行循环以便可以反复执行工作。</p>
-<p>查看更多关于可用线程技术和如何使用的相关信息，请查看<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/CreatingThreads/CreatingThreads.html#//apple_ref/doc/uid/10000057i-CH15-SW2" target="_blank" rel="external">线程管理</a>。</p>
-<h5 id="运行循环"><a href="#运行循环" class="headerlink" title="运行循环"></a>运行循环</h5><p>运行循环是用于在线程中处理异步接收事件的一种基础设施。一个线程指定的运行循环通过监控一个或多个事件源进行工作。一旦收到事件，系统就会唤醒线程并把事件派发给运行循环，之后此运行循环就会将它发送给你指定的处理对象。如果当前没有事件出现且准备好要处理，运行循环就会使线程休眠。</p>
-<p>你无需使用一个带有你创建线程的运行循环，但是这样做可以给用户带来更好的体验。运行循环可以让使用最小内存占用来创建长期生存的线程成为可能。因为运行循环可以在没事可做时让线程进入休眠，它排除了需要轮询的可能，因为轮询会浪费CPU资源且阻止处理器自身进入休眠状态，省电。</p>
-<p>要配置一个运行循环，所有你需要做的就是启动一个线程，获取一个运行循环对象的索引，安装你的事件处理器，并告知运行循环启动运行。OS X系统自动为你配置了主线程的运行循环。可是，如果你想要创建一个长期生存的子线程，你就必须要自己配置那些线程的运行循环。</p>
-<p>有关运行循环的详细信息和使用方式在<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW1" target="_blank" rel="external">运行循环</a>中提供说明。</p>
-<h5 id="同步工具"><a href="#同步工具" class="headerlink" title="同步工具"></a>同步工具</h5><p>多线程编程中的其中一个危险点就是多个线程间的资源竞争。如果多个线程在同一时间试图使用或修改相同资源，问题就可能发生。减轻此问题的一种方式就是尽量避免共享资源并且确保每个线程都有自己的资源集合并在里面进行操作。当处理完全独立的资源不是一个可选项时，你可能必须通过锁、条件、原子操作或者其他技术来同步访问资源。</p>
-<p>锁通过一种简单粗暴地保护代码的方式来使每次同时只能有一个线程可以被执行。最普通的锁的类型就是互斥锁，也被叫做<em>mutex</em>。当一个线程试图获取一个已经被其他线程保留的互斥锁时，此线程会被阻塞直到其他线程释放此锁。好几个系统框架提供了对于互斥锁的支持，虽然它们都基于同样的底层技术。此外，Cocoa还提供了多种互斥锁的变体以支持不同种类的行为，比如递归。要获取更多关于可用类型锁的相关信息，请查看<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/ThreadSafety/ThreadSafety.html#//apple_ref/doc/uid/10000057i-CH8-126320" target="_blank" rel="external">锁</a>。</p>
-<p>除了锁以外，系统还提供了条件支持，条件对象可以确保在你的应用中的任务以指定的顺序执行。一个条件对象扮演了门卫的角色，阻塞指定线程直到它设置的条件变为真。当此情况发生时，条件对象释放此线程并允许它继续执行。POSIX层和Foundation框架都直接支持了条件对象。（如果你使用了operation对象，你可以在你的operation对象间设置依赖以使任务按顺序执行，这种行为与条件对象提供的行为非常相似。）</p>
-<p>虽然在并发设计中，锁和条件对象非常常见，但原子操作也是保护并同步访问数据的另一种方式。在你需要对纯数据类型执行数学或逻辑运算时，原子操作是一种轻量级的锁的替代方案。原子操作使用特别的硬件指令来确保在其他线程有机会访问之前就对指定变量完成修改。</p>
-<p>要查看关于可用的同步工具的更多信息，请查看<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/ThreadSafety/ThreadSafety.html#//apple_ref/doc/uid/10000057i-CH8-124887" target="_blank" rel="external">同步工具</a>。</p>
-<h5 id="线程间通信"><a href="#线程间通信" class="headerlink" title="线程间通信"></a>线程间通信</h5><p>虽然一个好的设计可以将必要的通信降为最少，但是，在某些点看来，线程间的通信变得很有必要。（一个线程的职责就是为你的应用工作，但是如果工作的结果从来不会使用，那又有什么用呢？）线程也许需要处理新的工作请求或者向你的应用的主线程汇报它们的工作进度。在这些情况下，你需要一种方式将一个线程的信息获取到另一个线程中。幸运的是，真相是所有线程都共享着相同的进程空间，这意味着你可以有许多种选择进行通信。</p>
-<p>这里有许多种方式用于线程间通信，每一种都有自己的优点和缺点。配置线程局部存储（TLS）列举出了大多数的在OS X中可用的通信机制。（除了消息队列和Cocoa发布对象以外，这些技术都可以用于iOS中。）这些技术按照复杂性的增长顺序列举在了下表中。</p>
-<table>
-<thead>
-<tr>
-<th>机制</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>直接发送消息</td>
-<td>Cocoa应用支持直接在其他线程中执行选择器的能力。这项能力意味着一个线程在本质上可以在任意其它线程上执行方法。因为这些方法是在目标线程的上下文对象中执行，这种方式发送的消息可以在目标线程中自动序列化。要查看相关的输入资源信息，请查看<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW44" target="_blank" rel="external">Cocoa执行选择器资源</a>。</td>
-</tr>
-<tr>
-<td>全局变量、共享内存和对象</td>
-<td>在两个线程间交换信息的另一种简单方法就是使用全局变量、共享对象或者共享的内存块。虽然共享变量又快又简单，但此方式相比直接发送消息更加脆弱。共享变量必须使用锁或者其它同步机制进行小心保护来确保代码的正确。忘记使用此方式会导致竞争条件、混乱的数据或者崩溃。</td>
-</tr>
-<tr>
-<td>条件</td>
-<td>当一个线程执行一部分指定代码时，条件是一种你可以用于控制使用的同步工具。你可以将其看做门卫，只有当条件状态满足时才会让线程执行。对于更多信息，请查看<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/ThreadSafety/ThreadSafety.html#//apple_ref/doc/uid/10000057i-CH8-SW4" target="_blank" rel="external">使用条件</a>。</td>
-</tr>
-<tr>
-<td>运行循环源</td>
-<td>一个自定义的运行循环源是你在一个线程中用于接收指定的应用程序消息。由于是事件驱动，在无事可做时运行循环会让你的线程进入睡眠状态，这会提高线程效率。对于更多关于运行循环和运行循环源，请查看<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW1" target="_blank" rel="external">运行循环</a>。</td>
-</tr>
-<tr>
-<td>端口和套接字</td>
-<td>基于端口的通信是一种两个线程间更加精细的通信方式，而且是一个更可靠的技术。更重要的是，端口和套接字可以用于和外部实体进行通信，如其它进程和服务。为了提升效率，端口使用运行循环源进行实现，因此在端口没有数据等待时，你的线程会进入休眠。对于更多关于运行循环和基于端口的输入源，请查看<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW1" target="_blank" rel="external">运行循环</a>。</td>
-</tr>
-<tr>
-<td>消息队列</td>
-<td>iOS不可用</td>
-</tr>
-<tr>
-<td>Cocoa发布对象</td>
-<td>iOS不可用</td>
-</tr>
-</tbody>
-</table>
-<h4 id="设计技巧"><a href="#设计技巧" class="headerlink" title="设计技巧"></a>设计技巧</h4><p>下面几节提供了一些指导来帮助你以某种方式确保代码的正确性，进而提升线程的使用效果。某些指导还提供了一些关于使用你自己的线程代码来获得更好性能的相关技巧。就任何的性能技巧来说，你应该在每次修改代码之后，都要在执行之前、执行中和执行之后统计出相关的性能表现。</p>
-<h5 id="避免直接创建线程"><a href="#避免直接创建线程" class="headerlink" title="避免直接创建线程"></a>避免直接创建线程</h5><p>是移动编写创建线程的代码是单调的并且容易有潜在的错误出现，因此可能的话尽量避免这样做。OS X和iOS在内部都通过其他API实现了并发支持。考虑使用异步API、GCD或者operation对象来完成工作，而不是自己创建线程。这些技术在幕后帮你完成了线程相关的工作且能够保证准确性。此外，如GCD和operation对象这种技术，在设计时就是为了在线程管理上比你自己的代码要更加高效（通过基于当前系统的状态自动调整可用线程的数量）。要了解更多关于GCD和operation对象的信息，查看<a href="https://developer.apple.com/library/archive/documentation/General/Conceptual/ConcurrencyProgrammingGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008091" target="_blank" rel="external">并发编程指南</a>。</p>
-<h5 id="保持线程合理地执行"><a href="#保持线程合理地执行" class="headerlink" title="保持线程合理地执行"></a>保持线程合理地执行</h5><p>如果你要要手动创建并管理线程，记住线程会消耗相当多的系统资源，你应该尽最大努力来确保交付给线程的任务要合理地生存并有产出。同时，你不要害怕终止那些在大多时间都处于空闲状态下的线程。线程占用了非同一般的内存大小，有些数据发生了错误，因此释放一个闲置线程不仅有助于降低应用的内存占用，还可以释放更多的物理内存以便为其他的系统进程所使用。</p>
+        <h4 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h4><p>给定一个单链表的头节点 head,实现一个调整单链表的函数，使得每K个节点之间为一组进行逆序，并且从链表的尾部开始组起，头部剩余节点数量不够一组的不需要逆序。（不能使用队列或者栈作为辅助）<br><a id="more"></a><br>例如：</p>
 <blockquote>
-<p><strong>重点</strong>：在你准备终止空闲线程之前，你总是应当对应用的当前性能进行一系列的测试并记录。在完成修改之后，进行额外的测试来验证此修改确实提高了性能，而不是降低了。</p>
+<p>链表:1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;6-&gt;7-&gt;8-&gt;null, K = 3。<br>那么 6-&gt;7-&gt;8，3-&gt;4-&gt;5，1-&gt;2各为一组。<br>调整后：1-&gt;2-&gt;5-&gt;4-&gt;3-&gt;8-&gt;7-&gt;6-&gt;null。<br>其中 1，2不调整，因为不够一组。</p>
 </blockquote>
-<h5 id="避免共享数据"><a href="#避免共享数据" class="headerlink" title="避免共享数据"></a>避免共享数据</h5><p>在程序中，最简单最容易去避免线程资源冲突的方式就是给每个线程都配备一份所需数据的拷贝。在你的线程间最小化通信和资源竞争时，平行无关的代码效果最好。</p>
-<p>创建一个多线程的应用是很困难的。就算你非常认真并且在所有正确的时间点在代码中对共享数据进行加锁操作，你的代码可能在语义上依然是不安全的。比如，如果你希望共享数据按照指定顺序被修改，但是你的代码可能还会遇到问题。将代码修改为基于事务的模型作为补偿反而可能会抵消掉多线程的性能优势。将排除资源竞争作为第一要务可能会得到更简单的设计和更棒的性能。</p>
-<h5 id="线程和你的用户界面"><a href="#线程和你的用户界面" class="headerlink" title="线程和你的用户界面"></a>线程和你的用户界面</h5><p>如果你的应用包含用户图形界面，极力建议你将接收用户相关事件和进行界面更新放到应用的主线程中。这种做法有助于避免在处理用户事件和绘制界面相关内容时出现同步问题。一些框架，如Cocoa，一般都作为必要行为，但是对于那些即使没有这么做的框架，将这些行为放到主线程中对于管理你的UI界面也有简化逻辑的优势。</p>
-<p>在其他线程中执行图形操作时，还是存在几个例外事件是有性能优势的。比如，你可以使用子线程来创建并处理图片或者是其他的图片相关的计算。对这些操作使用子线程可以有效地提高性能。如果你不确定某个指定的图形操作能否提高性能，就计划将它放到主线程中进行处理吧。</p>
-<p>对于更多关于Cocoa的线程安全，请查看<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/ThreadSafetySummary/ThreadSafetySummary.html#//apple_ref/doc/uid/10000057i-CH12-SW1" target="_blank" rel="external">线程安全总结</a>。对于更多的关于Cocoa的绘制信息，请查看<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/CocoaDrawingGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40003290" target="_blank" rel="external">Cocoa绘制指南</a>。</p>
-<h5 id="在退出时注意线程行为"><a href="#在退出时注意线程行为" class="headerlink" title="在退出时注意线程行为"></a>在退出时注意线程行为</h5><p>一个进程会持续运行直到所有的非分离线程（non-detatched thread）都退出为止。默认来说，只有应用的主线程是非分离的，但是你也可以按照这种方式来创建其他线程。当用户退出应用时，通常要做正确行为的就是直接终止所有的分离线程执行，因为分离线程默认将此工作（关闭应用时自动退出）作为了可选操作。如果你的应用正在使用后台线程向磁盘中保存数据或者做一些其他的重要工作，可是，你也许要要将那些线程创建为非分离的方式来防止应用退出时出现的数据丢失。</p>
-<p>创建非分离的线程（也叫做可绑定线程）需要你做额外的工作。因为大多数的上层线程技术默认都不会创建这种可绑定线程，你需要不得不使用POSIX的API来创建线程。此外，你还必须在主线程中添加代码来绑定这个非分离线程，以便它们可以在最终自动退出。要了解更多信息，请查看<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/CreatingThreads/CreatingThreads.html#//apple_ref/doc/uid/10000057i-CH15-SW3" target="_blank" rel="external">设置分离状态的线程</a>。</p>
-<h5 id="处理异常"><a href="#处理异常" class="headerlink" title="处理异常"></a>处理异常</h5><p>当异常抛出时，异常处理机制依赖于当前的调用栈来执行所有必要的清理工作。因为每个线程都有自己的调用栈，因此每个线程都要负责捕获自己的异常。在子线程中没有捕获异常与在主线程中没有捕获异常的结果一样：自身进程被终止。你不能抛出一个未捕获的异常给其他线程去处理。</p>
-<p>如果你需要在当前线程通知另一个线程（比如主线程）有异常情况发送，你需要捕获这个异常后，直接给那个线程发送消息并说明发生的状况。依照你的模型和你所做的工作，捕获到异常的线程可以在之后继续处理（如果可以）、等待指示或者直接退出。</p>
+<h4 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h4><p>首先，这里先分为几个子部分进行分析：</p>
+<h5 id="1-翻转链表"><a href="#1-翻转链表" class="headerlink" title="1. 翻转链表"></a>1. 翻转链表</h5><p>整体使用递归的思想。</p>
+<p>若size为1时，翻转不发生，返回自身。</p>
+<p>若size为2时，翻转的方式为：tail-&gt;next = head; head-&gt;next = nil; 然后返回tail。</p>
+<p>若size大于2，则将head后面的子链表继续递归，之后与head进行操作：result-&gt;next = head; head-&gt;next = nil; 最后返回result。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 翻转链表 */</span></div><div class="line">LinkNode *reverseLinkList(LinkNode *linkList) &#123;</div><div class="line">    <span class="comment">// 只有自身一个</span></div><div class="line">    <span class="keyword">if</span> (!linkList.data || !linkList.next) &#123;</div><div class="line">        <span class="comment">// 直接返回自身</span></div><div class="line">        <span class="keyword">return</span> linkList;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 超过一个的，子链表递归翻转</span></div><div class="line">    LinkNode *result = reverseLinkList(linkList.next);</div><div class="line">    </div><div class="line">    <span class="comment">// 头结点的next这时已经指向的是，翻转后result链表的尾部节点，</span></div><div class="line">    <span class="comment">// 让尾部节点的next指向原头节点</span></div><div class="line">    linkList.next.next = linkList;</div><div class="line">    <span class="comment">// 原头节点作为尾部节点</span></div><div class="line">    linkList.next = <span class="literal">nil</span>;</div><div class="line">    </div><div class="line">    <span class="comment">// 返回反转后的头节点</span></div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="2-链表分组。"><a href="#2-链表分组。" class="headerlink" title="2. 链表分组。"></a>2. 链表分组。</h5><p>还是使用递归的思想。</p>
+<p>从头遍历链表，取出指定索引为k的子链表。</p>
+<p>若子链表个数不够，根据题目要求，不翻转，直接返回。</p>
+<p>若子链表符合要求，将此子表与其他部分分割为两个链表。</p>
+<p>将子表翻转并返回；其他部分则继续进行递归操作。</p>
+<p>最后，合并两部分，则得到最终结果链表。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 分组并翻转链表 */</span></div><div class="line">LinkNode *groupAndReverseLinkList(LinkNode *linkList, <span class="built_in">NSInteger</span> groupSize) &#123;</div><div class="line">    <span class="comment">// 声明头指针</span></div><div class="line">    LinkNode *head = linkList;</div><div class="line">    </div><div class="line">    <span class="comment">// 取出一组</span></div><div class="line">    <span class="keyword">for</span> (<span class="built_in">NSInteger</span> index = <span class="number">1</span>; index &lt; groupSize &amp;&amp; head; index += <span class="number">1</span>) &#123;</div><div class="line">        head = head.next;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (!head) &#123;</div><div class="line">        <span class="comment">// 不足一组（不足groupSize时，当前node已经为空）</span></div><div class="line">        <span class="comment">// 不做反转，直接返回</span></div><div class="line">        <span class="keyword">return</span> linkList;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 够一组，将此组与后面链表分隔</span></div><div class="line">    </div><div class="line">    <span class="comment">// 后面的子表</span></div><div class="line">    LinkNode *tail = head.next;</div><div class="line">    </div><div class="line">    <span class="comment">// 原满足的组作为单独组</span></div><div class="line">    head.next = <span class="literal">nil</span>;</div><div class="line">    <span class="comment">// 将满足的组进行反转</span></div><div class="line">    LinkNode *resultHead = reverseLinkList(linkList);</div><div class="line">    </div><div class="line">    <span class="comment">// 子表继续递归操作</span></div><div class="line">    LinkNode *result = groupAndReverseLinkList(tail, groupSize);</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="comment">// 连接两部分（反转后的满足组，尾部节点为原头节点）</span></div><div class="line">    linkList.next = result;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> resultHead;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="3-从前向后-gt-从后向前"><a href="#3-从前向后-gt-从后向前" class="headerlink" title="3. 从前向后 -&gt; 从后向前"></a>3. 从前向后 -&gt; 从后向前</h5><p>由于单链表访问的局限性，我们只能从头向后访问，因此，此题目我们转化为从前向后的分组翻转（两次翻转，负负得正）：</p>
+<ol>
+<li>整体链表翻转。</li>
+<li>从前向后进行分组操作。</li>
+<li>将结果链表再次整体翻转，得到最终结果。</li>
+</ol>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// head为头结点，没有实际意义</span></div><div class="line"></div><div class="line"><span class="comment">// 翻转链表</span></div><div class="line">head.next = reverseLinkList(head.next);</div><div class="line"></div><div class="line"><span class="comment">// 从前向后进行分组翻转，3个为一组</span></div><div class="line">LinkNode *result = groupAndReverseLinkList(head.next, <span class="number">3</span>);</div><div class="line"></div><div class="line"><span class="comment">// 翻转链表（得到从后向前的分组结果）</span></div><div class="line">head.next = reverseLinkList(result);</div></pre></td></tr></table></figure>
 <blockquote>
-<p><strong>注意</strong>：在Cocoa中，一个NSException对象是一个自我包含的对象，即一旦被捕获到，就可以从一个线程传递到另一个线程中（即NSException对象是线程安全的）。</p>
+<p>代码地址：<a href="https://github.com/Choujiji/Coding-in-iOS-interview/tree/master/%E7%AE%97%E6%B3%95%E9%83%A8%E5%88%86/%E9%93%BE%E8%A1%A8/GroupAndReverse" target="_blank" rel="external">GroupAndReverse</a></p>
+<p>参考链接：<br><a href="https://www.jianshu.com/p/3dc5e73ab69c" target="_blank" rel="external">一道字节跳动的算法面试题，你能做出来吗？</a></p>
 </blockquote>
-<p>在某些情况下，一个异常处理对象可能会是自动创建的。比如，<em>@synchronized</em> 指令在Objective-C中就包含一个隐含的异常处理对象。</p>
-<h5 id="干净地终止线程"><a href="#干净地终止线程" class="headerlink" title="干净地终止线程"></a>干净地终止线程</h5><p>退出线程的最好方式就是自然地，通过让它执行到主入口点程序的结尾。虽然也存在一些可以直接终止线程的函数，可那些函数应该只作为最后的办法来使用。在线程执行到自然结束之前终止它会阻止线程的自动清除功能。如果线程已经开辟了内存、打开了文件或者获取了其他类型的资源，你的代码也许不能再回收那些资源，导致了内存泄漏或者其他的潜在问题。</p>
-<p>对于以适当的方式来退出线程的更多其他信息，请查看<a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/CreatingThreads/CreatingThreads.html#//apple_ref/doc/uid/10000057i-CH15-SW10" target="_blank" rel="external">终止线程</a>。</p>
 
       
 
@@ -374,7 +245,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">算法学习</a>
         		</li>
       		
 		</ul>
@@ -430,7 +301,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/08/27/线程编程指南----关于线程的编程/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/09/02/分组并翻转链表/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -444,18 +315,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/08/30/RunLoop学习记录/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          RunLoop学习记录
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/08/22/Block复习/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Block复习</div>
+    <a href="/2019/08/30/RunLoop学习记录/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">RunLoop学习记录</div>
       <i class="icon-circle-right"></i>
     </a>
   
