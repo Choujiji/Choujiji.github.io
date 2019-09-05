@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-09-02T06:35:38.957Z</updated>
+  <updated>2019-09-05T09:33:05.507Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,90 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>NSNotification学习</title>
+    <link href="http://yoursite.com/2019/09/05/NSNotification%E5%AD%A6%E4%B9%A0/"/>
+    <id>http://yoursite.com/2019/09/05/NSNotification学习/</id>
+    <published>2019-09-05T09:32:07.380Z</published>
+    <updated>2019-09-05T09:33:05.507Z</updated>
+    
+    <content type="html"><![CDATA[<p>主要分为NSNotification、NSNotificationCenter和底层队列NSNotificationQueue。</p>
+<p>优点：跨层通信、解耦。</p>
+<p>使用注意点：尽量将所有的通知名和观察对象的关联关系放置在独立文件中，方便维护与查找。<br><a id="more"></a></p>
+<h4 id="NSNotification"><a href="#NSNotification" class="headerlink" title="NSNotification"></a>NSNotification</h4><p>包含了<em>通知名name</em>、<em>发送通知的对象object</em>以及<em>保存信息userInfo</em>。<br>其中，NSNotificationName作为区分通知的存在。</p>
+<p>一般通过NSNotificationCenter的相关API来自动创建通知对象，无需手动创建（NSNotification是类簇，调用init初始化会抛异常）。</p>
+<h4 id="NSNotificationCenter"><a href="#NSNotificationCenter" class="headerlink" title="NSNotificationCenter"></a>NSNotificationCenter</h4><p>系统默认为APP通过实现了名为<em>defaultCenter</em>的单例通知中心对象。所有的通知（跨层，跨线程）默认都通过此对象进行通知的分发。</p>
+<p>系统收到post通知请求时，会扫描注册到NSNotificationCenter对象中的所有观察者分发表。因此在大量频繁使用通知进行通信时，可以考虑使用自定义的NSNotificationCenter对象来提高性能。</p>
+<p>系统提供了<em>target+selector</em>和<em>block+queue</em>两种方式来向NSNotificationCenter注册观察者。</p>
+<p>默认在哪个线程发送通知（post），就在哪个线程执行回调。除非通过block的方式发送通知，指定执行的队列。</p>
+<blockquote>
+<p><strong>注意</strong>：</p>
+<p>在block+queue的方式中，由于执行时机的不同（runloop的不同时机）NSNotificationCenter会将block拷贝到堆中进行保留。因此需要注意对象的捕获即内存引用循环问题。</p>
+</blockquote>
+<h4 id="NSNotificationCenter的同步执行"><a href="#NSNotificationCenter的同步执行" class="headerlink" title="NSNotificationCenter的同步执行"></a>NSNotificationCenter的同步执行</h4><p><strong>不管接收通知的观察者回调在什么线程上执行，通过NSNotificationCenter调用postNotification时都是同步执行的</strong>。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line"></div><div class="line">    <span class="comment">// 主线程监听</span></div><div class="line">    [[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserver:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(testSelector1) name:<span class="string">@"jiji.notification.test"</span> object:<span class="literal">nil</span>];</div><div class="line">   </div><div class="line">   <span class="comment">// 后台线程监听</span></div><div class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line">        [[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserver:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(testSelector1) name:<span class="string">@"jiji.notification.test"</span> object:<span class="literal">nil</span>];</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    <span class="comment">// 主线程监听，block方式，强制在主队列执行（主线程）</span></div><div class="line">    [[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserverForName:<span class="string">@"jiji.notification.test"</span> object:<span class="literal">nil</span> queue:[<span class="built_in">NSOperationQueue</span> mainQueue] usingBlock:^(<span class="built_in">NSNotification</span> * _Nonnull note) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"%s"</span>, __func__);</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"thread - %@"</span>, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">   </div><div class="line">    <span class="comment">// 在后台线程发送通知</span></div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"com.jiji.queue1"</span>, DISPATCH_QUEUE_CONCURRENT);</div><div class="line">    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(<span class="number">3</span> * <span class="built_in">NSEC_PER_SEC</span>)), queue, ^&#123;</div><div class="line">        [[<span class="built_in">NSNotificationCenter</span> defaultCenter] postNotificationName:<span class="string">@"jiji.notification.test"</span> object:<span class="literal">nil</span>];</div><div class="line">        <span class="built_in">NSNotificationQueue</span></div><div class="line">        </div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"post finish----"</span>);</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)testSelector1 &#123;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%s"</span>, __func__);</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"thread - %@"</span>, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>执行结果：</p>
+<blockquote>
+<p>2019-09-05 13:39:36.594370+0800 TestAPP[52913:2455622] -[ViewController testSelector1]<br>2019-09-05 13:39:36.594797+0800 TestAPP[52913:2455622] thread - <nsthread: 0x6000001bd640="">{number = 4, name = (null)}<br>2019-09-05 13:39:36.595147+0800 TestAPP[52913:2455622] -[ViewController testSelector1]<br>2019-09-05 13:39:36.595537+0800 TestAPP[52913:2455622] thread - <nsthread: 0x6000001bd640="">{number = 4, name = (null)}<br>2019-09-05 13:39:36.596740+0800 TestAPP[52913:2455552] -[ViewController viewDidLoad]_block_invoke<br>2019-09-05 13:39:36.597015+0800 TestAPP[52913:2455552] thread - <nsthread: 0x6000001d1f00="">{number = 1, name = main}<br>2019-09-05 13:39:36.597354+0800 TestAPP[52913:2455622] post finish—-</nsthread:></nsthread:></nsthread:></p>
+</blockquote>
+<p>可以看到：</p>
+<ol>
+<li>除block版本监听外，其他的通知回调执行线程都与发送通知的线程相同（<strong>保证线程安全</strong>）。</li>
+<li><strong>NSNotificationCenter主动发送通知为同步操作：在所有监听者的回调执行结束之后，被阻塞的发送操作才向下继续执行</strong>。因此，对于消耗性能或长时间的操作需要尽量避免。</li>
+</ol>
+<p><strong>发送同步通知的过程，就是直接的消息发送</strong>。</p>
+<h4 id="NSNotificationQueue的异步调用"><a href="#NSNotificationQueue的异步调用" class="headerlink" title="NSNotificationQueue的异步调用"></a>NSNotificationQueue的异步调用</h4><p>那如果监听方需要执行的任务确实需要长时间怎么办？除了可以在回调中将任务放在子线程中运行（GCD或NSOperationQueue），Foundation框架本身也提供了一个异步发送通知的方式，也就是NSNotificationQueue。</p>
+<p>NSNotificationQueue，顾名思义，是一个保存着NSNotification的FIFO队列。</p>
+<p><strong>每个线程都有自己默认的NSNotificationQueue对象，可以与NSNotificationCenter进行关联，通过center异步发送通知</strong>。</p>
+<ul>
+<li>NSNotificationQueue可以根据线程所属的runloop确定通知发送的时机：</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="built_in">NS_ENUM</span>(<span class="built_in">NSUInteger</span>, <span class="built_in">NSPostingStyle</span>) &#123;</div><div class="line">    <span class="built_in">NSPostWhenIdle</span> = <span class="number">1</span>, <span class="comment">// runloop空闲时发送</span></div><div class="line">    <span class="built_in">NSPostASAP</span> = <span class="number">2</span>, <span class="comment">// runloop中尽快发送（as soon as possible）</span></div><div class="line">    <span class="built_in">NSPostNow</span> = <span class="number">3</span> <span class="comment">// 实时发送（直接通过NSNotificationCenter发送）</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<ul>
+<li>NSNotificationQueue可以根据类型将相同的通知进行合并发送。</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="built_in">NS_OPTIONS</span>(<span class="built_in">NSUInteger</span>, <span class="built_in">NSNotificationCoalescing</span>) &#123;</div><div class="line">    <span class="built_in">NSNotificationNoCoalescing</span> = <span class="number">0</span>, <span class="comment">// 不合并</span></div><div class="line">    <span class="built_in">NSNotificationCoalescingOnName</span> = <span class="number">1</span>, <span class="comment">// 同名通知合并</span></div><div class="line">    <span class="built_in">NSNotificationCoalescingOnSender</span> = <span class="number">2</span> <span class="comment">// 相同object合并</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>完整类定义如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">NSNotificationQueue</span> : <span class="title">NSObject</span> </span>&#123;</div><div class="line"><span class="keyword">@private</span></div><div class="line">    <span class="comment">// 关联的NSNotificationCenter对象</span></div><div class="line">    <span class="keyword">id</span>	_notificationCenter; </div><div class="line">    <span class="comment">// runloop尽快发送队列</span></div><div class="line">    <span class="keyword">id</span>	_asapQueue;</div><div class="line">    <span class="comment">// 尽快发送队列对应的首个观察者</span></div><div class="line">    <span class="keyword">id</span>	_asapObs;</div><div class="line">    <span class="comment">// runloop空闲时刻队列</span></div><div class="line">    <span class="keyword">id</span>	_idleQueue;</div><div class="line">    <span class="comment">// 空闲时刻队列对应的首个观察者</span></div><div class="line">    <span class="keyword">id</span>	_idleObs;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** 默认队列 */</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">class</span>, <span class="keyword">readonly</span>, <span class="keyword">strong</span>) <span class="built_in">NSNotificationQueue</span> *defaultQueue;</div><div class="line"></div><div class="line"><span class="comment">/** 绑定NSNotificationCenter对象并初始化自身 */</span></div><div class="line">- (<span class="keyword">instancetype</span>)initWithNotificationCenter:(<span class="built_in">NSNotificationCenter</span> *)notificationCenter <span class="built_in">NS_DESIGNATED_INITIALIZER</span>;</div><div class="line"></div><div class="line"><span class="comment">/** NSNotification入队，并指定发送时机（根据时机进入不同的私有队列） */</span></div><div class="line">- (<span class="keyword">void</span>)enqueueNotification:(<span class="built_in">NSNotification</span> *)notification postingStyle:(<span class="built_in">NSPostingStyle</span>)postingStyle;</div><div class="line"><span class="comment">/** 针对指定的runloop的mode，NSNotification入队，并指定发送时机及合并方式 */</span></div><div class="line">- (<span class="keyword">void</span>)enqueueNotification:(<span class="built_in">NSNotification</span> *)notification postingStyle:(<span class="built_in">NSPostingStyle</span>)postingStyle coalesceMask:(<span class="built_in">NSNotificationCoalescing</span>)coalesceMask forModes:(<span class="keyword">nullable</span> <span class="built_in">NSArray</span>&lt;<span class="built_in">NSRunLoopMode</span>&gt; *)modes;</div><div class="line"></div><div class="line"><span class="comment">/** NSNotification出队，并指定合并方式 */</span></div><div class="line">- (<span class="keyword">void</span>)dequeueNotificationsMatching:(<span class="built_in">NSNotification</span> *)notification coalesceMask:(<span class="built_in">NSUInteger</span>)coalesceMask;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>根据实现，根据私有成员变量，可以猜想一下：</p>
+<ol>
+<li>NSNotificationQueue可能只是一个对象封装，内部的_asapQueue和_idleQueue才是真正的队列容器。根据入队NSNotification对象时设置的配置信息，插入到相应的队列中。 </li>
+<li>在NSNotification对象出队准备执行时，需要在绑定的NSNotificationCenter的分发表中查询出通知名对应的观察者信息（应该包含观察者对象及回调SEL），赋值给如_asapObs的观察者信息指针，runloop则通过此观察者进行通知回调。</li>
+</ol>
+<p>作为对比，看个发送异步通知的例子：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">    </div><div class="line">    [[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserver:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(testSelector1) name:<span class="string">@"jiji.notification.test"</span> object:<span class="literal">nil</span>];</div><div class="line">    [[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserver:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(testSelector2) name:<span class="string">@"jiji.notification.test"</span> object:<span class="literal">nil</span>];</div><div class="line"></div><div class="line">    <span class="comment">// 强制主线程执行</span></div><div class="line">    [[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserverForName:<span class="string">@"jiji.notification.test"</span> object:<span class="literal">nil</span> queue:[<span class="built_in">NSOperationQueue</span> mainQueue] usingBlock:^(<span class="built_in">NSNotification</span> * _Nonnull note) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"%s"</span>, __func__);</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"thread - %@"</span>, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_async</span>(</div><div class="line">        dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>),</div><div class="line">        ^&#123;</div><div class="line">            <span class="comment">// 在runloop的mcurrentMode中插入item（source1），防止线程退出</span></div><div class="line">            [[<span class="built_in">NSRunLoop</span> currentRunLoop] addPort:[<span class="built_in">NSPort</span> port] forMode:<span class="built_in">NSRunLoopCommonModes</span>];</div><div class="line"></div><div class="line">            <span class="comment">// 在子线程发送异步通知（异步通知依赖runloop）</span></div><div class="line">            <span class="built_in">NSNotification</span> *noti = [<span class="built_in">NSNotification</span> notificationWithName:<span class="string">@"jiji.notification.test"</span> object:<span class="literal">nil</span>];</div><div class="line">            [[<span class="built_in">NSNotificationQueue</span> defaultQueue] enqueueNotification:noti postingStyle:<span class="built_in">NSPostASAP</span> coalesceMask:<span class="built_in">NSNotificationNoCoalescing</span> forModes:@[<span class="built_in">NSDefaultRunLoopMode</span>]];</div><div class="line"></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"post finish---"</span>);</div><div class="line"></div><div class="line">            [[<span class="built_in">NSRunLoop</span> currentRunLoop] run];</div><div class="line">        &#125;</div><div class="line">    );</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)testSelector1 &#123;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%s"</span>, __func__);</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"thread - %@"</span>, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)testSelector2 &#123;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%s"</span>, __func__);</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"thread - %@"</span>, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>执行结果：</p>
+<blockquote>
+<p>2019-09-05 16:48:29.744888+0800 TestAPP[56766:2652270] post finish—<br>2019-09-05 16:48:29.745274+0800 TestAPP[56766:2652270] -[ViewController testSelector1]<br>2019-09-05 16:48:29.745815+0800 TestAPP[56766:2652270] thread - <nsthread: 0x6000015193c0="">{number = 5, name = (null)}<br>2019-09-05 16:48:29.746069+0800 TestAPP[56766:2652270] -[ViewController testSelector2]<br>2019-09-05 16:48:29.746229+0800 TestAPP[56766:2652270] thread - <nsthread: 0x6000015193c0="">{number = 5, name = (null)}<br>2019-09-05 16:48:29.825634+0800 TestAPP[56766:2652197] -[ViewController viewDidLoad]_block_invoke<br>2019-09-05 16:48:29.841702+0800 TestAPP[56766:2652197] thread - <nsthread: 0x600001562c00="">{number = 1, name = main}</nsthread:></nsthread:></nsthread:></p>
+</blockquote>
+<p>可以看到，<strong>在将NSNotification对象入队后，方法直接返回，继续向下执行。而通知则通过runloop在适当的时刻进行发出</strong>。</p>
+<p>其中，若修改入队参数coalesceMask为<em>NSNotificationCoalescingOnName</em>，即可实现对于回调频率的控制（高频多次调用只发送一个通知）。对于参数postingStyle，若设置为<em>NSPostNow</em>，则为同步消息发送，与postNotification相同。</p>
+<p>而且，通过调用栈信息可以看出，<strong>发送异步通知的过程，实际上是在线程runloop的指定mode中插入了一个Observer的item，待需要执行时进行调用</strong>。</p>
+<h4 id="NSNotification与KVO的区别"><a href="#NSNotification与KVO的区别" class="headerlink" title="NSNotification与KVO的区别"></a>NSNotification与KVO的区别</h4><p>KVO是在对象的keyPath上添加观察者的，而NSNotification是在通知名上添加观察者。</p>
+<p>NSNotification使用范围广，更加灵活，只不过需要主动发送通知才能触发给观察者。</p>
+<h4 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h4><blockquote>
+<ul>
+<li><a href="http://southpeak.github.io/2015/03/20/cocoa-foundation-nsnotificationcenter/" target="_blank" rel="external">Foundation: NSNotificationCenter</a></li>
+<li><a href="http://southpeak.github.io/2015/03/14/nsnotification-and-multithreading/" target="_blank" rel="external">Notification与多线程</a></li>
+<li><a href="https://www.jianshu.com/p/83770200d476" target="_blank" rel="external">深入理解iOS NSNotification</a></li>
+<li><a href="https://philm.gitbook.io/philm-ios-wiki/mei-zhou-yue-du/shen-ru-si-kao-nsnotification" target="_blank" rel="external">深入思考NSNotification</a></li>
+</ul>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;主要分为NSNotification、NSNotificationCenter和底层队列NSNotificationQueue。&lt;/p&gt;
+&lt;p&gt;优点：跨层通信、解耦。&lt;/p&gt;
+&lt;p&gt;使用注意点：尽量将所有的通知名和观察对象的关联关系放置在独立文件中，方便维护与查找。&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>分组并翻转链表</title>
@@ -2121,73 +2205,6 @@
     
       &lt;p&gt;有的时候，下载的使用CocoaPods配置的工程时，使用“pod install”后，编译时会遇到“&lt;strong&gt;ld: library not found for -lPods&lt;/strong&gt;”错误。可以按如下方式试着解决：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/450996-85fee0ff00dcf0b4.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;ld- library not found for -lPods.jpg&quot;&gt;&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Autolayout的生命周期</title>
-    <link href="http://yoursite.com/2019/03/19/Autolayout%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/"/>
-    <id>http://yoursite.com/2019/03/19/Autolayout的生命周期/</id>
-    <published>2019-03-19T08:37:21.285Z</published>
-    <updated>2019-03-19T08:38:38.827Z</updated>
-    
-    <content type="html"><![CDATA[<p><img src="https://upload-images.jianshu.io/upload_images/450996-247348e79ae353ff.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Autolayout生命周期.jpg"></p>
-<p>上图即为Autolayout的生命周期过程（截取自<a href="https://developer.apple.com/videos/play/wwdc2015/219/" target="_blank" rel="external">219_mysteries_of_auto_layout_part_2</a>）。</p>
-<a id="more"></a>
-<h4 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h4><ol>
-<li>APP启动后，随着<strong>RunLoop</strong>的运行，系统<strong>在其内部监听着约束变化（Constraints Change）</strong>：如激活或失效约束、修改优先级、修改常量值等任意造成约束方程式修改的操作，甚至是直接添加或删除视图等操作，都可以导致约束发生变化。</li>
-<li>在接收到布局变化后，Layout Engine会根据变化的约束重新计算布局，并将需要更新布局的视图进行标记（<strong>对其父视图调用setNeedsLayout方法</strong>），之后便进入延迟布局阶段（Deffered Layout Pass）。<blockquote>
-<p>注意：</p>
-<p>在进入延迟布局阶段之前，Layout Engine已经将更新的约束计算完毕并将视图的新frame求出。但并不在此时更新视图。</p>
-</blockquote>
-</li>
-<li>延迟布局阶段：此阶段的主要作用是将错误位置的视图重新定位（Reposition misplaced views）。其在视图层级中执行，分为两步：<ul>
-<li>更新约束：<strong>从下往上（子视图到父视图），依次遍历视图层级，调用View的updateConstraints方法（或ViewController的updateViewConstraints方法）来更新约束</strong>（你可以在此覆盖本方法来设置自定义约束，且在此设置时，执行效率最高。记得最后调用父类实现）。</li>
-<li>给视图及子视图重新设定位置（给view的frame赋值）：<strong>从上到下依次调用View的layoutSubViews方法（或ViewController的viewLayoutSubViews方法），从Layout Engine中取出预算好的frame进行赋值</strong>（你可以覆盖此方法实现自定义布局，不过此刻不是稳态，需要在适合时候调用父类实现）。</li>
-</ul>
-</li>
-</ol>
-<h4 id="延迟布局阶段的触发条件"><a href="#延迟布局阶段的触发条件" class="headerlink" title="延迟布局阶段的触发条件"></a>延迟布局阶段的触发条件</h4><table>
-<thead>
-<tr>
-<th>调用方法</th>
-<th>结果</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>setNeedsUpdateConstraints</td>
-<td>下一次loop执行updateConstraints</td>
-</tr>
-<tr>
-<td>updateConstraintsIfNeeded</td>
-<td>立即执行updateConstraints</td>
-</tr>
-<tr>
-<td>setNeedsLayout</td>
-<td>下一次loop执行layoutSubViews</td>
-</tr>
-<tr>
-<td>layoutIfNeeded</td>
-<td>立即执行layoutSubViews</td>
-</tr>
-<tr>
-<td>setNeedDisplay</td>
-<td>下一次loop执行draw</td>
-</tr>
-</tbody>
-</table>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/450996-247348e79ae353ff.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;Autolayout生命周期.jpg&quot;&gt;&lt;/p&gt;
-&lt;p&gt;上图即为Autolayout的生命周期过程（截取自&lt;a href=&quot;https://developer.apple.com/videos/play/wwdc2015/219/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;219_mysteries_of_auto_layout_part_2&lt;/a&gt;）。&lt;/p&gt;
     
     </summary>
     
