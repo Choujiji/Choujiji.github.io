@@ -8,17 +8,17 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>弱指针weak的实现学习 | 臭吉吉的瞎记空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="1. weak对象的实现函数首先，看个例子（取自《Objective-C高级编程 iOS与OS X多线程和内存管理》的第一部分）： 1id __weak weakObj = [[NSObject alloc] init]; 其模拟代码为 1234567891011121314id obj;// 创建临时对象tmpid tmp = objc_msgSend(NSObject, @selector(a">
+  <meta name="description" content="1. weak对象的实现函数首先，看个例子（取自《Objective-C高级编程 iOS与OS X多线程和内存管理》的第一部分）： 1id __weak weakObj = [[NSObject alloc] init];">
 <meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="弱指针weak的实现学习">
 <meta property="og:url" content="http://yoursite.com/2019/08/13/弱指针weak的实现学习/index.html">
 <meta property="og:site_name" content="臭吉吉的瞎记空间">
-<meta property="og:description" content="1. weak对象的实现函数首先，看个例子（取自《Objective-C高级编程 iOS与OS X多线程和内存管理》的第一部分）： 1id __weak weakObj = [[NSObject alloc] init]; 其模拟代码为 1234567891011121314id obj;// 创建临时对象tmpid tmp = objc_msgSend(NSObject, @selector(a">
-<meta property="og:updated_time" content="2019-08-13T06:11:30.189Z">
+<meta property="og:description" content="1. weak对象的实现函数首先，看个例子（取自《Objective-C高级编程 iOS与OS X多线程和内存管理》的第一部分）： 1id __weak weakObj = [[NSObject alloc] init];">
+<meta property="og:updated_time" content="2019-09-06T07:53:40.645Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="弱指针weak的实现学习">
-<meta name="twitter:description" content="1. weak对象的实现函数首先，看个例子（取自《Objective-C高级编程 iOS与OS X多线程和内存管理》的第一部分）： 1id __weak weakObj = [[NSObject alloc] init]; 其模拟代码为 1234567891011121314id obj;// 创建临时对象tmpid tmp = objc_msgSend(NSObject, @selector(a">
+<meta name="twitter:description" content="1. weak对象的实现函数首先，看个例子（取自《Objective-C高级编程 iOS与OS X多线程和内存管理》的第一部分）： 1id __weak weakObj = [[NSObject alloc] init];">
   
     <link rel="alternative" href="/atom.xml" title="臭吉吉的瞎记空间" type="application/atom+xml">
   
@@ -206,6 +206,7 @@
       
         <h4 id="1-weak对象的实现函数"><a href="#1-weak对象的实现函数" class="headerlink" title="1. weak对象的实现函数"></a>1. weak对象的实现函数</h4><p>首先，看个例子（<em>取自《Objective-C高级编程 iOS与OS X多线程和内存管理》的第一部分</em>）：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">id</span> __<span class="keyword">weak</span> weakObj = [[<span class="built_in">NSObject</span> alloc] init];</div></pre></td></tr></table></figure>
+<a id="more"></a>
 <p>其模拟代码为</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">id</span> obj;</div><div class="line"></div><div class="line"><span class="comment">// 创建临时对象tmp</span></div><div class="line"><span class="keyword">id</span> tmp = objc_msgSend(<span class="built_in">NSObject</span>, <span class="keyword">@selector</span>(alloc));</div><div class="line">objc_msgSend(tmp, <span class="keyword">@selector</span>(init));</div><div class="line"></div><div class="line"><span class="comment">// 使用tmp创建weak对象obj</span></div><div class="line">objc_initWeak(&amp;obj, tmp);</div><div class="line"></div><div class="line"><span class="comment">// 作用域结束，tmp释放</span></div><div class="line">objc_release(tmp);</div><div class="line"></div><div class="line"><span class="comment">// 释放weak对象obj</span></div><div class="line">objc_destroyWeak(&amp;obj);</div></pre></td></tr></table></figure>
 <p>通过代码可以看到，<strong>weak指针（weak对象）的创建及释放，实际上是通过<em>objc_initWeak()</em> 和 <em>objc_destroyWeak()</em> 函数实现的</strong>。现在，就需要查看一下iOS的运行时系统是如何实现weak的功能的。</p>
