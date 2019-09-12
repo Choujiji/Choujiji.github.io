@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-09-05T09:33:05.507Z</updated>
+  <updated>2019-09-12T05:26:46.967Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,58 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>64位架构下实例对象占用内存</title>
+    <link href="http://yoursite.com/2019/09/12/64%E4%BD%8D%E6%9E%B6%E6%9E%84%E4%B8%8B%E5%AE%9E%E4%BE%8B%E5%AF%B9%E8%B1%A1%E5%8D%A0%E7%94%A8%E5%86%85%E5%AD%98/"/>
+    <id>http://yoursite.com/2019/09/12/64位架构下实例对象占用内存/</id>
+    <published>2019-09-12T05:26:24.166Z</published>
+    <updated>2019-09-12T05:26:46.967Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://juejin.im/post/5d7890faf265da03c34c275c?utm_source=gold_browser_extension" target="_blank" rel="external">OC对象占用内存原理 (一文彻底搞懂)</a></li>
+</ul>
+</blockquote>
+<p>我们知道OC实例对象的指针占用的内存为8字节（isa指针，或者说是objc_class结构体指针）。</p>
+<p>但是，实际上一个OC对象的内存占用为<strong>至少16字节</strong>。<br><a id="more"></a><br>在OC对象alloc方法的源码中，可以看到：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> __attribute__((always_inline)) </div><div class="line"><span class="keyword">id</span></div><div class="line">_class_createInstanceFromZone(Class cls, size_t extraBytes, <span class="keyword">void</span> *zone, </div><div class="line">                              <span class="keyword">bool</span> cxxConstruct = <span class="literal">true</span>, </div><div class="line">                              size_t *outAllocatedSize = <span class="literal">nil</span>)</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> (!cls) <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line"></div><div class="line">    assert(cls-&gt;isRealized());</div><div class="line"></div><div class="line">    <span class="comment">// Read class's info bits all at once for performance</span></div><div class="line">    <span class="keyword">bool</span> hasCxxCtor = cls-&gt;hasCxxCtor();</div><div class="line">    <span class="keyword">bool</span> hasCxxDtor = cls-&gt;hasCxxDtor();</div><div class="line">    <span class="keyword">bool</span> fast = cls-&gt;canAllocNonpointer();</div><div class="line"></div><div class="line">    size_t size = cls-&gt;instanceSize(extraBytes);</div><div class="line">    <span class="keyword">if</span> (outAllocatedSize) *outAllocatedSize = size;</div><div class="line"></div><div class="line">    <span class="keyword">id</span> obj;</div><div class="line">    <span class="keyword">if</span> (!zone  &amp;&amp;  fast) &#123;</div><div class="line">        obj = (<span class="keyword">id</span>)calloc(<span class="number">1</span>, size);</div><div class="line">        <span class="keyword">if</span> (!obj) <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line">        obj-&gt;initInstanceIsa(cls, hasCxxDtor);</div><div class="line">    &#125; </div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">if</span> (zone) &#123;</div><div class="line">            obj = (<span class="keyword">id</span>)malloc_zone_calloc ((malloc_zone_t *)zone, <span class="number">1</span>, size);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            obj = (<span class="keyword">id</span>)calloc(<span class="number">1</span>, size);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (!obj) <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line"></div><div class="line">        <span class="comment">// Use raw pointer isa on the assumption that they might be </span></div><div class="line">        <span class="comment">// doing something weird with the zone or RR.</span></div><div class="line">        obj-&gt;initIsa(cls);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (cxxConstruct &amp;&amp; hasCxxCtor) &#123;</div><div class="line">        obj = _objc_constructOrFree(obj, cls);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> obj;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其中，instanceSize函数的实现为：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">size_t instanceSize(size_t extraBytes) &#123;</div><div class="line">     size_t size = alignedInstanceSize() + extraBytes;</div><div class="line">      <span class="comment">// CF requires all objects be at least 16bytes.</span></div><div class="line">      <span class="keyword">if</span> (size &lt; <span class="number">16</span>) size = <span class="number">16</span>;</div><div class="line">      <span class="keyword">return</span> size; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看出，<strong>在分配内存时，OC对象的最小内存占用为16字节</strong>。</p>
+<p>而通过查看内存分配可知，<strong>OC对象的内存是按照16字节进行对齐的</strong>。</p>
+<p>因此，在当类中存在其他属性时，在内存分配时，不足的需要按16字节进行补齐。</p>
+<p>例如：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">TestClass</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">NSInteger</span> age;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="keyword">int</span> height;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="keyword">int</span> row;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[]) &#123;</div><div class="line">    <span class="keyword">@autoreleasepool</span> &#123;</div><div class="line">        TestClass *obj = [TestClass new];</div><div class="line">        obj.age = <span class="number">4</span>;</div><div class="line">        obj.height = <span class="number">5</span>;</div><div class="line">        obj.row = <span class="number">6</span>;</div><div class="line">        </div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"类的实例尺寸----%zd"</span>, class_getInstanceSize(obj.class));</div><div class="line">        </div><div class="line">        <span class="keyword">const</span> <span class="keyword">void</span> *objPtr = (__bridge <span class="keyword">const</span> <span class="keyword">void</span> *)obj;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"类实例分配的空间====%zd"</span>, malloc_size(objPtr));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出为：</p>
+<blockquote>
+<p>2019-09-12 11:23:08.682507+0800 AlgorithmLearning[30513:6166466] 类的实例尺寸—-24<br>2019-09-12 11:23:08.682960+0800 AlgorithmLearning[30513:6166466] 类实例分配的空间====32</p>
+</blockquote>
+<p>通过查看obj的内存分配可以看到（lldb的”<em>x 地址</em>“指令）：</p>
+<blockquote>
+<p>(lldb) x 0x000000010102be80<br>0x10102be80: 09 25 00 00 01 80 1d 00 05 00 00 00 06 00 00 00  .%…………..<br>0x10102be90: 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  …………….</p>
+</blockquote>
+<p>可以看出，前8字节为objc_class指针，后面依次为4字节的height，4字节的row，之后是8字节的age。<br>在前16字节中，因为占用内存已满，因此，要开辟第二行来存储age，所以，实例的尺寸为 8 + 4 + 4 + 8 = 24 字节。但由于内存分配按照16字节对齐，因此第二行还要补齐缺失的8字节，因此obj实例实际分配的内存空间为 24 + 8 = 32字节。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;参考链接：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://juejin.im/post/5d7890faf265da03c34c275c?utm_source=gold_browser_extension&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;OC对象占用内存原理 (一文彻底搞懂)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;我们知道OC实例对象的指针占用的内存为8字节（isa指针，或者说是objc_class结构体指针）。&lt;/p&gt;
+&lt;p&gt;但是，实际上一个OC对象的内存占用为&lt;strong&gt;至少16字节&lt;/strong&gt;。&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>NSNotification学习</title>
@@ -2177,36 +2229,6 @@
 &lt;li&gt;&lt;strong&gt;只公开最外层的STMAssembleView类，调用者只需引入一个类即可使用&lt;/strong&gt;。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;将业务与功能解耦，生成对应的类：“View”视图类（STMAssembleView、STMPartView）与“Maker”类（STMAssemvleMaker、STMPartMaker）&lt;/strong&gt;。“Maker”类负责抽象出支持的功能属性，“View”类通过使用Maker，将子功能进行组合并实现最终业务功能（视图配置）。&lt;/li&gt;
 &lt;/ul&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>出现“ld：library not found for -lPods”的解决办法</title>
-    <link href="http://yoursite.com/2019/03/20/%E5%B7%A5%E7%A8%8B%E5%AE%89%E8%A3%85CocoaPods%E5%90%8E%E9%94%99%E8%AF%AF%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/"/>
-    <id>http://yoursite.com/2019/03/20/工程安装CocoaPods后错误的解决办法/</id>
-    <published>2019-03-20T02:57:18.103Z</published>
-    <updated>2019-03-20T03:01:20.946Z</updated>
-    
-    <content type="html"><![CDATA[<p>有的时候，下载的使用CocoaPods配置的工程时，使用“pod install”后，编译时会遇到“<strong>ld: library not found for -lPods</strong>”错误。可以按如下方式试着解决：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/450996-85fee0ff00dcf0b4.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="ld- library not found for -lPods.jpg"></p>
-<a id="more"></a>
-<p>如图所示，在当前<strong>Target</strong>的<strong>Build Phrase</strong>选项视图中，编辑<strong>Link Binary With Libraries</strong>选项。<strong>移除其中的“libPods.a”</strong>，只保留对应Target打包出的.a文件（添加.a文件时，主工程目录中Frameworks下回自动引入libPods.a依赖，如下图所示）。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/450996-24c7e3e8e4d6a410.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Frameworks目录.jpg"></p>
-<p>再进行编译一般就会解决问题。</p>
-<blockquote>
-<p>注：<br>此问题一般来说是由于原工程使用的是老版本的CocoaPods，通过新版CocoaPods安装配置后出现的问题。</p>
-</blockquote>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;有的时候，下载的使用CocoaPods配置的工程时，使用“pod install”后，编译时会遇到“&lt;strong&gt;ld: library not found for -lPods&lt;/strong&gt;”错误。可以按如下方式试着解决：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/450996-85fee0ff00dcf0b4.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;ld- library not found for -lPods.jpg&quot;&gt;&lt;/p&gt;
     
     </summary>
     
