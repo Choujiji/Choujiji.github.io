@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-09-12T05:26:46.967Z</updated>
+  <updated>2019-09-12T14:27:46.251Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,67 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>UIKit性能优化学习</title>
+    <link href="http://yoursite.com/2019/09/12/UIKit%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AD%A6%E4%B9%A0/"/>
+    <id>http://yoursite.com/2019/09/12/UIKit性能优化学习/</id>
+    <published>2019-09-12T14:27:16.603Z</published>
+    <updated>2019-09-12T14:27:46.251Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>所有的目的都是为了提高界面的FPS，提升体验（特别是列表）。<br><a id="more"></a></p>
+<h4 id="1-调试方法"><a href="#1-调试方法" class="headerlink" title="1. 调试方法"></a>1. 调试方法</h4></blockquote>
+<ol>
+<li>使用Instruments中的Core Animation可以查看指定应用的FPS（选择app-&gt;开始录制）</li>
+<li>调试APP时，在XCode的 <em>Debug -&gt; View Debugging -&gt; Rendering</em> 中切换选项。</li>
+</ol>
+<h4 id="2-选项解释及优化方式"><a href="#2-选项解释及优化方式" class="headerlink" title="2. 选项解释及优化方式"></a>2. 选项解释及优化方式</h4><ol>
+<li><p>Color Blended Layers：混合颜色图层<br> 即存在多个视图或图层叠加的情况，且至少最上面的图层存在透明区域，因此GPU需要将多个图层颜色进行混合计算，消耗性能。<br> 解决方法：</p>
+<ol>
+<li>尽量让图层不要存在alpha透明度，UIImageView中的image也不要有，</li>
+<li>显示中文的UILabel不仅需要设置bgColor，还需要额外设置masksToBounds为YES（单独不会触发离屏渲染）</li>
+</ol>
+</li>
+<li><p>Color Hits Green and Missed Red<br> 即使用了光栅化技术（layer.shouldRasterize为YES）：光栅化即将视图提前渲染成为bitmap，减少显示时的性能损耗。<br> 光栅化有效的layer（已使用bitmap显示）显示为绿色，否则为红色（还没有生成bitmap）。<br> 在带有复杂效果（如阴影等）的静态页面中，可以考虑使用此选项提升性能；<br> 对于UITableViewCell，由于更新频率高，不推荐使用（光栅化生成的bitmap位图只会存在100ms）。<br> 光栅化渲染时会触发离屏渲染。</p>
+</li>
+<li><p>Color Copied Images<br> 证明GPU不支持此图片格式，需要CPU先进行转换后，再进行渲染工作。</p>
+</li>
+<li><p>Color Misaligned Imaged<br> 证明UIImageView与显示的UIImage尺寸不符，需要额外进行图片的压缩或拉伸。<br> 不匹配的UIIMageView显示为黄色。<br> 解决方法：尽量获取尺寸相同的UIImage进行显示；或对UIImage进行预先裁剪，使其与UIImageView尺寸相同。</p>
+</li>
+<li><p>Color Offscreen-Rendered Yellow<br> 离屏渲染，即GPU需要额外单独开启一个缓冲区进行渲染操作，结束后再将结果转回到原缓冲区。由于切换上下文耗费性能，因此要慎重使用。<br> 出现条件及建议：</p>
+<ol>
+<li>layer.cornerRadius = xx; layer.masksToBounds = YES; 二者同时使用即出现（因此直接设置圆角不会触发）。</li>
+<li>layer.shadow，即设置阴影。可以通过直接设置layer.shadowPath，提前指定阴影路径，避免实时计算产生的离屏渲染。</li>
+<li>layer.shouldRasterize = YES。即光栅化</li>
+<li>drawRect方法。因此尽量不要在此进行自定义视图绘制。</li>
+<li>layer.allowGroupOpacity和layer.allowEdgeAntialiasing。组透明度和边界抗锯齿</li>
+<li>layer.mask，即给layer添加遮罩层layer。</li>
+</ol>
+</li>
+<li><p>Flash Updated Region<br> 重绘区域，显示为黄色，对应需要频繁重绘的区域（一般在地图上会有显示，如自身位置）。<br> 区域越少越好。</p>
+</li>
+</ol>
+<h4 id="3-参考资料："><a href="#3-参考资料：" class="headerlink" title="3. 参考资料："></a>3. 参考资料：</h4><blockquote>
+<ul>
+<li><a href="https://www.jianshu.com/p/439e158b44de" target="_blank" rel="external">Instruments性能优化-Core Animation
+</a></li>
+<li><a href="https://bestswifter.com/uikitxing-neng-diao-you-shi-zhan-jiang-jie/" target="_blank" rel="external">UIKit性能调优实战讲解</a></li>
+</ul>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;所有的目的都是为了提高界面的FPS，提升体验（特别是列表）。&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>64位架构下实例对象占用内存</title>
@@ -2181,59 +2242,6 @@
     
     
       <category term="读书笔记" scheme="http://yoursite.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>STMAssembleView源码学习</title>
-    <link href="http://yoursite.com/2019/03/24/STMAssembleView%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/"/>
-    <id>http://yoursite.com/2019/03/24/STMAssembleView源码学习/</id>
-    <published>2019-03-24T05:33:40.517Z</published>
-    <updated>2019-03-24T05:33:53.681Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>项目地址：<a href="https://github.com/ming1016/STMAssembleView" target="_blank" rel="external">STMAssembleView</a></p>
-</blockquote>
-<h4 id="1-结构设计简洁"><a href="#1-结构设计简洁" class="headerlink" title="1. 结构设计简洁"></a>1. 结构设计简洁</h4><ul>
-<li><strong>只公开最外层的STMAssembleView类，调用者只需引入一个类即可使用</strong>。</li>
-<li><strong>将业务与功能解耦，生成对应的类：“View”视图类（STMAssembleView、STMPartView）与“Maker”类（STMAssemvleMaker、STMPartMaker）</strong>。“Maker”类负责抽象出支持的功能属性，“View”类通过使用Maker，将子功能进行组合并实现最终业务功能（视图配置）。</li>
-</ul>
-<a id="more"></a>
-<h4 id="2-代码设计巧妙"><a href="#2-代码设计巧妙" class="headerlink" title="2. 代码设计巧妙"></a>2. 代码设计巧妙</h4><ul>
-<li>对于“Maker”类，属性用于提供给调用者进行配置调用（即只使用getter），而<strong>属性的setter则另提供配套的设置方法，且设置方法返回的是对应“Maker”类型的Block对象，以实现链式调用</strong>。例如：</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// STMAssembleMaker.m</span></div><div class="line"></div><div class="line">- (STMAssembleMaker *(^)(STMAssembleAlignment))alignmentEqualTo &#123;</div><div class="line">    <span class="keyword">return</span> ^STMAssembleMaker *(STMAssembleAlignment alignment) &#123;</div><div class="line">        <span class="comment">// jiji - 设置对齐方式</span></div><div class="line">        self.alignment = alignment;</div><div class="line">        <span class="keyword">return</span> self;</div><div class="line">    &#125;;</div><div class="line">&#125;</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line"><span class="comment">// 调用时</span></div><div class="line">make.alignmentEqualTo(STMAssembleAlignmentCenter);</div></pre></td></tr></table></figure>
-<blockquote>
-<p>如代码所示：</p>
-<p>由于方法<em>alignmentEqualTo</em>返回的是Block对象，调用方法时，通过添加()即直接隐含执行了Block。且由于Block执行后返回的仍然为make自身，可以在后面继续连续调用其他实例方法，实现了链式调用。</p>
-</blockquote>
-<ul>
-<li><strong>使用__weak指针，防止Block对象导致的内存引用循环</strong>。如：</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// STMAssembleMaker.m</span></div><div class="line"></div><div class="line">+ (<span class="keyword">void</span>)fsAsync:(NSString *)<span class="built_in">string</span> objects:(NSDictionary *)objs completion:(ParsingFormatStringCompleteBlock)completeBlock&#123;</div><div class="line">    __weak __typeof(<span class="built_in">string</span>) weakString = <span class="built_in">string</span>; <span class="comment">// 弱指针，防止Block执行时对该对象强引用</span></div><div class="line">    __weak __typeof(objs) weakObjs = objs;</div><div class="line">    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, <span class="number">0</span>), ^&#123;</div><div class="line">        __strong __typeof(weakString) strongString = weakString; <span class="comment">// 声明临时的__strong指针并指向__weak指向的对象，可以保证在Block执行过程中该对象不被释放。</span></div><div class="line">        __strong __typeof(weakObjs) strongObjs = weakObjs;</div><div class="line">        <span class="keyword">if</span> (strongString) &#123;</div><div class="line">            [STMAssembleView createViewWithFormatString:strongString objects:strongObjs completion:completeBlock];</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>如代码所示：</p>
-<p>使用<strong>weak和</strong>strong指针的情况在Block声明时具有统一性，可以很好地避免引用循环的产生，且能保证在Block执行时捕获对象的有效性。</p>
-<p>注：在单独使用GCD时，由于dispatch_async的Block会在执行后进行release，理论上可以不必担心循环引用的问题。这里铭神这样做的目的是保证自身不会保留传入的对象，需要调用者自己负责参数的生命周期。</p>
-</blockquote>
-<h4 id="3-知识点："><a href="#3-知识点：" class="headerlink" title="3. 知识点："></a>3. 知识点：</h4><h5 id="3-1-字符串的扫描处理"><a href="#3-1-字符串的扫描处理" class="headerlink" title="3.1 字符串的扫描处理"></a>3.1 字符串的扫描处理</h5><p>使用了<em>NSScanner</em>类对字符串进行扫描，按需将扫描结果进行归类，完成描述字符串的解析（后面根据解析结果调用对应的“View”类进行处理，生成页面）。</p>
-<h5 id="3-2-使用变参合成字符串"><a href="#3-2-使用变参合成字符串" class="headerlink" title="3.2 使用变参合成字符串"></a>3.2 使用变参合成字符串</h5><p>使用va_list指向变参列表的第一个参数地址，通过NSString合成出完整字符串。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//宏</span></div><div class="line"><span class="function">NSString *<span class="title">ASS</span><span class="params">(NSString *format, ...)</span> </span>&#123;</div><div class="line">    <span class="comment">// jiji - 声明变参指针</span></div><div class="line">    va_list args;</div><div class="line">    <span class="keyword">if</span> (format) &#123;</div><div class="line">        <span class="comment">// jiji - 初始化变参指针（指向第一个参数的地址，如这里的format的地址）</span></div><div class="line">        va_start(args, format);</div><div class="line">        </div><div class="line">        <span class="comment">// jiji - NSString直接通过变参指针读取并生成字符串</span></div><div class="line">        NSString *str = [[NSString alloc] initWithFormat:format arguments:args];</div><div class="line">        </div><div class="line">        <span class="comment">// jiji - 清除变参指针对象</span></div><div class="line">        va_end(args);</div><div class="line">        <span class="keyword">return</span> str;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> @<span class="string">""</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;项目地址：&lt;a href=&quot;https://github.com/ming1016/STMAssembleView&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;STMAssembleView&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h4 id=&quot;1-结构设计简洁&quot;&gt;&lt;a href=&quot;#1-结构设计简洁&quot; class=&quot;headerlink&quot; title=&quot;1. 结构设计简洁&quot;&gt;&lt;/a&gt;1. 结构设计简洁&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;只公开最外层的STMAssembleView类，调用者只需引入一个类即可使用&lt;/strong&gt;。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;将业务与功能解耦，生成对应的类：“View”视图类（STMAssembleView、STMPartView）与“Maker”类（STMAssemvleMaker、STMPartMaker）&lt;/strong&gt;。“Maker”类负责抽象出支持的功能属性，“View”类通过使用Maker，将子功能进行组合并实现最终业务功能（视图配置）。&lt;/li&gt;
-&lt;/ul&gt;
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
     
   </entry>
   
