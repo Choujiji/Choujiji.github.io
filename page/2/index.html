@@ -184,6 +184,68 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-弱指针weak的实现学习" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/13/弱指针weak的实现学习/">弱指针weak的实现学习</a>
+    </h1>
+  
+
+        
+        <a href="/2019/08/13/弱指针weak的实现学习/" class="archive-article-date">
+  	<time datetime="2019-08-12T16:16:12.823Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="1-weak对象的实现函数"><a href="#1-weak对象的实现函数" class="headerlink" title="1. weak对象的实现函数"></a>1. weak对象的实现函数</h4><p>首先，看个例子（<em>取自《Objective-C高级编程 iOS与OS X多线程和内存管理》的第一部分</em>）：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">id</span> __<span class="keyword">weak</span> weakObj = [[<span class="built_in">NSObject</span> alloc] init];</div></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2019/08/13/弱指针weak的实现学习/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/13/弱指针weak的实现学习/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-GCD的串行队列同步死锁问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -753,75 +815,6 @@
 
 
   
-    <article id="post-《大话数据结构》之树" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/12/《大话数据结构》之树/">《大话数据结构》之树</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/12/《大话数据结构》之树/" class="archive-article-date">
-  	<time datetime="2019-04-12T15:10:28.591Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="1-概念"><a href="#1-概念" class="headerlink" title="1. 概念"></a>1. 概念</h3><p>与线性结构的“一对一”不同，<strong>树是“一对多”的数据结构</strong>。</p>
-<blockquote>
-<p><strong>树是有限个结点n（n &gt;= 0）的集合</strong>。</p>
-<ul>
-<li>n为0时称为空树；</li>
-<li>不为0时，<strong>有且只有一个结点作为树的根结点</strong>。</li>
-<li>n大于1时，除根结点外的其他结点可以分为m（m &gt; 0）个互不相交的有限集合T1…Tm，每个子集合又是一棵树，称为子树。</li>
-</ul>
-</blockquote>
-        
-          <a class="article-more-a" href="/2019/04/12/《大话数据结构》之树/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/12/《大话数据结构》之树/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -930,11 +923,11 @@ return o(t,i(n),arguments.length<3?void 0:u(arguments[2]))}})},function(t,n,r){v
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color3">react-native</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">react-native</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
             
             <div class="clearfix"></div>
